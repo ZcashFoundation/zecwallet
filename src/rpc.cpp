@@ -278,16 +278,9 @@ void RPC::getInfoThenRefresh() {
         main->statusLabel->setText(statusText);
         main->statusIcon->clear();  // TODO: Add checked icon
 
-        // Now, refreshing the balances and transactions causes UI flicked and selections
-        // to disappear, so we'll only do it if the balance in the wallet has 
-        // updated (i.e., something changed)
-        if (QString::number(reply["balance"].get<json::number_float_t>()) != currentBalance) {
-            currentBalance = QString::number(reply["balance"].get<json::number_float_t>());
-            refreshBalances();
-            refreshTransactions();
-        }
-
-        // Addresses can be created without a transaction, so we'll call that outside
+        // Refresh everything.
+        refreshBalances();
+        refreshTransactions();
         refreshAddresses();
     });        
 }
@@ -357,10 +350,15 @@ void RPC::refreshBalances() {
         ui->balancesTable->setColumnWidth(0, 300);
 
         // Add all the addresses into the inputs combo box
+        auto lastFromAddr = ui->inputsCombo->currentText().split("(")[0].trimmed();
+
         ui->inputsCombo->clear();
         auto i = allBalances->constBegin();
         while (i != allBalances->constEnd()) {
-            ui->inputsCombo->addItem(i.key() % "(" % QString::number(i.value(), 'f', 8) % " ZEC)");
+            QString item = i.key() % "(" % QString::number(i.value(), 'f', 8) % " ZEC)";
+            ui->inputsCombo->addItem(item);
+            if (item.startsWith(lastFromAddr)) ui->inputsCombo->setCurrentText(item);
+
             ++i;
         }        
     };

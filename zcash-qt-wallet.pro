@@ -8,7 +8,7 @@ QT       += core gui network
 
 CONFIG += precompile_header
 
-PRECOMPILED_HEADER = precompiled.h
+PRECOMPILED_HEADER = src/precompiled.h
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -21,48 +21,49 @@ TEMPLATE = app
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 
-INCLUDEPATH  += 3rdparty/
+INCLUDEPATH  += src/3rdparty/
 
 RESOURCES     = application.qrc
 
 MOC_DIR = bin
 OBJECTS_DIR = bin
+UI_DIR = src
 
 CONFIG += c++14
 
 SOURCES += \
-    main.cpp \
-    mainwindow.cpp \
-    rpc.cpp \
-    balancestablemodel.cpp \
-    unspentoutput.cpp \
-    3rdparty/qrcode/BitBuffer.cpp \
-    3rdparty/qrcode/QrCode.cpp \
-    3rdparty/qrcode/QrSegment.cpp \
-    settings.cpp \
-    sendtab.cpp \
-    txtablemodel.cpp \
-    transactionitem.cpp
+    src/main.cpp \
+    src/mainwindow.cpp \
+    src/rpc.cpp \
+    src/balancestablemodel.cpp \
+    src/unspentoutput.cpp \
+    src/3rdparty/qrcode/BitBuffer.cpp \
+    src/3rdparty/qrcode/QrCode.cpp \
+    src/3rdparty/qrcode/QrSegment.cpp \
+    src/settings.cpp \
+    src/sendtab.cpp \
+    src/txtablemodel.cpp \
+    src/transactionitem.cpp
 
 HEADERS += \
-    mainwindow.h \
-    precompiled.h \
-    rpc.h \
-    balancestablemodel.h \
-    unspentoutput.h \
-    3rdparty/qrcode/BitBuffer.hpp \
-    3rdparty/qrcode/QrCode.hpp \
-    3rdparty/qrcode/QrSegment.hpp \
-    3rdparty/json/json.hpp \
-    settings.h \
-    txtablemodel.h \
-    transactionitem.h
+    src/mainwindow.h \
+    src/precompiled.h \
+    src/rpc.h \
+    src/balancestablemodel.h \
+    src/unspentoutput.h \
+    src/3rdparty/qrcode/BitBuffer.hpp \
+    src/3rdparty/qrcode/QrCode.hpp \
+    src/3rdparty/qrcode/QrSegment.hpp \
+    src/3rdparty/json/json.hpp \
+    src/settings.h \
+    src/txtablemodel.h \
+    src/transactionitem.h
 
 FORMS += \
-    mainwindow.ui \
-    settings.ui \
-    about.ui \
-    confirm.ui
+    src/mainwindow.ui \
+    src/settings.ui \
+    src/about.ui \
+    src/confirm.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
