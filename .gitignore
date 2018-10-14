@@ -1,0 +1,12 @@
+bin/
+debug/
+release/
+x64/
+.vscode/
+*.autosave
+.qmake.stash
+zcash-qt-wallet
+zcash-qt-wallet.pro.user
+Makefile
+qrc_application.cpp
+zcash-qt-wallet_plugin_import.cpp
