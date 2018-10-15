@@ -18,7 +18,7 @@ void BalancesTableModel::setNewData(const QMap<QString, double>* balances,
 	delete modeldata;
 	modeldata = new QList<std::tuple<QString, QString>>();
 	std::for_each(balances->constKeyValueBegin(), balances->constKeyValueEnd(), [=] (auto it) {
-		modeldata->push_back(std::make_tuple(it.first, QString::number(it.second, 'f')));
+		modeldata->push_back(std::make_tuple(it.first, QString::number(it.second, 'g', 8)));
 	});
 
 	// And then update the data

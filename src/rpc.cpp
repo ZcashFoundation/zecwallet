@@ -341,7 +341,7 @@ void RPC::refreshBalances() {
                 UnspentOutput(
                     qsAddr,
                     QString::fromStdString(it["txid"]), 
-                    QString::number(it["amount"].get<json::number_float_t>(), 'f', 8),
+                    QString::number(it["amount"].get<json::number_float_t>(), 'g', 8),
                     confirmations
                 )
             );
@@ -361,7 +361,7 @@ void RPC::refreshBalances() {
         ui->inputsCombo->clear();
         auto i = allBalances->constBegin();
         while (i != allBalances->constEnd()) {
-            QString item = i.key() % "(" % QString::number(i.value(), 'f') % " ZEC)";
+            QString item = i.key() % "(" % QString::number(i.value(), 'g', 8) % " ZEC)";
             ui->inputsCombo->addItem(item);
             if (item.startsWith(lastFromAddr)) ui->inputsCombo->setCurrentText(item);
 
@@ -417,13 +417,7 @@ void RPC::refreshTxStatus(const QString& newOpid) {
     };
 
     doRPC(payload, [=] (const json& reply) {
-        // If there is some op that we are watching, then show the loading bar, otherwise hide it
-        if (watchingOps.isEmpty()) {
-            main->loadingLabel->setVisible(false);
-        } else {
-            main->loadingLabel->setVisible(true);
-            main->loadingLabel->setToolTip(QString::number(watchingOps.size()) + " tx computing");
-        }
+        int numExecuting = 0;
 
         // There's an array for each item in the status
         for (auto& it : reply.get<json::array_t>()) {  
@@ -462,8 +456,17 @@ void RPC::refreshTxStatus(const QString& newOpid) {
                 } else if (status == "executing") {
                     // If the operation is executing, then watch every second. 
                     txTimer->start(1 * 1000);
+                    numExecuting++;
                 }
             }
+        }
+
+        // If there is some op that we are watching, then show the loading bar, otherwise hide it
+        if (numExecuting == 0) {
+            main->loadingLabel->setVisible(false);
+        } else {
+            main->loadingLabel->setVisible(true);
+            main->loadingLabel->setToolTip(QString::number(numExecuting) + " tx computing");
         }
     });
 }

@@ -42,6 +42,10 @@ private:
 	void addAddressSection();
 	void maxAmountChecked(int checked);
 
+    QString doSendTxValidations(QString fromAddr, QList<QPair<QString, double>> toAddrs);
+
+    void donate();
+
     RPC*                rpc;
     Settings*           settings;
 

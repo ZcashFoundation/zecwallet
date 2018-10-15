@@ -14,6 +14,7 @@
 #include <QScrollBar>
 #include <QPainter>
 #include <QMovie>
+#include <QPair>
 #include <QTimer>
 #include <QSettings>
 #include <QFile>

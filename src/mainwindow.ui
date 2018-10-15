@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>838</width>
-    <height>595</height>
+    <width>889</width>
+    <height>603</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -247,8 +247,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>774</width>
-                <height>276</height>
+                <width>772</width>
+                <height>218</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -610,8 +610,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>838</width>
-     <height>21</height>
+     <width>889</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuBalance">
@@ -626,6 +626,7 @@
     <property name="title">
      <string>Help</string>
     </property>
+    <addaction name="actionDonate"/>
     <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuBalance"/>
@@ -645,6 +646,11 @@
   <action name="actionSettings">
    <property name="text">
     <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionDonate">
+   <property name="text">
+    <string>Donate</string>
    </property>
   </action>
  </widget>

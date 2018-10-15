@@ -70,7 +70,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	});
 
     // Set up exit action
-    QObject::connect(ui->actionExit, &QAction::triggered, [=] { this->close(); });
+    QObject::connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
+
+    // Set up donate action
+    QObject::connect(ui->actionDonate, &QAction::triggered, this, &MainWindow::donate);
 
     // Set up about action
     QObject::connect(ui->actionAbout, &QAction::triggered, [=] () {
@@ -95,6 +98,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
     rpc = new RPC(new QNetworkAccessManager(this), this);
     rpc->refresh();
+}
+
+void MainWindow::donate() {
+    // Set up a donation to me :)
+    ui->Address1->setText("zcEgrceTwvoiFdEvPWcsJHAMrpLsprMF6aRJiQa3fan5ZphyXLPuHghnEPrEPRoEVzUy65GnMVyCTRdkT6BYBepnXh6NBYs");
+    ui->Address1->setCursorPosition(0);
+    ui->Amount1->setText("0.01");
+
+    ui->statusBar->showMessage("Donate 0.01 ZEC to support zcash-qt-wallet");
+
+    // And switch to the send tab.
+    ui->tabWidget->setCurrentIndex(1);
 }
 
 void MainWindow::setupBalancesTab() {

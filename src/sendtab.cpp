@@ -66,7 +66,7 @@ void MainWindow::setDefaultPayFrom() {
 
 void MainWindow::inputComboTextChanged(const QString& text) {
     auto bal    = rpc->getAllBalances()->value(text.split("(")[0].trimmed());
-    auto balFmt = QString::number(bal, 'f', 8) + " ZEC";
+    auto balFmt = QString::number(bal, 'g', 8) + " ZEC";
     ui->sendAddressBalance->setText(balFmt);
 }
 
@@ -163,7 +163,7 @@ void MainWindow::maxAmountChecked(int checked) {
         auto maxamount  = rpc->getAllBalances()->value(addr) - sumAllAmounts;
         maxamount       = (maxamount < 0) ? 0 : maxamount;
             
-        ui->Amount1->setText(QString::number(maxamount, 'f'));
+        ui->Amount1->setText(QString::number(maxamount, 'g', 8));
     } else if (checked == Qt::Unchecked) {
         // Just remove the readonly part, don't change the content
         ui->Amount1->setReadOnly(false);
@@ -178,6 +178,34 @@ void MainWindow::sendButton() {
 		auto splitted = a.left(half) + "\n" + a.right(a.length() - half);
 		return splitted;
 	};
+
+    // Gather the from / to addresses 
+    QString fromAddr = ui->inputsCombo->currentText().split("(")[0].trimmed();
+
+    QList<QPair<QString, double>> toAddrs;
+    // For each addr/amt in the sendTo tab
+    int totalItems = ui->sendToWidgets->children().size() - 2;   // The last one is a spacer, so ignore that        
+    for (int i=0; i < totalItems; i++) {
+        auto addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") % QString::number(i+1))->text().trimmed();
+        auto amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1))->text().trimmed().toDouble();
+        toAddrs.push_back(QPair<QString, double>(addr, amt));
+    }
+
+    QString error = doSendTxValidations(fromAddr, toAddrs);
+    if (!error.isEmpty()) {
+        // Something went wrong, so show an error and exit
+        QMessageBox msg(
+            QMessageBox::Critical,
+            "Transaction Error", 
+            error,
+            QMessageBox::Ok,
+            this
+        );
+
+        msg.exec();
+        // abort the Tx
+        return;
+    }
 
     // Get all the addresses and amounts
     json allRecepients = json::array();
@@ -197,16 +225,15 @@ void MainWindow::sendButton() {
 		delete amt;
 	}
 
-	// For each addr/amt in the sendTo tab
-    int totalItems = ui->sendToWidgets->children().size() - 2;   // The last one is a spacer, so ignore that        
-    for (int i=0; i < totalItems; i++) {
-        auto addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") % QString::number(i+1));
-        auto amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1));
+	// For each addr/amt
+    //std::for_each(toAddr.begin(), toAddr.end(), [&] (auto toAddr) {
+    for (int i=0; i < toAddrs.size(); i++) {
+        auto toAddr = toAddrs[i];
 
 		// Construct the JSON params
         json rec = json::object();
-        rec["address"]  = addr->text().toStdString();
-        rec["amount"]   = amt->text().toDouble();            
+        rec["address"]  = toAddr.first.toStdString();
+        rec["amount"]   = toAddr.second;
         allRecepients.push_back(rec);
 
 		// Add new Address widgets instead of the same one.
@@ -214,24 +241,24 @@ void MainWindow::sendButton() {
 			auto Addr = new QLabel(confirm.sendToAddrs);
 			Addr->setObjectName(QString("Addr") % QString::number(i + 1));
 			Addr->setWordWrap(true);
-			Addr->setText(fnSplitAddressForWrap(addr->text()));
+			Addr->setText(fnSplitAddressForWrap(toAddr.first));
 			confirm.gridLayout->addWidget(Addr, i, 0, 1, 1);
 
 			auto Amt = new QLabel(confirm.sendToAddrs);
 			Amt->setObjectName(QString("Amt") % QString::number(i + 1));
-			Amt->setText(amt->text() % " ZEC");
+			Amt->setText(QString::number(toAddr.second, 'g', 8) % " ZEC");
 			Amt->setAlignment(Qt::AlignRight | Qt::AlignTrailing | Qt::AlignVCenter);
 			confirm.gridLayout->addWidget(Amt, i, 1, 1, 1);
 		}
     }
 
+
     // Add sender
     json params = json::array();
-    params.push_back(ui->inputsCombo->currentText().split("(")[0].trimmed().toStdString());
+    params.push_back(fromAddr.toStdString());
     params.push_back(allRecepients);
 
 	// And show it in the confirm dialog 
-	auto fromAddr = ui->inputsCombo->currentText().split("(")[0];
 	confirm.sendFrom->setText(fnSplitAddressForWrap(fromAddr));
 
 	// Show the dialog and submit it if the user confirms
@@ -249,8 +276,32 @@ void MainWindow::sendButton() {
 	}	    
 }
 
+QString MainWindow::doSendTxValidations(QString fromAddr, QList<QPair<QString, double>> toAddrs) {
+    // 1. Addresses are valid format. 
+    QRegExp zcexp("^zc[a-z0-9]{93}$",  Qt::CaseInsensitive);
+    QRegExp zsexp("^zc[a-z0-9]{76}$",  Qt::CaseInsensitive);
+    QRegExp texp("^t[a-z0-9]{34}$", Qt::CaseInsensitive);
+
+    auto matchesAnyAddr = [&] (QString addr) {
+        return  zcexp.exactMatch(addr) ||
+                texp.exactMatch(addr) || 
+                zsexp.exactMatch(addr);
+    };
+
+
+    if (!matchesAnyAddr(fromAddr)) return QString("From Address is Invalid");    
+
+    for (auto toAddr = toAddrs.begin(); toAddr != toAddrs.end(); toAddr++) {
+        if (!matchesAnyAddr(toAddr->first))
+            return QString("To Address ") % toAddr->first % " is Invalid";    
+    };
+
+    return QString();
+}
+
 void MainWindow::cancelButton() {
 	removeExtraAddresses();
     // Back to the balances tab
     ui->tabWidget->setCurrentIndex(0);   
 }
+

@@ -43,6 +43,7 @@ public:
     QAction *actionExit;
     QAction *actionAbout;
     QAction *actionSettings;
+    QAction *actionDonate;
     QWidget *centralWidget;
     QGridLayout *gridLayout_3;
     QTabWidget *tabWidget;
@@ -134,13 +135,15 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(838, 595);
+        MainWindow->resize(889, 603);
         actionExit = new QAction(MainWindow);
         actionExit->setObjectName(QStringLiteral("actionExit"));
         actionAbout = new QAction(MainWindow);
         actionAbout->setObjectName(QStringLiteral("actionAbout"));
         actionSettings = new QAction(MainWindow);
         actionSettings->setObjectName(QStringLiteral("actionSettings"));
+        actionDonate = new QAction(MainWindow);
+        actionDonate->setObjectName(QStringLiteral("actionDonate"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout_3 = new QGridLayout(centralWidget);
@@ -327,7 +330,7 @@ public:
         sendToScrollArea->setWidgetResizable(true);
         sendToWidgets = new QWidget();
         sendToWidgets->setObjectName(QStringLiteral("sendToWidgets"));
-        sendToWidgets->setGeometry(QRect(0, 0, 774, 276));
+        sendToWidgets->setGeometry(QRect(0, 0, 772, 218));
         sendToLayout = new QVBoxLayout(sendToWidgets);
         sendToLayout->setSpacing(6);
         sendToLayout->setContentsMargins(11, 11, 11, 11);
@@ -586,7 +589,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 838, 21));
+        menuBar->setGeometry(QRect(0, 0, 889, 22));
         menuBalance = new QMenu(menuBar);
         menuBalance->setObjectName(QStringLiteral("menuBalance"));
         menuHelp = new QMenu(menuBar);
@@ -618,11 +621,12 @@ public:
         menuBalance->addAction(actionSettings);
         menuBalance->addSeparator();
         menuBalance->addAction(actionExit);
+        menuHelp->addAction(actionDonate);
         menuHelp->addAction(actionAbout);
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -634,6 +638,7 @@ public:
         actionExit->setText(QApplication::translate("MainWindow", "Exit", nullptr));
         actionAbout->setText(QApplication::translate("MainWindow", "About", nullptr));
         actionSettings->setText(QApplication::translate("MainWindow", "Settings", nullptr));
+        actionDonate->setText(QApplication::translate("MainWindow", "Donate", nullptr));
         groupBox->setTitle(QApplication::translate("MainWindow", "Summary", nullptr));
         label->setText(QApplication::translate("MainWindow", "Shielded", nullptr));
         balSheilded->setText(QString());
