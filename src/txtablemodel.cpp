@@ -1,9 +1,8 @@
 #include "txtablemodel.h"
 
- TxTableModel::TxTableModel(QObject *parent, QList<TransactionItem>* data)
+ TxTableModel::TxTableModel(QObject *parent)
      : QAbstractTableModel(parent)
  {
-    modeldata = data;
     headers << "Category" << "Address" << "Date/Time" << "Amount";
  }
 
@@ -11,8 +10,17 @@ TxTableModel::~TxTableModel() {
     delete modeldata;
 }
 
+void TxTableModel::setNewData(QList<TransactionItem>* data)  {
+    delete modeldata;
+    modeldata = data;
+
+    dataChanged(index(0, 0), index(modeldata->size()-1, columnCount(index(0,0))-1));
+	layoutChanged();
+ }
+
  int TxTableModel::rowCount(const QModelIndex&) const
  {
+    if (modeldata == nullptr) return 0;
     return modeldata->size();
  }
 
@@ -45,7 +53,7 @@ TxTableModel::~TxTableModel() {
         case 0: return modeldata->at(index.row()).type;
         case 1: return modeldata->at(index.row()).address;
         case 2: return modeldata->at(index.row()).datetime;
-        case 3: return QVariant(QString::number(modeldata->at(index.row()).amount, 'f', 8) % " ZEC");
+        case 3: return QVariant(QString::number(modeldata->at(index.row()).amount, 'f') % " ZEC");
         }
     }
 

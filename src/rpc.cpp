@@ -9,6 +9,19 @@ RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
 	this->main = main;
 	this->ui = main->ui;
 
+    // Setup balances table model
+    balancesTableModel = new BalancesTableModel(main->ui->balancesTable);
+    main->ui->balancesTable->setModel(balancesTableModel);
+    main->ui->balancesTable->setColumnWidth(0, 300);
+
+    // Setup transactions table model
+    transactionsTableModel = new TxTableModel(ui->transactionsTable);
+    main->ui->transactionsTable->setModel(transactionsTableModel);
+    main->ui->transactionsTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+    main->ui->transactionsTable->setColumnWidth(1, 350);
+    main->ui->transactionsTable->setColumnWidth(2, 200);
+    main->ui->transactionsTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+
 	reloadConnectionInfo();
 
 	// Set up a timer to refresh the UI every few seconds
@@ -16,15 +29,15 @@ RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
 	QObject::connect(timer, &QTimer::timeout, [=]() {
 		refresh();
 	});
-	timer->start(1 * 60 * 1000);    // Query every minute
+	timer->start(10 * 1000);    
 
     // Set up the timer to watch for tx status
     txTimer = new QTimer(main);
     QObject::connect(txTimer, &QTimer::timeout, [=]() {
         refreshTxStatus();
     });
-    // Start at every minute. When an operation is pending, this will change to every second
-    txTimer->start(1 * 60 * 1000);  
+    // Start at every 10s. When an operation is pending, this will change to every second
+    txTimer->start(10 * 1000);  
 }
 
 RPC::~RPC() {
@@ -276,7 +289,8 @@ void RPC::getInfoThenRefresh() {
                                 .append(QString::number(reply["blocks"].get<json::number_unsigned_t>()))
                                 .append(")");
         main->statusLabel->setText(statusText);
-        main->statusIcon->clear();  // TODO: Add checked icon
+        QIcon i(":/icons/res/connected.png");
+        main->statusIcon->setPixmap(i.pixmap(16, 16));
 
         // Refresh everything.
         refreshBalances();
@@ -337,17 +351,9 @@ void RPC::refreshBalances() {
     };
 
     // Function to create the data model and update the views, used below.
-    auto updateUI = [=] () {
-        // Create the balances table model.
-        
-        // Delete the old Model, because the setModel() doesn't take ownership of the Model object
-        delete balancesTableModel;
-
-        balancesTableModel = new BalancesTableModel(ui->balancesTable, allBalances, utxos);
-        ui->balancesTable->setModel(balancesTableModel);
-
-        // Configure Balances Table
-        ui->balancesTable->setColumnWidth(0, 300);
+    auto updateUI = [=] () {       
+        // Update balances model data, which will update the table too
+        balancesTableModel->setNewData(allBalances, utxos);
 
         // Add all the addresses into the inputs combo box
         auto lastFromAddr = ui->inputsCombo->currentText().split("(")[0].trimmed();
@@ -355,7 +361,7 @@ void RPC::refreshBalances() {
         ui->inputsCombo->clear();
         auto i = allBalances->constBegin();
         while (i != allBalances->constEnd()) {
-            QString item = i.key() % "(" % QString::number(i.value(), 'f', 8) % " ZEC)";
+            QString item = i.key() % "(" % QString::number(i.value(), 'f') % " ZEC)";
             ui->inputsCombo->addItem(item);
             if (item.startsWith(lastFromAddr)) ui->inputsCombo->setCurrentText(item);
 
@@ -376,9 +382,6 @@ void RPC::refreshBalances() {
 }
 
 void RPC::refreshTransactions() {
-    // First, delete the previous headers
-    delete transactionsTableModel;
-    
     auto txdata = new QList<TransactionItem>();
 
     getTransactions([=] (json reply) {
@@ -395,12 +398,8 @@ void RPC::refreshTransactions() {
             txdata->push_front(tx);
         }
 
-        transactionsTableModel = new TxTableModel(ui->transactionsTable, txdata);
-        ui->transactionsTable->setModel(transactionsTableModel);
-
-        ui->transactionsTable->setColumnWidth(1, 300);
-        ui->transactionsTable->setColumnWidth(2, 200);
-        ui->transactionsTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+        // Update model data, which updates the table view
+        transactionsTableModel->setNewData(txdata);        
     });
 }
 
@@ -418,6 +417,14 @@ void RPC::refreshTxStatus(const QString& newOpid) {
     };
 
     doRPC(payload, [=] (const json& reply) {
+        // If there is some op that we are watching, then show the loading bar, otherwise hide it
+        if (watchingOps.isEmpty()) {
+            main->loadingLabel->setVisible(false);
+        } else {
+            main->loadingLabel->setVisible(true);
+            main->loadingLabel->setToolTip(QString::number(watchingOps.size()) + " tx computing");
+        }
+
         // There's an array for each item in the status
         for (auto& it : reply.get<json::array_t>()) {  
             // If we were watching this Tx and it's status became "success", then we'll show a status bar alert
@@ -425,20 +432,18 @@ void RPC::refreshTxStatus(const QString& newOpid) {
             if (watchingOps.contains(id)) {
                 // And if it ended up successful
                 QString status = QString::fromStdString(it["status"]);
-                qDebug() << QString::fromStdString("Watching opid, current status= ") % status;
                 if (status == "success") {
-                    qDebug() << QString::fromStdString("Success, showing status message");
                     main->ui->statusBar->showMessage(" Tx " % id % " computed successfully and submitted");
-                    
-                    watchingOps.remove(id);
-                    txTimer->start(1 * 60 * 1000);
+                    main->loadingLabel->setVisible(false);
 
-                    // Refresh balances to show unconfirmed balances
+                    watchingOps.remove(id);
+                    txTimer->start(10 * 1000);
+
+                    // Refresh balances to show unconfirmed balances                    
                     refresh();  
                 } else if (status == "failed") {
                     // If it failed, then we'll actually show a warning. 
                     auto errorMsg = QString::fromStdString(it["error"]["message"]);
-                    qDebug() << QString::fromStdString("Failed with message") % errorMsg;
                     QMessageBox msg(
                         QMessageBox::Critical,
                         "Transaction Error", 
@@ -447,47 +452,18 @@ void RPC::refreshTxStatus(const QString& newOpid) {
                         main
                     );
                     
-                    txTimer->start(1 * 60 * 1000);
                     watchingOps.remove(id);     
+                    txTimer->start(10 * 1000);                    
+                    
                     main->ui->statusBar->showMessage(" Tx " % id % " failed", 15 * 1000);
+                    main->loadingLabel->setVisible(false);
 
                     msg.exec();                                                  
                 } else if (status == "executing") {
                     // If the operation is executing, then watch every second. 
-                    qDebug() << QString::fromStdString("executing, doing again in 1 sec");
                     txTimer->start(1 * 1000);
                 }
             }
         }
     });
 }
-
-
-    /*
-    [
-    {
-        "id": "opid-ad54b34c-1d89-48af-9cb5-4825905fc62e",
-        "status": "executing",
-        "creation_time": 1539490482,
-        "method": "z_sendmany",
-        "params": {
-        "fromaddress": "t1aWhRh9JNKWzpzjn2gmULDJzfKLC724EPS",
-        "amounts": [
-            {
-            "address": "zcVHg9euUSQF8ef7ZXztrv4LcdC1mytEUYLuoj4W5iSygLFYjm1yQCggAYnnydUaHLy2GBaxF4PX5vjaJjnj2Lq3ecQtGF4",
-            "amount": 0.0001
-            }
-        ],
-        "minconf": 1,
-        "fee": 0.0001
-        }
-    },{
-        "id": "opid-7807e672-7f8c-428a-8587-3354d0ae1b88",
-        "status": "failed",
-        "creation_time": 1539490847,
-        "error": {
-            "code": -6,
-            "message": "Insufficient protected funds, have 0.0006001, need 111.0001"
-        },
-    ]
-    */

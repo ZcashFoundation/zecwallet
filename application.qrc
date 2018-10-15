@@ -1,5 +1,10 @@
 <RCC>
     <qresource prefix="/fonts">
-        <file>Ubuntu-R.ttf</file>
+        <file>res/Ubuntu-R.ttf</file>
     </qresource>
+    <qresource prefix="/icons">
+        <file>res/connected.png</file>
+        <file>res/loading.gif</file>
+    </qresource>
+    
 </RCC>

@@ -21,8 +21,19 @@ MainWindow::MainWindow(QWidget *parent) :
     settings = new Settings();
 
     // Status Bar
+    loadingLabel = new QLabel();
+    loadingMovie = new QMovie(":/icons/res/loading.gif");
+    loadingMovie->setScaledSize(QSize(32, 16));
+    loadingMovie->start();
+    loadingLabel->setAttribute(Qt::WA_NoSystemBackground);
+    loadingLabel->setMovie(loadingMovie);
+        
+    ui->statusBar->addPermanentWidget(loadingLabel);
+    loadingLabel->setVisible(false);    
+
     statusLabel = new QLabel();
     ui->statusBar->addPermanentWidget(statusLabel);
+
     statusIcon = new QLabel();
     ui->statusBar->addPermanentWidget(statusIcon);
     
@@ -65,7 +76,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionAbout, &QAction::triggered, [=] () {
         QDialog aboutDialog(this);
         Ui_about about;
-        about.setupUi(&aboutDialog);
+		about.setupUi(&aboutDialog);
+
+		QString version	= QString("Version ") % QString(APP_VERSION) % " (" % QString(__DATE__) % ")";
+		about.versionLabel->setText(version);
+        
         aboutDialog.exec();
     });
 
@@ -272,4 +287,6 @@ MainWindow::~MainWindow()
     delete ui;
     delete rpc;
     delete settings;
+
+    delete loadingMovie;
 }

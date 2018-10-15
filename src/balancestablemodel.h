@@ -8,8 +8,10 @@
 class BalancesTableModel : public QAbstractTableModel
 {
 public:
-    BalancesTableModel(QObject* parent, const QMap<QString, double>* balances, const QList<UnspentOutput>* outputs);    
+    BalancesTableModel(QObject* parent);
     ~BalancesTableModel();
+
+    void setNewData(const QMap<QString, double>* balances, const QList<UnspentOutput>* outputs);
 
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
@@ -17,8 +19,8 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
 private:
-    QList<std::tuple<QString, QString>>*    modeldata;    
-    QList<UnspentOutput>*                   utxos;
+    QList<std::tuple<QString, QString>>*    modeldata   = nullptr;    
+    QList<UnspentOutput>*                   utxos       = nullptr;  
 };
 
 #endif // BALANCESTABLEMODEL_H

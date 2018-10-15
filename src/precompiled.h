@@ -13,6 +13,7 @@
 #include <QCheckBox>
 #include <QScrollBar>
 #include <QPainter>
+#include <QMovie>
 #include <QTimer>
 #include <QSettings>
 #include <QFile>

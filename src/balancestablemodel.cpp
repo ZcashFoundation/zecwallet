@@ -1,21 +1,29 @@
 #include "balancestablemodel.h"
 
-BalancesTableModel::BalancesTableModel(
-	QObject *parent, 
-	const QMap<QString, double>* balances, 
-	const QList<UnspentOutput>* outputs)
+BalancesTableModel::BalancesTableModel(QObject *parent)
 	: QAbstractTableModel(parent)
 {	
+}
+
+void BalancesTableModel::setNewData(const QMap<QString, double>* balances, 
+	const QList<UnspentOutput>* outputs)
+{	
 	// Copy over the utxos for our use
+	delete utxos;
 	utxos = new QList<UnspentOutput>();
 	// This is a QList deep copy.
 	*utxos = *outputs;
 
 	// Process the address balances into a list
+	delete modeldata;
 	modeldata = new QList<std::tuple<QString, QString>>();
 	std::for_each(balances->constKeyValueBegin(), balances->constKeyValueEnd(), [=] (auto it) {
 		modeldata->push_back(std::make_tuple(it.first, QString::number(it.second, 'f')));
 	});
+
+	// And then update the data
+	dataChanged(index(0, 0), index(modeldata->size()-1, columnCount(index(0,0))-1));
+	layoutChanged();
 }
 
 BalancesTableModel::~BalancesTableModel() {
@@ -25,6 +33,7 @@ BalancesTableModel::~BalancesTableModel() {
 
 int BalancesTableModel::rowCount(const QModelIndex&) const
 {
+	if (modeldata == nullptr) return 0;
 	return modeldata->size();
 }
 
@@ -36,6 +45,14 @@ int BalancesTableModel::columnCount(const QModelIndex&) const
 
 QVariant BalancesTableModel::data(const QModelIndex &index, int role) const
 {
+	auto fnSplitAddressForWrap = [=] (const QString& a) -> QString {
+		if (!a.startsWith("z")) return a;
+
+		auto half = a.length() / 2;
+		auto splitted = a.left(half) + "\n" + a.right(a.length() - half);
+		return splitted;
+	};
+
     if (role == Qt::TextAlignmentRole && index.column() == 1) return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 	
 	if (role == Qt::ForegroundRole) {
@@ -57,7 +74,7 @@ QVariant BalancesTableModel::data(const QModelIndex &index, int role) const
 	
 	if (role == Qt::DisplayRole || role == Qt::ToolTipRole) {
 		switch (index.column()) {
-		case 0: return std::get<0>(modeldata->at(index.row()));
+		case 0: return fnSplitAddressForWrap(std::get<0>(modeldata->at(index.row())));
 		case 1: return QVariant(std::get<1>(modeldata->at(index.row())) % " ZEC");
 		}
 	}

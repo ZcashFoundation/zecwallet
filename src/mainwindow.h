@@ -25,6 +25,8 @@ public:
 
     QLabel*             statusLabel;
     QLabel*             statusIcon;
+    QLabel*             loadingLabel;
+
 private:    
     void setupSendTab();
     void setupTransactionsTab();
@@ -42,6 +44,8 @@ private:
 
     RPC*                rpc;
     Settings*           settings;
+
+    QMovie*             loadingMovie;
 };
 
 #endif // MAINWINDOW_H

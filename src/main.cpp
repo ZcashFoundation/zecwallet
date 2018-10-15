@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 
 	QApplication a(argc, argv);
     #ifdef Q_OS_LINUX
-        QFontDatabase::addApplicationFont(":/fonts/Ubuntu-R.ttf");
+        QFontDatabase::addApplicationFont(":/fonts/res/Ubuntu-R.ttf");
         qApp->setFont(QFont("Ubuntu", 11, QFont::Normal, false));
     #endif
 
