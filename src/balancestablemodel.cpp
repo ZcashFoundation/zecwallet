@@ -8,6 +8,7 @@ BalancesTableModel::BalancesTableModel(QObject *parent)
 void BalancesTableModel::setNewData(const QMap<QString, double>* balances, 
 	const QList<UnspentOutput>* outputs)
 {	
+	int currentRows = rowCount(QModelIndex());
 	// Copy over the utxos for our use
 	delete utxos;
 	utxos = new QList<UnspentOutput>();
@@ -23,7 +24,10 @@ void BalancesTableModel::setNewData(const QMap<QString, double>* balances,
 
 	// And then update the data
 	dataChanged(index(0, 0), index(modeldata->size()-1, columnCount(index(0,0))-1));
-	layoutChanged();
+
+	// Change the layout only if the number of rows changed
+	if (modeldata && modeldata->size() != currentRows)
+		layoutChanged();
 }
 
 BalancesTableModel::~BalancesTableModel() {

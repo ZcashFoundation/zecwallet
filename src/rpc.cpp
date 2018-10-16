@@ -240,7 +240,8 @@ void RPC::handleConnectionError(const QString& error) {
                         % "\n\nThis is most likely an internal error. Are you using zcashd v2.0 or higher? You might "
                         % "need to file a bug report here: https://github.com/adityapk00/zcash-qt-wallet/issues";
         } else if (error.contains("internal server error", Qt::CaseInsensitive) ||
-                   error.contains("rewinding")) {
+                   error.contains("rewinding", Qt::CaseInsensitive) || 
+                   error.contains("loading", Qt::CaseInsensitive)) {
             explanation = QString()
                         % "\n\nIf you just started zcashd, then it's still loading and you might have to wait a while. If zcashd is ready, then you've run into  "
                         % "something unexpected, and might need to file a bug report here: https://github.com/adityapk00/zcash-qt-wallet/issues";
@@ -312,9 +313,7 @@ void RPC::refreshAddresses() {
     });
 }
 
-void RPC::refreshBalances() {
-    ui->unconfirmedWarning->setVisible(false);        
-    
+void RPC::refreshBalances() {    
     // 1. Get the Balances
     getBalance([=] (json reply) {        
         ui->balSheilded     ->setText(QString::fromStdString(reply["private"]) % " ZEC");
@@ -331,11 +330,12 @@ void RPC::refreshBalances() {
 
     // Function to process reply of the listunspent and z_listunspent API calls, used below.
     auto processUnspent = [=] (const json& reply) { 
+        bool anyUnconfirmed = false;
         for (auto& it : reply.get<json::array_t>()) {   
             QString qsAddr      = QString::fromStdString(it["address"]);
             auto confirmations  = it["confirmations"].get<json::number_unsigned_t>();
             if (confirmations == 0) {
-                ui->unconfirmedWarning->setVisible(true);
+                anyUnconfirmed = true;
             }
 
             utxos->push_back(
@@ -348,6 +348,7 @@ void RPC::refreshBalances() {
             );
 
             (*allBalances)[qsAddr] = (*allBalances)[qsAddr] + it["amount"].get<json::number_float_t>();
+            ui->unconfirmedWarning->setVisible(anyUnconfirmed);
         }
     };
 
@@ -406,7 +407,6 @@ void RPC::refreshTransactions() {
 
 void RPC::refreshTxStatus(const QString& newOpid) {
     if (!newOpid.isEmpty()) {
-        qDebug() << QString::fromStdString("Adding opid ") % newOpid;
         watchingOps.insert(newOpid);
     }
 
@@ -418,8 +418,6 @@ void RPC::refreshTxStatus(const QString& newOpid) {
     };
 
     doRPC(payload, [=] (const json& reply) {
-        int numExecuting = 0;
-
         // There's an array for each item in the status
         for (auto& it : reply.get<json::array_t>()) {  
             // If we were watching this Tx and it's status became "success", then we'll show a status bar alert
@@ -457,17 +455,16 @@ void RPC::refreshTxStatus(const QString& newOpid) {
                 } else if (status == "executing") {
                     // If the operation is executing, then watch every second. 
                     txTimer->start(1 * 1000);
-                    numExecuting++;
                 }
             }
         }
 
         // If there is some op that we are watching, then show the loading bar, otherwise hide it
-        if (numExecuting == 0) {
+        if (watchingOps.size() == 0) {
             main->loadingLabel->setVisible(false);
         } else {
             main->loadingLabel->setVisible(true);
-            main->loadingLabel->setToolTip(QString::number(numExecuting) + " tx computing. This can take several minutes.");
+            main->loadingLabel->setToolTip(QString::number(watchingOps.size()) + " tx computing. This can take several minutes.");
         }
     });
 }

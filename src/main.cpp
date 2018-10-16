@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "settings.h"
 #include "precompiled.h"
 
 int main(int argc, char *argv[])
@@ -21,7 +22,7 @@ int main(int argc, char *argv[])
 
 
     MainWindow w;
-    
+    w.setWindowTitle("zcash-qt-wallet v" + QString(APP_VERSION));
     w.show();
     
     return QApplication::exec();

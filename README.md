@@ -51,3 +51,5 @@ ssh -L8232:127.0.0.1:8232 user@remotehost
 ### 2. "Not enough balance" when sending transactions
 The most likely cause for this is that you are trying to spend unconfirmed funds. Unlike bitcoin, the zcash protocol doesn't let you spent unconfirmed funds yet. Please wait for 
 1-2 blocks for the funds to confirm and retry the transaction. 
+
+PS: zcash-qt-wallet is NOT an official wallet, and is not affiliated with the ZCash Company in any way. 

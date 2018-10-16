@@ -278,13 +278,15 @@ void MainWindow::sendButton() {
 
 QString MainWindow::doSendTxValidations(QString fromAddr, QList<QPair<QString, double>> toAddrs) {
     // 1. Addresses are valid format. 
-    QRegExp zcexp("^zc[a-z0-9]{93}$",  Qt::CaseInsensitive);
-    QRegExp zsexp("^zc[a-z0-9]{76}$",  Qt::CaseInsensitive);
+    QRegExp zcexp("^z[a-z0-9]{94}$",  Qt::CaseInsensitive);
+    QRegExp zsexp("^z[a-z0-9]{77}$",  Qt::CaseInsensitive);
+    QRegExp ztsexp("^ztestsapling[a-z0-9]{76}", Qt::CaseInsensitive);
     QRegExp texp("^t[a-z0-9]{34}$", Qt::CaseInsensitive);
 
     auto matchesAnyAddr = [&] (QString addr) {
         return  zcexp.exactMatch(addr) ||
                 texp.exactMatch(addr) || 
+                ztsexp.exactMatch(addr) || 
                 zsexp.exactMatch(addr);
     };
 

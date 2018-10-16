@@ -13,6 +13,9 @@ QString Settings::getHost() {
 }
 
 QString Settings::getPort() {
+	// If the override port is set, we'll always return it
+	if (!overridePort.isEmpty()) return overridePort;
+	
 	if (port.isNull() || port == "") return "8232";
 	return port;
 }
