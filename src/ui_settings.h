@@ -43,14 +43,13 @@ public:
     QLineEdit *rpcpassword;
     QLabel *label_2;
     QSpacerItem *verticalSpacer;
-    QWidget *tab_2;
     QDialogButtonBox *buttonBox;
 
     void setupUi(QDialog *Settings)
     {
         if (Settings->objectName().isEmpty())
             Settings->setObjectName(QStringLiteral("Settings"));
-        Settings->resize(400, 300);
+        Settings->resize(400, 362);
         Settings->setModal(true);
         verticalLayout = new QVBoxLayout(Settings);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
@@ -122,9 +121,6 @@ public:
         verticalLayout_3->addItem(verticalSpacer);
 
         tabWidget->addTab(tab, QString());
-        tab_2 = new QWidget();
-        tab_2->setObjectName(QStringLiteral("tab_2"));
-        tabWidget->addTab(tab_2, QString());
 
         verticalLayout->addWidget(tabWidget);
 
@@ -161,7 +157,6 @@ public:
         label_4->setText(QApplication::translate("Settings", "RPC Password", nullptr));
         label_2->setText(QApplication::translate("Settings", "Port", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("Settings", "Connection", nullptr));
-        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("Settings", "Options", nullptr));
     } // retranslateUi
 
 };

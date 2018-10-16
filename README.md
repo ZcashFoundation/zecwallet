@@ -1,5 +1,7 @@
 zcash-qt-wallet is a z-Addr first wallet UI frontend for zcashd
 
+![Screenshot](docs/screenshot-main.png?raw=true)
+
 # Installation
 
 zcash-qt-wallet needs a zcash node running zcashd. Download the zcash node software from https://z.cash/download/ and start zcashd.
@@ -27,6 +29,7 @@ in File->Settings.
 zcash-qt-wallet depends on QT5, which you can get from here: https://www.qt.io/download
 
 ### Compiling on Linux
+You need a C++14 compatible compiler like g++ or clang++
 
 ```
 git clone https://github.com/adityapk00/zcash-qt-wallet.git

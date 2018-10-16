@@ -7,6 +7,8 @@ int main(int argc, char *argv[])
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QApplication a(argc, argv);
+    QIcon icon(":/icons/res/icon.ico");
+    a.setWindowIcon(icon);
 
     #ifdef Q_OS_LINUX
         QFontDatabase::addApplicationFont(":/fonts/res/Ubuntu-R.ttf");
@@ -19,6 +21,7 @@ int main(int argc, char *argv[])
 
 
     MainWindow w;
+    
     w.show();
     
     return QApplication::exec();

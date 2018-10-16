@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>zcash-qt-wallet</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../application.qrc">
+    <normaloff>:/icons/res/icon.ico</normaloff>:/icons/res/icon.ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_3">
@@ -247,8 +251,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>772</width>
-                <height>218</height>
+                <width>823</width>
+                <height>226</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -675,6 +679,8 @@
   <tabstop>txtRecieve</tabstop>
   <tabstop>transactionsTable</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../application.qrc"/>
+ </resources>
  <connections/>
 </ui>
