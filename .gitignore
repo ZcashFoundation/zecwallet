@@ -4,9 +4,11 @@ release/
 x64/
 .vscode/
 *.autosave
+src/precompiled.h.cpp
 .qmake.stash
 zcash-qt-wallet
-zcash-qt-wallet.pro.user
+zcash-qt-wallet.*
 Makefile
+Makefile.*
 qrc_application.cpp
 zcash-qt-wallet_plugin_import.cpp
