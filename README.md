@@ -16,7 +16,13 @@ rpcpassword=password
 and restart zcashd
 
 ## Installing zcash-qt-wallet
-Head over to the releases page and grab the latest binary. Unzip and run the binary
+Head over to the releases page and grab the latest binary. https://github.com/adityapk00/zcash-qt-wallet/releases
+
+Extract and run the binary
+```
+tar -xvf zcash-qt-wallet-v0.1.5.tar.gz
+./zcash-qt-wallet-v0.1.5/zcash-qt-wallet
+```
 
 ## Compiling from source
 zcash-qt-wallet depends on QT5, which you can get from here: https://www.qt.io/download
