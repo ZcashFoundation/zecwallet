@@ -238,16 +238,16 @@ void RPC::handleConnectionError(const QString& error) {
         } else if (error.contains("bad request", Qt::CaseInsensitive)) {
             explanation = QString()
                         % "\n\nThis is most likely an internal error. Are you using zcashd v2.0 or higher? You might "
-                        % "need to file a bug report here: ";
+                        % "need to file a bug report here: https://github.com/adityapk00/zcash-qt-wallet/issues";
         } else if (error.contains("internal server error", Qt::CaseInsensitive) ||
                    error.contains("rewinding")) {
             explanation = QString()
                         % "\n\nIf you just started zcashd, then it's still loading and you might have to wait a while. If zcashd is ready, then you've run into  "
-                        % "something unexpected, and might need to file a bug report here: ";
+                        % "something unexpected, and might need to file a bug report here: https://github.com/adityapk00/zcash-qt-wallet/issues";
         } else {
             explanation = QString()
                         % "\n\nThis is most likely an internal error. Something unexpected happened. "
-                        % "You might need to file a bug report here: ";
+                        % "You might need to file a bug report here: https://github.com/adityapk00/zcash-qt-wallet/issues";
         }
 
         msg.setText("There was a network connection error. The error was: \n\n" 
