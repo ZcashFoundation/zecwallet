@@ -18,18 +18,11 @@ and restart zcashd
 ## Installing zcash-qt-wallet
 Head over to the releases page and grab the latest binary. Unzip and run the binary
 
-
-### Note on running on Windows
-Although zcashd is not technically supported on Windows, you can run it inside WSL (Windows Subsystem for Linux). 
-Configure zcash inside WSL by setting the rpcuser/rpcpassword in ~/.zcash/zcash.conf. You can
-then download the Windows build and connect to the local node inside WSL, after configuring the RPC username/password
-in File->Settings.
-
 ## Compiling from source
 zcash-qt-wallet depends on QT5, which you can get from here: https://www.qt.io/download
 
 ### Compiling on Linux
-You need a C++14 compatible compiler like gcc or clang++
+You need a C++14 compatible compiler like g++ or clang++
 
 ```
 git clone https://github.com/adityapk00/zcash-qt-wallet.git
