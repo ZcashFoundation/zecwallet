@@ -348,8 +348,8 @@ void RPC::refreshBalances() {
             );
 
             (*allBalances)[qsAddr] = (*allBalances)[qsAddr] + it["amount"].get<json::number_float_t>();
-            ui->unconfirmedWarning->setVisible(anyUnconfirmed);
         }
+        ui->unconfirmedWarning->setVisible(anyUnconfirmed);
     };
 
     // Function to create the data model and update the views, used below.

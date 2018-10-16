@@ -12,3 +12,4 @@ Makefile
 Makefile.*
 qrc_application.cpp
 zcash-qt-wallet_plugin_import.cpp
+workspace.code-workspace

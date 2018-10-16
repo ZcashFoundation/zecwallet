@@ -20,8 +20,8 @@ Head over to the releases page and grab the latest binary. https://github.com/ad
 
 Extract and run the binary
 ```
-tar -xvf zcash-qt-wallet-v.0.1.5.tar.gz
-./zcash-qt-wallet-v.0.1.5/zcash-qt-wallet
+tar -xvf zcash-qt-wallet-v0.1.6.tar.gz
+./zcash-qt-wallet-v0.1.6/zcash-qt-wallet
 ```
 
 ## Compiling from source

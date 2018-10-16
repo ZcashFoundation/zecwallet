@@ -290,7 +290,6 @@ QString MainWindow::doSendTxValidations(QString fromAddr, QList<QPair<QString, d
                 zsexp.exactMatch(addr);
     };
 
-
     if (!matchesAnyAddr(fromAddr)) return QString("From Address is Invalid");    
 
     for (auto toAddr = toAddrs.begin(); toAddr != toAddrs.end(); toAddr++) {

@@ -87,7 +87,6 @@ MainWindow::MainWindow(QWidget *parent) :
         aboutDialog.exec();
     });
 
-
     // Initialize to the balances tab
     ui->tabWidget->setCurrentIndex(0);
 
