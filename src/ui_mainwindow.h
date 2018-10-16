@@ -630,7 +630,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -669,13 +669,13 @@ public:
         sendTransactionButton->setText(QApplication::translate("MainWindow", "Send", nullptr));
         cancelSendButton->setText(QApplication::translate("MainWindow", "Cancel", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Send", nullptr));
-        groupBox_5->setTitle(QApplication::translate("MainWindow", "Recieve Address", nullptr));
+        groupBox_5->setTitle(QApplication::translate("MainWindow", "Receive Address", nullptr));
         groupBox_6->setTitle(QApplication::translate("MainWindow", "Address Type", nullptr));
         rdioZAddr->setText(QApplication::translate("MainWindow", "z-Addr", nullptr));
         rdioTAddr->setText(QApplication::translate("MainWindow", "t-Addr", nullptr));
         btnRecieveNewAddr->setText(QApplication::translate("MainWindow", "New Address", nullptr));
         qrcodeDisplay->setText(QString());
-        tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("MainWindow", "Recieve", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("MainWindow", "Receive", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_4), QApplication::translate("MainWindow", "Transactions", nullptr));
         menuBalance->setTitle(QApplication::translate("MainWindow", "File", nullptr));
         menuHelp->setTitle(QApplication::translate("MainWindow", "Help", nullptr));

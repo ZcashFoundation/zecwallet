@@ -22,7 +22,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -483,13 +483,13 @@
       </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
-        <string>Recieve</string>
+        <string>Receive</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
          <widget class="QGroupBox" name="groupBox_5">
           <property name="title">
-           <string>Recieve Address</string>
+           <string>Receive Address</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
            <item>
