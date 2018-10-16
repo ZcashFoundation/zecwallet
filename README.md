@@ -29,7 +29,7 @@ in File->Settings.
 zcash-qt-wallet depends on QT5, which you can get from here: https://www.qt.io/download
 
 ### Compiling on Linux
-You need a C++14 compatible compiler like g++ or clang++
+You need a C++14 compatible compiler like gcc or clang++
 
 ```
 git clone https://github.com/adityapk00/zcash-qt-wallet.git
