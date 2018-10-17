@@ -35,6 +35,6 @@ mkdir bin/zcash-qt-wallet-v$APP_VERSION > /dev/null
 cp zcash-qt-wallet bin/zcash-qt-wallet-v$APP_VERSION > /dev/null
 cp README.md bin/zcash-qt-wallet-v$APP_VERSION > /dev/null
 cp LICENSE bin/zcash-qt-wallet-v$APP_VERSION > /dev/null
-tar cvf bin/zcash-qt-wallet-v$APP_VERSION.tar.gz bin/zcash-qt-wallet-v$APP_VERSION/ > /dev/null
+cd bin && tar cvf zcash-qt-wallet-v$APP_VERSION.tar.gz zcash-qt-wallet-v$APP_VERSION/ > /dev/null
 
 echo "Done"
