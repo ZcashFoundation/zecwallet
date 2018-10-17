@@ -26,6 +26,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QDialog>
+#include <QInputDialog>
 #include <QDebug>
 #include <QUrl>
 #include <QtNetwork/QNetworkRequest>

@@ -19,8 +19,6 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    Settings*           getSettings();
-
     Ui::MainWindow*     ui;
 
     QLabel*             statusLabel;
@@ -45,6 +43,7 @@ private:
     QString doSendTxValidations(QString fromAddr, QList<QPair<QString, double>> toAddrs);
 
     void donate();
+    void importPrivKeys();
 
     RPC*                rpc;
     Settings*           settings;

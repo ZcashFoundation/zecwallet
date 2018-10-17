@@ -60,13 +60,13 @@ void RPC::reloadConnectionInfo() {
 		 
     QUrl myurl;
     myurl.setScheme("http"); //https also applicable
-    myurl.setHost(main->getSettings()->getHost());
-    myurl.setPort(main->getSettings()->getPort().toInt());
+    myurl.setHost(Settings::getInstance()->getHost());
+    myurl.setPort(Settings::getInstance()->getPort().toInt());
 
     request.setUrl(myurl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "text/plain");
     
-    QString headerData = "Basic " + main->getSettings()->getUsernamePassword().toLocal8Bit().toBase64();
+    QString headerData = "Basic " + Settings::getInstance()->getUsernamePassword().toLocal8Bit().toBase64();
     request.setRawHeader("Authorization", headerData.toLocal8Bit());
 }
 
@@ -385,6 +385,22 @@ void RPC::refreshBalances() {
 
 void RPC::refreshTransactions() {
     auto txdata = new QList<TransactionItem>();
+    /*
+    auto getZReceivedTransactions = ([=] (const json& reply) {
+        for (auto& it : reply.get<json::array_t>()) {  
+            TransactionItem tx(
+                QString("receive"),
+                QDateTime::fromSecsSinceEpoch(it["time"].get<json::number_unsigned_t>()).toLocalTime().toString(),
+                (it["address"].is_null() ? "" : QString::fromStdString(it["address"])),
+                QString::fromStdString(it["txid"]),
+                it["amount"].get<json::number_float_t>(),
+                it["confirmations"].get<json::number_float_t>()
+            );
+
+            txdata->push_front(tx);
+        }
+    });
+    */
 
     getTransactions([=] (json reply) {
         for (auto& it : reply.get<json::array_t>()) {  
@@ -426,7 +442,10 @@ void RPC::refreshTxStatus(const QString& newOpid) {
                 // And if it ended up successful
                 QString status = QString::fromStdString(it["status"]);
                 if (status == "success") {
-                    main->ui->statusBar->showMessage(" Tx " % id % " computed successfully and submitted");
+                    auto txid = QString::fromStdString(it["result"]["txid"]);
+                    qDebug() << "Tx complete. txid " << txid;
+                    QGuiApplication::clipboard()->setText(txid);
+                    main->ui->statusBar->showMessage("Tx completed! Txid copied to clipboard (" + txid + ")");
                     main->loadingLabel->setVisible(false);
 
                     watchingOps.remove(id);

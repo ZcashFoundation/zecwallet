@@ -45,6 +45,7 @@ public:
     QAction *actionAbout;
     QAction *actionSettings;
     QAction *actionDonate;
+    QAction *actionImport_Private_Keys;
     QWidget *centralWidget;
     QGridLayout *gridLayout_3;
     QTabWidget *tabWidget;
@@ -78,6 +79,7 @@ public:
     QHBoxLayout *horizontalLayout_15;
     QLabel *label_5;
     QLineEdit *sendAddressBalance;
+    QSpacerItem *horizontalSpacer_6;
     QGroupBox *groupBox_3;
     QVBoxLayout *verticalLayout_3;
     QScrollArea *sendToScrollArea;
@@ -148,6 +150,8 @@ public:
         actionSettings->setObjectName(QStringLiteral("actionSettings"));
         actionDonate = new QAction(MainWindow);
         actionDonate->setObjectName(QStringLiteral("actionDonate"));
+        actionImport_Private_Keys = new QAction(MainWindow);
+        actionImport_Private_Keys->setObjectName(QStringLiteral("actionImport_Private_Keys"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout_3 = new QGridLayout(centralWidget);
@@ -312,9 +316,19 @@ public:
 
         sendAddressBalance = new QLineEdit(groupBox_4);
         sendAddressBalance->setObjectName(QStringLiteral("sendAddressBalance"));
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(sendAddressBalance->sizePolicy().hasHeightForWidth());
+        sendAddressBalance->setSizePolicy(sizePolicy);
+        sendAddressBalance->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         sendAddressBalance->setReadOnly(true);
 
         horizontalLayout_15->addWidget(sendAddressBalance);
+
+        horizontalSpacer_6 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_15->addItem(horizontalSpacer_6);
 
 
         verticalLayout_6->addLayout(horizontalLayout_15);
@@ -508,9 +522,6 @@ public:
 
         rdioTAddr = new QRadioButton(groupBox_6);
         rdioTAddr->setObjectName(QStringLiteral("rdioTAddr"));
-        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(rdioTAddr->sizePolicy().hasHeightForWidth());
         rdioTAddr->setSizePolicy(sizePolicy);
 
@@ -622,6 +633,8 @@ public:
 
         menuBar->addAction(menuBalance->menuAction());
         menuBar->addAction(menuHelp->menuAction());
+        menuBalance->addAction(actionImport_Private_Keys);
+        menuBalance->addSeparator();
         menuBalance->addAction(actionSettings);
         menuBalance->addSeparator();
         menuBalance->addAction(actionExit);
@@ -643,6 +656,7 @@ public:
         actionAbout->setText(QApplication::translate("MainWindow", "About", nullptr));
         actionSettings->setText(QApplication::translate("MainWindow", "Settings", nullptr));
         actionDonate->setText(QApplication::translate("MainWindow", "Donate", nullptr));
+        actionImport_Private_Keys->setText(QApplication::translate("MainWindow", "Import Private Keys", nullptr));
         groupBox->setTitle(QApplication::translate("MainWindow", "Summary", nullptr));
         label->setText(QApplication::translate("MainWindow", "Shielded", nullptr));
         balSheilded->setText(QString());

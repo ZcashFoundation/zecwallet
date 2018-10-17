@@ -13,6 +13,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QLabel>
@@ -42,6 +43,8 @@ public:
     QLabel *label_4;
     QLineEdit *rpcpassword;
     QLabel *label_2;
+    QLabel *label_5;
+    QFrame *line;
     QSpacerItem *verticalSpacer;
     QDialogButtonBox *buttonBox;
 
@@ -49,7 +52,7 @@ public:
     {
         if (Settings->objectName().isEmpty())
             Settings->setObjectName(QStringLiteral("Settings"));
-        Settings->resize(400, 362);
+        Settings->resize(441, 430);
         Settings->setModal(true);
         verticalLayout = new QVBoxLayout(Settings);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
@@ -70,45 +73,57 @@ public:
         label_3->setObjectName(QStringLiteral("label_3"));
         label_3->setMinimumSize(QSize(60, 0));
 
-        gridLayout->addWidget(label_3, 4, 0, 1, 1);
+        gridLayout->addWidget(label_3, 6, 0, 1, 1);
 
         rpcuser = new QLineEdit(groupBox);
         rpcuser->setObjectName(QStringLiteral("rpcuser"));
 
-        gridLayout->addWidget(rpcuser, 5, 0, 1, 1);
+        gridLayout->addWidget(rpcuser, 7, 0, 1, 1);
 
         label = new QLabel(groupBox);
         label->setObjectName(QStringLiteral("label"));
         label->setMinimumSize(QSize(60, 0));
 
-        gridLayout->addWidget(label, 0, 0, 1, 1);
+        gridLayout->addWidget(label, 2, 0, 1, 1);
 
         hostname = new QLineEdit(groupBox);
         hostname->setObjectName(QStringLiteral("hostname"));
 
-        gridLayout->addWidget(hostname, 1, 0, 1, 1);
+        gridLayout->addWidget(hostname, 3, 0, 1, 1);
 
         port = new QLineEdit(groupBox);
         port->setObjectName(QStringLiteral("port"));
 
-        gridLayout->addWidget(port, 3, 0, 1, 1);
+        gridLayout->addWidget(port, 5, 0, 1, 1);
 
         label_4 = new QLabel(groupBox);
         label_4->setObjectName(QStringLiteral("label_4"));
         label_4->setMinimumSize(QSize(60, 0));
 
-        gridLayout->addWidget(label_4, 6, 0, 1, 1);
+        gridLayout->addWidget(label_4, 8, 0, 1, 1);
 
         rpcpassword = new QLineEdit(groupBox);
         rpcpassword->setObjectName(QStringLiteral("rpcpassword"));
 
-        gridLayout->addWidget(rpcpassword, 7, 0, 1, 1);
+        gridLayout->addWidget(rpcpassword, 9, 0, 1, 1);
 
         label_2 = new QLabel(groupBox);
         label_2->setObjectName(QStringLiteral("label_2"));
         label_2->setMinimumSize(QSize(60, 0));
 
-        gridLayout->addWidget(label_2, 2, 0, 1, 1);
+        gridLayout->addWidget(label_2, 4, 0, 1, 1);
+
+        label_5 = new QLabel(groupBox);
+        label_5->setObjectName(QStringLiteral("label_5"));
+
+        gridLayout->addWidget(label_5, 0, 0, 1, 1);
+
+        line = new QFrame(groupBox);
+        line->setObjectName(QStringLiteral("line"));
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+
+        gridLayout->addWidget(line, 1, 0, 1, 1);
 
 
         verticalLayout_2->addWidget(groupBox);
@@ -156,6 +171,7 @@ public:
         port->setPlaceholderText(QApplication::translate("Settings", "8232", nullptr));
         label_4->setText(QApplication::translate("Settings", "RPC Password", nullptr));
         label_2->setText(QApplication::translate("Settings", "Port", nullptr));
+        label_5->setText(QApplication::translate("Settings", "<html><head/><body><p>Values configured in ~/.zcash/zcash.conf <br/>will overwrite these values</p></body></html>", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("Settings", "Connection", nullptr));
     } // retranslateUi
 

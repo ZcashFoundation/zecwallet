@@ -24,6 +24,6 @@ Copy-Item LICENSE release/$target | Out-Null
 Copy-Item README.md release/$target | Out-Null
 
 echo "Zipping"
-Compress-Archive -LiteralPath release/$target -DestinationPath "release/$target.zip"
+Compress-Archive -LiteralPath release/$target -DestinationPath "release/Windows-$target.zip"
 
 echo "Done"

@@ -17,9 +17,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Load settings
-    settings = new Settings();
-
     // Status Bar
     loadingLabel = new QLabel();
     loadingMovie = new QMovie(":/icons/res/loading.gif");
@@ -47,23 +44,22 @@ MainWindow::MainWindow(QWidget *parent) :
 		settings.port->setValidator(&validator);
 
 		// Load previous values into the dialog		
-		settings.hostname	->setText(this->getSettings()->getHost());
-		settings.port		->setText(this->getSettings()->getPort());
-		settings.rpcuser	->setText(this->getSettings()->getUsernamePassword().split(":")[0]);
-		settings.rpcpassword->setText(this->getSettings()->getUsernamePassword().split(":")[1]);
+		settings.hostname	->setText(Settings::getInstance()->getHost());
+		settings.port		->setText(Settings::getInstance()->getPort());
+		settings.rpcuser	->setText(Settings::getInstance()->getUsernamePassword().split(":")[0]);
+		settings.rpcpassword->setText(Settings::getInstance()->getUsernamePassword().split(":")[1]);
 		
 		if (settingsDialog.exec() == QDialog::Accepted) {
 			// Save settings
 			QSettings s;
-			s.setValue("connection/host", settings.hostname->text());
-			s.setValue("connection/port", settings.port->text());
-			s.setValue("connection/rpcuser", settings.rpcuser->text());
-			s.setValue("connection/rpcpassword", settings.rpcpassword->text());
+			s.setValue("connection/host",           settings.hostname->text());
+			s.setValue("connection/port",           settings.port->text());
+			s.setValue("connection/rpcuser",        settings.rpcuser->text());
+			s.setValue("connection/rpcpassword",    settings.rpcpassword->text());
 
 			s.sync();
 
-			// Then refresh everything
-			this->getSettings()->refresh();
+			// Then refresh everything.
 			this->rpc->reloadConnectionInfo();
 			this->rpc->refresh();
 		};
@@ -74,6 +70,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Set up donate action
     QObject::connect(ui->actionDonate, &QAction::triggered, this, &MainWindow::donate);
+
+    QObject::connect(ui->actionImport_Private_Keys, &QAction::triggered, this, &MainWindow::importPrivKeys);
 
     // Set up about action
     QObject::connect(ui->actionAbout, &QAction::triggered, [=] () {
@@ -109,6 +107,28 @@ void MainWindow::donate() {
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);
+}
+
+void MainWindow::importPrivKeys() {
+    bool ok;
+    QString text = QInputDialog::getMultiLineText(
+                        this, "Import Private Keys", 
+                        QString() + 
+                        "Please paste your private keys (zAddr or tAddr) here, one per line.\n" +
+                        "The keys will be imported into your connected zcashd node", 
+                        "", &ok);
+    if (ok && !text.isEmpty()) {
+        auto keys = text.split("\n");
+        for (int i=0; i < keys.length(); i++) {
+            auto key = keys[i].trimmed();
+            if (key.startsWith("S") ||
+                key.startsWith("secret")) { // Z key
+
+            } else {    // T Key
+
+            }
+        }
+    }
 }
 
 void MainWindow::setupBalancesTab() {
@@ -290,10 +310,6 @@ void MainWindow::setupRecieveTab() {
         ui->qrcodeDisplay->setPixmap(pm);
     });    
 
-}
-
-Settings* MainWindow::getSettings() {
-    return settings;
 }
 
 MainWindow::~MainWindow()

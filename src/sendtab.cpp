@@ -252,7 +252,6 @@ void MainWindow::sendButton() {
 		}
     }
 
-
     // Add sender
     json params = json::array();
     params.push_back(fromAddr.toStdString());
