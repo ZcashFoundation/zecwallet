@@ -19,15 +19,14 @@ echo "Building"
 rm -rf bin/zcash-qt-wallet* > /dev/null
 make -j$(nproc) > /dev/null
 
+# Test for Qt
+echo "Testing for no Qt"
 
-# Test for QT
-echo "Testing for no QT"
-
-if [[ $(ldd zcash-qt-wallet | grep -i "QT") ]]; then
+if [[ $(ldd zcash-qt-wallet | grep -i "Qt") ]]; then
     echo "FOUND QT; ABORT"; 
     exit 1
 else
-    echo "No QT found"
+    echo "No Qt found"
 fi
 
 echo "Packaging"

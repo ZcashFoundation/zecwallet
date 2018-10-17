@@ -18,7 +18,12 @@ nmake *>$null
 New-Item release/$target -itemtype directory | Out-Null
 Move-Item release/zcash-qt-wallet.exe release/$target | Out-Null
 
+echo "Copying"
 & "$Env:QT_STATIC\bin\windeployqt.exe" release/$target/zcash-qt-wallet.exe *>$null
+Copy-Item LICENSE release/$target | Out-Null
+Copy-Item README.md release/$target | Out-Null
 
 echo "Zipping"
 Compress-Archive -LiteralPath release/$target -DestinationPath "release/$target.zip"
+
+echo "Done"
