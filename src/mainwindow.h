@@ -7,8 +7,16 @@
 class RPC;
 class Settings;
 
+// Struct used to hold destination info when sending a Tx. 
+struct ToFields {
+    QString addr;
+    double  amount;
+    QString txtMemo;
+    QString encodedMemo;
+};
+
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 class MainWindow : public QMainWindow
@@ -40,7 +48,9 @@ private:
 	void addAddressSection();
 	void maxAmountChecked(int checked);
 
-    QString doSendTxValidations(QString fromAddr, QList<QPair<QString, double>> toAddrs);
+    void memoButtonClicked(int number);
+
+    QString doSendTxValidations(QString fromAddr, QList<ToFields> toAddrs);
 
     void donate();
     void importPrivKeys();

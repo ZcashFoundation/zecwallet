@@ -96,13 +96,13 @@ public:
     QLineEdit *Amount1;
     QCheckBox *Max1;
     QSpacerItem *horizontalSpacer_4;
+    QPushButton *MemoBtn1;
+    QLabel *MemoTxt1;
     QHBoxLayout *horizontalLayout_7;
     QSpacerItem *horizontalSpacer_2;
     QPushButton *addAddressButton;
     QSpacerItem *horizontalSpacer_3;
     QSpacerItem *verticalSpacer_2;
-    QGroupBox *groupBox_7;
-    QVBoxLayout *verticalLayout_10;
     QHBoxLayout *horizontalLayout_14;
     QLabel *label_7;
     QLineEdit *sendTxFees;
@@ -342,17 +342,19 @@ public:
 
         groupBox_3 = new QGroupBox(tab_2);
         groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
+        groupBox_3->setFlat(false);
         verticalLayout_3 = new QVBoxLayout(groupBox_3);
         verticalLayout_3->setSpacing(6);
         verticalLayout_3->setContentsMargins(11, 11, 11, 11);
         verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        verticalLayout_3->setContentsMargins(0, 0, 0, 0);
         sendToScrollArea = new QScrollArea(groupBox_3);
         sendToScrollArea->setObjectName(QStringLiteral("sendToScrollArea"));
         sendToScrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
         sendToScrollArea->setWidgetResizable(true);
         sendToWidgets = new QWidget();
         sendToWidgets->setObjectName(QStringLiteral("sendToWidgets"));
-        sendToWidgets->setGeometry(QRect(0, 0, 823, 226));
+        sendToWidgets->setGeometry(QRect(0, 0, 841, 288));
         sendToLayout = new QVBoxLayout(sendToWidgets);
         sendToLayout->setSpacing(6);
         sendToLayout->setContentsMargins(11, 11, 11, 11);
@@ -402,8 +404,22 @@ public:
 
         horizontalLayout_13->addItem(horizontalSpacer_4);
 
+        MemoBtn1 = new QPushButton(verticalGroupBox);
+        MemoBtn1->setObjectName(QStringLiteral("MemoBtn1"));
+        MemoBtn1->setEnabled(true);
+
+        horizontalLayout_13->addWidget(MemoBtn1);
+
 
         sendAddressLayout->addLayout(horizontalLayout_13);
+
+        MemoTxt1 = new QLabel(verticalGroupBox);
+        MemoTxt1->setObjectName(QStringLiteral("MemoTxt1"));
+        QFont font1;
+        font1.setPointSize(10);
+        MemoTxt1->setFont(font1);
+
+        sendAddressLayout->addWidget(MemoTxt1);
 
 
         sendToLayout->addWidget(verticalGroupBox);
@@ -439,22 +455,18 @@ public:
 
         verticalLayout_4->addWidget(groupBox_3);
 
-        groupBox_7 = new QGroupBox(tab_2);
-        groupBox_7->setObjectName(QStringLiteral("groupBox_7"));
-        verticalLayout_10 = new QVBoxLayout(groupBox_7);
-        verticalLayout_10->setSpacing(6);
-        verticalLayout_10->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_10->setObjectName(QStringLiteral("verticalLayout_10"));
         horizontalLayout_14 = new QHBoxLayout();
         horizontalLayout_14->setSpacing(6);
         horizontalLayout_14->setObjectName(QStringLiteral("horizontalLayout_14"));
-        label_7 = new QLabel(groupBox_7);
+        label_7 = new QLabel(tab_2);
         label_7->setObjectName(QStringLiteral("label_7"));
 
         horizontalLayout_14->addWidget(label_7);
 
-        sendTxFees = new QLineEdit(groupBox_7);
+        sendTxFees = new QLineEdit(tab_2);
         sendTxFees->setObjectName(QStringLiteral("sendTxFees"));
+        sizePolicy.setHeightForWidth(sendTxFees->sizePolicy().hasHeightForWidth());
+        sendTxFees->setSizePolicy(sizePolicy);
         sendTxFees->setReadOnly(true);
 
         horizontalLayout_14->addWidget(sendTxFees);
@@ -464,10 +476,7 @@ public:
         horizontalLayout_14->addItem(horizontalSpacer_5);
 
 
-        verticalLayout_10->addLayout(horizontalLayout_14);
-
-
-        verticalLayout_4->addWidget(groupBox_7);
+        verticalLayout_4->addLayout(horizontalLayout_14);
 
         horizontalLayout_6 = new QHBoxLayout();
         horizontalLayout_6->setSpacing(6);
@@ -673,16 +682,20 @@ public:
         groupBox_2->setTitle(QApplication::translate("MainWindow", "Address Balances", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindow", "Balance", nullptr));
         groupBox_4->setTitle(QApplication::translate("MainWindow", "Pay From", nullptr));
-        label_5->setText(QApplication::translate("MainWindow", "Address Balance:", nullptr));
+        label_5->setText(QApplication::translate("MainWindow", "Address Balance", nullptr));
         groupBox_3->setTitle(QApplication::translate("MainWindow", "Send To", nullptr));
         verticalGroupBox->setTitle(QApplication::translate("MainWindow", "Recipient", nullptr));
         label_4->setText(QApplication::translate("MainWindow", "Address", nullptr));
         Address1->setPlaceholderText(QApplication::translate("MainWindow", "Address", nullptr));
         label_6->setText(QApplication::translate("MainWindow", "Amount", nullptr));
         Amount1->setPlaceholderText(QApplication::translate("MainWindow", "Amount", nullptr));
-        Max1->setText(QApplication::translate("MainWindow", "Maximum Available", nullptr));
+        Max1->setText(QApplication::translate("MainWindow", "Max Available", nullptr));
+#ifndef QT_NO_TOOLTIP
+        MemoBtn1->setToolTip(QString());
+#endif // QT_NO_TOOLTIP
+        MemoBtn1->setText(QApplication::translate("MainWindow", "Memo", nullptr));
+        MemoTxt1->setText(QString());
         addAddressButton->setText(QApplication::translate("MainWindow", "Add Address", nullptr));
-        groupBox_7->setTitle(QApplication::translate("MainWindow", "Fees", nullptr));
         label_7->setText(QApplication::translate("MainWindow", "Fee", nullptr));
         sendTxFees->setText(QString());
         sendTransactionButton->setText(QApplication::translate("MainWindow", "Send", nullptr));

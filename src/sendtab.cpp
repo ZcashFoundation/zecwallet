@@ -33,11 +33,19 @@ void MainWindow::setupSendTab() {
 	// Max available Checkbox
 	QObject::connect(ui->Max1, &QCheckBox::stateChanged, this, &MainWindow::maxAmountChecked);
 
+    // The first Memo button
+    QObject::connect(ui->MemoBtn1, &QPushButton::clicked, [=] () {
+        memoButtonClicked(1);
+    });
+
     // Set up focus enter to set fees
     QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int pos) {
         if (pos == 1) {
             // Set the fees
             ui->sendTxFees->setText("0.0001 " + Utils::getTokenName());
+
+            // Set focus to the first address box
+            ui->Address1->setFocus();
         }
     });
 
@@ -117,30 +125,78 @@ void MainWindow::addAddressSection() {
     // Create the validator for send to/amount fields
     auto amtValidator = new QDoubleValidator(0, 21000000, 8, Amount1);
     Amount1->setValidator(amtValidator);
-
     horizontalLayout_13->addWidget(Amount1);
-    auto horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
+    auto horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
     horizontalLayout_13->addItem(horizontalSpacer_4);
+
+
+    auto MemoBtn1 = new QPushButton(verticalGroupBox);
+    MemoBtn1->setObjectName(QString("MemoBtn") % QString::number(itemNumber));
+    MemoBtn1->setText("Memo");
+    // Connect Memo Clicked button
+    QObject::connect(MemoBtn1, &QPushButton::clicked, [=] () {
+        memoButtonClicked(itemNumber);
+    });
+    horizontalLayout_13->addWidget(MemoBtn1);
+
     sendAddressLayout->addLayout(horizontalLayout_13);
+
+    auto MemoTxt1 = new QLabel(verticalGroupBox);
+    MemoTxt1->setObjectName(QString("MemoTxt") % QString::number(itemNumber));
+    QFont font1;
+    font1.setPointSize(10);
+    MemoTxt1->setFont(font1);
+    sendAddressLayout->addWidget(MemoTxt1);
 
     ui->sendToLayout->insertWidget(itemNumber-1, verticalGroupBox);         
 
+    // Set focus into the address
+    Address1->setFocus();
+
     // Delay the call to scroll to allow the scroll window to adjust
     QTimer::singleShot(10, [=] () {ui->sendToScrollArea->ensureWidgetVisible(ui->addAddressButton);});                
+}
+
+void MainWindow::memoButtonClicked(int number) {
+    // Memos can only be used with zAddrs. So check that first
+    auto addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") + QString::number(number));
+    if (!addr->text().trimmed().startsWith("z")) {
+        QMessageBox msg(QMessageBox::Critical, "Memos can only be used with z Addresses",
+        "The Memo field can only be used with a z Address.\n" + addr->text() + "\ndoesn't look like a z Address",
+        QMessageBox::Ok, this);
+
+        msg.exec();
+        return;
+    }
+
+    auto memoTxt = ui->sendToWidgets->findChild<QLabel *>(QString("MemoTxt") + QString::number(number));
+    // Get the current memo if it exists
+    QString currentMemo = memoTxt->text();
+
+    // Ref to see if the button was clicked
+    bool ok;
+    QString newMemo = QInputDialog::getText(this, "Memo", 
+                        "Please type a memo to include with the amount. The memo will be visible to the recepient",
+                        QLineEdit::Normal, currentMemo, &ok);
+    if (ok) {
+        memoTxt->setText(newMemo);
+    }
 }
 
 void MainWindow::removeExtraAddresses() {
     // The last one is a spacer, so ignore that
     int totalItems = ui->sendToWidgets->children().size() - 2; 
 
-    // Clear the first field
+    // Clear the first recepient fields
     auto addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address1"));
     addr->clear();
     auto amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount1"));
     amt->clear();
     auto max  = ui->sendToWidgets->findChild<QCheckBox*>(QString("Max1"));
     max->setChecked(false);
+    auto memo = ui->sendToWidgets->findChild<QLabel*>(QString("MemoTxt1"));
+    memo->clear();
 
     // Start the deletion after the first item, since we want to keep 1 send field there all there
     for (int i=1; i < totalItems; i++) {
@@ -179,6 +235,7 @@ void MainWindow::maxAmountChecked(int checked) {
     }
 }
 
+
 void MainWindow::sendButton() {
 	auto fnSplitAddressForWrap = [=] (const QString& a) -> QString {
 		if (!a.startsWith("z")) return a;
@@ -191,13 +248,16 @@ void MainWindow::sendButton() {
     // Gather the from / to addresses 
     QString fromAddr = ui->inputsCombo->currentText().split("(")[0].trimmed();
 
-    QList<QPair<QString, double>> toAddrs;
+
+    QList<ToFields> toAddrs;
     // For each addr/amt in the sendTo tab
     int totalItems = ui->sendToWidgets->children().size() - 2;   // The last one is a spacer, so ignore that        
     for (int i=0; i < totalItems; i++) {
-        auto addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") % QString::number(i+1))->text().trimmed();
-        auto amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1))->text().trimmed().toDouble();
-        toAddrs.push_back(QPair<QString, double>(addr, amt));
+        QString addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") % QString::number(i+1))->text().trimmed();
+        double  amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1))->text().trimmed().toDouble();        
+        QString memo = ui->sendToWidgets->findChild<QLabel*>(QString("MemoTxt")  % QString::number(i+1))->text().trimmed();
+        
+        toAddrs.push_back( ToFields{addr, amt, memo, memo.toUtf8().toHex()} );
     }
 
     QString error = doSendTxValidations(fromAddr, toAddrs);
@@ -226,23 +286,27 @@ void MainWindow::sendButton() {
 
 	// Remove all existing address/amt qlabels
 	int totalConfirmAddrItems = confirm.sendToAddrs->children().size();
-	for (int i = 0; i < totalConfirmAddrItems; i++) {
-		auto addr = confirm.sendToAddrs->findChild<QLabel*>(QString("Addr") % QString::number(i+1));
-		auto amt = confirm.sendToAddrs->findChild<QLabel*>(QString("Amt") % QString::number(i+1));
+    for (int i = 0; i < totalConfirmAddrItems / 3; i++) {
+		auto addr  = confirm.sendToAddrs->findChild<QLabel*>(QString("Addr") % QString::number(i+1));
+		auto amt   = confirm.sendToAddrs->findChild<QLabel*>(QString("Amt") % QString::number(i+1));
+        auto memo  = confirm.sendToAddrs->findChild<QLabel*>(QString("Memo") % QString::number(i+1));
 
+        delete memo;
 		delete addr;
 		delete amt;
 	}
 
-	// For each addr/amt
-    //std::for_each(toAddr.begin(), toAddr.end(), [&] (auto toAddr) {
+	// For each addr/amt/memo, construct the JSON and also build the confirm dialog box    
     for (int i=0; i < toAddrs.size(); i++) {
         auto toAddr = toAddrs[i];
 
 		// Construct the JSON params
         json rec = json::object();
-        rec["address"]  = toAddr.first.toStdString();
-        rec["amount"]   = toAddr.second;
+        rec["address"]      = toAddr.addr.toStdString();
+        rec["amount"]       = toAddr.amount;
+        if (toAddr.addr.startsWith("z"))
+            rec["memo"]     = toAddr.encodedMemo.toStdString();
+
         allRecepients.push_back(rec);
 
 		// Add new Address widgets instead of the same one.
@@ -250,14 +314,25 @@ void MainWindow::sendButton() {
 			auto Addr = new QLabel(confirm.sendToAddrs);
 			Addr->setObjectName(QString("Addr") % QString::number(i + 1));
 			Addr->setWordWrap(true);
-			Addr->setText(fnSplitAddressForWrap(toAddr.first));
-			confirm.gridLayout->addWidget(Addr, i, 0, 1, 1);
+			Addr->setText(fnSplitAddressForWrap(toAddr.addr));
+			confirm.gridLayout->addWidget(Addr, i*2, 0, 1, 1);
 
 			auto Amt = new QLabel(confirm.sendToAddrs);
 			Amt->setObjectName(QString("Amt") % QString::number(i + 1));
-			Amt->setText(QString::number(toAddr.second, 'g', 8) % " " % Utils::getTokenName());
+			Amt->setText(QString::number(toAddr.amount, 'g', 8) % " " % Utils::getTokenName());
 			Amt->setAlignment(Qt::AlignRight | Qt::AlignTrailing | Qt::AlignVCenter);
-			confirm.gridLayout->addWidget(Amt, i, 1, 1, 1);
+			confirm.gridLayout->addWidget(Amt, i*2, 1, 1, 1);
+
+            if (toAddr.addr.startsWith("z")) {
+                auto Memo = new QLabel(confirm.sendToAddrs);
+                Memo->setObjectName(QStringLiteral("Memo") % QString::number(i + 1));
+                Memo->setText(toAddr.txtMemo);
+                QFont font1;
+                font1.setPointSize(10);
+                Memo->setFont(font1);
+
+                confirm.gridLayout->addWidget(Memo, (i*2)+1, 0, 1, 2);
+            }
 		}
     }
 
@@ -270,7 +345,7 @@ void MainWindow::sendButton() {
 	confirm.sendFrom->setText(fnSplitAddressForWrap(fromAddr));
 
     // Fees in the confirm dialog
-    confirm.feesLabel->setText("Fees: 0.0001 " % Utils::getTokenName());
+    confirm.feesLabel->setText("Fee 0.0001 " % Utils::getTokenName());
 
 	// Show the dialog and submit it if the user confirms
 	if (d.exec() == QDialog::Accepted) {
@@ -287,7 +362,7 @@ void MainWindow::sendButton() {
 	}	    
 }
 
-QString MainWindow::doSendTxValidations(QString fromAddr, QList<QPair<QString, double>> toAddrs) {
+QString MainWindow::doSendTxValidations(QString fromAddr, QList<ToFields> toAddrs) {
     // 1. Addresses are valid format. 
     QRegExp zcexp("^z[a-z0-9]{94}$",  Qt::CaseInsensitive);
     QRegExp zsexp("^z[a-z0-9]{77}$",  Qt::CaseInsensitive);
@@ -304,8 +379,8 @@ QString MainWindow::doSendTxValidations(QString fromAddr, QList<QPair<QString, d
     if (!matchesAnyAddr(fromAddr)) return QString("From Address is Invalid");    
 
     for (auto toAddr = toAddrs.begin(); toAddr != toAddrs.end(); toAddr++) {
-        if (!matchesAnyAddr(toAddr->first))
-            return QString("To Address ") % toAddr->first % " is Invalid";    
+        if (!matchesAnyAddr(toAddr->addr))
+            return QString("Recipient Address ") % toAddr->addr % " is Invalid";    
     };
 
     return QString();

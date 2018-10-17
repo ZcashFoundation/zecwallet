@@ -32,6 +32,7 @@ public:
 
     void newZaddr               (const std::function<void(json)>& cb);
     void newTaddr               (const std::function<void(json)>& cb);
+    
 private:
     void doRPC      (const json& payload, const std::function<void(json)>& cb);
     void doSendRPC  (const json& payload, const std::function<void(json)>& cb);

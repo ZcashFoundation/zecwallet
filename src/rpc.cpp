@@ -30,7 +30,7 @@ RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
 	QObject::connect(timer, &QTimer::timeout, [=]() {
 		refresh();
 	});
-	timer->start(10 * 1000);    
+	timer->start(Utils::updateSpeed);    
 
     // Set up the timer to watch for tx status
     txTimer = new QTimer(main);
@@ -38,7 +38,7 @@ RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
         refreshTxStatus();
     });
     // Start at every 10s. When an operation is pending, this will change to every second
-    txTimer->start(10 * 1000);  
+    txTimer->start(Utils::updateSpeed);  
 }
 
 RPC::~RPC() {
@@ -457,7 +457,7 @@ void RPC::refreshTxStatus(const QString& newOpid) {
                     main->loadingLabel->setVisible(false);
 
                     watchingOps.remove(id);
-                    txTimer->start(10 * 1000);
+                    txTimer->start(Utils::updateSpeed);
 
                     // Refresh balances to show unconfirmed balances                    
                     refresh();  

@@ -29,18 +29,23 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->statusBar->addPermanentWidget(loadingLabel);
     loadingLabel->setVisible(false);    
 
+    // Custom status bar menu
 	ui->statusBar->setContextMenuPolicy(Qt::CustomContextMenu);
 	QObject::connect(ui->statusBar, &QStatusBar::customContextMenuRequested, [=](QPoint pos) {
 		auto msg = ui->statusBar->currentMessage();
-		if (!msg.isEmpty() && msg.startsWith(Utils::txidStatusMessage)) {
-			QMenu menu(this);
+        QMenu menu(this);
+
+		if (!msg.isEmpty() && msg.startsWith(Utils::txidStatusMessage)) {			
 			menu.addAction("Copy txid", [=]() {
 				QGuiApplication::clipboard()->setText(msg.split(":")[1].trimmed());
 			});
-			QPoint gpos(mapToGlobal(pos).x(), mapToGlobal(pos).y() + this->height() - ui->statusBar->height());
-			menu.exec(gpos);
 		}
-		
+
+        menu.addAction("Refresh", [=]() {
+            rpc->refresh();
+        });
+	    QPoint gpos(mapToGlobal(pos).x(), mapToGlobal(pos).y() + this->height() - ui->statusBar->height());		
+        menu.exec(gpos);
 	});
 
     statusLabel = new QLabel();

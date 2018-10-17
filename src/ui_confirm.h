@@ -33,6 +33,7 @@ public:
     QGridLayout *gridLayout;
     QLabel *Addr1;
     QLabel *Amt1;
+    QLabel *Memo1;
     QSpacerItem *verticalSpacer;
     QFrame *line;
     QLabel *feesLabel;
@@ -73,6 +74,11 @@ public:
         Amt1->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         gridLayout->addWidget(Amt1, 0, 1, 1, 1);
+
+        Memo1 = new QLabel(sendToAddrs);
+        Memo1->setObjectName(QStringLiteral("Memo1"));
+
+        gridLayout->addWidget(Memo1, 1, 0, 1, 2);
 
 
         verticalLayout->addWidget(sendToAddrs);
@@ -116,6 +122,7 @@ public:
         sendToAddrs->setTitle(QApplication::translate("confirm", "To", nullptr));
         Addr1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
         Amt1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
+        Memo1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
         feesLabel->setText(QString());
     } // retranslateUi
 
