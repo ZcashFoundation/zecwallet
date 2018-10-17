@@ -113,8 +113,6 @@ public:
     QPushButton *cancelSendButton;
     QWidget *tab_3;
     QVBoxLayout *verticalLayout_5;
-    QGroupBox *groupBox_5;
-    QVBoxLayout *verticalLayout_7;
     QVBoxLayout *verticalLayout_8;
     QGroupBox *groupBox_6;
     QVBoxLayout *verticalLayout_9;
@@ -295,6 +293,8 @@ public:
         verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
         groupBox_4 = new QGroupBox(tab_2);
         groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
+        groupBox_4->setAutoFillBackground(false);
+        groupBox_4->setFlat(false);
         verticalLayout_6 = new QVBoxLayout(groupBox_4);
         verticalLayout_6->setSpacing(6);
         verticalLayout_6->setContentsMargins(11, 11, 11, 11);
@@ -508,16 +508,10 @@ public:
         verticalLayout_5->setSpacing(6);
         verticalLayout_5->setContentsMargins(11, 11, 11, 11);
         verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
-        groupBox_5 = new QGroupBox(tab_3);
-        groupBox_5->setObjectName(QStringLiteral("groupBox_5"));
-        verticalLayout_7 = new QVBoxLayout(groupBox_5);
-        verticalLayout_7->setSpacing(6);
-        verticalLayout_7->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
         verticalLayout_8 = new QVBoxLayout();
         verticalLayout_8->setSpacing(6);
         verticalLayout_8->setObjectName(QStringLiteral("verticalLayout_8"));
-        groupBox_6 = new QGroupBox(groupBox_5);
+        groupBox_6 = new QGroupBox(tab_3);
         groupBox_6->setObjectName(QStringLiteral("groupBox_6"));
         groupBox_6->setFlat(false);
         groupBox_6->setCheckable(false);
@@ -570,13 +564,13 @@ public:
         horizontalLayout_11 = new QHBoxLayout();
         horizontalLayout_11->setSpacing(6);
         horizontalLayout_11->setObjectName(QStringLiteral("horizontalLayout_11"));
-        txtRecieve = new QPlainTextEdit(groupBox_5);
+        txtRecieve = new QPlainTextEdit(tab_3);
         txtRecieve->setObjectName(QStringLiteral("txtRecieve"));
         txtRecieve->setReadOnly(true);
 
         horizontalLayout_11->addWidget(txtRecieve);
 
-        qrcodeDisplay = new QLabel(groupBox_5);
+        qrcodeDisplay = new QLabel(tab_3);
         qrcodeDisplay->setObjectName(QStringLiteral("qrcodeDisplay"));
         QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy2.setHorizontalStretch(0);
@@ -591,10 +585,7 @@ public:
         verticalLayout_8->addLayout(horizontalLayout_11);
 
 
-        verticalLayout_7->addLayout(verticalLayout_8);
-
-
-        verticalLayout_5->addWidget(groupBox_5);
+        verticalLayout_5->addLayout(verticalLayout_8);
 
         tabWidget->addTab(tab_3, QString());
         tab_4 = new QWidget();
@@ -656,7 +647,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -701,7 +692,6 @@ public:
         sendTransactionButton->setText(QApplication::translate("MainWindow", "Send", nullptr));
         cancelSendButton->setText(QApplication::translate("MainWindow", "Cancel", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Send", nullptr));
-        groupBox_5->setTitle(QApplication::translate("MainWindow", "Receive Address", nullptr));
         groupBox_6->setTitle(QApplication::translate("MainWindow", "Address Type", nullptr));
         rdioZAddr->setText(QApplication::translate("MainWindow", "z-Addr", nullptr));
         rdioTAddr->setText(QApplication::translate("MainWindow", "t-Addr", nullptr));
