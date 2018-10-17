@@ -15,6 +15,7 @@
 #include <QPainter>
 #include <QMovie>
 #include <QPair>
+#include <QDateTime>
 #include <QTimer>
 #include <QSettings>
 #include <QFile>
@@ -25,6 +26,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QDialog>
+#include <QDebug>
 #include <QUrl>
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkAccessManager>
