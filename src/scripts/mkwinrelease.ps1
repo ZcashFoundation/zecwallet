@@ -26,4 +26,12 @@ Copy-Item README.md release/$target | Out-Null
 echo "Zipping"
 Compress-Archive -LiteralPath release/$target -DestinationPath "release/Windows-$target.zip"
 
+echo "Package Contents"
+[Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem')
+foreach($sourceFile in (Get-ChildItem "release/Windows-$target.zip"))
+{
+    [IO.Compression.ZipFile]::OpenRead($sourceFile.FullName).Entries.FullName |
+        %{ "$sourcefile`:$_" }
+}
+
 echo "Done"

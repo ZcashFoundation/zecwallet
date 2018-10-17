@@ -1,4 +1,5 @@
 #include "rpc.h"
+#include "utils.h"
 #include "transactionitem.h"
 #include "settings.h"
 
@@ -443,9 +444,8 @@ void RPC::refreshTxStatus(const QString& newOpid) {
                 QString status = QString::fromStdString(it["status"]);
                 if (status == "success") {
                     auto txid = QString::fromStdString(it["result"]["txid"]);
-                    qDebug() << "Tx complete. txid " << txid;
-                    QGuiApplication::clipboard()->setText(txid);
-                    main->ui->statusBar->showMessage("Tx completed! Txid copied to clipboard (" + txid + ")");
+					qDebug() << "Tx completed: " << txid;
+                    main->ui->statusBar->showMessage(Utils::txidStatusMessage + " " + txid);
                     main->loadingLabel->setVisible(false);
 
                     watchingOps.remove(id);

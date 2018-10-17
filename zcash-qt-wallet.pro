@@ -49,7 +49,8 @@ SOURCES += \
     src/settings.cpp \
     src/sendtab.cpp \
     src/txtablemodel.cpp \
-    src/transactionitem.cpp
+    src/transactionitem.cpp \
+    utils.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -63,7 +64,8 @@ HEADERS += \
     src/3rdparty/json/json.hpp \
     src/settings.h \
     src/txtablemodel.h \
-    src/transactionitem.h
+    src/transactionitem.h \
+    utils.h
 
 FORMS += \
     src/mainwindow.ui \

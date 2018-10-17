@@ -5,9 +5,10 @@
 #include "rpc.h"
 #include "balancestablemodel.h"
 #include "settings.h"
+#include "utils.h"
 
 #include "precompiled.h"
-#include "ui_about.h"
+
 
 using json = nlohmann::json;
 
@@ -27,6 +28,20 @@ MainWindow::MainWindow(QWidget *parent) :
         
     ui->statusBar->addPermanentWidget(loadingLabel);
     loadingLabel->setVisible(false);    
+
+	ui->statusBar->setContextMenuPolicy(Qt::CustomContextMenu);
+	QObject::connect(ui->statusBar, &QStatusBar::customContextMenuRequested, [=](QPoint pos) {
+		auto msg = ui->statusBar->currentMessage();
+		if (!msg.isEmpty() && msg.startsWith(Utils::txidStatusMessage)) {
+			QMenu menu(this);
+			menu.addAction("Copy txid", [=]() {
+				QGuiApplication::clipboard()->setText(msg.split(":")[1].trimmed());
+			});
+			QPoint gpos(mapToGlobal(pos).x(), mapToGlobal(pos).y() + this->height() - ui->statusBar->height());
+			menu.exec(gpos);
+		}
+		
+	});
 
     statusLabel = new QLabel();
     ui->statusBar->addPermanentWidget(statusLabel);
@@ -316,7 +331,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete rpc;
-    delete settings;
 
     delete loadingMovie;
 }
