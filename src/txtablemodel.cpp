@@ -1,10 +1,10 @@
 #include "txtablemodel.h"
+#include "utils.h"
 
- TxTableModel::TxTableModel(QObject *parent)
-     : QAbstractTableModel(parent)
- {
+TxTableModel::TxTableModel(QObject *parent)
+     : QAbstractTableModel(parent) {
     headers << "Category" << "Address" << "Date/Time" << "Amount";
- }
+}
 
 TxTableModel::~TxTableModel() {
     delete modeldata;
@@ -53,7 +53,7 @@ void TxTableModel::setNewData(QList<TransactionItem>* data)  {
         case 0: return modeldata->at(index.row()).type;
         case 1: return modeldata->at(index.row()).address;
         case 2: return modeldata->at(index.row()).datetime;
-        case 3: return QVariant(QString::number(modeldata->at(index.row()).amount, 'g', 8) % " ZEC");
+        case 3: return QVariant(QString::number(modeldata->at(index.row()).amount, 'g', 8) % " " % Utils::getTokenName());
         }
     }
 

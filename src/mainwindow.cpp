@@ -86,6 +86,11 @@ MainWindow::MainWindow(QWidget *parent) :
     // Set up donate action
     QObject::connect(ui->actionDonate, &QAction::triggered, this, &MainWindow::donate);
 
+    // Set up check for updates action
+    QObject::connect(ui->actionCheck_for_Updates, &QAction::triggered, [=] () {
+        QDesktopServices::openUrl(QUrl("https://github.com/adityapk00/zcash-qt-wallet/releases"));
+    });
+
     QObject::connect(ui->actionImport_Private_Keys, &QAction::triggered, this, &MainWindow::importPrivKeys);
 
     // Set up about action
@@ -118,7 +123,7 @@ void MainWindow::donate() {
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText("0.01");
 
-    ui->statusBar->showMessage("Donate 0.01 ZEC to support zcash-qt-wallet");
+    ui->statusBar->showMessage("Donate 0.01 " % Utils::getTokenName() % " to support zcash-qt-wallet");
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);
@@ -156,13 +161,26 @@ void MainWindow::setupBalancesTab() {
         if (index.row() < 0) return;
 
         index = index.sibling(index.row(), 0);
+        auto addr = ui->balancesTable->model()->data(index).toString();
 
         QMenu menu(this);
 
         menu.addAction("Copy Address", [=] () {
             QClipboard *clipboard = QGuiApplication::clipboard();
-            clipboard->setText(ui->balancesTable->model()->data(index).toString());            
+            clipboard->setText(addr);            
         });
+
+        if (addr.startsWith("t")) {
+            menu.addAction("View on block explorer", [=] () {
+                QString url;
+                if (Settings::getInstance()->isTestnet()) {
+                    url = "https://explorer.testnet.z.cash/address/" + addr;
+                } else {
+                    url = "https://explorer.zcha.in/accounts/" + addr;
+                }
+                QDesktopServices::openUrl(QUrl(url));
+            });
+        }
 
         menu.exec(ui->balancesTable->viewport()->mapToGlobal(pos));            
     });
@@ -177,15 +195,22 @@ void MainWindow::setupTransactionsTab() {
 
         QMenu menu(this);
 
-        menu.addAction("View txid", [=] () {
-            QMessageBox msg(this);
-			msg.setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::LinksAccessibleByMouse);
-            msg.setIcon(QMessageBox::Icon::Information); 
-            msg.setWindowTitle("Transaction ID");
-            auto txModel = dynamic_cast<TxTableModel *>(ui->transactionsTable->model());
-            msg.setText("Transaction ID: \n\n" + txModel->getTxId(index.row()));
-            msg.exec();        
+        auto txModel = dynamic_cast<TxTableModel *>(ui->transactionsTable->model());
+        QString txid = txModel->getTxId(index.row());
+
+        menu.addAction("Copy txid to clipboard", [=] () {            
+            QGuiApplication::clipboard()->setText(txid);
         });
+        menu.addAction("View on block explorer", [=] () {
+            QString url;
+            if (Settings::getInstance()->isTestnet()) {
+                url = "https://explorer.testnet.z.cash/tx/" + txid;
+            } else {
+                url = "https://explorer.zcha.in/transactions/" + txid;
+            }
+            QDesktopServices::openUrl(QUrl(url));
+        });
+
         menu.exec(ui->transactionsTable->viewport()->mapToGlobal(pos));        
     });
 }

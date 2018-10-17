@@ -7,6 +7,8 @@ class Utils
 {
 public:
 	static const QString txidStatusMessage;
+
+	static const QString getTokenName();
 private: 
 	Utils() = delete;
 };

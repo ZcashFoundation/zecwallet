@@ -287,10 +287,18 @@ void RPC::getInfoThenRefresh() {
         {"method", "getinfo"}
     };
 
-    doRPC(payload, [=] (json reply) {        
-        QString statusText = QString::fromStdString("Connected (")
-                                .append(QString::number(reply["blocks"].get<json::number_unsigned_t>()))
-                                .append(")");
+    doRPC(payload, [=] (const json& reply) {        
+        // Testnet?
+        if (reply.find("testnet") != reply.end()) {
+            Settings::getInstance()->setTestnet(reply["testnet"].get<json::boolean_t>());
+        };
+
+        // Connected?
+        QString statusText = QString() % 
+                             "Connected (" %
+                             (Settings::getInstance()->isTestnet() ? "testnet:" : "mainnet:") %
+                             QString::number(reply["blocks"].get<json::number_unsigned_t>()) %
+                             ")";
         main->statusLabel->setText(statusText);
         QIcon i(":/icons/res/connected.png");
         main->statusIcon->setPixmap(i.pixmap(16, 16));
@@ -317,9 +325,9 @@ void RPC::refreshAddresses() {
 void RPC::refreshBalances() {    
     // 1. Get the Balances
     getBalance([=] (json reply) {        
-        ui->balSheilded     ->setText(QString::fromStdString(reply["private"]) % " ZEC");
-        ui->balTransparent  ->setText(QString::fromStdString(reply["transparent"]) % " ZEC");
-        ui->balTotal        ->setText(QString::fromStdString(reply["total"]) % " ZEC");
+        ui->balSheilded     ->setText(QString::fromStdString(reply["private"]) % " " % Utils::getTokenName());
+        ui->balTransparent  ->setText(QString::fromStdString(reply["transparent"]) % " " % Utils::getTokenName());
+        ui->balTotal        ->setText(QString::fromStdString(reply["total"]) % " " % Utils::getTokenName());
     });
 
     // 2. Get the UTXOs
@@ -364,7 +372,7 @@ void RPC::refreshBalances() {
         ui->inputsCombo->clear();
         auto i = allBalances->constBegin();
         while (i != allBalances->constEnd()) {
-            QString item = i.key() % "(" % QString::number(i.value(), 'g', 8) % " ZEC)";
+            QString item = i.key() % "(" % QString::number(i.value(), 'g', 8) % " " % Utils::getTokenName() % ")";
             ui->inputsCombo->addItem(item);
             if (item.startsWith(lastFromAddr)) ui->inputsCombo->setCurrentText(item);
 

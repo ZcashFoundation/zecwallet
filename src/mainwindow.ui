@@ -273,8 +273,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>825</width>
-                <height>284</height>
+                <width>823</width>
+                <height>226</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -428,9 +428,9 @@
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="lineEdit">
+              <widget class="QLineEdit" name="sendTxFees">
                <property name="text">
-                <string>0.0001 ZEC</string>
+                <string/>
                </property>
                <property name="readOnly">
                 <bool>true</bool>
@@ -637,7 +637,7 @@
      <x>0</x>
      <y>0</y>
      <width>889</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuBalance">
@@ -654,6 +654,7 @@
      <string>Help</string>
     </property>
     <addaction name="actionDonate"/>
+    <addaction name="actionCheck_for_Updates"/>
     <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuBalance"/>
@@ -688,6 +689,11 @@
     <bool>false</bool>
    </property>
   </action>
+  <action name="actionCheck_for_Updates">
+   <property name="text">
+    <string>Check github.com for Updates</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
@@ -699,7 +705,7 @@
   <tabstop>Amount1</tabstop>
   <tabstop>Max1</tabstop>
   <tabstop>addAddressButton</tabstop>
-  <tabstop>lineEdit</tabstop>
+  <tabstop>sendTxFees</tabstop>
   <tabstop>sendTransactionButton</tabstop>
   <tabstop>cancelSendButton</tabstop>
   <tabstop>balancesTable</tabstop>

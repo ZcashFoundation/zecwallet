@@ -1,4 +1,5 @@
 #include "balancestablemodel.h"
+#include "utils.h"
 
 BalancesTableModel::BalancesTableModel(QObject *parent)
 	: QAbstractTableModel(parent)
@@ -46,17 +47,8 @@ int BalancesTableModel::columnCount(const QModelIndex&) const
 	return 2;
 }
 
-
 QVariant BalancesTableModel::data(const QModelIndex &index, int role) const
 {
-	auto fnSplitAddressForWrap = [=] (const QString& a) -> QString {
-		if (!a.startsWith("z")) return a;
-
-		auto half = a.length() / 2;
-		auto splitted = a.left(half) + "\n" + a.right(a.length() - half);
-		return splitted;
-	};
-
     if (role == Qt::TextAlignmentRole && index.column() == 1) return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 	
 	if (role == Qt::ForegroundRole) {
@@ -78,8 +70,8 @@ QVariant BalancesTableModel::data(const QModelIndex &index, int role) const
 	
 	if (role == Qt::DisplayRole || role == Qt::ToolTipRole) {
 		switch (index.column()) {
-		case 0: return fnSplitAddressForWrap(std::get<0>(modeldata->at(index.row())));
-		case 1: return QVariant(std::get<1>(modeldata->at(index.row())) % " ZEC");
+		case 0: return std::get<0>(modeldata->at(index.row()));
+		case 1: return QVariant(std::get<1>(modeldata->at(index.row())) % " " % Utils::getTokenName());
 		}
 	}
 	
@@ -111,3 +103,4 @@ QVariant BalancesTableModel::headerData(int section, Qt::Orientation orientation
 	}
 	return QVariant();
 }
+

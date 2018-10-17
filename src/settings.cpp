@@ -65,9 +65,6 @@ void Settings::loadFromFile() {
 		return;
 	}
 
-	// If file was found, then setup some defaults
-	overridePort = "8232";
-
 	QTextStream in(&file);
 
 	while (!in.atEnd()) {
@@ -92,4 +89,12 @@ void Settings::loadFromFile() {
 
 	file.close();
 
+}
+
+bool Settings::isTestnet() {
+	return _isTestnet;
+}
+
+void Settings::setTestnet(bool isTestnet) {
+	this->_isTestnet = isTestnet;
 }

@@ -18,6 +18,10 @@ public:
     double  fees() { return 0.0001; }
 	void    loadFromSettings();
     void    loadFromFile();
+
+    bool isTestnet();
+    void setTestnet(bool isTestnet);
+
 private:
     // This class can only be accessed through Settings::getInstance()
     Settings() = default;
@@ -30,6 +34,8 @@ private:
     QString password;
 
     QString overridePort;
+
+    bool _isTestnet = false;
 };
 
 #endif // SETTINGS_H

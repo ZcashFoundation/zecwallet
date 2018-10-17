@@ -40,7 +40,10 @@ cp zcash-qt-wallet bin/zcash-qt-wallet-v$APP_VERSION > /dev/null
 cp README.md bin/zcash-qt-wallet-v$APP_VERSION > /dev/null
 cp LICENSE bin/zcash-qt-wallet-v$APP_VERSION > /dev/null
 cd bin && tar cvf linux-zcash-qt-wallet-v$APP_VERSION.tar.gz zcash-qt-wallet-v$APP_VERSION/ > /dev/null
+cd .. 
 echo "[OK]"
 
 
 echo "Done. Build is bin/linux-zcash-qt-wallet-v$APP_VERSION.tar.gz"
+echo "Package contents:"
+tar tf "bin/linux-zcash-qt-wallet-v$APP_VERSION.tar.gz"

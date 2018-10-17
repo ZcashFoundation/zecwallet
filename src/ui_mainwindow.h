@@ -46,6 +46,7 @@ public:
     QAction *actionSettings;
     QAction *actionDonate;
     QAction *actionImport_Private_Keys;
+    QAction *actionCheck_for_Updates;
     QWidget *centralWidget;
     QGridLayout *gridLayout_3;
     QTabWidget *tabWidget;
@@ -104,7 +105,7 @@ public:
     QVBoxLayout *verticalLayout_10;
     QHBoxLayout *horizontalLayout_14;
     QLabel *label_7;
-    QLineEdit *lineEdit;
+    QLineEdit *sendTxFees;
     QSpacerItem *horizontalSpacer_5;
     QHBoxLayout *horizontalLayout_6;
     QSpacerItem *horizontalSpacer;
@@ -153,6 +154,8 @@ public:
         actionImport_Private_Keys = new QAction(MainWindow);
         actionImport_Private_Keys->setObjectName(QStringLiteral("actionImport_Private_Keys"));
         actionImport_Private_Keys->setVisible(false);
+        actionCheck_for_Updates = new QAction(MainWindow);
+        actionCheck_for_Updates->setObjectName(QStringLiteral("actionCheck_for_Updates"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout_3 = new QGridLayout(centralWidget);
@@ -349,7 +352,7 @@ public:
         sendToScrollArea->setWidgetResizable(true);
         sendToWidgets = new QWidget();
         sendToWidgets->setObjectName(QStringLiteral("sendToWidgets"));
-        sendToWidgets->setGeometry(QRect(0, 0, 825, 284));
+        sendToWidgets->setGeometry(QRect(0, 0, 823, 226));
         sendToLayout = new QVBoxLayout(sendToWidgets);
         sendToLayout->setSpacing(6);
         sendToLayout->setContentsMargins(11, 11, 11, 11);
@@ -450,11 +453,11 @@ public:
 
         horizontalLayout_14->addWidget(label_7);
 
-        lineEdit = new QLineEdit(groupBox_7);
-        lineEdit->setObjectName(QStringLiteral("lineEdit"));
-        lineEdit->setReadOnly(true);
+        sendTxFees = new QLineEdit(groupBox_7);
+        sendTxFees->setObjectName(QStringLiteral("sendTxFees"));
+        sendTxFees->setReadOnly(true);
 
-        horizontalLayout_14->addWidget(lineEdit);
+        horizontalLayout_14->addWidget(sendTxFees);
 
         horizontalSpacer_5 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
@@ -605,7 +608,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 889, 21));
+        menuBar->setGeometry(QRect(0, 0, 889, 22));
         menuBalance = new QMenu(menuBar);
         menuBalance->setObjectName(QStringLiteral("menuBalance"));
         menuHelp = new QMenu(menuBar);
@@ -621,8 +624,8 @@ public:
         QWidget::setTabOrder(Address1, Amount1);
         QWidget::setTabOrder(Amount1, Max1);
         QWidget::setTabOrder(Max1, addAddressButton);
-        QWidget::setTabOrder(addAddressButton, lineEdit);
-        QWidget::setTabOrder(lineEdit, sendTransactionButton);
+        QWidget::setTabOrder(addAddressButton, sendTxFees);
+        QWidget::setTabOrder(sendTxFees, sendTransactionButton);
         QWidget::setTabOrder(sendTransactionButton, cancelSendButton);
         QWidget::setTabOrder(cancelSendButton, balancesTable);
         QWidget::setTabOrder(balancesTable, rdioZAddr);
@@ -639,6 +642,7 @@ public:
         menuBalance->addSeparator();
         menuBalance->addAction(actionExit);
         menuHelp->addAction(actionDonate);
+        menuHelp->addAction(actionCheck_for_Updates);
         menuHelp->addAction(actionAbout);
 
         retranslateUi(MainWindow);
@@ -657,6 +661,7 @@ public:
         actionSettings->setText(QApplication::translate("MainWindow", "Settings", nullptr));
         actionDonate->setText(QApplication::translate("MainWindow", "Donate", nullptr));
         actionImport_Private_Keys->setText(QApplication::translate("MainWindow", "Import Private Keys", nullptr));
+        actionCheck_for_Updates->setText(QApplication::translate("MainWindow", "Check github.com for Updates", nullptr));
         groupBox->setTitle(QApplication::translate("MainWindow", "Summary", nullptr));
         label->setText(QApplication::translate("MainWindow", "Shielded", nullptr));
         balSheilded->setText(QString());
@@ -679,7 +684,7 @@ public:
         addAddressButton->setText(QApplication::translate("MainWindow", "Add Address", nullptr));
         groupBox_7->setTitle(QApplication::translate("MainWindow", "Fees", nullptr));
         label_7->setText(QApplication::translate("MainWindow", "Fee", nullptr));
-        lineEdit->setText(QApplication::translate("MainWindow", "0.0001 ZEC", nullptr));
+        sendTxFees->setText(QString());
         sendTransactionButton->setText(QApplication::translate("MainWindow", "Send", nullptr));
         cancelSendButton->setText(QApplication::translate("MainWindow", "Cancel", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Send", nullptr));

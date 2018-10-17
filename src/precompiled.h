@@ -29,6 +29,7 @@
 #include <QInputDialog>
 #include <QDebug>
 #include <QUrl>
+#include <QDesktopServices>
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>

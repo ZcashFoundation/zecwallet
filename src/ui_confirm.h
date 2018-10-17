@@ -35,7 +35,7 @@ public:
     QLabel *Amt1;
     QSpacerItem *verticalSpacer;
     QFrame *line;
-    QLabel *label;
+    QLabel *feesLabel;
     QDialogButtonBox *buttonBox;
 
     void setupUi(QDialog *confirm)
@@ -88,10 +88,10 @@ public:
 
         verticalLayout->addWidget(line);
 
-        label = new QLabel(confirm);
-        label->setObjectName(QStringLiteral("label"));
+        feesLabel = new QLabel(confirm);
+        feesLabel->setObjectName(QStringLiteral("feesLabel"));
 
-        verticalLayout->addWidget(label);
+        verticalLayout->addWidget(feesLabel);
 
         buttonBox = new QDialogButtonBox(confirm);
         buttonBox->setObjectName(QStringLiteral("buttonBox"));
@@ -116,7 +116,7 @@ public:
         sendToAddrs->setTitle(QApplication::translate("confirm", "To", nullptr));
         Addr1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
         Amt1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
-        label->setText(QApplication::translate("confirm", "Fees: 0.0001 ZEC", nullptr));
+        feesLabel->setText(QString());
     } // retranslateUi
 
 };

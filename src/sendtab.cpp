@@ -3,6 +3,7 @@
 #include "ui_confirm.h"
 #include "settings.h"
 #include "rpc.h"
+#include "utils.h"
 
 #include "precompiled.h"
 
@@ -31,6 +32,14 @@ void MainWindow::setupSendTab() {
 
 	// Max available Checkbox
 	QObject::connect(ui->Max1, &QCheckBox::stateChanged, this, &MainWindow::maxAmountChecked);
+
+    // Set up focus enter to set fees
+    QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int pos) {
+        if (pos == 1) {
+            // Set the fees
+            ui->sendTxFees->setText("0.0001 " + Utils::getTokenName());
+        }
+    });
 
 }
 
@@ -66,7 +75,7 @@ void MainWindow::setDefaultPayFrom() {
 
 void MainWindow::inputComboTextChanged(const QString& text) {
     auto bal    = rpc->getAllBalances()->value(text.split("(")[0].trimmed());
-    auto balFmt = QString::number(bal, 'g', 8) + " ZEC";
+    auto balFmt = QString::number(bal, 'g', 8) + " " % Utils::getTokenName();
     ui->sendAddressBalance->setText(balFmt);
 }
 
@@ -246,7 +255,7 @@ void MainWindow::sendButton() {
 
 			auto Amt = new QLabel(confirm.sendToAddrs);
 			Amt->setObjectName(QString("Amt") % QString::number(i + 1));
-			Amt->setText(QString::number(toAddr.second, 'g', 8) % " ZEC");
+			Amt->setText(QString::number(toAddr.second, 'g', 8) % " " % Utils::getTokenName());
 			Amt->setAlignment(Qt::AlignRight | Qt::AlignTrailing | Qt::AlignVCenter);
 			confirm.gridLayout->addWidget(Amt, i, 1, 1, 1);
 		}
@@ -259,6 +268,9 @@ void MainWindow::sendButton() {
 
 	// And show it in the confirm dialog 
 	confirm.sendFrom->setText(fnSplitAddressForWrap(fromAddr));
+
+    // Fees in the confirm dialog
+    confirm.feesLabel->setText("Fees: 0.0001 " % Utils::getTokenName());
 
 	// Show the dialog and submit it if the user confirms
 	if (d.exec() == QDialog::Accepted) {
