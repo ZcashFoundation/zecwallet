@@ -14,6 +14,7 @@ echo "[OK]"
 
 
 echo -n "Configuring..."
+rm -f "bin/linux-zcash-qt-wallet-v$APP_VERSION.tar.gz"
 make distclean > /dev/null
 $QT_STATIC/bin/qmake zcash-qt-wallet.pro -spec linux-clang CONFIG+=release > /dev/null
 echo "[OK]"
@@ -41,9 +42,14 @@ cp README.md bin/zcash-qt-wallet-v$APP_VERSION > /dev/null
 cp LICENSE bin/zcash-qt-wallet-v$APP_VERSION > /dev/null
 cd bin && tar cvf linux-zcash-qt-wallet-v$APP_VERSION.tar.gz zcash-qt-wallet-v$APP_VERSION/ > /dev/null
 cd .. 
-echo "[OK]"
 
+if [ -f bin/linux-zcash-qt-wallet-v$APP_VERSION.tar.gz ] ; then
+    echo "[OK]"
 
-echo "Done. Build is bin/linux-zcash-qt-wallet-v$APP_VERSION.tar.gz"
-echo "Package contents:"
-tar tf "bin/linux-zcash-qt-wallet-v$APP_VERSION.tar.gz"
+    echo "Done. Build is bin/linux-zcash-qt-wallet-v$APP_VERSION.tar.gz"
+    echo "Package contents:"
+    tar tf "bin/linux-zcash-qt-wallet-v$APP_VERSION.tar.gz"
+else
+    echo "[ERROR]"
+    exit 1
+fi

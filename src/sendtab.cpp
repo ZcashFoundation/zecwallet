@@ -304,7 +304,7 @@ void MainWindow::sendButton() {
         json rec = json::object();
         rec["address"]      = toAddr.addr.toStdString();
         rec["amount"]       = toAddr.amount;
-        if (toAddr.addr.startsWith("z"))
+        if (toAddr.addr.startsWith("z") && !toAddr.encodedMemo.trimmed().isEmpty())
             rec["memo"]     = toAddr.encodedMemo.toStdString();
 
         allRecepients.push_back(rec);

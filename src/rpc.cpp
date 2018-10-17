@@ -338,7 +338,7 @@ void RPC::refreshBalances() {
     allBalances = new QMap<QString, double>();
 
     // Function to process reply of the listunspent and z_listunspent API calls, used below.
-    auto processUnspent = [=] (const json& reply) { 
+    auto processUnspent = [=] (const json& reply) -> bool { 
         bool anyUnconfirmed = false;
         for (auto& it : reply.get<json::array_t>()) {   
             QString qsAddr      = QString::fromStdString(it["address"]);
@@ -358,11 +358,13 @@ void RPC::refreshBalances() {
 
             (*allBalances)[qsAddr] = (*allBalances)[qsAddr] + it["amount"].get<json::number_float_t>();
         }
-        ui->unconfirmedWarning->setVisible(anyUnconfirmed);
+        return anyUnconfirmed;
     };
 
     // Function to create the data model and update the views, used below.
-    auto updateUI = [=] () {       
+    auto updateUI = [=] (bool anyUnconfirmed) {       
+        ui->unconfirmedWarning->setVisible(anyUnconfirmed);
+
         // Update balances model data, which will update the table too
         balancesTableModel->setNewData(allBalances, utxos);
 
@@ -382,12 +384,12 @@ void RPC::refreshBalances() {
 
     // Call the Transparent and Z unspent APIs serially and then, once they're done, update the UI
     getTransparentUnspent([=] (json reply) {
-        processUnspent(reply);
+        auto anyTUnconfirmed = processUnspent(reply);
 
         getZUnspent([=] (json reply) {
-            processUnspent(reply);
+            auto anyZUnconfirmed = processUnspent(reply);
 
-            updateUI();    
+            updateUI(anyTUnconfirmed || anyZUnconfirmed);    
         });        
     });
 }

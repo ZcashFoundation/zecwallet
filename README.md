@@ -25,7 +25,7 @@ tar -xvf zcash-qt-wallet-v0.1.6.tar.gz
 ```
 
 ## Compiling from source
-zcash-qt-wallet depends on QT5, which you can get from here: https://www.qt.io/download
+zcash-qt-wallet depends on Qt5, which you can get from here: https://www.qt.io/download
 
 ### Compiling on Linux
 You need a C++14 compatible compiler like g++ or clang++

@@ -35,10 +35,20 @@ MainWindow::MainWindow(QWidget *parent) :
 		auto msg = ui->statusBar->currentMessage();
         QMenu menu(this);
 
-		if (!msg.isEmpty() && msg.startsWith(Utils::txidStatusMessage)) {			
+		if (!msg.isEmpty() && msg.startsWith(Utils::txidStatusMessage)) {	
+            auto txid = msg.split(":")[1].trimmed();		
 			menu.addAction("Copy txid", [=]() {
-				QGuiApplication::clipboard()->setText(msg.split(":")[1].trimmed());
+				QGuiApplication::clipboard()->setText(txid);
 			});
+            menu.addAction("View tx on block explorer", [=]() {
+                QString url;
+                if (Settings::getInstance()->isTestnet()) {
+                    url = "https://explorer.testnet.z.cash/tx/" + txid;
+                } else {
+                    url = "https://explorer.zcha.in/transactions/" + txid;
+                }
+                QDesktopServices::openUrl(QUrl(url));
+            });
 		}
 
         menu.addAction("Refresh", [=]() {
@@ -203,7 +213,7 @@ void MainWindow::setupTransactionsTab() {
         auto txModel = dynamic_cast<TxTableModel *>(ui->transactionsTable->model());
         QString txid = txModel->getTxId(index.row());
 
-        menu.addAction("Copy txid to clipboard", [=] () {            
+        menu.addAction("Copy txid", [=] () {            
             QGuiApplication::clipboard()->setText(txid);
         });
         menu.addAction("View on block explorer", [=] () {
