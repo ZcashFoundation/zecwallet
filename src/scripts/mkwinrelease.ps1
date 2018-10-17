@@ -1,5 +1,5 @@
-if (-not (Test-Path env:QT_STATIC)) { echo "QT_STATIC is not set"; exit; }
-if (-not (Test-Path env:APP_VERSION)) { echo "APP_VERSION is not set"; exit; }
+if (-not (Test-Path env:QT_STATIC)) { echo "QT_STATIC is not set. Please set it to the directory with the static build of QT"; exit; }
+if (-not (Test-Path env:APP_VERSION)) { echo "APP_VERSION is not set. Please set it to the version you want to build, like 0.1.6"; exit; }
 
 $target="zcash-qt-wallet-v$Env:APP_VERSION"
 
@@ -14,7 +14,6 @@ echo "Configuring"
 
 echo "Building"
 nmake *>$null
-
 # Make a dist directory in release
 New-Item release/$target -itemtype directory | Out-Null
 Move-Item release/zcash-qt-wallet.exe release/$target | Out-Null
