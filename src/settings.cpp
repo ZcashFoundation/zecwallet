@@ -12,9 +12,10 @@ Settings* Settings::init() {
 	// Load from settings first, because if they are redefined in the zcash.conf file, 
 	// we'll overwrite them. 
 	instance->loadFromSettings();    
+#ifdef Q_OS_LINUX
 	// Overwrite if any are defined in the zcash.conf
 	instance->loadFromFile();
-
+#endif
 	return instance;
 }
 
@@ -97,4 +98,12 @@ bool Settings::isTestnet() {
 
 void Settings::setTestnet(bool isTestnet) {
 	this->_isTestnet = isTestnet;
+}
+
+bool Settings::isSyncing() {
+	return _isSyncing;
+}
+
+void Settings::setSyncing(bool syncing) {
+	this->_isSyncing = syncing;
 }

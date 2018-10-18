@@ -280,6 +280,7 @@ void RPC::refresh() {
     getInfoThenRefresh();
 }
 
+
 void RPC::getInfoThenRefresh() {
     json payload = {
         {"jsonrpc", "1.0"},
@@ -287,26 +288,40 @@ void RPC::getInfoThenRefresh() {
         {"method", "getinfo"}
     };
 
-    doRPC(payload, [=] (const json& reply) {        
-        // Testnet?
-        if (reply.find("testnet") != reply.end()) {
-            Settings::getInstance()->setTestnet(reply["testnet"].get<json::boolean_t>());
-        };
+    doRPC(payload, [=] (const json& reply) {   
+		// Testnet?
+		if (reply.find("testnet") != reply.end()) {
+			Settings::getInstance()->setTestnet(reply["testnet"].get<json::boolean_t>());
+		};
 
-        // Connected?
-        QString statusText = QString() % 
-                             "Connected (" %
-                             (Settings::getInstance()->isTestnet() ? "testnet:" : "mainnet:") %
-                             QString::number(reply["blocks"].get<json::number_unsigned_t>()) %
-                             ")";
-        main->statusLabel->setText(statusText);
-        QIcon i(":/icons/res/connected.png");
-        main->statusIcon->setPixmap(i.pixmap(16, 16));
+		// Connected, so display checkmark.
+		QIcon i(":/icons/res/connected.png");
+		main->statusIcon->setPixmap(i.pixmap(16, 16));
 
-        // Refresh everything.
-        refreshBalances();
-        refreshTransactions();
-        refreshAddresses();
+		// Refresh everything.
+		refreshBalances();
+		refreshTransactions();
+		refreshAddresses();
+
+		// Call to see if the blockchain is syncing. 
+		json payload = {
+			{"jsonrpc", "1.0"},
+			{"id", "someid"},
+			{"method", "getblockchaininfo"}
+		};
+
+		doRPC(payload, [=](const json& reply) {
+			double progress = reply["verificationprogress"].get<double>();
+			QString statusText = QString() %
+				(progress < 0.99 ? "Syncing" : "Connected") %
+				" (" %
+				(Settings::getInstance()->isTestnet() ? "testnet:" : "") %
+				QString::number(reply["blocks"].get<json::number_unsigned_t>()) %
+				(progress < 0.99 ? ("/" % QString::number(progress*100, 'f', 0) % "%") : QString()) %
+				")";
+			main->statusLabel->setText(statusText);			
+		});
+
     });        
 }
 

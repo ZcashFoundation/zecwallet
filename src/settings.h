@@ -22,6 +22,9 @@ public:
     bool isTestnet();
     void setTestnet(bool isTestnet);
 
+	bool isSyncing();
+	void setSyncing(bool syncing);
+
 private:
     // This class can only be accessed through Settings::getInstance()
     Settings() = default;
@@ -36,6 +39,7 @@ private:
     QString overridePort;
 
     bool _isTestnet = false;
+	bool _isSyncing = false;
 };
 
 #endif // SETTINGS_H
