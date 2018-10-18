@@ -20,7 +20,6 @@ public:
 	QString getHost();
 	QString getPort();
 
-    double  fees() { return 0.0001; }
 	bool    loadFromSettings();
     bool    loadFromFile();
 

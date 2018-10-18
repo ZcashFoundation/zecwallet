@@ -31,12 +31,15 @@ public:
     QLabel *sendFrom;
     QGroupBox *sendToAddrs;
     QGridLayout *gridLayout;
+    QLabel *minerFee;
     QLabel *Addr1;
     QLabel *Amt1;
     QLabel *Memo1;
+    QLabel *labelMinerFee;
+    QLabel *labelDevFee;
+    QLabel *devFee;
     QSpacerItem *verticalSpacer;
     QFrame *line;
-    QLabel *feesLabel;
     QDialogButtonBox *buttonBox;
 
     void setupUi(QDialog *confirm)
@@ -63,6 +66,12 @@ public:
         sendToAddrs->setObjectName(QStringLiteral("sendToAddrs"));
         gridLayout = new QGridLayout(sendToAddrs);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        minerFee = new QLabel(sendToAddrs);
+        minerFee->setObjectName(QStringLiteral("minerFee"));
+        minerFee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout->addWidget(minerFee, 2, 1, 1, 1);
+
         Addr1 = new QLabel(sendToAddrs);
         Addr1->setObjectName(QStringLiteral("Addr1"));
         Addr1->setWordWrap(true);
@@ -80,6 +89,22 @@ public:
 
         gridLayout->addWidget(Memo1, 1, 0, 1, 2);
 
+        labelMinerFee = new QLabel(sendToAddrs);
+        labelMinerFee->setObjectName(QStringLiteral("labelMinerFee"));
+
+        gridLayout->addWidget(labelMinerFee, 2, 0, 1, 1);
+
+        labelDevFee = new QLabel(sendToAddrs);
+        labelDevFee->setObjectName(QStringLiteral("labelDevFee"));
+
+        gridLayout->addWidget(labelDevFee, 3, 0, 1, 1);
+
+        devFee = new QLabel(sendToAddrs);
+        devFee->setObjectName(QStringLiteral("devFee"));
+        devFee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout->addWidget(devFee, 3, 1, 1, 1);
+
 
         verticalLayout->addWidget(sendToAddrs);
 
@@ -93,11 +118,6 @@ public:
         line->setFrameShadow(QFrame::Sunken);
 
         verticalLayout->addWidget(line);
-
-        feesLabel = new QLabel(confirm);
-        feesLabel->setObjectName(QStringLiteral("feesLabel"));
-
-        verticalLayout->addWidget(feesLabel);
 
         buttonBox = new QDialogButtonBox(confirm);
         buttonBox->setObjectName(QStringLiteral("buttonBox"));
@@ -120,10 +140,13 @@ public:
         groupBox->setTitle(QApplication::translate("confirm", "From", nullptr));
         sendFrom->setText(QString());
         sendToAddrs->setTitle(QApplication::translate("confirm", "To", nullptr));
+        minerFee->setText(QApplication::translate("confirm", "Miner Amount", nullptr));
         Addr1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
         Amt1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
         Memo1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
-        feesLabel->setText(QString());
+        labelMinerFee->setText(QApplication::translate("confirm", "Miner Fee", nullptr));
+        labelDevFee->setText(QApplication::translate("confirm", "Dev Fee", nullptr));
+        devFee->setText(QApplication::translate("confirm", "Dev Fee Amount", nullptr));
     } // retranslateUi
 
 };

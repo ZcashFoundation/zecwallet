@@ -42,7 +42,8 @@ void MainWindow::setupSendTab() {
     QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int pos) {
         if (pos == 1) {
             // Set the fees
-            ui->sendTxFees->setText("0.0001 " + Utils::getTokenName());
+            ui->sendTxFees->setText(QString::number(Utils::getTotalFee(), 'g', 8) %
+                                    " " % Utils::getTokenName());
 
             // Set focus to the first address box
             ui->Address1->setFocus();
@@ -221,7 +222,7 @@ void MainWindow::maxAmountChecked(int checked) {
             auto amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1));
             sumAllAmounts += amt->text().toDouble();
         }
-        sumAllAmounts += settings->fees();
+        sumAllAmounts += Utils::getTotalFee();
 
         auto addr = ui->inputsCombo->currentText().split("(")[0];
 
@@ -275,6 +276,8 @@ void MainWindow::sendButton() {
         // abort the Tx
         return;
     }
+
+    auto devAddress = Utils::getDevAddr(fromAddr, toAddrs);
 
     // Get all the addresses and amounts
     json allRecepients = json::array();
@@ -336,6 +339,28 @@ void MainWindow::sendButton() {
 		}
     }
 
+    // Add the dev fee to the transaction
+    if (!devAddress.isEmpty() && Utils::getDevFee() > 0) {
+        json devFee = json::object();
+        devFee["address"] = devAddress.toStdString();
+        devFee["amount"]  = Utils::getDevFee();
+        allRecepients.push_back(devFee);
+    }    
+
+    // Add two rows for fees
+    {
+        confirm.labelMinerFee->setText("Miner Fee");
+        confirm.minerFee->setText(QString::number(Utils::getMinerFee(), 'g', 8) % " " % Utils::getTokenName());
+
+        if (!devAddress.isEmpty() && Utils::getDevFee() > 0) {
+            confirm.labelDevFee->setText("Dev Fee");
+            confirm.devFee->setText(QString::number(Utils::getMinerFee(), 'g', 8) % " " % Utils::getTokenName());
+        } else {
+            confirm.labelDevFee->setText("");
+            confirm.devFee->setText("");
+        }
+    }
+
     // Add sender
     json params = json::array();
     params.push_back(fromAddr.toStdString());
@@ -343,9 +368,6 @@ void MainWindow::sendButton() {
 
 	// And show it in the confirm dialog 
 	confirm.sendFrom->setText(fnSplitAddressForWrap(fromAddr));
-
-    // Fees in the confirm dialog
-    confirm.feesLabel->setText("Fee 0.0001 " % Utils::getTokenName());
 
 	// Show the dialog and submit it if the user confirms
 	if (d.exec() == QDialog::Accepted) {
