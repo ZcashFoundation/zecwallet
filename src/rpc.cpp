@@ -314,7 +314,7 @@ void RPC::getInfoThenRefresh() {
 		};
 
 		doRPC(payload, [=](const json& reply) {
-			double progress = reply["verificationprogress"].get<double>();
+            auto progress = reply["verificationprogress"].get<double>();
 			QString statusText = QString() %
 				(progress < 0.99 ? "Syncing" : "Connected") %
 				" (" %
@@ -507,7 +507,7 @@ void RPC::refreshTxStatus(const QString& newOpid) {
         }
 
         // If there is some op that we are watching, then show the loading bar, otherwise hide it
-        if (watchingOps.size() == 0) {
+        if (watchingOps.empty()) {
             main->loadingLabel->setVisible(false);
         } else {
             main->loadingLabel->setVisible(true);

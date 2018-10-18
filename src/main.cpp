@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
     QIcon icon(":/icons/res/icon.ico");
-    a.setWindowIcon(icon);
+    QApplication::setWindowIcon(icon);
 
     #ifdef Q_OS_LINUX
         QFontDatabase::addApplicationFont(":/fonts/res/Ubuntu-R.ttf");

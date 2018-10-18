@@ -70,8 +70,7 @@ bool Settings::loadFromSettings() {
 
 	uisettings = new Config{host, port, username, password};
 
-	if (username.isEmpty()) return false; 
-	return true;
+    return !username.isEmpty();
 }
 
 bool Settings::loadFromFile() {

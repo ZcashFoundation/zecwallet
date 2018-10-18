@@ -14,8 +14,6 @@
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QFrame>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QSpacerItem>
@@ -32,19 +30,17 @@ public:
     QTabWidget *tabWidget;
     QWidget *tab;
     QVBoxLayout *verticalLayout_3;
-    QVBoxLayout *verticalLayout_2;
-    QGroupBox *groupBox;
-    QGridLayout *gridLayout;
-    QLabel *label_3;
-    QLineEdit *rpcuser;
-    QLabel *label;
-    QLineEdit *hostname;
-    QLineEdit *port;
-    QLabel *label_4;
-    QLineEdit *rpcpassword;
-    QLabel *label_2;
     QLabel *confMsg;
     QFrame *line;
+    QLabel *label;
+    QLineEdit *hostname;
+    QLabel *label_2;
+    QLineEdit *port;
+    QLabel *label_3;
+    QLineEdit *rpcuser;
+    QLabel *label_4;
+    QLineEdit *rpcpassword;
+    QVBoxLayout *verticalLayout_2;
     QSpacerItem *verticalSpacer;
     QDialogButtonBox *buttonBox;
 
@@ -62,73 +58,65 @@ public:
         tab->setObjectName(QStringLiteral("tab"));
         verticalLayout_3 = new QVBoxLayout(tab);
         verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
-        verticalLayout_2 = new QVBoxLayout();
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
-        groupBox = new QGroupBox(tab);
-        groupBox->setObjectName(QStringLiteral("groupBox"));
-        gridLayout = new QGridLayout(groupBox);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        gridLayout->setContentsMargins(10, -1, -1, -1);
-        label_3 = new QLabel(groupBox);
-        label_3->setObjectName(QStringLiteral("label_3"));
-        label_3->setMinimumSize(QSize(60, 0));
-
-        gridLayout->addWidget(label_3, 6, 0, 1, 1);
-
-        rpcuser = new QLineEdit(groupBox);
-        rpcuser->setObjectName(QStringLiteral("rpcuser"));
-
-        gridLayout->addWidget(rpcuser, 7, 0, 1, 1);
-
-        label = new QLabel(groupBox);
-        label->setObjectName(QStringLiteral("label"));
-        label->setMinimumSize(QSize(60, 0));
-
-        gridLayout->addWidget(label, 2, 0, 1, 1);
-
-        hostname = new QLineEdit(groupBox);
-        hostname->setObjectName(QStringLiteral("hostname"));
-
-        gridLayout->addWidget(hostname, 3, 0, 1, 1);
-
-        port = new QLineEdit(groupBox);
-        port->setObjectName(QStringLiteral("port"));
-
-        gridLayout->addWidget(port, 5, 0, 1, 1);
-
-        label_4 = new QLabel(groupBox);
-        label_4->setObjectName(QStringLiteral("label_4"));
-        label_4->setMinimumSize(QSize(60, 0));
-
-        gridLayout->addWidget(label_4, 8, 0, 1, 1);
-
-        rpcpassword = new QLineEdit(groupBox);
-        rpcpassword->setObjectName(QStringLiteral("rpcpassword"));
-
-        gridLayout->addWidget(rpcpassword, 9, 0, 1, 1);
-
-        label_2 = new QLabel(groupBox);
-        label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setMinimumSize(QSize(60, 0));
-
-        gridLayout->addWidget(label_2, 4, 0, 1, 1);
-
-        confMsg = new QLabel(groupBox);
+        confMsg = new QLabel(tab);
         confMsg->setObjectName(QStringLiteral("confMsg"));
         confMsg->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
 
-        gridLayout->addWidget(confMsg, 0, 0, 1, 1);
+        verticalLayout_3->addWidget(confMsg);
 
-        line = new QFrame(groupBox);
+        line = new QFrame(tab);
         line->setObjectName(QStringLiteral("line"));
         line->setFrameShape(QFrame::HLine);
         line->setFrameShadow(QFrame::Sunken);
 
-        gridLayout->addWidget(line, 1, 0, 1, 1);
+        verticalLayout_3->addWidget(line);
 
+        label = new QLabel(tab);
+        label->setObjectName(QStringLiteral("label"));
+        label->setMinimumSize(QSize(60, 0));
 
-        verticalLayout_2->addWidget(groupBox);
+        verticalLayout_3->addWidget(label);
 
+        hostname = new QLineEdit(tab);
+        hostname->setObjectName(QStringLiteral("hostname"));
+
+        verticalLayout_3->addWidget(hostname);
+
+        label_2 = new QLabel(tab);
+        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setMinimumSize(QSize(60, 0));
+
+        verticalLayout_3->addWidget(label_2);
+
+        port = new QLineEdit(tab);
+        port->setObjectName(QStringLiteral("port"));
+
+        verticalLayout_3->addWidget(port);
+
+        label_3 = new QLabel(tab);
+        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setMinimumSize(QSize(60, 0));
+
+        verticalLayout_3->addWidget(label_3);
+
+        rpcuser = new QLineEdit(tab);
+        rpcuser->setObjectName(QStringLiteral("rpcuser"));
+
+        verticalLayout_3->addWidget(rpcuser);
+
+        label_4 = new QLabel(tab);
+        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setMinimumSize(QSize(60, 0));
+
+        verticalLayout_3->addWidget(label_4);
+
+        rpcpassword = new QLineEdit(tab);
+        rpcpassword->setObjectName(QStringLiteral("rpcpassword"));
+
+        verticalLayout_3->addWidget(rpcpassword);
+
+        verticalLayout_2 = new QVBoxLayout();
+        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
 
         verticalLayout_3->addLayout(verticalLayout_2);
 
@@ -147,10 +135,6 @@ public:
 
         verticalLayout->addWidget(buttonBox);
 
-        QWidget::setTabOrder(tabWidget, hostname);
-        QWidget::setTabOrder(hostname, port);
-        QWidget::setTabOrder(port, rpcuser);
-        QWidget::setTabOrder(rpcuser, rpcpassword);
 
         retranslateUi(Settings);
         QObject::connect(buttonBox, SIGNAL(accepted()), Settings, SLOT(accept()));
@@ -165,15 +149,14 @@ public:
     void retranslateUi(QDialog *Settings)
     {
         Settings->setWindowTitle(QApplication::translate("Settings", "Settings", nullptr));
-        groupBox->setTitle(QApplication::translate("Settings", "zcashd connection", nullptr));
-        label_3->setText(QApplication::translate("Settings", "RPC Username", nullptr));
+        confMsg->setText(QApplication::translate("Settings", "<html><head/><body><p><br/></p></body></html>", nullptr));
         label->setText(QApplication::translate("Settings", "Host", nullptr));
         hostname->setPlaceholderText(QApplication::translate("Settings", "127.0.0.1", nullptr));
-        port->setPlaceholderText(QApplication::translate("Settings", "8232", nullptr));
-        label_4->setText(QApplication::translate("Settings", "RPC Password", nullptr));
         label_2->setText(QApplication::translate("Settings", "Port", nullptr));
-        confMsg->setText(QApplication::translate("Settings", "<html><head/><body><p><br/></p></body></html>", nullptr));
-        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("Settings", "Connection", nullptr));
+        port->setPlaceholderText(QApplication::translate("Settings", "8232", nullptr));
+        label_3->setText(QApplication::translate("Settings", "RPC Username", nullptr));
+        label_4->setText(QApplication::translate("Settings", "RPC Password", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("Settings", "zcashd connection", nullptr));
     } // retranslateUi
 
 };

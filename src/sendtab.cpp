@@ -378,10 +378,10 @@ QString MainWindow::doSendTxValidations(QString fromAddr, QList<ToFields> toAddr
 
     if (!matchesAnyAddr(fromAddr)) return QString("From Address is Invalid");    
 
-    for (auto toAddr = toAddrs.begin(); toAddr != toAddrs.end(); toAddr++) {
-        if (!matchesAnyAddr(toAddr->addr))
-            return QString("Recipient Address ") % toAddr->addr % " is Invalid";    
-    };
+    for (auto toAddr : toAddrs) {
+        if (!matchesAnyAddr(toAddr.addr))
+            return QString("Recipient Address ") % toAddr.addr % " is Invalid";
+    }
 
     return QString();
 }

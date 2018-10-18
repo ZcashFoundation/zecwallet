@@ -120,10 +120,16 @@ void MainWindow::setupSettingsModal() {
 		QIntValidator validator(0, 65535);
 		settings.port->setValidator(&validator);
 
+        // Load current values into the dialog		
+        settings.hostname->setText(Settings::getInstance()->getHost());
+        settings.port->setText(Settings::getInstance()->getPort());
+        settings.rpcuser->setText(Settings::getInstance()->getUsernamePassword().split(":")[0]);
+        settings.rpcpassword->setText(Settings::getInstance()->getUsernamePassword().split(":")[1]);
+
 		// If values are coming from zcash.conf, then disable all the fields
 		auto zcashConfLocation = Settings::getInstance()->getZcashdConfLocation();
 		if (!zcashConfLocation.isEmpty()) {
-			settings.confMsg->setText("Values are configured from\n" + zcashConfLocation);
+			settings.confMsg->setText("Settings are being read from \n" + zcashConfLocation);
 			settings.hostname->setEnabled(false);
 			settings.port->setEnabled(false);
 			settings.rpcuser->setEnabled(false);
@@ -134,12 +140,6 @@ void MainWindow::setupSettingsModal() {
 			settings.port->setEnabled(true);
 			settings.rpcuser->setEnabled(true);
 			settings.rpcpassword->setEnabled(true);
-
-			// Load previous values into the dialog		
-			settings.hostname->setText(Settings::getInstance()->getHost());
-			settings.port->setText(Settings::getInstance()->getPort());
-			settings.rpcuser->setText(Settings::getInstance()->getUsernamePassword().split(":")[0]);
-			settings.rpcpassword->setText(Settings::getInstance()->getUsernamePassword().split(":")[1]);
 		}
 
 		if (settingsDialog.exec() == QDialog::Accepted) {
@@ -212,6 +212,7 @@ void MainWindow::setupBalancesTab() {
         menu.addAction("Copy Address", [=] () {
             QClipboard *clipboard = QGuiApplication::clipboard();
             clipboard->setText(addr);            
+            ui->statusBar->showMessage("Copied to clipboard", 3 * 1000);
         });
 
         if (addr.startsWith("t")) {
@@ -244,6 +245,7 @@ void MainWindow::setupTransactionsTab() {
 
         menu.addAction("Copy txid", [=] () {            
             QGuiApplication::clipboard()->setText(txid);
+            ui->statusBar->showMessage("Copied to clipboard", 3 * 1000);
         });
         menu.addAction("View on block explorer", [=] () {
             QString url;
