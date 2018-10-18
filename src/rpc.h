@@ -40,6 +40,8 @@ private:
     void refreshBalances();
     void refreshTransactions();
     
+	bool processUnspent	(const json& reply);
+	void updateUI		(bool anyUnconfirmed);
 
     void getInfoThenRefresh();
 

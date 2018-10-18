@@ -337,6 +337,51 @@ void RPC::refreshAddresses() {
     });
 }
 
+// Function to create the data model and update the views, used below.
+void RPC::updateUI(bool anyUnconfirmed) {
+	ui->unconfirmedWarning->setVisible(anyUnconfirmed);
+
+	// Update balances model data, which will update the table too
+	balancesTableModel->setNewData(allBalances, utxos);
+
+	// Add all the addresses into the inputs combo box
+	auto lastFromAddr = ui->inputsCombo->currentText().split("(")[0].trimmed();
+
+	ui->inputsCombo->clear();
+	auto i = allBalances->constBegin();
+	while (i != allBalances->constEnd()) {
+		QString item = i.key() % "(" % QString::number(i.value(), 'g', 8) % " " % Utils::getTokenName() % ")";
+		ui->inputsCombo->addItem(item);
+		if (item.startsWith(lastFromAddr)) ui->inputsCombo->setCurrentText(item);
+
+		++i;
+	}
+};
+
+// Function to process reply of the listunspent and z_listunspent API calls, used below.
+bool RPC::processUnspent(const json& reply) {
+	bool anyUnconfirmed = false;
+	for (auto& it : reply.get<json::array_t>()) {
+		QString qsAddr = QString::fromStdString(it["address"]);
+		auto confirmations = it["confirmations"].get<json::number_unsigned_t>();
+		if (confirmations == 0) {
+			anyUnconfirmed = true;
+		}
+
+		utxos->push_back(
+			UnspentOutput(
+				qsAddr,
+				QString::fromStdString(it["txid"]),
+				QString::number(it["amount"].get<json::number_float_t>(), 'g', 8),
+				confirmations
+			)
+		);
+
+		(*allBalances)[qsAddr] = (*allBalances)[qsAddr] + it["amount"].get<json::number_float_t>();
+	}
+	return anyUnconfirmed;
+};
+
 void RPC::refreshBalances() {    
     // 1. Get the Balances
     getBalance([=] (json reply) {        
@@ -351,51 +396,6 @@ void RPC::refreshBalances() {
     utxos = new QList<UnspentOutput>();
     delete allBalances;
     allBalances = new QMap<QString, double>();
-
-    // Function to process reply of the listunspent and z_listunspent API calls, used below.
-    auto processUnspent = [=] (const json& reply) -> bool { 
-        bool anyUnconfirmed = false;
-        for (auto& it : reply.get<json::array_t>()) {   
-            QString qsAddr      = QString::fromStdString(it["address"]);
-            auto confirmations  = it["confirmations"].get<json::number_unsigned_t>();
-            if (confirmations == 0) {
-                anyUnconfirmed = true;
-            }
-
-            utxos->push_back(
-                UnspentOutput(
-                    qsAddr,
-                    QString::fromStdString(it["txid"]), 
-                    QString::number(it["amount"].get<json::number_float_t>(), 'g', 8),
-                    confirmations
-                )
-            );
-
-            (*allBalances)[qsAddr] = (*allBalances)[qsAddr] + it["amount"].get<json::number_float_t>();
-        }
-        return anyUnconfirmed;
-    };
-
-    // Function to create the data model and update the views, used below.
-    auto updateUI = [=] (bool anyUnconfirmed) {       
-        ui->unconfirmedWarning->setVisible(anyUnconfirmed);
-
-        // Update balances model data, which will update the table too
-        balancesTableModel->setNewData(allBalances, utxos);
-
-        // Add all the addresses into the inputs combo box
-        auto lastFromAddr = ui->inputsCombo->currentText().split("(")[0].trimmed();
-
-        ui->inputsCombo->clear();
-        auto i = allBalances->constBegin();
-        while (i != allBalances->constEnd()) {
-            QString item = i.key() % "(" % QString::number(i.value(), 'g', 8) % " " % Utils::getTokenName() % ")";
-            ui->inputsCombo->addItem(item);
-            if (item.startsWith(lastFromAddr)) ui->inputsCombo->setCurrentText(item);
-
-            ++i;
-        }        
-    };
 
     // Call the Transparent and Z unspent APIs serially and then, once they're done, update the UI
     getTransparentUnspent([=] (json reply) {
