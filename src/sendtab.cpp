@@ -322,7 +322,7 @@ void MainWindow::sendButton() {
 
 			auto Amt = new QLabel(confirm.sendToAddrs);
 			Amt->setObjectName(QString("Amt") % QString::number(i + 1));
-			Amt->setText(QString::number(toAddr.amount, 'g', 8) % " " % Utils::getTokenName());
+			Amt->setText(Settings::getInstance()->getZECDisplayFormat(toAddr.amount));
 			Amt->setAlignment(Qt::AlignRight | Qt::AlignTrailing | Qt::AlignVCenter);
 			confirm.gridLayout->addWidget(Amt, i*2, 1, 1, 1);
 
@@ -350,11 +350,11 @@ void MainWindow::sendButton() {
     // Add two rows for fees
     {
         confirm.labelMinerFee->setText("Miner Fee");
-        confirm.minerFee->setText(QString::number(Utils::getMinerFee(), 'g', 8) % " " % Utils::getTokenName());
+        confirm.minerFee->setText(Settings::getInstance()->getZECDisplayFormat(Utils::getMinerFee()));
 
         if (!devAddress.isEmpty() && Utils::getDevFee() > 0) {
             confirm.labelDevFee->setText("Dev Fee");
-            confirm.devFee->setText(QString::number(Utils::getMinerFee(), 'g', 8) % " " % Utils::getTokenName());
+            confirm.devFee->setText(Settings::getInstance()->getZECDisplayFormat(Utils::getDevFee()));
         } else {
             confirm.labelDevFee->setText("");
             confirm.devFee->setText("");

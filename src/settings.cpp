@@ -1,5 +1,6 @@
 #include "precompiled.h"
 
+#include "utils.h"
 #include "settings.h"
 
 Settings* Settings::instance = nullptr;
@@ -144,4 +145,27 @@ bool Settings::isSyncing() {
 
 void Settings::setSyncing(bool syncing) {
 	this->_isSyncing = syncing;
+}
+
+double Settings::getZECPrice() { 
+	//if (isTestnet()) 
+	//	return 0;
+	//else
+		return zecPrice; 
+}
+
+QString Settings::getUSDFormat(double bal) {
+	if (getZECPrice() > 0) 
+		return "$" + QString::number(bal * getZECPrice(), 'f', 2); 
+	else 
+		return QString();
+}
+
+QString Settings::getZECDisplayFormat(double bal) {
+	auto usdFormat = getUSDFormat(bal);
+	if (!usdFormat.isEmpty())
+		return QString::number(bal, 'g', 8) % " " % Utils::getTokenName() %
+				" (" % getUSDFormat(bal) % ")";
+	else
+		return QString::number(bal, 'g', 8) % " " % Utils::getTokenName();
 }

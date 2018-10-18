@@ -45,7 +45,7 @@ RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
     QObject::connect(timer, &QTimer::timeout, [=]() {
         refreshZECPrice();
     });
-    priceTimer->start(1 * 60 * 60 * 1000);  // Every hour
+    priceTimer->start(60 * 60 * 60 * 1000);  // Every hour
 }
 
 RPC::~RPC() {
@@ -571,19 +571,3 @@ void RPC::refreshZECPrice() {
         Settings::getInstance()->setZECPrice(0);
     });
 }
-
-/*
-     .url("https://api.coinmarketcap.com/v1/ticker/")
-      .withHeaders("Accept" -> "application/json")
-      .get()
-      .map {
-        response => {
-          val prices = response.json.as[JsArray].value
-            .map(x => ((x \ "symbol").as[String], (x \ "price_usd").as[BigDecimal].setScale(2, RoundingMode.HALF_UP)))
-            .toMap
-
-          coinCodes.map { coinCode =>
-            CoinPrice(coinCode, prices.get(coinCode), Some(System.currentTimeMillis() / 1000))
-          }
-        }
-        */

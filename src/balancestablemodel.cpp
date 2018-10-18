@@ -81,7 +81,7 @@ QVariant BalancesTableModel::data(const QModelIndex &index, int role) const
 		case 0: return std::get<0>(modeldata->at(index.row()));
 		case 1: {
 				auto bal = std::get<1>(modeldata->at(index.row())).toDouble();
-				return "$ " + QString::number(bal * Settings::getInstance()->getZECPrice(), 'f', 2); // Use 'f' notation to get 2 decimal places
+				return Settings::getInstance()->getUSDFormat(bal);
 			}
 		}
 	}
