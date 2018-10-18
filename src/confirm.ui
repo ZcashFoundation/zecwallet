@@ -39,6 +39,33 @@
       <string>To</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="3" column="1">
+       <widget class="QLabel" name="devFee">
+        <property name="text">
+         <string>Dev Fee Amount</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="Amt1">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="labelDevFee">
+        <property name="text">
+         <string>Dev Fee</string>
+        </property>
+       </widget>
+      </item>
       <item row="2" column="1">
        <widget class="QLabel" name="minerFee">
         <property name="text">
@@ -59,8 +86,15 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="Amt1">
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelMinerFee">
+        <property name="text">
+         <string>Miner Fee</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="AmtUSD1">
         <property name="text">
          <string>TextLabel</string>
         </property>
@@ -69,31 +103,27 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="1" column="0" colspan="3">
        <widget class="QLabel" name="Memo1">
         <property name="text">
          <string>TextLabel</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="labelMinerFee">
+      <item row="2" column="2">
+       <widget class="QLabel" name="minerFeeUSD">
         <property name="text">
-         <string>Miner Fee</string>
+         <string>TextLabel</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="labelDevFee">
+      <item row="3" column="2">
+       <widget class="QLabel" name="devFeeUSD">
         <property name="text">
-         <string>Dev Fee</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QLabel" name="devFee">
-        <property name="text">
-         <string>Dev Fee Amount</string>
+         <string>TextLabel</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

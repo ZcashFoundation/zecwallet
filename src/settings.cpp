@@ -148,24 +148,24 @@ void Settings::setSyncing(bool syncing) {
 }
 
 double Settings::getZECPrice() { 
-	//if (isTestnet()) 
-	//	return 0;
-	//else
-		return zecPrice; 
+	return zecPrice; 
 }
 
 QString Settings::getUSDFormat(double bal) {
-	if (getZECPrice() > 0) 
+	if (!isTestnet() && getZECPrice() > 0) 
 		return "$" + QString::number(bal * getZECPrice(), 'f', 2); 
 	else 
 		return QString();
 }
 
 QString Settings::getZECDisplayFormat(double bal) {
+	return QString::number(bal, 'g', 8) % " " % Utils::getTokenName();
+}
+
+QString Settings::getZECUSDDisplayFormat(double bal) {
 	auto usdFormat = getUSDFormat(bal);
 	if (!usdFormat.isEmpty())
-		return QString::number(bal, 'g', 8) % " " % Utils::getTokenName() %
-				" (" % getUSDFormat(bal) % ")";
+		return getZECDisplayFormat(bal) % " (" % getUSDFormat(bal) % ")";
 	else
-		return QString::number(bal, 'g', 8) % " " % Utils::getTokenName();
+		return getZECDisplayFormat(bal);
 }

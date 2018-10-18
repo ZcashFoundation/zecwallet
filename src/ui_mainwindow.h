@@ -80,6 +80,7 @@ public:
     QHBoxLayout *horizontalLayout_15;
     QLabel *label_5;
     QLineEdit *sendAddressBalance;
+    QLabel *sendAddressBalanceUSD;
     QSpacerItem *horizontalSpacer_6;
     QGroupBox *groupBox_3;
     QVBoxLayout *verticalLayout_3;
@@ -106,6 +107,7 @@ public:
     QHBoxLayout *horizontalLayout_14;
     QLabel *label_7;
     QLineEdit *sendTxFees;
+    QLabel *sendTxFeesUSD;
     QSpacerItem *horizontalSpacer_5;
     QHBoxLayout *horizontalLayout_6;
     QSpacerItem *horizontalSpacer;
@@ -330,6 +332,11 @@ public:
 
         horizontalLayout_15->addWidget(sendAddressBalance);
 
+        sendAddressBalanceUSD = new QLabel(groupBox_4);
+        sendAddressBalanceUSD->setObjectName(QStringLiteral("sendAddressBalanceUSD"));
+
+        horizontalLayout_15->addWidget(sendAddressBalanceUSD);
+
         horizontalSpacer_6 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_15->addItem(horizontalSpacer_6);
@@ -470,6 +477,11 @@ public:
         sendTxFees->setReadOnly(true);
 
         horizontalLayout_14->addWidget(sendTxFees);
+
+        sendTxFeesUSD = new QLabel(tab_2);
+        sendTxFeesUSD->setObjectName(QStringLiteral("sendTxFeesUSD"));
+
+        horizontalLayout_14->addWidget(sendTxFeesUSD);
 
         horizontalSpacer_5 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
@@ -647,7 +659,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -674,6 +686,7 @@ public:
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindow", "Balance", nullptr));
         groupBox_4->setTitle(QApplication::translate("MainWindow", "Pay From", nullptr));
         label_5->setText(QApplication::translate("MainWindow", "Address Balance", nullptr));
+        sendAddressBalanceUSD->setText(QString());
         groupBox_3->setTitle(QApplication::translate("MainWindow", "Send To", nullptr));
         verticalGroupBox->setTitle(QApplication::translate("MainWindow", "Recipient", nullptr));
         label_4->setText(QApplication::translate("MainWindow", "Address", nullptr));
@@ -689,6 +702,7 @@ public:
         addAddressButton->setText(QApplication::translate("MainWindow", "Add Address", nullptr));
         label_7->setText(QApplication::translate("MainWindow", "Fee", nullptr));
         sendTxFees->setText(QString());
+        sendTxFeesUSD->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
         sendTransactionButton->setText(QApplication::translate("MainWindow", "Send", nullptr));
         cancelSendButton->setText(QApplication::translate("MainWindow", "Cancel", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Send", nullptr));

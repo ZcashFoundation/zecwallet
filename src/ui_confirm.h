@@ -31,13 +31,16 @@ public:
     QLabel *sendFrom;
     QGroupBox *sendToAddrs;
     QGridLayout *gridLayout;
+    QLabel *devFee;
+    QLabel *Amt1;
+    QLabel *labelDevFee;
     QLabel *minerFee;
     QLabel *Addr1;
-    QLabel *Amt1;
-    QLabel *Memo1;
     QLabel *labelMinerFee;
-    QLabel *labelDevFee;
-    QLabel *devFee;
+    QLabel *AmtUSD1;
+    QLabel *Memo1;
+    QLabel *minerFeeUSD;
+    QLabel *devFeeUSD;
     QSpacerItem *verticalSpacer;
     QFrame *line;
     QDialogButtonBox *buttonBox;
@@ -66,6 +69,23 @@ public:
         sendToAddrs->setObjectName(QStringLiteral("sendToAddrs"));
         gridLayout = new QGridLayout(sendToAddrs);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        devFee = new QLabel(sendToAddrs);
+        devFee->setObjectName(QStringLiteral("devFee"));
+        devFee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout->addWidget(devFee, 3, 1, 1, 1);
+
+        Amt1 = new QLabel(sendToAddrs);
+        Amt1->setObjectName(QStringLiteral("Amt1"));
+        Amt1->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout->addWidget(Amt1, 0, 1, 1, 1);
+
+        labelDevFee = new QLabel(sendToAddrs);
+        labelDevFee->setObjectName(QStringLiteral("labelDevFee"));
+
+        gridLayout->addWidget(labelDevFee, 3, 0, 1, 1);
+
         minerFee = new QLabel(sendToAddrs);
         minerFee->setObjectName(QStringLiteral("minerFee"));
         minerFee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
@@ -78,32 +98,33 @@ public:
 
         gridLayout->addWidget(Addr1, 0, 0, 1, 1);
 
-        Amt1 = new QLabel(sendToAddrs);
-        Amt1->setObjectName(QStringLiteral("Amt1"));
-        Amt1->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-
-        gridLayout->addWidget(Amt1, 0, 1, 1, 1);
-
-        Memo1 = new QLabel(sendToAddrs);
-        Memo1->setObjectName(QStringLiteral("Memo1"));
-
-        gridLayout->addWidget(Memo1, 1, 0, 1, 2);
-
         labelMinerFee = new QLabel(sendToAddrs);
         labelMinerFee->setObjectName(QStringLiteral("labelMinerFee"));
 
         gridLayout->addWidget(labelMinerFee, 2, 0, 1, 1);
 
-        labelDevFee = new QLabel(sendToAddrs);
-        labelDevFee->setObjectName(QStringLiteral("labelDevFee"));
+        AmtUSD1 = new QLabel(sendToAddrs);
+        AmtUSD1->setObjectName(QStringLiteral("AmtUSD1"));
+        AmtUSD1->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
-        gridLayout->addWidget(labelDevFee, 3, 0, 1, 1);
+        gridLayout->addWidget(AmtUSD1, 0, 2, 1, 1);
 
-        devFee = new QLabel(sendToAddrs);
-        devFee->setObjectName(QStringLiteral("devFee"));
-        devFee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        Memo1 = new QLabel(sendToAddrs);
+        Memo1->setObjectName(QStringLiteral("Memo1"));
 
-        gridLayout->addWidget(devFee, 3, 1, 1, 1);
+        gridLayout->addWidget(Memo1, 1, 0, 1, 3);
+
+        minerFeeUSD = new QLabel(sendToAddrs);
+        minerFeeUSD->setObjectName(QStringLiteral("minerFeeUSD"));
+        minerFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout->addWidget(minerFeeUSD, 2, 2, 1, 1);
+
+        devFeeUSD = new QLabel(sendToAddrs);
+        devFeeUSD->setObjectName(QStringLiteral("devFeeUSD"));
+        devFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout->addWidget(devFeeUSD, 3, 2, 1, 1);
 
 
         verticalLayout->addWidget(sendToAddrs);
@@ -140,13 +161,16 @@ public:
         groupBox->setTitle(QApplication::translate("confirm", "From", nullptr));
         sendFrom->setText(QString());
         sendToAddrs->setTitle(QApplication::translate("confirm", "To", nullptr));
+        devFee->setText(QApplication::translate("confirm", "Dev Fee Amount", nullptr));
+        Amt1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
+        labelDevFee->setText(QApplication::translate("confirm", "Dev Fee", nullptr));
         minerFee->setText(QApplication::translate("confirm", "Miner Amount", nullptr));
         Addr1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
-        Amt1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
-        Memo1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
         labelMinerFee->setText(QApplication::translate("confirm", "Miner Fee", nullptr));
-        labelDevFee->setText(QApplication::translate("confirm", "Dev Fee", nullptr));
-        devFee->setText(QApplication::translate("confirm", "Dev Fee Amount", nullptr));
+        AmtUSD1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
+        Memo1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
+        minerFeeUSD->setText(QApplication::translate("confirm", "TextLabel", nullptr));
+        devFeeUSD->setText(QApplication::translate("confirm", "TextLabel", nullptr));
     } // retranslateUi
 
 };

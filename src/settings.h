@@ -32,9 +32,11 @@ public:
 	const QString& getZcashdConfLocation() { return confLocation; }
 
 	void   	setZECPrice(double p) 		{ zecPrice = p; }
-	double 	getZECPrice(); 		 		
-	QString getUSDFormat(double bal);
-	QString getZECDisplayFormat(double bal);
+	double 	getZECPrice();
+
+	QString getUSDFormat			(double bal);
+	QString getZECDisplayFormat		(double bal);
+	QString getZECUSDDisplayFormat	(double bal);
 
 private:
     // This class can only be accessed through Settings::getInstance()

@@ -56,7 +56,7 @@ void TxTableModel::setNewData(QList<TransactionItem>* data)  {
         case 2: return modeldata->at(index.row()).datetime;
         case 3: {
                 if (role == Qt::DisplayRole)
-                    return QVariant(QString::number(modeldata->at(index.row()).amount, 'g', 8) % " " % Utils::getTokenName());
+                    return Settings::getInstance()->getZECDisplayFormat(modeldata->at(index.row()).amount);
                 else {
                     return Settings::getInstance()->getUSDFormat(modeldata->at(index.row()).amount);
                 }

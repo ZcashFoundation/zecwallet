@@ -42,10 +42,10 @@ RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
 
     // Set up timer to refresh Price
     priceTimer = new QTimer(main);
-    QObject::connect(timer, &QTimer::timeout, [=]() {
+    QObject::connect(priceTimer, &QTimer::timeout, [=]() {
         refreshZECPrice();
     });
-    priceTimer->start(60 * 60 * 60 * 1000);  // Every hour
+    priceTimer->start(60 * 60 * 1000);  // Every hour
 }
 
 RPC::~RPC() {

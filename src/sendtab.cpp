@@ -44,7 +44,7 @@ void MainWindow::setupSendTab() {
             // Set the fees
             ui->sendTxFees->setText(QString::number(Utils::getTotalFee(), 'g', 8) %
                                     " " % Utils::getTokenName());
-
+            ui->sendTxFeesUSD->setText(Settings::getInstance()->getUSDFormat(Utils::getTotalFee()));
             // Set focus to the first address box
             ui->Address1->setFocus();
         }
@@ -85,7 +85,9 @@ void MainWindow::setDefaultPayFrom() {
 void MainWindow::inputComboTextChanged(const QString& text) {
     auto bal    = rpc->getAllBalances()->value(text.split("(")[0].trimmed());
     auto balFmt = QString::number(bal, 'g', 8) + " " % Utils::getTokenName();
+
     ui->sendAddressBalance->setText(balFmt);
+    ui->sendAddressBalanceUSD->setText(Settings::getInstance()->getUSDFormat(bal));
 }
 
     
@@ -290,13 +292,15 @@ void MainWindow::sendButton() {
 	// Remove all existing address/amt qlabels
 	int totalConfirmAddrItems = confirm.sendToAddrs->children().size();
     for (int i = 0; i < totalConfirmAddrItems / 3; i++) {
-		auto addr  = confirm.sendToAddrs->findChild<QLabel*>(QString("Addr") % QString::number(i+1));
-		auto amt   = confirm.sendToAddrs->findChild<QLabel*>(QString("Amt") % QString::number(i+1));
-        auto memo  = confirm.sendToAddrs->findChild<QLabel*>(QString("Memo") % QString::number(i+1));
+		auto addr   = confirm.sendToAddrs->findChild<QLabel*>(QString("Addr")   % QString::number(i+1));
+		auto amt    = confirm.sendToAddrs->findChild<QLabel*>(QString("Amt")    % QString::number(i+1));
+        auto memo   = confirm.sendToAddrs->findChild<QLabel*>(QString("Memo")   % QString::number(i+1));
+        auto amtUSD = confirm.sendToAddrs->findChild<QLabel*>(QString("AmtUSD") % QString::number(i+1));
 
         delete memo;
 		delete addr;
 		delete amt;
+        delete amtUSD;
 	}
 
 	// For each addr/amt/memo, construct the JSON and also build the confirm dialog box    
@@ -314,18 +318,28 @@ void MainWindow::sendButton() {
 
 		// Add new Address widgets instead of the same one.
 		{
+            // Address
 			auto Addr = new QLabel(confirm.sendToAddrs);
 			Addr->setObjectName(QString("Addr") % QString::number(i + 1));
 			Addr->setWordWrap(true);
 			Addr->setText(fnSplitAddressForWrap(toAddr.addr));
 			confirm.gridLayout->addWidget(Addr, i*2, 0, 1, 1);
 
+            // Amount (ZEC)
 			auto Amt = new QLabel(confirm.sendToAddrs);
 			Amt->setObjectName(QString("Amt") % QString::number(i + 1));
 			Amt->setText(Settings::getInstance()->getZECDisplayFormat(toAddr.amount));
 			Amt->setAlignment(Qt::AlignRight | Qt::AlignTrailing | Qt::AlignVCenter);
 			confirm.gridLayout->addWidget(Amt, i*2, 1, 1, 1);
 
+            // Amount (USD)
+            auto AmtUSD = new QLabel(confirm.sendToAddrs);
+            AmtUSD->setObjectName(QString("AmtUSD") % QString::number(i + 1));
+            AmtUSD->setText(Settings::getInstance()->getUSDFormat(toAddr.amount));
+            Amt->setAlignment(Qt::AlignRight | Qt::AlignTrailing | Qt::AlignVCenter);
+            confirm.gridLayout->addWidget(AmtUSD, i*2, 2, 1, 1);            
+
+            // Memo
             if (toAddr.addr.startsWith("z")) {
                 auto Memo = new QLabel(confirm.sendToAddrs);
                 Memo->setObjectName(QStringLiteral("Memo") % QString::number(i + 1));
@@ -334,7 +348,7 @@ void MainWindow::sendButton() {
                 font1.setPointSize(10);
                 Memo->setFont(font1);
 
-                confirm.gridLayout->addWidget(Memo, (i*2)+1, 0, 1, 2);
+                confirm.gridLayout->addWidget(Memo, (i*2)+1, 0, 1, 3);
             }
 		}
     }
@@ -350,14 +364,17 @@ void MainWindow::sendButton() {
     // Add two rows for fees
     {
         confirm.labelMinerFee->setText("Miner Fee");
-        confirm.minerFee->setText(Settings::getInstance()->getZECDisplayFormat(Utils::getMinerFee()));
+        confirm.minerFee     ->setText(Settings::getInstance()->getZECDisplayFormat(Utils::getMinerFee()));
+        confirm.minerFeeUSD  ->setText(Settings::getInstance()->getUSDFormat(Utils::getMinerFee()));
 
         if (!devAddress.isEmpty() && Utils::getDevFee() > 0) {
-            confirm.labelDevFee->setText("Dev Fee");
-            confirm.devFee->setText(Settings::getInstance()->getZECDisplayFormat(Utils::getDevFee()));
+            confirm.labelDevFee ->setText("Dev Fee");
+            confirm.devFee      ->setText(Settings::getInstance()->getZECDisplayFormat(Utils::getDevFee()));
+            confirm.devFeeUSD   ->setText(Settings::getInstance()->getUSDFormat(Utils::getDevFee()));
         } else {
-            confirm.labelDevFee->setText("");
-            confirm.devFee->setText("");
+            confirm.labelDevFee ->setText("");
+            confirm.devFee      ->setText("");
+            confirm.devFeeUSD   ->setText("");
         }
     }
 
