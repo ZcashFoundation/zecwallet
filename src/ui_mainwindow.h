@@ -95,6 +95,7 @@ public:
     QHBoxLayout *horizontalLayout_13;
     QLabel *label_6;
     QLineEdit *Amount1;
+    QLabel *AmtUSD1;
     QCheckBox *Max1;
     QSpacerItem *horizontalSpacer_4;
     QPushButton *MemoBtn1;
@@ -402,6 +403,11 @@ public:
 
         horizontalLayout_13->addWidget(Amount1);
 
+        AmtUSD1 = new QLabel(verticalGroupBox);
+        AmtUSD1->setObjectName(QStringLiteral("AmtUSD1"));
+
+        horizontalLayout_13->addWidget(AmtUSD1);
+
         Max1 = new QCheckBox(verticalGroupBox);
         Max1->setObjectName(QStringLiteral("Max1"));
 
@@ -693,6 +699,7 @@ public:
         Address1->setPlaceholderText(QApplication::translate("MainWindow", "Address", nullptr));
         label_6->setText(QApplication::translate("MainWindow", "Amount", nullptr));
         Amount1->setPlaceholderText(QApplication::translate("MainWindow", "Amount", nullptr));
+        AmtUSD1->setText(QString());
         Max1->setText(QApplication::translate("MainWindow", "Max Available", nullptr));
 #ifndef QT_NO_TOOLTIP
         MemoBtn1->setToolTip(QString());

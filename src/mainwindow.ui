@@ -353,6 +353,13 @@
                      </widget>
                     </item>
                     <item>
+                     <widget class="QLabel" name="AmtUSD1">
+                      <property name="text">
+                       <string/>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <widget class="QCheckBox" name="Max1">
                       <property name="text">
                        <string>Max Available</string>

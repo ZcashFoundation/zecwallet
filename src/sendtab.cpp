@@ -37,6 +37,17 @@ void MainWindow::setupSendTab() {
     QObject::connect(ui->MemoBtn1, &QPushButton::clicked, [=] () {
         memoButtonClicked(1);
     });
+    setMemoEnabled(1, false);
+
+    // The first Address button
+    QObject::connect(ui->Address1, &QLineEdit::textChanged, [=] (auto text) {
+        addressChanged(1, text);
+    });
+
+    // The first Amount button
+    QObject::connect(ui->Amount1, &QLineEdit::textChanged, [=] (auto text) {
+        amountChanged(1, text);
+    });
 
     // Set up focus enter to set fees
     QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int pos) {
@@ -110,6 +121,9 @@ void MainWindow::addAddressSection() {
     auto Address1 = new QLineEdit(verticalGroupBox);
     Address1->setObjectName(QString("Address") % QString::number(itemNumber)); 
     Address1->setPlaceholderText("Address");
+    QObject::connect(Address1, &QLineEdit::textChanged, [=] (auto text) {
+        addressChanged(itemNumber, text);
+    });
 
     horizontalLayout_12->addWidget(Address1);
     sendAddressLayout->addLayout(horizontalLayout_12);
@@ -128,20 +142,28 @@ void MainWindow::addAddressSection() {
     // Create the validator for send to/amount fields
     auto amtValidator = new QDoubleValidator(0, 21000000, 8, Amount1);
     Amount1->setValidator(amtValidator);
+    QObject::connect(Amount1, &QLineEdit::textChanged, [=] (auto text) {
+        amountChanged(itemNumber, text);
+    });
+
     horizontalLayout_13->addWidget(Amount1);
+
+    auto AmtUSD1 = new QLabel(verticalGroupBox);
+    AmtUSD1->setObjectName(QString("AmtUSD") % QString::number(itemNumber));   
+    horizontalLayout_13->addWidget(AmtUSD1);
 
     auto horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
     horizontalLayout_13->addItem(horizontalSpacer_4);
 
-
     auto MemoBtn1 = new QPushButton(verticalGroupBox);
     MemoBtn1->setObjectName(QString("MemoBtn") % QString::number(itemNumber));
-    MemoBtn1->setText("Memo");
+    MemoBtn1->setText("Memo");    
     // Connect Memo Clicked button
     QObject::connect(MemoBtn1, &QPushButton::clicked, [=] () {
         memoButtonClicked(itemNumber);
     });
     horizontalLayout_13->addWidget(MemoBtn1);
+    setMemoEnabled(itemNumber, false);
 
     sendAddressLayout->addLayout(horizontalLayout_13);
 
@@ -159,6 +181,26 @@ void MainWindow::addAddressSection() {
 
     // Delay the call to scroll to allow the scroll window to adjust
     QTimer::singleShot(10, [=] () {ui->sendToScrollArea->ensureWidgetVisible(ui->addAddressButton);});                
+}
+
+void MainWindow::addressChanged(int itemNumber, const QString& text) {    
+    setMemoEnabled(itemNumber, text.startsWith("z"));
+}
+
+void MainWindow::amountChanged(int item, const QString& text) {
+    auto usd = ui->sendToWidgets->findChild<QLabel*>(QString("AmtUSD") % QString::number(item));
+    usd->setText(Settings::getInstance()->getUSDFormat(text.toDouble()));
+}
+
+void MainWindow::setMemoEnabled(int number, bool enabled) {
+    auto memoBtn = ui->sendToWidgets->findChild<QPushButton*>(QString("MemoBtn") % QString::number(number));
+     if (enabled) {
+        memoBtn->setEnabled(true);
+        memoBtn->setToolTip("");
+    } else {
+        memoBtn->setEnabled(false);
+        memoBtn->setToolTip("Only Z addresses can have memos");
+    }
 }
 
 void MainWindow::memoButtonClicked(int number) {
@@ -196,17 +238,22 @@ void MainWindow::removeExtraAddresses() {
     addr->clear();
     auto amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount1"));
     amt->clear();
+    auto amtUSD  = ui->sendToWidgets->findChild<QLabel*>(QString("AmtUSD1"));
+    amtUSD->clear();
     auto max  = ui->sendToWidgets->findChild<QCheckBox*>(QString("Max1"));
     max->setChecked(false);
     auto memo = ui->sendToWidgets->findChild<QLabel*>(QString("MemoTxt1"));
     memo->clear();
+
+    // Disable first memo btn
+    setMemoEnabled(1, false);
 
     // Start the deletion after the first item, since we want to keep 1 send field there all there
     for (int i=1; i < totalItems; i++) {
         auto addressGroupBox = ui->sendToWidgets->findChild<QGroupBox*>(QString("AddressGroupBox") % QString::number(i+1));
             
         delete addressGroupBox;
-    }
+    }    
 }
 
 void MainWindow::maxAmountChecked(int checked) {
@@ -289,7 +336,7 @@ void MainWindow::sendButton() {
 	Ui_confirm confirm;
 	confirm.setupUi(&d);
 
-	// Remove all existing address/amt qlabels
+	// Remove all existing address/amt qlabels on the confirm dialog.
 	int totalConfirmAddrItems = confirm.sendToAddrs->children().size();
     for (int i = 0; i < totalConfirmAddrItems / 3; i++) {
 		auto addr   = confirm.sendToAddrs->findChild<QLabel*>(QString("Addr")   % QString::number(i+1));

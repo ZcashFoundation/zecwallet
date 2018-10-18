@@ -51,7 +51,11 @@ private:
 	void addAddressSection();
 	void maxAmountChecked(int checked);
 
+    void addressChanged(int number, const QString& text);
+    void amountChanged (int numer, const QString& text);
+
     void memoButtonClicked(int number);
+    void setMemoEnabled(int number, bool enabled);
 
     QString doSendTxValidations(QString fromAddr, QList<ToFields> toAddrs);
 

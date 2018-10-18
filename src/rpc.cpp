@@ -329,7 +329,10 @@ void RPC::getInfoThenRefresh() {
 				QString::number(reply["blocks"].get<json::number_unsigned_t>()) %
 				(progress < 0.99 ? ("/" % QString::number(progress*100, 'f', 0) % "%") : QString()) %
 				")";
-			main->statusLabel->setText(statusText);			
+			main->statusLabel->setText(statusText);	
+            auto zecPrice = Settings::getInstance()->getUSDFormat(1);
+            if (!zecPrice.isEmpty())
+                main->statusLabel->setToolTip("1 ZEC = " + zecPrice);
 		});
 
     });        
