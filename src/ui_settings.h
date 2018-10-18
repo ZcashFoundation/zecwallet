@@ -43,7 +43,7 @@ public:
     QLabel *label_4;
     QLineEdit *rpcpassword;
     QLabel *label_2;
-    QLabel *label_5;
+    QLabel *confMsg;
     QFrame *line;
     QSpacerItem *verticalSpacer;
     QDialogButtonBox *buttonBox;
@@ -113,10 +113,11 @@ public:
 
         gridLayout->addWidget(label_2, 4, 0, 1, 1);
 
-        label_5 = new QLabel(groupBox);
-        label_5->setObjectName(QStringLiteral("label_5"));
+        confMsg = new QLabel(groupBox);
+        confMsg->setObjectName(QStringLiteral("confMsg"));
+        confMsg->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
 
-        gridLayout->addWidget(label_5, 0, 0, 1, 1);
+        gridLayout->addWidget(confMsg, 0, 0, 1, 1);
 
         line = new QFrame(groupBox);
         line->setObjectName(QStringLiteral("line"));
@@ -171,7 +172,7 @@ public:
         port->setPlaceholderText(QApplication::translate("Settings", "8232", nullptr));
         label_4->setText(QApplication::translate("Settings", "RPC Password", nullptr));
         label_2->setText(QApplication::translate("Settings", "Port", nullptr));
-        label_5->setText(QApplication::translate("Settings", "<html><head/><body><p>Values configured in ~/.zcash/zcash.conf <br/>will overwrite these values</p></body></html>", nullptr));
+        confMsg->setText(QApplication::translate("Settings", "<html><head/><body><p>zcash msg</p></body></html>", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("Settings", "Connection", nullptr));
     } // retranslateUi
 

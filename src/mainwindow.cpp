@@ -73,25 +73,44 @@ MainWindow::MainWindow(QWidget *parent) :
 		QIntValidator validator(0, 65535);
 		settings.port->setValidator(&validator);
 
-		// Load previous values into the dialog		
-		settings.hostname	->setText(Settings::getInstance()->getHost());
-		settings.port		->setText(Settings::getInstance()->getPort());
-		settings.rpcuser	->setText(Settings::getInstance()->getUsernamePassword().split(":")[0]);
-		settings.rpcpassword->setText(Settings::getInstance()->getUsernamePassword().split(":")[1]);
+
+		// If values are coming from zcash.conf, then disable all the fields
+		auto zcashConfLocation = Settings::getInstance()->getZcashdConfLocation();
+		if (!zcashConfLocation.isEmpty()) {
+			settings.confMsg->setText("Values are configured from\n" + zcashConfLocation);
+			settings.hostname->setEnabled(false);
+			settings.port->setEnabled(false);
+			settings.rpcuser->setEnabled(false);
+			settings.rpcpassword->setEnabled(false);
+		}
+		else {
+			settings.hostname->setEnabled(true);
+			settings.port->setEnabled(true);
+			settings.rpcuser->setEnabled(true);
+			settings.rpcpassword->setEnabled(true);
+
+			// Load previous values into the dialog		
+			settings.hostname->setText(Settings::getInstance()->getHost());
+			settings.port->setText(Settings::getInstance()->getPort());
+			settings.rpcuser->setText(Settings::getInstance()->getUsernamePassword().split(":")[0]);
+			settings.rpcpassword->setText(Settings::getInstance()->getUsernamePassword().split(":")[1]);
+		}
 		
 		if (settingsDialog.exec() == QDialog::Accepted) {
-			// Save settings
-			QSettings s;
-			s.setValue("connection/host",           settings.hostname->text());
-			s.setValue("connection/port",           settings.port->text());
-			s.setValue("connection/rpcuser",        settings.rpcuser->text());
-			s.setValue("connection/rpcpassword",    settings.rpcpassword->text());
+			if (zcashConfLocation.isEmpty()) {
+				// Save settings
+				QSettings s;
+				s.setValue("connection/host", settings.hostname->text());
+				s.setValue("connection/port", settings.port->text());
+				s.setValue("connection/rpcuser", settings.rpcuser->text());
+				s.setValue("connection/rpcpassword", settings.rpcpassword->text());
 
-			s.sync();
+				s.sync();
 
-			// Then refresh everything.
-			this->rpc->reloadConnectionInfo();
-			this->rpc->refresh();
+				// Then refresh everything.
+				this->rpc->reloadConnectionInfo();
+				this->rpc->refresh();
+			}
 		};
 	});
 

@@ -3,6 +3,13 @@
 
 #include "precompiled.h"
 
+struct Config {
+	QString host;
+	QString port;
+	QString rpcuser;
+	QString rpcpassword;
+};
+
 class Settings
 {
 public:
@@ -13,11 +20,9 @@ public:
 	QString getHost();
 	QString getPort();
 
-    void setDefaultPort(int port) {overridePort = QString::number(port);}
-
     double  fees() { return 0.0001; }
-	void    loadFromSettings();
-    void    loadFromFile();
+	bool    loadFromSettings();
+    bool    loadFromFile();
 
     bool isTestnet();
     void setTestnet(bool isTestnet);
@@ -25,18 +30,22 @@ public:
 	bool isSyncing();
 	void setSyncing(bool syncing);
 
+	const QString& getZcashdConfLocation() { return confLocation; }
+
 private:
     // This class can only be accessed through Settings::getInstance()
     Settings() = default;
+	~Settings();
 
     static Settings* instance;
 
-    QString host;
-	QString port;
-    QString username;
-    QString password;
+	Config*		currentConfig;
 
-    QString overridePort;
+	Config*		defaults	= nullptr;
+	Config*		zcashconf	= nullptr;
+	Config*     uisettings	= nullptr;
+
+	QString     confLocation;
 
     bool _isTestnet = false;
 	bool _isSyncing = false;

@@ -15,6 +15,7 @@
 #include <QPainter>
 #include <QMovie>
 #include <QPair>
+#include <QDir>
 #include <QDateTime>
 #include <QTimer>
 #include <QSettings>

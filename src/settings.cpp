@@ -4,18 +4,38 @@
 
 Settings* Settings::instance = nullptr;
 
+Settings::~Settings() {
+	delete defaults;
+	delete zcashconf;
+	delete uisettings;
+}
+
 Settings* Settings::init() {	
 	if (instance != nullptr) return instance;
 	
 	instance = new Settings();
 
-	// Load from settings first, because if they are redefined in the zcash.conf file, 
-	// we'll overwrite them. 
-	instance->loadFromSettings();    
-#ifdef Q_OS_LINUX
-	// Overwrite if any are defined in the zcash.conf
-	instance->loadFromFile();
-#endif
+	// There are 3 possible configurations
+	// 1. The defaults
+	instance->defaults = new Config{ "127.0.0.1", "8232", "", "" };
+
+	// 2. From the UI settings
+	auto settingsFound = instance->loadFromSettings();
+
+	// 3. From the zcash.conf file
+	auto confFound = instance->loadFromFile();
+
+	// zcash.conf (#3) is first priority if it exists
+	if (confFound) {
+		instance->currentConfig = instance->zcashconf;
+	}
+	else if (settingsFound) {
+		instance->currentConfig = instance->uisettings;
+	}
+	else {
+		instance->currentConfig = instance->defaults;
+	}
+
 	return instance;
 }
 
@@ -23,75 +43,92 @@ Settings* Settings::getInstance() {
 	return instance;
 }
 
+
 QString Settings::getHost() {
-	if (host.isNull() || host == "") return "127.0.0.1";
-	return host;
+	return currentConfig->host;
 }
 
 QString Settings::getPort() {
-	// If the override port is set, we'll always return it
-	if (!overridePort.isEmpty()) return overridePort;
-	
-	if (port.isNull() || port == "") return "8232";
-	return port;
+	return currentConfig->port;
 }
 
 
 QString Settings::getUsernamePassword() {
-    return username % ":" % password;
+    return currentConfig->rpcuser % ":" % currentConfig->rpcpassword;
 }
 
-void Settings::loadFromSettings() {
-	// First step is to try and load from the QT Settings. These are loaded first, because
-	// they could be overridden by whats in the zcash.conf, which will take precedence. 
+bool Settings::loadFromSettings() {
+	delete uisettings;
+
+	// Load from the QT Settings. 
 	QSettings s;
 	
-	host		= s.value("connection/host",		"127.0.0.1"	).toString();
-	port		= s.value("connection/port",		"8232"		).toString();
-	username	= s.value("connection/rpcuser",		""			).toString();
-	password	= s.value("connection/rpcpassword", ""			).toString();	
+	auto host		= s.value("connection/host").toString();
+	auto port		= s.value("connection/port").toString();
+	auto username	= s.value("connection/rpcuser").toString();
+	auto password	= s.value("connection/rpcpassword").toString();	
+
+	uisettings = new Config{host, port, username, password};
+
+	if (username.isEmpty()) return false; 
+	return true;
 }
 
-void Settings::loadFromFile() {
-	// Nothing in QT Settings, so try to read from file. 
-	QString zcashdconf = QStandardPaths::locate(QStandardPaths::HomeLocation, ".zcash/zcash.conf");
-	if (zcashdconf.isNull()) {
+bool Settings::loadFromFile() {
+	delete zcashconf;
+
+#ifdef Q_OS_LINUX
+	confLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, ".zcash/zcash.conf");
+#else
+	confLocation = QStandardPaths::locate(QStandardPaths::AppDataLocation, "../Zcash/zcash.conf");
+#endif
+
+	confLocation = QDir::cleanPath(confLocation);
+
+	if (confLocation.isNull()) {
 		// No zcash file, just return with nothing
-		return;
+		return false;
 	}
 
-	QFile file(zcashdconf);
+	QFile file(confLocation);
 	if (!file.open(QIODevice::ReadOnly)) {
 		qDebug() << file.errorString();
-		return;
+		return false;
 	}
 
 	QTextStream in(&file);
 
+	zcashconf = new Config();
+	zcashconf->host = defaults->host;
+
 	while (!in.atEnd()) {
 		QString line = in.readLine();
-		QStringList fields = line.split("=");
+		auto s = line.indexOf("=");
+		QString name  = line.left(s).trimmed().toLower();
+		QString value = line.right(line.length() - s - 1).trimmed();
 
-		if (fields[0].trimmed().toLower() == "rpcuser") {
-			fields.removeFirst();
-			username = fields.join("").trimmed();
+		if (name == "rpcuser") {
+			zcashconf->rpcuser = value;
 		}
-		if (fields[0].trimmed().toLower() == "rpcpassword") {
-			fields.removeFirst();
-			password = fields.join("").trimmed();
+		if (name == "rpcpassword") {
+			zcashconf->rpcpassword = value;
 		}
-		if (fields[0].trimmed().toLower() == "rpcport") {
-			overridePort = fields[1].trimmed();
+		if (name == "rpcport") {
+			zcashconf->port = value;
 		}
-		if (fields[0].trimmed().toLower() == "testnet" &&
-			fields[1].trimmed() == "1" &&
-			overridePort.isEmpty()) {
-				overridePort = "18232";
+		if (name == "testnet" &&
+			value == "1"  &&
+			zcashconf->port.isEmpty()) {
+				zcashconf->port = "18232";
 		}
 	}
 
+	// If rpcport is not in the file, and it was not set by the testnet=1 flag, then go to default
+	if (zcashconf->port.isEmpty()) zcashconf->port = defaults->port;
+
 	file.close();
 
+	return true;
 }
 
 bool Settings::isTestnet() {

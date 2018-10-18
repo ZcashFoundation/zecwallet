@@ -231,11 +231,18 @@ void RPC::handleConnectionError(const QString& error) {
                         % "rpcpassword=<somepassword>\n"
                         % "\nIf you're connecting to a remote note, you can change the username/password in the "
                         % "File->Settings menu.";
-        } else if (error.contains("connection", Qt::CaseInsensitive)) {
-            explanation = QString()
-                        % "\n\nThis is most likely because we couldn't connect to zcashd. Is zcashd running and " 
-                        % "accepting connections from this machine? \nIf you need to change the host/port, you can set that in the "
-                        % "File->Settings menu.";
+        } else if (error.contains("connection refused", Qt::CaseInsensitive)) {
+			auto confLocation = Settings::getInstance()->getZcashdConfLocation();
+			if (confLocation.isEmpty()) {
+				explanation = QString()
+					% "\n\nA zcash.conf was not found on this machine. If you are connecting to a remote/non-standard node " 
+					% "please set the host/port and user/password in the File->Settings menu.";
+			}
+			else {
+				explanation = QString()
+					% "\n\nA zcash.conf was found at\n" % confLocation
+					% "\nbut we can't connect to zcashd. Is rpcuser=<user> and rpcpassword=<pass> set in the zcash.conf file?";
+			}
         } else if (error.contains("bad request", Qt::CaseInsensitive)) {
             explanation = QString()
                         % "\n\nThis is most likely an internal error. Are you using zcashd v2.0 or higher? You might "
