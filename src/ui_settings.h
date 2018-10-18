@@ -172,7 +172,7 @@ public:
         port->setPlaceholderText(QApplication::translate("Settings", "8232", nullptr));
         label_4->setText(QApplication::translate("Settings", "RPC Password", nullptr));
         label_2->setText(QApplication::translate("Settings", "Port", nullptr));
-        confMsg->setText(QApplication::translate("Settings", "<html><head/><body><p>zcash msg</p></body></html>", nullptr));
+        confMsg->setText(QApplication::translate("Settings", "<html><head/><body><p><br/></p></body></html>", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("Settings", "Connection", nullptr));
     } // retranslateUi
 

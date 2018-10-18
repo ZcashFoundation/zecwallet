@@ -35,6 +35,8 @@ git clone https://github.com/adityapk00/zcash-qt-wallet.git
 cd zcash-qt-wallet
 /path/to/qt5/bin/qmake zcash-qt-wallet.pro CONFIG+=DEBUG
 make -j$(nproc)
+
+./zcash-qt-wallet
 ```
 
 ## Troubleshooting FAQ
