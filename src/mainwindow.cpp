@@ -18,101 +18,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Status Bar
-    loadingLabel = new QLabel();
-    loadingMovie = new QMovie(":/icons/res/loading.gif");
-    loadingMovie->setScaledSize(QSize(32, 16));
-    loadingMovie->start();
-    loadingLabel->setAttribute(Qt::WA_NoSystemBackground);
-    loadingLabel->setMovie(loadingMovie);
-        
-    ui->statusBar->addPermanentWidget(loadingLabel);
-    loadingLabel->setVisible(false);    
-
-    // Custom status bar menu
-	ui->statusBar->setContextMenuPolicy(Qt::CustomContextMenu);
-	QObject::connect(ui->statusBar, &QStatusBar::customContextMenuRequested, [=](QPoint pos) {
-		auto msg = ui->statusBar->currentMessage();
-        QMenu menu(this);
-
-		if (!msg.isEmpty() && msg.startsWith(Utils::txidStatusMessage)) {	
-            auto txid = msg.split(":")[1].trimmed();		
-			menu.addAction("Copy txid", [=]() {
-				QGuiApplication::clipboard()->setText(txid);
-			});
-            menu.addAction("View tx on block explorer", [=]() {
-                QString url;
-                if (Settings::getInstance()->isTestnet()) {
-                    url = "https://explorer.testnet.z.cash/tx/" + txid;
-                } else {
-                    url = "https://explorer.zcha.in/transactions/" + txid;
-                }
-                QDesktopServices::openUrl(QUrl(url));
-            });
-		}
-
-        menu.addAction("Refresh", [=]() {
-            rpc->refresh();
-        });
-	    QPoint gpos(mapToGlobal(pos).x(), mapToGlobal(pos).y() + this->height() - ui->statusBar->height());		
-        menu.exec(gpos);
-	});
-
-    statusLabel = new QLabel();
-    ui->statusBar->addPermanentWidget(statusLabel);
-
-    statusIcon = new QLabel();
-    ui->statusBar->addPermanentWidget(statusIcon);
+	// Status Bar
+	setupStatusBar();
     
-	// Set up File -> Settings action
-	QObject::connect(ui->actionSettings, &QAction::triggered, [=]() {
-		QDialog settingsDialog(this);
-		Ui_Settings settings;
-		settings.setupUi(&settingsDialog);
-
-		QIntValidator validator(0, 65535);
-		settings.port->setValidator(&validator);
-
-
-		// If values are coming from zcash.conf, then disable all the fields
-		auto zcashConfLocation = Settings::getInstance()->getZcashdConfLocation();
-		if (!zcashConfLocation.isEmpty()) {
-			settings.confMsg->setText("Values are configured from\n" + zcashConfLocation);
-			settings.hostname->setEnabled(false);
-			settings.port->setEnabled(false);
-			settings.rpcuser->setEnabled(false);
-			settings.rpcpassword->setEnabled(false);
-		}
-		else {
-			settings.hostname->setEnabled(true);
-			settings.port->setEnabled(true);
-			settings.rpcuser->setEnabled(true);
-			settings.rpcpassword->setEnabled(true);
-
-			// Load previous values into the dialog		
-			settings.hostname->setText(Settings::getInstance()->getHost());
-			settings.port->setText(Settings::getInstance()->getPort());
-			settings.rpcuser->setText(Settings::getInstance()->getUsernamePassword().split(":")[0]);
-			settings.rpcpassword->setText(Settings::getInstance()->getUsernamePassword().split(":")[1]);
-		}
-		
-		if (settingsDialog.exec() == QDialog::Accepted) {
-			if (zcashConfLocation.isEmpty()) {
-				// Save settings
-				QSettings s;
-				s.setValue("connection/host", settings.hostname->text());
-				s.setValue("connection/port", settings.port->text());
-				s.setValue("connection/rpcuser", settings.rpcuser->text());
-				s.setValue("connection/rpcpassword", settings.rpcpassword->text());
-
-				s.sync();
-
-				// Then refresh everything.
-				this->rpc->reloadConnectionInfo();
-				this->rpc->refresh();
-			}
-		};
-	});
+	// Settings editor 
+	setupSettingsModal();
 
     // Set up exit action
     QObject::connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
@@ -149,6 +59,106 @@ MainWindow::MainWindow(QWidget *parent) :
 
     rpc = new RPC(new QNetworkAccessManager(this), this);
     rpc->refresh();
+}
+
+void MainWindow::setupStatusBar() {
+	// Status Bar
+	loadingLabel = new QLabel();
+	loadingMovie = new QMovie(":/icons/res/loading.gif");
+	loadingMovie->setScaledSize(QSize(32, 16));
+	loadingMovie->start();
+	loadingLabel->setAttribute(Qt::WA_NoSystemBackground);
+	loadingLabel->setMovie(loadingMovie);
+
+	ui->statusBar->addPermanentWidget(loadingLabel);
+	loadingLabel->setVisible(false);
+
+	// Custom status bar menu
+	ui->statusBar->setContextMenuPolicy(Qt::CustomContextMenu);
+	QObject::connect(ui->statusBar, &QStatusBar::customContextMenuRequested, [=](QPoint pos) {
+		auto msg = ui->statusBar->currentMessage();
+		QMenu menu(this);
+
+		if (!msg.isEmpty() && msg.startsWith(Utils::txidStatusMessage)) {
+			auto txid = msg.split(":")[1].trimmed();
+			menu.addAction("Copy txid", [=]() {
+				QGuiApplication::clipboard()->setText(txid);
+			});
+			menu.addAction("View tx on block explorer", [=]() {
+				QString url;
+				if (Settings::getInstance()->isTestnet()) {
+					url = "https://explorer.testnet.z.cash/tx/" + txid;
+				}
+				else {
+					url = "https://explorer.zcha.in/transactions/" + txid;
+				}
+				QDesktopServices::openUrl(QUrl(url));
+			});
+		}
+
+		menu.addAction("Refresh", [=]() {
+			rpc->refresh();
+		});
+		QPoint gpos(mapToGlobal(pos).x(), mapToGlobal(pos).y() + this->height() - ui->statusBar->height());
+		menu.exec(gpos);
+	});
+
+	statusLabel = new QLabel();
+	ui->statusBar->addPermanentWidget(statusLabel);
+
+	statusIcon = new QLabel();
+	ui->statusBar->addPermanentWidget(statusIcon);
+}
+
+void MainWindow::setupSettingsModal() {
+	// Set up File -> Settings action
+	QObject::connect(ui->actionSettings, &QAction::triggered, [=]() {
+		QDialog settingsDialog(this);
+		Ui_Settings settings;
+		settings.setupUi(&settingsDialog);
+
+		QIntValidator validator(0, 65535);
+		settings.port->setValidator(&validator);
+
+		// If values are coming from zcash.conf, then disable all the fields
+		auto zcashConfLocation = Settings::getInstance()->getZcashdConfLocation();
+		if (!zcashConfLocation.isEmpty()) {
+			settings.confMsg->setText("Values are configured from\n" + zcashConfLocation);
+			settings.hostname->setEnabled(false);
+			settings.port->setEnabled(false);
+			settings.rpcuser->setEnabled(false);
+			settings.rpcpassword->setEnabled(false);
+		}
+		else {
+			settings.hostname->setEnabled(true);
+			settings.port->setEnabled(true);
+			settings.rpcuser->setEnabled(true);
+			settings.rpcpassword->setEnabled(true);
+
+			// Load previous values into the dialog		
+			settings.hostname->setText(Settings::getInstance()->getHost());
+			settings.port->setText(Settings::getInstance()->getPort());
+			settings.rpcuser->setText(Settings::getInstance()->getUsernamePassword().split(":")[0]);
+			settings.rpcpassword->setText(Settings::getInstance()->getUsernamePassword().split(":")[1]);
+		}
+
+		if (settingsDialog.exec() == QDialog::Accepted) {
+			if (zcashConfLocation.isEmpty()) {
+				// Save settings
+				QSettings s;
+				s.setValue("connection/host", settings.hostname->text());
+				s.setValue("connection/port", settings.port->text());
+				s.setValue("connection/rpcuser", settings.rpcuser->text());
+				s.setValue("connection/rpcpassword", settings.rpcpassword->text());
+
+				s.sync();
+
+				// Then refresh everything.
+				this->rpc->reloadConnectionInfo();
+				this->rpc->refresh();
+			}
+		};
+	});
 }
 
 void MainWindow::donate() {

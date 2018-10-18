@@ -243,10 +243,6 @@ void RPC::handleConnectionError(const QString& error) {
 					% "\n\nA zcash.conf was found at\n" % confLocation
 					% "\nbut we can't connect to zcashd. Is rpcuser=<user> and rpcpassword=<pass> set in the zcash.conf file?";
 			}
-        } else if (error.contains("bad request", Qt::CaseInsensitive)) {
-            explanation = QString()
-                        % "\n\nThis is most likely an internal error. Are you using zcashd v2.0 or higher? You might "
-                        % "need to file a bug report here: https://github.com/adityapk00/zcash-qt-wallet/issues";
         } else if (error.contains("internal server error", Qt::CaseInsensitive) ||
                    error.contains("rewinding", Qt::CaseInsensitive) || 
                    error.contains("loading", Qt::CaseInsensitive)) {

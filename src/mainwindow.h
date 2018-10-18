@@ -39,6 +39,9 @@ private:
     void setupRecieveTab();
     void setupBalancesTab();
 
+	void setupSettingsModal();
+	void setupStatusBar();
+
 	void removeExtraAddresses();
 	void setDefaultPayFrom();
 
