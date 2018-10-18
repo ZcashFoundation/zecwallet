@@ -18,7 +18,7 @@ public:
 	static double  getTotalFee();
 
 	static const int 	 updateSpeed = 20 * 1000;	// 20 sec
-private: 
+private: 	
 	Utils() = delete;
 };
 

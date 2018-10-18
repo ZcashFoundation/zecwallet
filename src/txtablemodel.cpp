@@ -1,4 +1,5 @@
 #include "txtablemodel.h"
+#include "settings.h"
 #include "utils.h"
 
 TxTableModel::TxTableModel(QObject *parent)
@@ -53,7 +54,13 @@ void TxTableModel::setNewData(QList<TransactionItem>* data)  {
         case 0: return modeldata->at(index.row()).type;
         case 1: return modeldata->at(index.row()).address;
         case 2: return modeldata->at(index.row()).datetime;
-        case 3: return QVariant(QString::number(modeldata->at(index.row()).amount, 'g', 8) % " " % Utils::getTokenName());
+        case 3: {
+                if (role == Qt::DisplayRole)
+                    return QVariant(QString::number(modeldata->at(index.row()).amount, 'g', 8) % " " % Utils::getTokenName());
+                else {
+                    return "$ " + QString::number(Settings::getInstance()->getZECPrice() * modeldata->at(index.row()).amount, 'f', 2);
+                }
+            }
         }
     }
 

@@ -58,7 +58,9 @@ MainWindow::MainWindow(QWidget *parent) :
     setupBalancesTab();
 
     rpc = new RPC(new QNetworkAccessManager(this), this);
-    rpc->refresh();
+    rpc->refreshZECPrice();
+
+    rpc->refresh();    
 }
 
 void MainWindow::setupStatusBar() {

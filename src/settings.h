@@ -31,6 +31,9 @@ public:
 
 	const QString& getZcashdConfLocation() { return confLocation; }
 
+	void   setZECPrice(double p) { zecPrice = p; }
+	double getZECPrice() { return zecPrice; }
+
 private:
     // This class can only be accessed through Settings::getInstance()
     Settings() = default;
@@ -48,6 +51,8 @@ private:
 
     bool _isTestnet = false;
 	bool _isSyncing = false;
+
+	double zecPrice = 0.0;
 };
 
 #endif // SETTINGS_H

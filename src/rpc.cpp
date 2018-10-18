@@ -39,6 +39,13 @@ RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
     });
     // Start at every 10s. When an operation is pending, this will change to every second
     txTimer->start(Utils::updateSpeed);  
+
+    // Set up timer to refresh Price
+    priceTimer = new QTimer(main);
+    QObject::connect(timer, &QTimer::timeout, [=]() {
+        refreshZECPrice();
+    });
+    priceTimer->start(1 * 60 * 60 * 1000);  // Every hour
 }
 
 RPC::~RPC() {
@@ -515,3 +522,68 @@ void RPC::refreshTxStatus(const QString& newOpid) {
         }
     });
 }
+
+void RPC::refreshZECPrice() {
+    QUrl cmcURL("https://api.coinmarketcap.com/v1/ticker/");
+
+    QNetworkRequest req;
+    req.setUrl(cmcURL);
+    
+    QNetworkReply *reply = restclient->get(req);
+
+    QObject::connect(reply, &QNetworkReply::finished, [=] {
+        reply->deleteLater();
+
+        try {
+            if (reply->error() != QNetworkReply::NoError) {
+                auto parsed = json::parse(reply->readAll(), nullptr, false);
+                if (!parsed.is_discarded() && !parsed["error"]["message"].is_null()) {
+                    qDebug() << QString::fromStdString(parsed["error"]["message"]);    
+                } else {
+                    qDebug() << reply->errorString();
+                }
+                Settings::getInstance()->setZECPrice(0);
+                return;
+            } 
+
+            auto all = reply->readAll();
+            
+            auto parsed = json::parse(all, nullptr, false);
+            if (parsed.is_discarded()) {
+                Settings::getInstance()->setZECPrice(0);
+                return;
+            }
+
+            for (const json& item : parsed.get<json::array_t>()) {
+                if (item["symbol"].get<json::string_t>().compare("ZEC") == 0) {
+                    QString price = QString::fromStdString(item["price_usd"].get<json::string_t>());
+                    qDebug() << "ZEC Price=" << price;
+                    Settings::getInstance()->setZECPrice(price.toDouble());
+                    return;
+                }
+            }
+        } catch (...) {
+            // If anything at all goes wrong, just set the price to 0 and move on.
+            qDebug() << QString("Caught something nasty");
+        }
+
+        // If nothing, then set the price to 0;
+        Settings::getInstance()->setZECPrice(0);
+    });
+}
+
+/*
+     .url("https://api.coinmarketcap.com/v1/ticker/")
+      .withHeaders("Accept" -> "application/json")
+      .get()
+      .map {
+        response => {
+          val prices = response.json.as[JsArray].value
+            .map(x => ((x \ "symbol").as[String], (x \ "price_usd").as[BigDecimal].setScale(2, RoundingMode.HALF_UP)))
+            .toMap
+
+          coinCodes.map { coinCode =>
+            CoinPrice(coinCode, prices.get(coinCode), Some(System.currentTimeMillis() / 1000))
+          }
+        }
+        */

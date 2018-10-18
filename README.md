@@ -33,7 +33,7 @@ You need a C++14 compatible compiler like g++ or clang++
 ```
 git clone https://github.com/adityapk00/zcash-qt-wallet.git
 cd zcash-qt-wallet
-/path/to/qt5/bin/qmake zcash-qt-wallet.pro CONFIG+=DEBUG
+/path/to/qt5/bin/qmake zcash-qt-wallet.pro CONFIG+=debug
 make -j$(nproc)
 
 ./zcash-qt-wallet

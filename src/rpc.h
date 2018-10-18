@@ -20,6 +20,7 @@ public:
     void refresh();             // Refresh all transactions
     void refreshTxStatus(const QString& newOpid = QString());     // Refresh the status of all pending txs.
     void refreshAddresses();    // Refresh wallet Z-addrs
+    void refreshZECPrice();
 
     void sendZTransaction   (json params, const std::function<void(json)>& cb);
 
@@ -38,8 +39,8 @@ private:
     void doSendRPC  (const json& payload, const std::function<void(json)>& cb);
 
     void refreshBalances();
-    void refreshTransactions();
-    
+    void refreshTransactions();    
+
 	bool processUnspent	(const json& reply);
 	void updateUI		(bool anyUnconfirmed);
 
@@ -51,7 +52,6 @@ private:
     void getZUnspent            (const std::function<void(json)>& cb);
     void getTransactions        (const std::function<void(json)>& cb);
     void getZAddresses          (const std::function<void(json)>& cb);
-
 
     void handleConnectionError  (const QString& error);
     void handleTxError          (const QString& error);
@@ -70,6 +70,7 @@ private:
 
     QTimer*                     timer;
     QTimer*                     txTimer;
+    QTimer*                     priceTimer;
 
     Ui::MainWindow*             ui;
     MainWindow*                 main;
