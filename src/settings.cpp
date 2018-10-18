@@ -73,10 +73,12 @@ void Settings::loadFromFile() {
 		QStringList fields = line.split("=");
 
 		if (fields[0].trimmed().toLower() == "rpcuser") {
-			username = fields[1].trimmed();
+			fields.removeFirst();
+			username = fields.join("").trimmed();
 		}
 		if (fields[0].trimmed().toLower() == "rpcpassword") {
-			password = fields[1].trimmed();
+			fields.removeFirst();
+			password = fields.join("").trimmed();
 		}
 		if (fields[0].trimmed().toLower() == "rpcport") {
 			overridePort = fields[1].trimmed();
