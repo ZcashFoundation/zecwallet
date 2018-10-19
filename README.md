@@ -4,18 +4,6 @@ zcash-qt-wallet is a z-Addr first wallet UI frontend for zcashd that runs on Win
 
 # Installation
 
-zcash-qt-wallet needs a zcash node running zcashd. Download the zcash node software from https://z.cash/download/ and start zcashd. If you are running Windows, you can get [WinZEC](https://winzec.com/)
-
-## Prerequisites: zcashd
-zcashd needs to run with RPC enabled and with a RPC username/password set. Add the following entries into ~/.zcash/zcash.conf
-
-```
-rpcuser=username
-rpcpassword=password
-```
-zcash-qt-wallet should auto-detect zcashd and WinZEC. If you are running zcashd on WSL, then please set the connection parameters in the File->Settings menu. 
-
-## Installing zcash-qt-wallet
 Head over to the releases page and grab the latest binary. https://github.com/adityapk00/zcash-qt-wallet/releases
 
 
@@ -28,6 +16,18 @@ tar -xvf zcash-qt-wallet-v0.1.9.tar.gz
 
 ### Windows
 Unzip the release binary and double click on zcash-qt-wallet to start.
+
+## Prerequisites: zcashd
+zcash-qt-wallet needs a zcash node running zcashd. Download the zcash node software from https://z.cash/download/ and start zcashd. If you are running Windows, you can get [WinZEC](https://winzec.com/)
+
+zcashd needs to run with RPC enabled and with a RPC username/password set. Add the following entries into ~/.zcash/zcash.conf
+
+```
+rpcuser=username
+rpcpassword=password
+```
+zcash-qt-wallet should auto-detect zcashd and WinZEC. If you are running zcashd on WSL, then please set the connection parameters in the File->Settings menu. 
+
 
 ## Compiling from source
 zcash-qt-wallet depends on Qt5, which you can get from here: https://www.qt.io/download
