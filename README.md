@@ -1,10 +1,10 @@
-zcash-qt-wallet is a z-Addr first wallet UI frontend for zcashd
+zcash-qt-wallet is a z-Addr first wallet UI frontend for zcashd that runs on Windows and Linux
 
 ![Screenshot](docs/screenshot-main.png?raw=true)
 
 # Installation
 
-zcash-qt-wallet needs a zcash node running zcashd. Download the zcash node software from https://z.cash/download/ and start zcashd.
+zcash-qt-wallet needs a zcash node running zcashd. Download the zcash node software from https://z.cash/download/ and start zcashd. If you are running Windows, you can get [WinZEC](https://winzec.com/)
 
 ## Prerequisites: zcashd
 zcashd needs to run with RPC enabled and with a RPC username/password set. Add the following entries into ~/.zcash/zcash.conf
@@ -13,16 +13,21 @@ zcashd needs to run with RPC enabled and with a RPC username/password set. Add t
 rpcuser=username
 rpcpassword=password
 ```
-and restart zcashd
+zcash-qt-wallet should auto-detect zcashd and WinZEC. If you are running zcashd on WSL, then please set the connection parameters in the File->Settings menu. 
 
 ## Installing zcash-qt-wallet
 Head over to the releases page and grab the latest binary. https://github.com/adityapk00/zcash-qt-wallet/releases
 
+
+### Linux
 Extract and run the binary
 ```
-tar -xvf zcash-qt-wallet-v0.1.8.tar.gz
-./zcash-qt-wallet-v0.1.8/zcash-qt-wallet
+tar -xvf zcash-qt-wallet-v0.1.9.tar.gz
+./zcash-qt-wallet-v0.1.9/zcash-qt-wallet
 ```
+
+### Windows
+Unzip the release binary and double click on zcash-qt-wallet to start.
 
 ## Compiling from source
 zcash-qt-wallet depends on Qt5, which you can get from here: https://www.qt.io/download
@@ -39,6 +44,15 @@ make -j$(nproc)
 ./zcash-qt-wallet
 ```
 
+### Compiling on Windows
+You need Visual Studio 2017 (The free C++ Community Edition works just fine). 
+
+From the VS Tools command prompt
+```
+c:\Qt5\bin\qmake.exe zcash-qt-wallet.pro -tp vc CONFIG+=debug
+```
+This will create the Visual Studio project files. You can then open Visual Studio and compile and run normally. 
+
 ## Troubleshooting FAQ
 ### 1. "Connection Error"
 
@@ -48,7 +62,7 @@ from your host and also zcashd is set to be configured to accept connections fro
 
 The easiest way to connect to a remote node is probably to ssh to it with port forwarding like this:
 ```
-ssh -L8232:127.0.0.1:8232 user@remotehost
+ssh -L8232:127.0.0.1.9232 user@remotehost
 ```
 ### 2. "Not enough balance" when sending transactions
 The most likely cause for this is that you are trying to spend unconfirmed funds. Unlike bitcoin, the zcash protocol doesn't let you spent unconfirmed funds yet. Please wait for 
