@@ -138,6 +138,7 @@ void MainWindow::setupSettingsModal() {
 			settings.rpcpassword->setEnabled(false);
 		}
 		else {
+			settings.confMsg->setText("No local zcash.conf found. Please configure manually.");
 			settings.hostname->setEnabled(true);
 			settings.port->setEnabled(true);
 			settings.rpcuser->setEnabled(true);
@@ -147,13 +148,11 @@ void MainWindow::setupSettingsModal() {
 		if (settingsDialog.exec() == QDialog::Accepted) {
 			if (zcashConfLocation.isEmpty()) {
 				// Save settings
-				QSettings s;
-				s.setValue("connection/host", settings.hostname->text());
-				s.setValue("connection/port", settings.port->text());
-				s.setValue("connection/rpcuser", settings.rpcuser->text());
-				s.setValue("connection/rpcpassword", settings.rpcpassword->text());
-
-				s.sync();
+				Settings::getInstance()->saveSettings(
+					settings.hostname->text(),
+					settings.port->text(),
+					settings.rpcuser->text(),
+					settings.rpcpassword->text());
 
 				// Then refresh everything.
 				this->rpc->reloadConnectionInfo();

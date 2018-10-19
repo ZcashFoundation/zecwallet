@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
         qApp->setFont(QFont("Ubuntu", 11, QFont::Normal, false));
     #endif
 
+	QCoreApplication::setOrganizationName("zcash-qt-wallet-org");
 	QCoreApplication::setApplicationName("zcash-qt-wallet");
 
     Settings::init();

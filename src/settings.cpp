@@ -12,9 +12,8 @@ Settings::~Settings() {
 }
 
 Settings* Settings::init() {	
-	if (instance != nullptr) return instance;
-	
-	instance = new Settings();
+	if (instance == nullptr) 
+		instance = new Settings();
 
 	// There are 3 possible configurations
 	// 1. The defaults
@@ -74,13 +73,27 @@ bool Settings::loadFromSettings() {
     return !username.isEmpty();
 }
 
+void Settings::saveSettings(const QString& host, const QString& port, const QString& username, const QString& password) {
+	QSettings s;
+
+	s.setValue("connection/host", host);
+	s.setValue("connection/port", port);
+	s.setValue("connection/rpcuser", username);
+	s.setValue("connection/rpcpassword", password);
+
+	s.sync();
+
+	// re-init to load correct settings
+	init();
+}
+
 bool Settings::loadFromFile() {
 	delete zcashconf;
 
 #ifdef Q_OS_LINUX
 	confLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, ".zcash/zcash.conf");
 #else
-	confLocation = QStandardPaths::locate(QStandardPaths::AppDataLocation, "../Zcash/zcash.conf");
+	confLocation = QStandardPaths::locate(QStandardPaths::AppDataLocation, "../../Zcash/zcash.conf");
 #endif
 
 	confLocation = QDir::cleanPath(confLocation);

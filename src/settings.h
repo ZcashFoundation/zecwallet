@@ -23,6 +23,8 @@ public:
 	bool    loadFromSettings();
     bool    loadFromFile();
 
+	void saveSettings(const QString& host, const QString& port, const QString& username, const QString& password);
+
     bool isTestnet();
     void setTestnet(bool isTestnet);
 
