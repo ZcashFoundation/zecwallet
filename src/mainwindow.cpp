@@ -138,7 +138,7 @@ void MainWindow::setupSettingsModal() {
 			settings.rpcpassword->setEnabled(false);
 		}
 		else {
-			settings.confMsg->setText("No local zcash.conf found. Please configure manually.");
+			settings.confMsg->setText("No local zcash.conf found. Please configure connection manually.");
 			settings.hostname->setEnabled(true);
 			settings.port->setEnabled(true);
 			settings.rpcuser->setEnabled(true);
