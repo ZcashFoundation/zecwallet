@@ -51,6 +51,11 @@ void MainWindow::setupSendTab() {
         amountChanged(1, text);
     });
 
+	// Font for the first Memo label
+	QFont f = ui->Address1->font();
+	f.setPointSize(f.pointSize() - 1);
+	ui->MemoTxt1->setFont(f);
+
     // Set up focus enter to set fees
     QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int pos) {
         if (pos == 1) {
@@ -171,8 +176,8 @@ void MainWindow::addAddressSection() {
 
     auto MemoTxt1 = new QLabel(verticalGroupBox);
     MemoTxt1->setObjectName(QString("MemoTxt") % QString::number(itemNumber));
-    QFont font1;
-    font1.setPointSize(10);
+    QFont font1 = Address1->font();
+    font1.setPointSize(font1.pointSize()-1);
     MemoTxt1->setFont(font1);
     sendAddressLayout->addWidget(MemoTxt1);
 
@@ -394,7 +399,7 @@ void MainWindow::sendButton() {
             auto AmtUSD = new QLabel(confirm.sendToAddrs);
             AmtUSD->setObjectName(QString("AmtUSD") % QString::number(i + 1));
             AmtUSD->setText(Settings::getInstance()->getUSDFormat(toAddr.amount));
-            Amt->setAlignment(Qt::AlignRight | Qt::AlignTrailing | Qt::AlignVCenter);
+            AmtUSD->setAlignment(Qt::AlignRight | Qt::AlignTrailing | Qt::AlignVCenter);
             confirm.gridLayout->addWidget(AmtUSD, i*2, 2, 1, 1);            
 
             // Memo
@@ -402,8 +407,8 @@ void MainWindow::sendButton() {
                 auto Memo = new QLabel(confirm.sendToAddrs);
                 Memo->setObjectName(QStringLiteral("Memo") % QString::number(i + 1));
                 Memo->setText(toAddr.txtMemo);
-                QFont font1;
-                font1.setPointSize(10);
+                QFont font1 = Addr->font();
+                font1.setPointSize(font1.pointSize() - 1);
                 Memo->setFont(font1);
 
                 confirm.gridLayout->addWidget(Memo, (i*2)+1, 0, 1, 3);
