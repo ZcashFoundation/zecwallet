@@ -331,8 +331,10 @@ void RPC::getInfoThenRefresh() {
 				")";
 			main->statusLabel->setText(statusText);	
             auto zecPrice = Settings::getInstance()->getUSDFormat(1);
-            if (!zecPrice.isEmpty())
+            if (!zecPrice.isEmpty()) {
                 main->statusLabel->setToolTip("1 ZEC = " + zecPrice);
+                main->statusIcon->setToolTip("1 ZEC = " + zecPrice);
+            }
 		});
 
     });        

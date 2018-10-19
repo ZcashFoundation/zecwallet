@@ -7,6 +7,8 @@
 
 #include "precompiled.h"
 
+#include <iostream>
+#include <iomanip>
 using json = nlohmann::json;
 
 void MainWindow::setupSendTab() {
@@ -350,6 +352,15 @@ void MainWindow::sendButton() {
         delete amtUSD;
 	}
 
+    // Remove the fee labels
+    delete confirm.sendToAddrs->findChild<QLabel*>("labelMinerFee");
+    delete confirm.sendToAddrs->findChild<QLabel*>("minerFee");
+    delete confirm.sendToAddrs->findChild<QLabel*>("minerFeeUSD");
+
+    delete confirm.sendToAddrs->findChild<QLabel*>("labelDevFee");
+    delete confirm.sendToAddrs->findChild<QLabel*>("devFee");
+    delete confirm.sendToAddrs->findChild<QLabel*>("devFeeUSD");
+
 	// For each addr/amt/memo, construct the JSON and also build the confirm dialog box    
     for (int i=0; i < toAddrs.size(); i++) {
         auto toAddr = toAddrs[i];
@@ -410,19 +421,43 @@ void MainWindow::sendButton() {
 
     // Add two rows for fees
     {
-        confirm.labelMinerFee->setText("Miner Fee");
-        confirm.minerFee     ->setText(Settings::getInstance()->getZECDisplayFormat(Utils::getMinerFee()));
-        confirm.minerFeeUSD  ->setText(Settings::getInstance()->getUSDFormat(Utils::getMinerFee()));
+        auto i = toAddrs.size() * 2;
+
+        auto labelMinerFee = new QLabel(confirm.sendToAddrs);
+        labelMinerFee->setObjectName(QStringLiteral("labelMinerFee"));
+        confirm.gridLayout->addWidget(labelMinerFee, i, 0, 1, 1);
+        labelMinerFee->setText("Miner Fee");
+
+        auto minerFee = new QLabel(confirm.sendToAddrs);
+        minerFee->setObjectName(QStringLiteral("minerFee"));
+        minerFee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        confirm.gridLayout->addWidget(minerFee, i, 1, 1, 1);
+        minerFee->setText(Settings::getInstance()->getZECDisplayFormat(Utils::getMinerFee()));
+
+        auto minerFeeUSD = new QLabel(confirm.sendToAddrs);
+        minerFeeUSD->setObjectName(QStringLiteral("minerFeeUSD"));
+        minerFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        confirm.gridLayout->addWidget(minerFeeUSD, i, 2, 1, 1);
+        minerFeeUSD->setText(Settings::getInstance()->getUSDFormat(Utils::getMinerFee()));
 
         if (!devAddress.isEmpty() && Utils::getDevFee() > 0) {
-            confirm.labelDevFee ->setText("Dev Fee");
-            confirm.devFee      ->setText(Settings::getInstance()->getZECDisplayFormat(Utils::getDevFee()));
-            confirm.devFeeUSD   ->setText(Settings::getInstance()->getUSDFormat(Utils::getDevFee()));
-        } else {
-            confirm.labelDevFee ->setText("");
-            confirm.devFee      ->setText("");
-            confirm.devFeeUSD   ->setText("");
-        }
+            auto labelDevFee = new QLabel(confirm.sendToAddrs);
+            labelDevFee->setObjectName(QStringLiteral("labelDevFee"));
+            confirm.gridLayout->addWidget(labelDevFee, i+1, 0, 1, 1);
+            labelDevFee ->setText("Dev Fee");
+
+            auto devFee = new QLabel(confirm.sendToAddrs);
+            devFee->setObjectName(QStringLiteral("devFee"));
+            devFee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+            confirm.gridLayout->addWidget(devFee, i+1, 1, 1, 1);
+            devFee      ->setText(Settings::getInstance()->getZECDisplayFormat(Utils::getDevFee()));
+
+            auto devFeeUSD = new QLabel(confirm.sendToAddrs);
+            devFeeUSD->setObjectName(QStringLiteral("devFeeUSD"));
+            devFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+            confirm.gridLayout->addWidget(devFeeUSD, i+1, 2, 1, 1);
+            devFeeUSD   ->setText(Settings::getInstance()->getUSDFormat(Utils::getDevFee()));
+        } 
     }
 
     // Add sender
@@ -435,6 +470,7 @@ void MainWindow::sendButton() {
 
 	// Show the dialog and submit it if the user confirms
 	if (d.exec() == QDialog::Accepted) {
+        std::cout << std::setw(2) << params << std::endl;
 		rpc->sendZTransaction(params, [=](const json& reply) {
 			QString opid = QString::fromStdString(reply.get<json::string_t>());
 			ui->statusBar->showMessage("Computing Tx: " % opid);
