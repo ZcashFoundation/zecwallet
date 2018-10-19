@@ -245,7 +245,7 @@
              <item>
               <widget class="QLabel" name="sendAddressBalanceUSD">
                <property name="text">
-                <string>     </string>
+                <string/>
                </property>
               </widget>
              </item>
@@ -302,7 +302,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>841</width>
-                <height>288</height>
+                <height>321</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -471,53 +471,6 @@
            </item>
           </layout>
          </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_14">
-          <item>
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Fee</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="sendTxFees">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="sendTxFeesUSD">
-            <property name="text">
-             <string>TextLabel</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -760,7 +713,6 @@
   <tabstop>Amount1</tabstop>
   <tabstop>Max1</tabstop>
   <tabstop>addAddressButton</tabstop>
-  <tabstop>sendTxFees</tabstop>
   <tabstop>sendTransactionButton</tabstop>
   <tabstop>cancelSendButton</tabstop>
   <tabstop>balancesTable</tabstop>

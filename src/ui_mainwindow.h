@@ -105,11 +105,6 @@ public:
     QPushButton *addAddressButton;
     QSpacerItem *horizontalSpacer_3;
     QSpacerItem *verticalSpacer_2;
-    QHBoxLayout *horizontalLayout_14;
-    QLabel *label_7;
-    QLineEdit *sendTxFees;
-    QLabel *sendTxFeesUSD;
-    QSpacerItem *horizontalSpacer_5;
     QHBoxLayout *horizontalLayout_6;
     QSpacerItem *horizontalSpacer;
     QPushButton *sendTransactionButton;
@@ -362,7 +357,7 @@ public:
         sendToScrollArea->setWidgetResizable(true);
         sendToWidgets = new QWidget();
         sendToWidgets->setObjectName(QStringLiteral("sendToWidgets"));
-        sendToWidgets->setGeometry(QRect(0, 0, 841, 288));
+        sendToWidgets->setGeometry(QRect(0, 0, 841, 321));
         sendToLayout = new QVBoxLayout(sendToWidgets);
         sendToLayout->setSpacing(6);
         sendToLayout->setContentsMargins(11, 11, 11, 11);
@@ -467,34 +462,6 @@ public:
 
 
         verticalLayout_4->addWidget(groupBox_3);
-
-        horizontalLayout_14 = new QHBoxLayout();
-        horizontalLayout_14->setSpacing(6);
-        horizontalLayout_14->setObjectName(QStringLiteral("horizontalLayout_14"));
-        label_7 = new QLabel(tab_2);
-        label_7->setObjectName(QStringLiteral("label_7"));
-
-        horizontalLayout_14->addWidget(label_7);
-
-        sendTxFees = new QLineEdit(tab_2);
-        sendTxFees->setObjectName(QStringLiteral("sendTxFees"));
-        sizePolicy.setHeightForWidth(sendTxFees->sizePolicy().hasHeightForWidth());
-        sendTxFees->setSizePolicy(sizePolicy);
-        sendTxFees->setReadOnly(true);
-
-        horizontalLayout_14->addWidget(sendTxFees);
-
-        sendTxFeesUSD = new QLabel(tab_2);
-        sendTxFeesUSD->setObjectName(QStringLiteral("sendTxFeesUSD"));
-
-        horizontalLayout_14->addWidget(sendTxFeesUSD);
-
-        horizontalSpacer_5 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout_14->addItem(horizontalSpacer_5);
-
-
-        verticalLayout_4->addLayout(horizontalLayout_14);
 
         horizontalLayout_6 = new QHBoxLayout();
         horizontalLayout_6->setSpacing(6);
@@ -642,8 +609,7 @@ public:
         QWidget::setTabOrder(Address1, Amount1);
         QWidget::setTabOrder(Amount1, Max1);
         QWidget::setTabOrder(Max1, addAddressButton);
-        QWidget::setTabOrder(addAddressButton, sendTxFees);
-        QWidget::setTabOrder(sendTxFees, sendTransactionButton);
+        QWidget::setTabOrder(addAddressButton, sendTransactionButton);
         QWidget::setTabOrder(sendTransactionButton, cancelSendButton);
         QWidget::setTabOrder(cancelSendButton, balancesTable);
         QWidget::setTabOrder(balancesTable, rdioZAddr);
@@ -707,9 +673,6 @@ public:
         MemoBtn1->setText(QApplication::translate("MainWindow", "Memo", nullptr));
         MemoTxt1->setText(QString());
         addAddressButton->setText(QApplication::translate("MainWindow", "Add Address", nullptr));
-        label_7->setText(QApplication::translate("MainWindow", "Fee", nullptr));
-        sendTxFees->setText(QString());
-        sendTxFeesUSD->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
         sendTransactionButton->setText(QApplication::translate("MainWindow", "Send", nullptr));
         cancelSendButton->setText(QApplication::translate("MainWindow", "Cancel", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Send", nullptr));

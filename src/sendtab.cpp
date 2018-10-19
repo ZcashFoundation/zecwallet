@@ -55,19 +55,6 @@ void MainWindow::setupSendTab() {
 	QFont f = ui->Address1->font();
 	f.setPointSize(f.pointSize() - 1);
 	ui->MemoTxt1->setFont(f);
-
-    // Set up focus enter to set fees
-    QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int pos) {
-        if (pos == 1) {
-            // Set the fees
-            ui->sendTxFees->setText(QString::number(Utils::getTotalFee(), 'g', 8) %
-                                    " " % Utils::getTokenName());
-            ui->sendTxFeesUSD->setText(Settings::getInstance()->getUSDFormat(Utils::getTotalFee()));
-            // Set focus to the first address box
-            ui->Address1->setFocus();
-        }
-    });
-
 }
 
 void MainWindow::setDefaultPayFrom() {
