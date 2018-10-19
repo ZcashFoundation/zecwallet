@@ -18,7 +18,7 @@ tar -xvf zcash-qt-wallet-v0.1.9.tar.gz
 Unzip the release binary and double click on zcash-qt-wallet to start.
 
 ## Prerequisites: zcashd
-zcash-qt-wallet needs a zcash node running zcashd. Download the zcash node software from https://z.cash/download/ and start zcashd. If you are running Windows, you can get [WinZEC](https://winzec.com/)
+zcash-qt-wallet needs a zcash node running zcashd. Download the zcash node software from https://z.cash/download/ and start zcashd. If you are running Windows, you can get [WinZEC](https://winzec.com/) or run zcashd inside [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
 zcashd needs to run with RPC enabled and with a RPC username/password set. Add the following entries into ~/.zcash/zcash.conf
 
@@ -30,10 +30,9 @@ zcash-qt-wallet should auto-detect zcashd and WinZEC. If you are running zcashd 
 
 
 ## Compiling from source
-zcash-qt-wallet depends on Qt5, which you can get from here: https://www.qt.io/download
+zcash-qt-wallet is written in C++ 14, and can be compiled with g++/clang++/visual c++. It also depends on Qt5, which you can get from here: https://www.qt.io/download
 
 ### Compiling on Linux
-You need a C++14 compatible compiler like g++ or clang++
 
 ```
 git clone https://github.com/adityapk00/zcash-qt-wallet.git
