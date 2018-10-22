@@ -1,4 +1,4 @@
-zcash-qt-wallet is a z-Addr first wallet UI frontend for zcashd that runs on Windows and Linux
+zcash-qt-wallet is a z-Addr first, Sapling compatible wallet for zcashd that runs on Windows and Linux
 
 ![Screenshot](docs/screenshot-main.png?raw=true)
 

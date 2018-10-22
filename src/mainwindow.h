@@ -78,7 +78,6 @@ private:
     void importPrivKeys();
 
     RPC*                rpc;
-    Settings*           settings;
 
     QMovie*             loadingMovie;
 };

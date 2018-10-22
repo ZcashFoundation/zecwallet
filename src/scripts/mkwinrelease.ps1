@@ -20,7 +20,7 @@ Move-Item release/zcash-qt-wallet.exe release/$target | Out-Null
 
 echo "Copying"
 # No need for deploy, since we're using a static Qt5 library
-# & "$Env:QT_STATIC\bin\windeployqt.exe" release/$target/zcash-qt-wallet.exe *>$null
+& "$Env:QT_STATIC\bin\windeployqt.exe" release/$target/zcash-qt-wallet.exe *>$null
 Copy-Item LICENSE release/$target | Out-Null
 Copy-Item README.md release/$target | Out-Null
 
