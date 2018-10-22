@@ -291,8 +291,8 @@ std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
             ui->listRecieveAddresses->clear();
 
             std::for_each(addrs->begin(), addrs->end(), [=] (auto addr) {
-                if ( (sapling &&  settings->isSaplingAddress(addr)) ||
-                    (!sapling && !settings->isSaplingAddress(addr)))
+                if ( (sapling &&  Settings::getInstance()->isSaplingAddress(addr)) ||
+                    (!sapling && !Settings::getInstance()->isSaplingAddress(addr)))
                     ui->listRecieveAddresses->addItem(addr);
             }); 
 
