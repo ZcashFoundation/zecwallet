@@ -272,6 +272,7 @@ public:
         horizontalLayout_4->setSpacing(6);
         horizontalLayout_4->setContentsMargins(11, 11, 11, 11);
         horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+        horizontalLayout_4->setContentsMargins(0, 0, 0, 0);
         balancesTable = new QTableView(groupBox_2);
         balancesTable->setObjectName(QStringLiteral("balancesTable"));
         balancesTable->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -674,7 +675,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
