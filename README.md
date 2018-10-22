@@ -50,9 +50,16 @@ You need Visual Studio 2017 (The free C++ Community Edition works just fine).
 
 From the VS Tools command prompt
 ```
+c:\Qt5\bin\qmake.exe zcash-qt-wallet.pro CONFIG+=debug
+nmake
+
+debug\zcash-qt-wallet.exe
+```
+
+To create the Visual Studio project files so you can compile and run from Visual Studio:
+```
 c:\Qt5\bin\qmake.exe zcash-qt-wallet.pro -tp vc CONFIG+=debug
 ```
-This will create the Visual Studio project files. You can then open Visual Studio and compile and run normally. 
 
 ## Troubleshooting FAQ
 ### 1. "Connection Error"
