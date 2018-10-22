@@ -17,6 +17,7 @@ struct ToFields {
     QString encodedMemo;
 };
 
+// Struct used to represent a Transaction. 
 struct Tx {
     QString         fromAddr;
     QList<ToFields> toAddrs;

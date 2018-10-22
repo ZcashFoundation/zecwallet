@@ -107,8 +107,11 @@ public:
     QSpacerItem *verticalSpacer_2;
     QHBoxLayout *horizontalLayout_6;
     QLabel *label_7;
-    QLabel *sendTxFees;
-    QLabel *sendTxFeesUSD;
+    QLabel *lblMinerFee;
+    QLabel *lblMinerFeeUSD;
+    QLabel *lblDevFeeTxt;
+    QLabel *lblDevFee;
+    QLabel *lblDevFeeUSD;
     QSpacerItem *horizontalSpacer;
     QPushButton *sendTransactionButton;
     QPushButton *cancelSendButton;
@@ -475,15 +478,30 @@ public:
 
         horizontalLayout_6->addWidget(label_7);
 
-        sendTxFees = new QLabel(tab_2);
-        sendTxFees->setObjectName(QStringLiteral("sendTxFees"));
+        lblMinerFee = new QLabel(tab_2);
+        lblMinerFee->setObjectName(QStringLiteral("lblMinerFee"));
 
-        horizontalLayout_6->addWidget(sendTxFees);
+        horizontalLayout_6->addWidget(lblMinerFee);
 
-        sendTxFeesUSD = new QLabel(tab_2);
-        sendTxFeesUSD->setObjectName(QStringLiteral("sendTxFeesUSD"));
+        lblMinerFeeUSD = new QLabel(tab_2);
+        lblMinerFeeUSD->setObjectName(QStringLiteral("lblMinerFeeUSD"));
 
-        horizontalLayout_6->addWidget(sendTxFeesUSD);
+        horizontalLayout_6->addWidget(lblMinerFeeUSD);
+
+        lblDevFeeTxt = new QLabel(tab_2);
+        lblDevFeeTxt->setObjectName(QStringLiteral("lblDevFeeTxt"));
+
+        horizontalLayout_6->addWidget(lblDevFeeTxt);
+
+        lblDevFee = new QLabel(tab_2);
+        lblDevFee->setObjectName(QStringLiteral("lblDevFee"));
+
+        horizontalLayout_6->addWidget(lblDevFee);
+
+        lblDevFeeUSD = new QLabel(tab_2);
+        lblDevFeeUSD->setObjectName(QStringLiteral("lblDevFeeUSD"));
+
+        horizontalLayout_6->addWidget(lblDevFeeUSD);
 
         horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
@@ -698,9 +716,12 @@ public:
         MemoBtn1->setText(QApplication::translate("MainWindow", "Memo", nullptr));
         MemoTxt1->setText(QString());
         addAddressButton->setText(QApplication::translate("MainWindow", "Add Address", nullptr));
-        label_7->setText(QApplication::translate("MainWindow", "Fee", nullptr));
-        sendTxFees->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
-        sendTxFeesUSD->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
+        label_7->setText(QApplication::translate("MainWindow", "Miner Fee:", nullptr));
+        lblMinerFee->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
+        lblMinerFeeUSD->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
+        lblDevFeeTxt->setText(QApplication::translate("MainWindow", "Dev Fee:", nullptr));
+        lblDevFee->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
+        lblDevFeeUSD->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
         sendTransactionButton->setText(QApplication::translate("MainWindow", "Send", nullptr));
         cancelSendButton->setText(QApplication::translate("MainWindow", "Cancel", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Send", nullptr));

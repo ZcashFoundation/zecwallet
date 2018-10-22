@@ -60,14 +60,25 @@ void MainWindow::setupSendTab() {
     QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int pos) {
         if (pos == 1) {
             // Set the fees
-            ui->sendTxFees->setText(QString::number(Utils::getTotalFee(), 'g', 8) %
+            ui->lblMinerFee->setText(QString::number(Utils::getMinerFee(), 'g', 8) %
                                     " " % Utils::getTokenName());
-            ui->sendTxFeesUSD->setText(Settings::getInstance()->getUSDFormat(Utils::getTotalFee()));
+            ui->lblMinerFeeUSD->setText(Settings::getInstance()->getUSDFormat(Utils::getMinerFee()));
+
+            // Dev Fee.
+            if (Utils::getDevFee() < 0.0001) {
+                ui->lblDevFee->setText("");
+                ui->lblDevFeeUSD->setText("");
+                ui->lblDevFeeTxt->setText("");
+            } else {
+                ui->lblDevFee->setText(QString::number(Utils::getDevFee(), 'g', 8) %
+                                    " " % Utils::getTokenName());
+                ui->lblDevFeeUSD->setText(Settings::getInstance()->getUSDFormat(Utils::getDevFee()));
+            }
+
             // Set focus to the first address box
             ui->Address1->setFocus();
         }
     });
-
 }
 
 void MainWindow::setDefaultPayFrom() {

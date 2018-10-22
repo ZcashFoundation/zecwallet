@@ -363,10 +363,11 @@ void MainWindow::setupRecieveTab() {
             if (Settings::getInstance()->isSaplingActive()) {
                 ui->rdioZSAddr->setVisible(true);    
                 ui->rdioZSAddr->setChecked(true);
+                ui->rdioZAddr->setText("z-Addr(Sprout)");
             } else {
                 ui->rdioZSAddr->setVisible(false);    
                 ui->rdioZAddr->setChecked(true);
-                ui->rdioZAddr->setText("z-Addr");   // Don't use the "Sprout" label
+                ui->rdioZAddr->setText("z-Addr");   // Don't use the "Sprout" label if there's no sapling
             }
             
             // And then select the first one

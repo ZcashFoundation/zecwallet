@@ -477,19 +477,40 @@
           <item>
            <widget class="QLabel" name="label_7">
             <property name="text">
-             <string>Fee</string>
+             <string>Miner Fee:</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="sendTxFees">
+           <widget class="QLabel" name="lblMinerFee">
             <property name="text">
              <string>TextLabel</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="sendTxFeesUSD">
+           <widget class="QLabel" name="lblMinerFeeUSD">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblDevFeeTxt">
+            <property name="text">
+             <string>Dev Fee:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblDevFee">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblDevFeeUSD">
             <property name="text">
              <string>TextLabel</string>
             </property>
