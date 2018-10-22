@@ -136,13 +136,14 @@ void RPC::getZUnspent(const std::function<void(json)>& cb) {
     doRPC(payload, cb);
 }
 
-void RPC::newZaddr(const std::function<void(json)>& cb) {
+void RPC::newZaddr(bool sapling, const std::function<void(json)>& cb) {
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
         {"method", "z_getnewaddress"},
+        {"params", { sapling ? "sapling" : "sprout" }},
     };
-
+    
     doRPC(payload, cb);
 }
 
@@ -321,13 +322,19 @@ void RPC::getInfoThenRefresh() {
 		};
 
 		doRPC(payload, [=](const json& reply) {
-            auto progress = reply["verificationprogress"].get<double>();
+            auto progress    = reply["verificationprogress"].get<double>();
+            bool isSyncing   = progress < 0.999; // 99.9%
+            int  blockNumber = reply["blocks"].get<json::number_unsigned_t>();
+
+            Settings::getInstance()->setSyncing(isSyncing);
+            Settings::getInstance()->setBlockNumber(blockNumber);
+
 			QString statusText = QString() %
-				(progress < 0.99 ? "Syncing" : "Connected") %
+				(isSyncing ? "Syncing" : "Connected") %
 				" (" %
 				(Settings::getInstance()->isTestnet() ? "testnet:" : "") %
-				QString::number(reply["blocks"].get<json::number_unsigned_t>()) %
-				(progress < 0.99 ? ("/" % QString::number(progress*100, 'f', 0) % "%") : QString()) %
+				QString::number(blockNumber) %
+				(isSyncing ? ("/" % QString::number(progress*100, 'f', 0) % "%") : QString()) %
 				")";
 			main->statusLabel->setText(statusText);	
             auto zecPrice = Settings::getInstance()->getUSDFormat(1);

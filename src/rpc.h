@@ -31,7 +31,7 @@ public:
 
 	void reloadConnectionInfo();
 
-    void newZaddr               (const std::function<void(json)>& cb);
+    void newZaddr               (bool sapling, const std::function<void(json)>& cb);
     void newTaddr               (const std::function<void(json)>& cb);
     
 private:

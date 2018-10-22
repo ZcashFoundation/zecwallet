@@ -28,8 +28,15 @@ public:
     bool isTestnet();
     void setTestnet(bool isTestnet);
 
+	bool isSaplingAddress(QString addr);
+
 	bool isSyncing();
 	void setSyncing(bool syncing);
+
+	int  getBlockNumber();
+	void setBlockNumber(int number);
+
+	bool isSaplingActive();
 
 	const QString& getZcashdConfLocation() { return confLocation; }
 
@@ -55,8 +62,9 @@ private:
 
 	QString     confLocation;
 
-    bool _isTestnet = false;
-	bool _isSyncing = false;
+    bool _isTestnet   = false;
+	bool _isSyncing   = false;
+	int  _blockNumber = 0;
 
 	double zecPrice = 0.0;
 };

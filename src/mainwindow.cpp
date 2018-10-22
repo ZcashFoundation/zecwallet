@@ -262,6 +262,48 @@ void MainWindow::setupTransactionsTab() {
     });
 }
 
+void MainWindow::addNewZaddr(bool sapling) {
+    rpc->newZaddr(sapling, [=] (json reply) {
+        QString addr = QString::fromStdString(reply.get<json::string_t>());
+        // Make sure the RPC class reloads the Z-addrs for future use
+        rpc->refreshAddresses();
+
+        // Just double make sure the Z-address is still checked
+        if (( sapling && ui->rdioZSAddr->isChecked()) ||
+            (!sapling && ui->rdioZAddr->isChecked())) {
+            ui->listRecieveAddresses->insertItem(0, addr);
+            ui->listRecieveAddresses->setCurrentIndex(0);
+
+            ui->statusBar->showMessage(QString::fromStdString("Created new zAddr") %
+                                       (sapling ? "(Sapling)" : "(Sprout)"), 
+                                       10 * 1000);
+        }
+    });
+}
+
+
+// Adds sapling or sprout z-addresses to the combo box. Technically, returns a
+// lambda, which can be connected to the appropriate signal
+std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
+    return [=] (bool checked) { 
+        if (checked && this->rpc->getAllZAddresses() != nullptr) { 
+            auto addrs = this->rpc->getAllZAddresses();
+            ui->listRecieveAddresses->clear();
+
+            std::for_each(addrs->begin(), addrs->end(), [=] (auto addr) {
+                if ( (sapling &&  settings->isSaplingAddress(addr)) ||
+                    (!sapling && !settings->isSaplingAddress(addr)))
+                    ui->listRecieveAddresses->addItem(addr);
+            }); 
+
+            // If z-addrs are empty, then create a new one.
+            if (addrs->isEmpty()) {
+                addNewZaddr(sapling);
+            }
+        } 
+    };
+}
+
 void MainWindow::setupRecieveTab() {
     auto addNewTAddr = [=] () {
         rpc->newTaddr([=] (json reply) {
@@ -296,45 +338,17 @@ void MainWindow::setupRecieveTab() {
         } 
     });
 
-    auto addNewZaddr = [=] () {
-        rpc->newZaddr([=] (json reply) {
-            QString addr = QString::fromStdString(reply.get<json::string_t>());
-            // Make sure the RPC class reloads the Z-addrs for future use
-            rpc->refreshAddresses();
 
-            // Just double make sure the Z-address is still checked
-            if (ui->rdioZAddr->isChecked()) {
-                ui->listRecieveAddresses->insertItem(0, addr);
-                ui->listRecieveAddresses->setCurrentIndex(0);
-
-                ui->statusBar->showMessage("Created new zAddr", 10 * 1000);
-            }
-        });
-    };
-
-    auto addZAddrsToComboList = [=] (bool checked) { 
-        if (checked && this->rpc->getAllZAddresses() != nullptr) { 
-            auto addrs = this->rpc->getAllZAddresses();
-            ui->listRecieveAddresses->clear();
-
-            std::for_each(addrs->begin(), addrs->end(), [=] (auto addr) {
-                    ui->listRecieveAddresses->addItem(addr);
-            }); 
-
-            // If z-addrs are empty, then create a new one.
-            if (addrs->isEmpty()) {
-                addNewZaddr();
-            }
-        } 
-    };
-
-    // zAddr toggle button
-    QObject::connect(ui->rdioZAddr, &QRadioButton::toggled, addZAddrsToComboList);
+    // zAddr toggle button, one for sprout and one for sapling
+    QObject::connect(ui->rdioZAddr,  &QRadioButton::toggled, addZAddrsToComboList(false));
+    QObject::connect(ui->rdioZSAddr, &QRadioButton::toggled, addZAddrsToComboList(true));
 
     // Explicitly get new address button.
     QObject::connect(ui->btnRecieveNewAddr, &QPushButton::clicked, [=] () {
         if (ui->rdioZAddr->isChecked()) {
-            addNewZaddr(); 
+            addNewZaddr(false); 
+        } else if (ui->rdioZSAddr->isChecked()) {
+            addNewZaddr(true);
         } else if (ui->rdioTAddr->isChecked()) {
             addNewTAddr();
         }
@@ -344,15 +358,23 @@ void MainWindow::setupRecieveTab() {
     QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int tab) {
         if (tab == 2) {
             // Switched to recieve tab, so update everything. 
-            
-            // Set the radio button to "Z-Addr", which should update the Address combo
-            ui->rdioZAddr->setChecked(true);
 
+            // Hide Sapling radio button if sapling is not active
+            if (Settings::getInstance()->isSaplingActive()) {
+                ui->rdioZSAddr->setVisible(true);    
+                ui->rdioZSAddr->setChecked(true);
+            } else {
+                ui->rdioZSAddr->setVisible(false);    
+                ui->rdioZAddr->setChecked(true);
+                ui->rdioZAddr->setText("z-Addr");   // Don't use the "Sprout" label
+            }
+            
             // And then select the first one
             ui->listRecieveAddresses->setCurrentIndex(0);
         }
     });
 
+    // Select item in address list
     QObject::connect(ui->listRecieveAddresses, 
         QOverload<const QString &>::of(&QComboBox::currentIndexChanged), [=] (const QString& addr) {
         if (addr.isEmpty()) {

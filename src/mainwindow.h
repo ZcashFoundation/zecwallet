@@ -54,6 +54,9 @@ private:
     void addressChanged(int number, const QString& text);
     void amountChanged (int numer, const QString& text);
 
+    void addNewZaddr(bool sapling);
+    std::function<void(bool)> addZAddrsToComboList(bool sapling);
+
     void memoButtonClicked(int number);
     void setMemoEnabled(int number, bool enabled);
 

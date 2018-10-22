@@ -118,6 +118,7 @@ public:
     QGroupBox *groupBox_6;
     QVBoxLayout *verticalLayout_9;
     QHBoxLayout *horizontalLayout_9;
+    QRadioButton *rdioZSAddr;
     QRadioButton *rdioZAddr;
     QRadioButton *rdioTAddr;
     QHBoxLayout *horizontalLayout_10;
@@ -525,6 +526,11 @@ public:
         horizontalLayout_9 = new QHBoxLayout();
         horizontalLayout_9->setSpacing(6);
         horizontalLayout_9->setObjectName(QStringLiteral("horizontalLayout_9"));
+        rdioZSAddr = new QRadioButton(groupBox_6);
+        rdioZSAddr->setObjectName(QStringLiteral("rdioZSAddr"));
+
+        horizontalLayout_9->addWidget(rdioZSAddr);
+
         rdioZAddr = new QRadioButton(groupBox_6);
         rdioZAddr->setObjectName(QStringLiteral("rdioZAddr"));
 
@@ -650,7 +656,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -699,7 +705,8 @@ public:
         cancelSendButton->setText(QApplication::translate("MainWindow", "Cancel", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Send", nullptr));
         groupBox_6->setTitle(QApplication::translate("MainWindow", "Address Type", nullptr));
-        rdioZAddr->setText(QApplication::translate("MainWindow", "z-Addr", nullptr));
+        rdioZSAddr->setText(QApplication::translate("MainWindow", "z-Addr(Sapling)", nullptr));
+        rdioZAddr->setText(QApplication::translate("MainWindow", "z-Addr(Sprout)", nullptr));
         rdioTAddr->setText(QApplication::translate("MainWindow", "t-Addr", nullptr));
         btnRecieveNewAddr->setText(QApplication::translate("MainWindow", "New Address", nullptr));
         qrcodeDisplay->setText(QString());

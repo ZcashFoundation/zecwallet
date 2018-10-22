@@ -152,12 +152,30 @@ void Settings::setTestnet(bool isTestnet) {
 	this->_isTestnet = isTestnet;
 }
 
+bool Settings::isSaplingAddress(QString addr) {
+	return ( isTestnet() && addr.startsWith("ztestsapling")) ||
+	       (!isTestnet() && addr.startsWith("zs"));
+}
+
 bool Settings::isSyncing() {
 	return _isSyncing;
 }
 
 void Settings::setSyncing(bool syncing) {
 	this->_isSyncing = syncing;
+}
+
+int Settings::getBlockNumber() {
+	return this->_blockNumber;
+}
+
+void Settings::setBlockNumber(int number) {
+	this->_blockNumber = number;
+}
+
+bool Settings::isSaplingActive() {
+	return  (isTestnet() && getBlockNumber() > 280000) ||
+	       (!isTestnet() && getBlockNumber() > 419200);
 }
 
 double Settings::getZECPrice() { 
