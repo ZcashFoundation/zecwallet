@@ -4,6 +4,7 @@
 #include "precompiled.h"
 
 struct ToFields;
+struct Tx;
 
 class Utils
 {
@@ -11,7 +12,7 @@ public:
 	static const QString txidStatusMessage;
 
 	static const QString getTokenName();
-	static const QString getDevAddr(const QString& fromAddr, const QList<ToFields>& toAddrs);
+	static const QString getDevAddr(Tx tx);
 
 	static double  getMinerFee();
 	static double  getDevFee();

@@ -7,12 +7,19 @@
 class RPC;
 class Settings;
 
+using json = nlohmann::json;
+
 // Struct used to hold destination info when sending a Tx. 
 struct ToFields {
     QString addr;
     double  amount;
     QString txtMemo;
     QString encodedMemo;
+};
+
+struct Tx {
+    QString         fromAddr;
+    QList<ToFields> toAddrs;
 };
 
 namespace Ui {
@@ -45,6 +52,10 @@ private:
 	void removeExtraAddresses();
 	void setDefaultPayFrom();
 
+    Tx      createTxFromSendPage();
+    bool    confirmTx(Tx tx, ToFields devFee);
+    void    fillTxJsonParams(json& params, Tx tx);
+
 	void cancelButton();
 	void sendButton();
 	void inputComboTextChanged(const QString& text);
@@ -60,7 +71,7 @@ private:
     void memoButtonClicked(int number);
     void setMemoEnabled(int number, bool enabled);
 
-    QString doSendTxValidations(QString fromAddr, QList<ToFields> toAddrs);
+    QString doSendTxValidations(Tx tx);
 
     void donate();
     void importPrivKeys();

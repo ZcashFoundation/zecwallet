@@ -13,7 +13,7 @@ const QString Utils::getTokenName() {
 }
 
 // Get the dev fee address based on the transaction
-const QString Utils::getDevAddr(const QString& fromAddr, const QList<ToFields>& toAddrs) {
+const QString Utils::getDevAddr(Tx tx) {
     auto testnetAddrLookup = [=] (const QString& addr) -> QString {
         if (addr.startsWith("ztestsapling")) {
             return "ztestsapling1kdp74adyfsmm9838jaupgfyx3npgw8ut63stjjx757pc248cuc0ymzphqeux60c64qe5qt68ygh";
@@ -25,13 +25,13 @@ const QString Utils::getDevAddr(const QString& fromAddr, const QList<ToFields>& 
     };
 
     if (Settings::getInstance()->isTestnet()) {
-        auto devAddr = testnetAddrLookup(fromAddr);
+        auto devAddr = testnetAddrLookup(tx.fromAddr);
         if (!devAddr.isEmpty()) {
             return devAddr;
         }
 
         // t-Addr, find if it is going to a sprout or sapling address
-        for (const ToFields& to : toAddrs) {
+        for (const ToFields& to : tx.toAddrs) {
             devAddr = testnetAddrLookup(to.addr);
             if (!devAddr.isEmpty()) {
                 return devAddr;

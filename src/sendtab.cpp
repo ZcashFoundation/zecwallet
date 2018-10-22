@@ -292,21 +292,12 @@ void MainWindow::maxAmountChecked(int checked) {
     }
 }
 
-
-void MainWindow::sendButton() {
-	auto fnSplitAddressForWrap = [=] (const QString& a) -> QString {
-		if (!a.startsWith("z")) return a;
-
-		auto half = a.length() / 2;
-		auto splitted = a.left(half) + "\n" + a.right(a.length() - half);
-		return splitted;
-	};
-
+// Create a Tx from the current state of the send page. 
+Tx MainWindow::createTxFromSendPage() {
+    Tx tx;
     // Gather the from / to addresses 
-    QString fromAddr = ui->inputsCombo->currentText().split("(")[0].trimmed();
+    tx.fromAddr = ui->inputsCombo->currentText().split("(")[0].trimmed();
 
-
-    QList<ToFields> toAddrs;
     // For each addr/amt in the sendTo tab
     int totalItems = ui->sendToWidgets->children().size() - 2;   // The last one is a spacer, so ignore that        
     for (int i=0; i < totalItems; i++) {
@@ -314,29 +305,21 @@ void MainWindow::sendButton() {
         double  amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1))->text().trimmed().toDouble();        
         QString memo = ui->sendToWidgets->findChild<QLabel*>(QString("MemoTxt")  % QString::number(i+1))->text().trimmed();
         
-        toAddrs.push_back( ToFields{addr, amt, memo, memo.toUtf8().toHex()} );
+        tx.toAddrs.push_back( ToFields{addr, amt, memo, memo.toUtf8().toHex()} );
     }
 
-    QString error = doSendTxValidations(fromAddr, toAddrs);
-    if (!error.isEmpty()) {
-        // Something went wrong, so show an error and exit
-        QMessageBox msg(
-            QMessageBox::Critical,
-            "Transaction Error", 
-            error,
-            QMessageBox::Ok,
-            this
-        );
+    return tx;
+}
 
-        msg.exec();
-        // abort the Tx
-        return;
-    }
+bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
+    auto fnSplitAddressForWrap = [=] (const QString& a) -> QString {
+		if (!a.startsWith("z")) return a;
 
-    auto devAddress = Utils::getDevAddr(fromAddr, toAddrs);
+		auto half = a.length() / 2;
+		auto splitted = a.left(half) + "\n" + a.right(a.length() - half);
+		return splitted;
+	};
 
-    // Get all the addresses and amounts
-    json allRecepients = json::array();
 
 	// Show a confirmation dialog
 	QDialog d(this);
@@ -367,17 +350,8 @@ void MainWindow::sendButton() {
     delete confirm.sendToAddrs->findChild<QLabel*>("devFeeUSD");
 
 	// For each addr/amt/memo, construct the JSON and also build the confirm dialog box    
-    for (int i=0; i < toAddrs.size(); i++) {
-        auto toAddr = toAddrs[i];
-
-		// Construct the JSON params
-        json rec = json::object();
-        rec["address"]      = toAddr.addr.toStdString();
-        rec["amount"]       = toAddr.amount;
-        if (toAddr.addr.startsWith("z") && !toAddr.encodedMemo.trimmed().isEmpty())
-            rec["memo"]     = toAddr.encodedMemo.toStdString();
-
-        allRecepients.push_back(rec);
+    for (int i=0; i < tx.toAddrs.size(); i++) {
+        auto toAddr = tx.toAddrs[i];
 
 		// Add new Address widgets instead of the same one.
 		{
@@ -416,17 +390,9 @@ void MainWindow::sendButton() {
 		}
     }
 
-    // Add the dev fee to the transaction
-    if (!devAddress.isEmpty() && Utils::getDevFee() > 0) {
-        json devFee = json::object();
-        devFee["address"] = devAddress.toStdString();
-        devFee["amount"]  = Utils::getDevFee();
-        allRecepients.push_back(devFee);
-    }    
-
     // Add two rows for fees
     {
-        auto i = toAddrs.size() * 2;
+        auto i = tx.toAddrs.size() * 2;
 
         auto labelMinerFee = new QLabel(confirm.sendToAddrs);
         labelMinerFee->setObjectName(QStringLiteral("labelMinerFee"));
@@ -445,17 +411,17 @@ void MainWindow::sendButton() {
         confirm.gridLayout->addWidget(minerFeeUSD, i, 2, 1, 1);
         minerFeeUSD->setText(Settings::getInstance()->getUSDFormat(Utils::getMinerFee()));
 
-        if (!devAddress.isEmpty() && Utils::getDevFee() > 0) {
+        if (!devFee.addr.isEmpty()) {
             auto labelDevFee = new QLabel(confirm.sendToAddrs);
             labelDevFee->setObjectName(QStringLiteral("labelDevFee"));
             confirm.gridLayout->addWidget(labelDevFee, i+1, 0, 1, 1);
             labelDevFee ->setText("Dev Fee");
-
-            auto devFee = new QLabel(confirm.sendToAddrs);
-            devFee->setObjectName(QStringLiteral("devFee"));
-            devFee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-            confirm.gridLayout->addWidget(devFee, i+1, 1, 1, 1);
-            devFee      ->setText(Settings::getInstance()->getZECDisplayFormat(Utils::getDevFee()));
+ 
+            auto fee = new QLabel(confirm.sendToAddrs);
+            fee->setObjectName(QStringLiteral("devFee"));
+            fee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+            confirm.gridLayout->addWidget(fee, i+1, 1, 1, 1);
+            fee         ->setText(Settings::getInstance()->getZECDisplayFormat(Utils::getDevFee()));
 
             auto devFeeUSD = new QLabel(confirm.sendToAddrs);
             devFeeUSD->setObjectName(QStringLiteral("devFeeUSD"));
@@ -465,17 +431,71 @@ void MainWindow::sendButton() {
         } 
     }
 
-    // Add sender
-    json params = json::array();
-    params.push_back(fromAddr.toStdString());
-    params.push_back(allRecepients);
-
-	// And show it in the confirm dialog 
-	confirm.sendFrom->setText(fnSplitAddressForWrap(fromAddr));
+	// And FromAddress in the confirm dialog 
+	confirm.sendFrom->setText(fnSplitAddressForWrap(tx.fromAddr));
 
 	// Show the dialog and submit it if the user confirms
-	if (d.exec() == QDialog::Accepted) {
+	if (d.exec() == QDialog::Accepted) {        
+		// Then delete the additional fields from the sendTo tab
+		removeExtraAddresses();
+        return true;
+	} else {
+        return false;
+    }	    
+}
+
+// Build the RPC JSON Parameters for this tx (with the dev fee included if applicable)
+void MainWindow::fillTxJsonParams(json& params, Tx tx) {   
+    // Get all the addresses and amounts
+    json allRecepients = json::array();
+
+    // For each addr/amt/memo, construct the JSON and also build the confirm dialog box    
+    for (int i=0; i < tx.toAddrs.size(); i++) {
+        auto toAddr = tx.toAddrs[i];
+
+		// Construct the JSON params
+        json rec = json::object();
+        rec["address"]      = toAddr.addr.toStdString();
+        rec["amount"]       = toAddr.amount;
+        if (toAddr.addr.startsWith("z") && !toAddr.encodedMemo.trimmed().isEmpty())
+            rec["memo"]     = toAddr.encodedMemo.toStdString();
+
+        allRecepients.push_back(rec);
+    }
+
+    // Add sender    
+    params.push_back(tx.fromAddr.toStdString());
+    params.push_back(allRecepients);
+}
+
+// Send button clicked
+void MainWindow::sendButton() {
+    Tx tx = createTxFromSendPage();
+
+    QString error = doSendTxValidations(tx);
+    if (!error.isEmpty()) {
+        // Something went wrong, so show an error and exit
+        QMessageBox msg(QMessageBox::Critical, "Transaction Error", error,
+                        QMessageBox::Ok, this);
+
+        msg.exec();
+
+        // abort the Tx
+        return;
+    }
+
+    ToFields devFee{ Utils::getDevAddr(tx), Utils::getDevFee(), "", "" };
+    
+    // Show a dialog to confirm the Tx
+    if (confirmTx(tx, devFee)) {
+        if (!devFee.addr.isEmpty())
+            tx.toAddrs.push_back(devFee);
+
+        json params = json::array();
+        fillTxJsonParams(params, tx);
         std::cout << std::setw(2) << params << std::endl;
+
+        // And send the Tx
 		rpc->sendZTransaction(params, [=](const json& reply) {
 			QString opid = QString::fromStdString(reply.get<json::string_t>());
 			ui->statusBar->showMessage("Computing Tx: " % opid);
@@ -483,13 +503,10 @@ void MainWindow::sendButton() {
             // And then start monitoring the transaction
             rpc->refreshTxStatus(opid);
 		});
-
-		// Then delete the additional fields from the sendTo tab
-		removeExtraAddresses();
 	}	    
 }
 
-QString MainWindow::doSendTxValidations(QString fromAddr, QList<ToFields> toAddrs) {
+QString MainWindow::doSendTxValidations(Tx tx) {
     // 1. Addresses are valid format. 
     QRegExp zcexp("^z[a-z0-9]{94}$",  Qt::CaseInsensitive);
     QRegExp zsexp("^z[a-z0-9]{77}$",  Qt::CaseInsensitive);
@@ -503,9 +520,9 @@ QString MainWindow::doSendTxValidations(QString fromAddr, QList<ToFields> toAddr
                 zsexp.exactMatch(addr);
     };
 
-    if (!matchesAnyAddr(fromAddr)) return QString("From Address is Invalid");    
+    if (!matchesAnyAddr(tx.fromAddr)) return QString("From Address is Invalid");    
 
-    for (auto toAddr : toAddrs) {
+    for (auto toAddr : tx.toAddrs) {
         if (!matchesAnyAddr(toAddr.addr))
             return QString("Recipient Address ") % toAddr.addr % " is Invalid";
     }
