@@ -10,8 +10,8 @@ Head over to the releases page and grab the latest binary. https://github.com/ad
 ### Linux
 Extract and run the binary
 ```
-tar -xvf zcash-qt-wallet-v0.1.9.tar.gz
-./zcash-qt-wallet-v0.1.9/zcash-qt-wallet
+tar -xvf zcash-qt-wallet-v0.2.0.tar.gz
+./zcash-qt-wallet-v0.2.0/zcash-qt-wallet
 ```
 
 ### Windows
@@ -70,7 +70,7 @@ from your host and also zcashd is set to be configured to accept connections fro
 
 The easiest way to connect to a remote node is probably to ssh to it with port forwarding like this:
 ```
-ssh -L8232:127.0.0.1.9232 user@remotehost
+ssh -L8232:127.0.0.2.0232 user@remotehost
 ```
 ### 2. "Not enough balance" when sending transactions
 The most likely cause for this is that you are trying to spend unconfirmed funds. Unlike bitcoin, the zcash protocol doesn't let you spent unconfirmed funds yet. Please wait for 
