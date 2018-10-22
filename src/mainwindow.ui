@@ -475,6 +475,27 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Fee</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="sendTxFees">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="sendTxFeesUSD">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="horizontalSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -572,6 +593,9 @@
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="duplicatesEnabled">
+                  <bool>false</bool>
                  </property>
                 </widget>
                </item>

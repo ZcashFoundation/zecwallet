@@ -106,6 +106,9 @@ public:
     QSpacerItem *horizontalSpacer_3;
     QSpacerItem *verticalSpacer_2;
     QHBoxLayout *horizontalLayout_6;
+    QLabel *label_7;
+    QLabel *sendTxFees;
+    QLabel *sendTxFeesUSD;
     QSpacerItem *horizontalSpacer;
     QPushButton *sendTransactionButton;
     QPushButton *cancelSendButton;
@@ -466,6 +469,21 @@ public:
         horizontalLayout_6 = new QHBoxLayout();
         horizontalLayout_6->setSpacing(6);
         horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
+        label_7 = new QLabel(tab_2);
+        label_7->setObjectName(QStringLiteral("label_7"));
+
+        horizontalLayout_6->addWidget(label_7);
+
+        sendTxFees = new QLabel(tab_2);
+        sendTxFees->setObjectName(QStringLiteral("sendTxFees"));
+
+        horizontalLayout_6->addWidget(sendTxFees);
+
+        sendTxFeesUSD = new QLabel(tab_2);
+        sendTxFeesUSD->setObjectName(QStringLiteral("sendTxFeesUSD"));
+
+        horizontalLayout_6->addWidget(sendTxFeesUSD);
+
         horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_6->addItem(horizontalSpacer);
@@ -532,6 +550,7 @@ public:
         sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(listRecieveAddresses->sizePolicy().hasHeightForWidth());
         listRecieveAddresses->setSizePolicy(sizePolicy1);
+        listRecieveAddresses->setDuplicatesEnabled(false);
 
         horizontalLayout_10->addWidget(listRecieveAddresses);
 
@@ -673,6 +692,9 @@ public:
         MemoBtn1->setText(QApplication::translate("MainWindow", "Memo", nullptr));
         MemoTxt1->setText(QString());
         addAddressButton->setText(QApplication::translate("MainWindow", "Add Address", nullptr));
+        label_7->setText(QApplication::translate("MainWindow", "Fee", nullptr));
+        sendTxFees->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
+        sendTxFeesUSD->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
         sendTransactionButton->setText(QApplication::translate("MainWindow", "Send", nullptr));
         cancelSendButton->setText(QApplication::translate("MainWindow", "Cancel", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Send", nullptr));

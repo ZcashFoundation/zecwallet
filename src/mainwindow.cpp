@@ -328,6 +328,7 @@ void MainWindow::setupRecieveTab() {
         } 
     };
 
+    // zAddr toggle button
     QObject::connect(ui->rdioZAddr, &QRadioButton::toggled, addZAddrsToComboList);
 
     // Explicitly get new address button.
