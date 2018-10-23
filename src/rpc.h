@@ -56,6 +56,12 @@ private:
     void handleConnectionError  (const QString& error);
     void handleTxError          (const QString& error);
 
+    // Batch
+    void                getReceivedZTrans(QList<QString> zaddrs);
+    void                getBatchRPC(const QList<QString>& payloads,
+                                    std::function<json(QString)> payloadGenerator,
+                                    std::function<void(QMap<QString, json>*)> cb);
+
     QNetworkAccessManager*      restclient;    
     QNetworkRequest             request;
 

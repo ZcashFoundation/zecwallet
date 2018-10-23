@@ -285,6 +285,116 @@ void RPC::handleTxError(const QString& error) {
 }
 
 
+void RPC::getBatchRPC(
+            const QList<QString>& payloads,
+            std::function<json(QString)> payloadGenerator,
+            std::function<void(QMap<QString, json>*)> cb) 
+{    
+    auto responses = new QMap<QString, json>(); // zAddr -> list of responses for each call. 
+    int totalSize = payloads.size();
+
+    for (auto item: payloads) {
+        json payload = payloadGenerator(item);
+        
+        QNetworkReply *reply = restclient->post(request, QByteArray::fromStdString(payload.dump()));
+
+        QObject::connect(reply, &QNetworkReply::finished, [=] {
+            reply->deleteLater();
+            
+            auto all = reply->readAll();            
+            auto parsed = json::parse(all.toStdString(), nullptr, false);
+
+            if (reply->error() != QNetworkReply::NoError) {            
+                qDebug() << QString::fromStdString(parsed.dump());
+                qDebug() << reply->errorString();
+
+                (*responses)[item] = json::object();    // Empty object
+            } else {
+                if (parsed.is_discarded()) {
+                    (*responses)[item] = json::object();    // Empty object
+                } else {
+                    (*responses)[item] = parsed["result"];
+                }
+            }
+        });
+    }
+
+    auto waitTimer = new QTimer(main);
+    QObject::connect(waitTimer, &QTimer::timeout, [=]() {
+        if (responses->size() == totalSize) {
+            waitTimer->stop();
+
+            cb(responses);
+
+            waitTimer->deleteLater();            
+        }
+    });
+    waitTimer->start(100);    
+}
+
+/// Batch RPC methods
+void RPC::getReceivedZTrans(QList<QString> zaddrs) {
+    // 1. For each z-Addr, get list of received txs    
+    getBatchRPC(zaddrs,
+        [=] (QString zaddr) {
+            json payload = {
+                {"jsonrpc", "1.0"},
+                {"id", "z_lrba"},
+                {"method", "z_listreceivedbyaddress"},
+                {"params", {zaddr.toStdString(), 0}}      // Accept 0 conf as well.
+            };
+
+            return payload;
+        },          
+        [=] (QMap<QString, json>* zaddrTxids) {
+            // Process all txids
+            QSet<QString> txids;
+            for (auto it = zaddrTxids->constBegin(); it != zaddrTxids->constEnd(); it++) {
+                for (auto& i : it.value().get<json::array_t>()) {   
+                    txids.insert(QString::fromStdString(i["txid"].get<json::string_t>()));    
+                }        
+            }
+
+            // 2. For all txids, go and get the details of that txid.
+            getBatchRPC(txids.toList(),
+                [=] (QString txid) {
+                    json payload = {
+                        {"jsonrpc", "1.0"},
+                        {"id",  "gettx"},
+                        {"method", "gettransaction"},
+                        {"params", {txid.toStdString()}}
+                    };
+
+                    return payload;
+                },
+                [=] (QMap<QString, json>* txidDetails) {
+                    // Combine them both together. For every zAddr's txid, get the amount, fee, confirmations and time
+                    for (auto it = zaddrTxids->constBegin(); it != zaddrTxids->constEnd(); it++) {
+                        for (auto& i : it.value().get<json::array_t>()) {   
+                            auto zaddr = it.key();
+                            auto txid  = QString::fromStdString(i["txid"].get<json::string_t>());
+
+                            // Lookup txid in the map
+                            auto txidInfo = txidDetails->value(txid);
+
+                            // And then find the values
+                            auto timestamp = txidInfo["time"].get<json::number_unsigned_t>();
+                            auto amount    = i["amount"].get<json::number_float_t>();
+
+                            std::cout << zaddr.toStdString() << ":" << txid.toStdString() << ":" << timestamp << ":" << amount << std::endl;
+                        }
+                    }
+
+                    // Cleanup both responses;
+                    delete zaddrTxids;
+                    delete txidDetails;
+                }
+            );
+        }
+    );
+} 
+
+
 /// This will refresh all the balance data from zcashd
 void RPC::refresh() {
     // First, test the connection to see if we can actually get info.
@@ -356,6 +466,9 @@ void RPC::refreshAddresses() {
             auto addr = QString::fromStdString(it.get<json::string_t>());
             zaddresses->push_back(addr);
         }
+
+        // Temp
+        getReceivedZTrans(*zaddresses);
     });
 }
 
