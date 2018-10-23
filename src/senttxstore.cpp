@@ -16,6 +16,12 @@ QString SentTxStore::writeableFile() {
     }
 }
 
+// delete the sent history. 
+void SentTxStore::deleteHistory() {
+    QFile data(writeableFile());
+    data.remove();
+}
+
 QList<TransactionItem> SentTxStore::readSentTxFile() {
     QFile data(writeableFile());
     if (!data.exists()) {

@@ -6,6 +6,7 @@
 #include "balancestablemodel.h"
 #include "settings.h"
 #include "utils.h"
+#include "senttxstore.h"
 
 #include "precompiled.h"
 
@@ -47,6 +48,14 @@ MainWindow::MainWindow(QWidget *parent) :
 		about.versionLabel->setText(version);
         
         aboutDialog.exec();
+    });
+
+    // Set up delete sent history action
+    QObject::connect(ui->actionDelete_Sent_History, &QAction::triggered, [=] () {
+        bool confirm = QMessageBox::information(this, "Delete Sent History?", 
+                "Shielded z-Address sent transactions are stored locally in your wallet. You may delete this saved information safely any time for your privacy.\nDo you want to delete this now?", 
+                QMessageBox::Yes, QMessageBox::No);
+        if (confirm) SentTxStore::deleteHistory();
     });
 
     // Initialize to the balances tab

@@ -720,6 +720,7 @@
      <string>File</string>
     </property>
     <addaction name="actionImport_Private_Keys"/>
+    <addaction name="actionDelete_Sent_History"/>
     <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -767,6 +768,11 @@
   <action name="actionCheck_for_Updates">
    <property name="text">
     <string>Check github.com for Updates</string>
+   </property>
+  </action>
+  <action name="actionDelete_Sent_History">
+   <property name="text">
+    <string>Delete Sent History</string>
    </property>
   </action>
  </widget>

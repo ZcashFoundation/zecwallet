@@ -7,6 +7,8 @@
 
 class SentTxStore {
 public:
+    static void deleteHistory();
+
     static QList<TransactionItem> readSentTxFile();
     static void                   addToSentTx(Tx tx, QString txid);
 
