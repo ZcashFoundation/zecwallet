@@ -3,18 +3,13 @@
 
 #include "precompiled.h"
 
-class TransactionItem
-{
-public:
-    TransactionItem(const QString& type, const QString& datetime, const QString& address, const QString& txid,
-                    double amount, int confirmations);
-
-    QString type;
-    QString datetime;
-    QString address;
-    QString txid;
-    double  amount;
-    int     confirmations;
+struct TransactionItem {
+    QString         type;
+    unsigned long   datetime;
+    QString         address;
+    QString         txid;
+    double          amount;
+    unsigned long   confirmations;
 };
 
 #endif // TRANSACTIONITEM_H

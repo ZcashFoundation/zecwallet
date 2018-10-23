@@ -10,7 +10,8 @@ public:
     TxTableModel(QObject* parent);    
     ~TxTableModel();
 
-    void setNewData(QList<TransactionItem>* addresses);
+    void prepNewData    (int expectedData);
+    void addNewData     (const QList<TransactionItem>& data);
 
     QString  getTxId(int row);
 
@@ -20,7 +21,10 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
 private:
-    QList<TransactionItem>*  modeldata  = nullptr;
+    QList<TransactionItem>*  modeldata      = nullptr;
+    QList<TransactionItem>*  newmodeldata   = nullptr;
+    int expectedData;
+
     QList<QString>           headers;
 };
 

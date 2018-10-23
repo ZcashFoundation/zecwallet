@@ -11,13 +11,34 @@ TxTableModel::~TxTableModel() {
     delete modeldata;
 }
 
-void TxTableModel::setNewData(QList<TransactionItem>* data)  {
-    delete modeldata;
-    modeldata = data;
+void TxTableModel::prepNewData(int expect) {
+    newmodeldata = new QList<TransactionItem>();
+    expectedData = expect;
+}
 
-    dataChanged(index(0, 0), index(modeldata->size()-1, columnCount(index(0,0))-1));
-	layoutChanged();
- }
+void TxTableModel::addNewData(const QList<TransactionItem>& data)  {
+    // Make sure we're expecting some data.
+    Q_ASSERT(expectedData > 0);
+
+    // Add all 
+    std::copy(data.begin(), data.end(), std::back_inserter(*newmodeldata));
+    expectedData--;
+
+    if (expectedData == 0) {
+        delete modeldata;
+
+        modeldata    = newmodeldata;
+        newmodeldata = nullptr;
+
+        // Sort by reverse time
+        std::sort(modeldata->begin(), modeldata->end(), [=] (auto a, auto b) {
+            return a.datetime > b.datetime; // reverse sort
+        });
+
+        dataChanged(index(0, 0), index(modeldata->size()-1, columnCount(index(0,0))-1));
+        layoutChanged();
+    }
+}
 
  int TxTableModel::rowCount(const QModelIndex&) const
  {
@@ -53,7 +74,7 @@ void TxTableModel::setNewData(QList<TransactionItem>* data)  {
         switch (index.column()) {
         case 0: return modeldata->at(index.row()).type;
         case 1: return modeldata->at(index.row()).address;
-        case 2: return modeldata->at(index.row()).datetime;
+        case 2: return QDateTime::fromSecsSinceEpoch(modeldata->at(index.row()).datetime).toLocalTime().toString();
         case 3: {
                 if (role == Qt::DisplayRole)
                     return Settings::getInstance()->getZECDisplayFormat(modeldata->at(index.row()).amount);

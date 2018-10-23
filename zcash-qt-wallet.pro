@@ -49,7 +49,6 @@ SOURCES += \
     src/settings.cpp \
     src/sendtab.cpp \
     src/txtablemodel.cpp \
-    src/transactionitem.cpp \
     src/utils.cpp
 
 HEADERS += \

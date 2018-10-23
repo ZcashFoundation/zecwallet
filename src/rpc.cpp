@@ -368,6 +368,8 @@ void RPC::getReceivedZTrans(QList<QString> zaddrs) {
                     return payload;
                 },
                 [=] (QMap<QString, json>* txidDetails) {
+                    QList<TransactionItem> txdata;
+
                     // Combine them both together. For every zAddr's txid, get the amount, fee, confirmations and time
                     for (auto it = zaddrTxids->constBegin(); it != zaddrTxids->constEnd(); it++) {
                         for (auto& i : it.value().get<json::array_t>()) {   
@@ -380,10 +382,14 @@ void RPC::getReceivedZTrans(QList<QString> zaddrs) {
                             // And then find the values
                             auto timestamp = txidInfo["time"].get<json::number_unsigned_t>();
                             auto amount    = i["amount"].get<json::number_float_t>();
+                            auto confirmations = txidInfo["confirmations"].get<json::number_unsigned_t>();
 
-                            std::cout << zaddr.toStdString() << ":" << txid.toStdString() << ":" << timestamp << ":" << amount << std::endl;
+                            TransactionItem tx{ QString("receive"), timestamp, zaddr, txid, amount, confirmations };
+                            txdata.push_front(tx);
                         }
                     }
+
+                    transactionsTableModel->addNewData(txdata);
 
                     // Cleanup both responses;
                     delete zaddrTxids;
@@ -419,10 +425,13 @@ void RPC::getInfoThenRefresh() {
 		QIcon i(":/icons/res/connected.png");
 		main->statusIcon->setPixmap(i.pixmap(16, 16));
 
-		// Refresh everything.
-		refreshBalances();
-		refreshTransactions();
+        // Expect 2 data additions, then automatically refresh the table
+        transactionsTableModel->prepNewData(2); 
+
+        // Refresh everything.
+		refreshBalances();		
 		refreshAddresses();
+        refreshTransactions();
 
 		// Call to see if the blockchain is syncing. 
 		json payload = {
@@ -544,46 +553,30 @@ void RPC::refreshBalances() {
     });
 }
 
-void RPC::refreshTransactions() {
-    auto txdata = new QList<TransactionItem>();
-    /*
-    auto getZReceivedTransactions = ([=] (const json& reply) {
-        for (auto& it : reply.get<json::array_t>()) {  
-            TransactionItem tx(
-                QString("receive"),
-                QDateTime::fromSecsSinceEpoch(it["time"].get<json::number_unsigned_t>()).toLocalTime().toString(),
-                (it["address"].is_null() ? "" : QString::fromStdString(it["address"])),
-                QString::fromStdString(it["txid"]),
-                it["amount"].get<json::number_float_t>(),
-                it["confirmations"].get<json::number_float_t>()
-            );
-
-            txdata->push_front(tx);
-        }
-    });
-    */
-
+void RPC::refreshTransactions() {    
     getTransactions([=] (json reply) {
+        QList<TransactionItem> txdata;
+
         for (auto& it : reply.get<json::array_t>()) {  
 			double fee = 0;
 			if (it.find("fee") != it.end()) {
 				fee = it["fee"].get<json::number_float_t>();
 			}
 
-            TransactionItem tx(
+            TransactionItem tx{
                 QString::fromStdString(it["category"]),
-                QDateTime::fromSecsSinceEpoch(it["time"].get<json::number_unsigned_t>()).toLocalTime().toString(),
-                (it["address"].is_null() ? "" : QString::fromStdString(it["address"])),
+                it["time"].get<json::number_unsigned_t>(),
+                (it["address"].is_null() ? "(shielded)" : QString::fromStdString(it["address"])),
                 QString::fromStdString(it["txid"]),
                 it["amount"].get<json::number_float_t>() + fee,
-                it["confirmations"].get<json::number_float_t>()
-            );
+                it["confirmations"].get<json::number_unsigned_t>()
+            };
 
-            txdata->push_front(tx);
+            txdata.push_back(tx);
         }
 
         // Update model data, which updates the table view
-        transactionsTableModel->setNewData(txdata);        
+        transactionsTableModel->addNewData(txdata);        
     });
 }
 
@@ -630,7 +623,7 @@ void RPC::refreshTxStatus(const QString& newOpid) {
                     );
                     
                     watchingOps.remove(id);     
-                    txTimer->start(10 * 1000);                    
+                    txTimer->start(Utils::updateSpeed);                    
                     
                     main->ui->statusBar->showMessage(" Tx " % id % " failed", 15 * 1000);
                     main->loadingLabel->setVisible(false);
@@ -638,7 +631,7 @@ void RPC::refreshTxStatus(const QString& newOpid) {
                     msg.exec();                                                  
                 } else if (status == "executing") {
                     // If the operation is executing, then watch every second. 
-                    txTimer->start(1 * 1000);
+                    txTimer->start(Utils::quickUpdateSpeed);
                 }
             }
         }
