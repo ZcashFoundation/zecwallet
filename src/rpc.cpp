@@ -452,12 +452,17 @@ void RPC::refreshTransactions() {
 
     getTransactions([=] (json reply) {
         for (auto& it : reply.get<json::array_t>()) {  
+			double fee = 0;
+			if (std::find(it.begin(), it.end(), "fee") != it.end()) {
+				fee = it["fee"].get<json::number_float_t>();
+			}
+
             TransactionItem tx(
                 QString::fromStdString(it["category"]),
                 QDateTime::fromSecsSinceEpoch(it["time"].get<json::number_unsigned_t>()).toLocalTime().toString(),
                 (it["address"].is_null() ? "" : QString::fromStdString(it["address"])),
                 QString::fromStdString(it["txid"]),
-                it["amount"].get<json::number_float_t>(),
+                it["amount"].get<json::number_float_t>() + fee,
                 it["confirmations"].get<json::number_float_t>()
             );
 

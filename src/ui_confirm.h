@@ -71,12 +71,19 @@ public:
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
         devFee = new QLabel(sendToAddrs);
         devFee->setObjectName(QStringLiteral("devFee"));
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(devFee->sizePolicy().hasHeightForWidth());
+        devFee->setSizePolicy(sizePolicy);
         devFee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         gridLayout->addWidget(devFee, 3, 1, 1, 1);
 
         Amt1 = new QLabel(sendToAddrs);
         Amt1->setObjectName(QStringLiteral("Amt1"));
+        sizePolicy.setHeightForWidth(Amt1->sizePolicy().hasHeightForWidth());
+        Amt1->setSizePolicy(sizePolicy);
         Amt1->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         gridLayout->addWidget(Amt1, 0, 1, 1, 1);
@@ -88,6 +95,8 @@ public:
 
         minerFee = new QLabel(sendToAddrs);
         minerFee->setObjectName(QStringLiteral("minerFee"));
+        sizePolicy.setHeightForWidth(minerFee->sizePolicy().hasHeightForWidth());
+        minerFee->setSizePolicy(sizePolicy);
         minerFee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         gridLayout->addWidget(minerFee, 2, 1, 1, 1);
@@ -105,6 +114,11 @@ public:
 
         AmtUSD1 = new QLabel(sendToAddrs);
         AmtUSD1->setObjectName(QStringLiteral("AmtUSD1"));
+        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Preferred);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(AmtUSD1->sizePolicy().hasHeightForWidth());
+        AmtUSD1->setSizePolicy(sizePolicy1);
         AmtUSD1->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         gridLayout->addWidget(AmtUSD1, 0, 2, 1, 1);
@@ -116,12 +130,16 @@ public:
 
         minerFeeUSD = new QLabel(sendToAddrs);
         minerFeeUSD->setObjectName(QStringLiteral("minerFeeUSD"));
+        sizePolicy1.setHeightForWidth(minerFeeUSD->sizePolicy().hasHeightForWidth());
+        minerFeeUSD->setSizePolicy(sizePolicy1);
         minerFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         gridLayout->addWidget(minerFeeUSD, 2, 2, 1, 1);
 
         devFeeUSD = new QLabel(sendToAddrs);
         devFeeUSD->setObjectName(QStringLiteral("devFeeUSD"));
+        sizePolicy1.setHeightForWidth(devFeeUSD->sizePolicy().hasHeightForWidth());
+        devFeeUSD->setSizePolicy(sizePolicy1);
         devFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         gridLayout->addWidget(devFeeUSD, 3, 2, 1, 1);
@@ -163,10 +181,10 @@ public:
         sendToAddrs->setTitle(QApplication::translate("confirm", "To", nullptr));
         devFee->setText(QApplication::translate("confirm", "Dev Fee Amount", nullptr));
         Amt1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
-        labelDevFee->setText(QApplication::translate("confirm", "Dev Fee", nullptr));
+        labelDevFee->setText(QApplication::translate("confirm", "Dev Textlabel", nullptr));
         minerFee->setText(QApplication::translate("confirm", "Miner Amount", nullptr));
         Addr1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
-        labelMinerFee->setText(QApplication::translate("confirm", "Miner Fee", nullptr));
+        labelMinerFee->setText(QApplication::translate("confirm", "Miner Textlabel", nullptr));
         AmtUSD1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
         Memo1->setText(QApplication::translate("confirm", "TextLabel", nullptr));
         minerFeeUSD->setText(QApplication::translate("confirm", "TextLabel", nullptr));

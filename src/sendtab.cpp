@@ -411,12 +411,16 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
         labelMinerFee->setText("Miner Fee");
 
         auto minerFee = new QLabel(confirm.sendToAddrs);
+		QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+		minerFee->setSizePolicy(sizePolicy);
         minerFee->setObjectName(QStringLiteral("minerFee"));
         minerFee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         confirm.gridLayout->addWidget(minerFee, i, 1, 1, 1);
         minerFee->setText(Settings::getInstance()->getZECDisplayFormat(Utils::getMinerFee()));
 
         auto minerFeeUSD = new QLabel(confirm.sendToAddrs);
+		QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Preferred);
+		minerFeeUSD->setSizePolicy(sizePolicy1);
         minerFeeUSD->setObjectName(QStringLiteral("minerFeeUSD"));
         minerFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         confirm.gridLayout->addWidget(minerFeeUSD, i, 2, 1, 1);
@@ -435,6 +439,7 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
             fee         ->setText(Settings::getInstance()->getZECDisplayFormat(Utils::getDevFee()));
 
             auto devFeeUSD = new QLabel(confirm.sendToAddrs);
+			devFeeUSD->setSizePolicy(sizePolicy1);
             devFeeUSD->setObjectName(QStringLiteral("devFeeUSD"));
             devFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
             confirm.gridLayout->addWidget(devFeeUSD, i+1, 2, 1, 1);

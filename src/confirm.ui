@@ -41,6 +41,12 @@
      <layout class="QGridLayout" name="gridLayout">
       <item row="3" column="1">
        <widget class="QLabel" name="devFee">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Dev Fee Amount</string>
         </property>
@@ -51,6 +57,12 @@
       </item>
       <item row="0" column="1">
        <widget class="QLabel" name="Amt1">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>TextLabel</string>
         </property>
@@ -62,12 +74,18 @@
       <item row="3" column="0">
        <widget class="QLabel" name="labelDevFee">
         <property name="text">
-         <string>Dev Fee</string>
+         <string>Dev Textlabel</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
        <widget class="QLabel" name="minerFee">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Miner Amount</string>
         </property>
@@ -89,12 +107,18 @@
       <item row="2" column="0">
        <widget class="QLabel" name="labelMinerFee">
         <property name="text">
-         <string>Miner Fee</string>
+         <string>Miner Textlabel</string>
         </property>
        </widget>
       </item>
       <item row="0" column="2">
        <widget class="QLabel" name="AmtUSD1">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>TextLabel</string>
         </property>
@@ -112,6 +136,12 @@
       </item>
       <item row="2" column="2">
        <widget class="QLabel" name="minerFeeUSD">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>TextLabel</string>
         </property>
@@ -122,6 +152,12 @@
       </item>
       <item row="3" column="2">
        <widget class="QLabel" name="devFeeUSD">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>TextLabel</string>
         </property>
