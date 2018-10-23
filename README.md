@@ -70,7 +70,7 @@ from your host and also zcashd is set to be configured to accept connections fro
 
 The easiest way to connect to a remote node is probably to ssh to it with port forwarding like this:
 ```
-ssh -L8232:127.0.0.2.0232 user@remotehost
+ssh -L8232:127.0.0.1:8232 user@remotehost
 ```
 ### 2. "Not enough balance" when sending transactions
 The most likely cause for this is that you are trying to spend unconfirmed funds. Unlike bitcoin, the zcash protocol doesn't let you spent unconfirmed funds yet. Please wait for 
