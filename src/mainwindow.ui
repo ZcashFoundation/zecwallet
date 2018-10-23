@@ -720,6 +720,8 @@
      <string>File</string>
     </property>
     <addaction name="actionImport_Private_Keys"/>
+    <addaction name="actionTurnstile_Migration"/>
+    <addaction name="actionProgress"/>
     <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -767,6 +769,16 @@
   <action name="actionCheck_for_Updates">
    <property name="text">
     <string>Check github.com for Updates</string>
+   </property>
+  </action>
+  <action name="actionTurnstile_Migration">
+   <property name="text">
+    <string>Turnstile Migration</string>
+   </property>
+  </action>
+  <action name="actionProgress">
+   <property name="text">
+    <string>Progress</string>
    </property>
   </action>
  </widget>
