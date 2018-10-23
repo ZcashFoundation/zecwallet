@@ -20,11 +20,11 @@ Unzip the release binary and double click on zcash-qt-wallet to start.
 zcash-qt-wallet needs a Zcash node running zcashd. Linux users should download the zcash node software 
 from [https://z.cash/download/](https://z.cash/download/), configure `zcash.conf`, download the parameters and start zcashd according to the [official documentation](https://zcash.readthedocs.io/en/latest/rtd_pages/user_guide.html). 
 
-There is currently no official zcashd build for Windows so Windows users may either [cross-compile from source on Linux](https://zcash.readthedocs.io/en/latest/rtd_pages/user_guide.html#installation) to generate the necessary zcashd executables or simply download community hosted pre-compiled executables such as those hosted by WinZEC developer [@radix42](https://github.com/radix42) at [https://zcash.dl.mercerweiss.com/zcash-win-v2.0.1.zip].
+There is currently no official zcashd build for Windows so Windows users may either [cross-compile from source on Linux](https://zcash.readthedocs.io/en/latest/rtd_pages/user_guide.html#installation) to generate the necessary zcashd executables or simply download community hosted pre-compiled executables such as those hosted by WinZEC developer [@radix42](https://github.com/radix42) at https://zcash.dl.mercerweiss.com/zcash-win-v2.0.1.zip.
 
 Alternitavely run zcashd inside [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
-For all installations zcashd needs to run with RPC enabled (`server=1`, which is the default) and with a RPC username/password set. Add the following entries into `~/.zcash/zcash.conf` for Linux or` C:\Users\your-username\AppData\Roaming\Zcash\zcash.conf` on Windows. 
+For all installations zcashd needs to run with RPC enabled (`server=1`, which is the default) and with a RPC username/password set. Add the following entries into `~/.zcash/zcash.conf` for Linux or` C:\Users\your-username\AppData\Roaming\Zcash\zcash.conf` on Windows replacing the default values with a strong password. zcash-qt-wallet should detect these settings but if that fails you may edit the connection settings manually via the `File->Settings` menu.
 
 ```
 rpcuser=username
@@ -41,7 +41,7 @@ https://z.cash/downloads/sprout-proving.key
 https://z.cash/downloads/sprout-verifying.key
 ```
 
-zcash-qt-wallet should auto-detect zcashd. If you are running zcashd on WSL, then please set the connection parameters in the `File->Settings` menu. 
+If you are running zcashd on WSL, then please set the connection parameters in the `File->Settings` menu. 
 
 ## Compiling from source
 zcash-qt-wallet is written in C++ 14, and can be compiled with g++/clang++/visual c++. It also depends on Qt5, which you can get from here: https://www.qt.io/download
