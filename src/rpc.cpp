@@ -453,7 +453,7 @@ void RPC::refreshTransactions() {
     getTransactions([=] (json reply) {
         for (auto& it : reply.get<json::array_t>()) {  
 			double fee = 0;
-			if (std::find(it.begin(), it.end(), "fee") != it.end()) {
+			if (it.find("fee") != it.end()) {
 				fee = it["fee"].get<json::number_float_t>();
 			}
 
