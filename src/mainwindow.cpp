@@ -179,7 +179,7 @@ void MainWindow::importPrivKeys() {
     QString text = QInputDialog::getMultiLineText(
                         this, "Import Private Keys", 
                         QString() + 
-                        "Please paste your private keys (zAddr or tAddr) here, one per line.\n" +
+                        "Please paste your private keys (z-Addr or t-Addr) here, one per line.\n" +
                         "The keys will be imported into your connected zcashd node", 
                         "", &ok);
     if (ok && !text.isEmpty()) {
@@ -314,7 +314,7 @@ void MainWindow::setupRecieveTab() {
                     ui->listRecieveAddresses->insertItem(0, addr);
                     ui->listRecieveAddresses->setCurrentIndex(0);
 
-                    ui->statusBar->showMessage("Created new recieving tAddr", 10 * 1000);
+                    ui->statusBar->showMessage("Created new t-Addr", 10 * 1000);
                 }
             });
     };
