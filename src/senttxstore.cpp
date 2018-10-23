@@ -1,0 +1,86 @@
+#include "senttxstore.h"
+#include "settings.h"
+
+/// Get the location of the app data file to be written. 
+QString SentTxStore::writeableFile() {
+    auto filename = QStringLiteral("senttxstore.dat");
+
+    auto dir = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+    if (!dir.exists())
+        QDir().mkpath(dir.absolutePath());
+
+    if (Settings::getInstance()->isTestnet()) {
+        return dir.filePath("testnet-" % filename);
+    } else {
+        return dir.filePath(filename);
+    }
+}
+
+QList<TransactionItem> SentTxStore::readSentTxFile() {
+    QFile data(writeableFile());
+    if (!data.exists()) {
+        return QList<TransactionItem>();
+    }
+    
+    QJsonDocument jsonDoc;
+    
+    data.open(QFile::ReadOnly);    
+    jsonDoc = QJsonDocument().fromJson(data.readAll());
+    data.close();
+
+    QList<TransactionItem> items;
+
+    for (auto i : jsonDoc.array()) {
+        auto sentTx = i.toObject();
+        TransactionItem t{"sent", (unsigned long)sentTx["datetime"].toInt(), 
+                          sentTx["address"].toString(), 
+                          sentTx["txid"].toString(), sentTx["amount"].toDouble(), 0};
+        items.push_back(t);
+    }
+
+    return items;
+}
+
+void SentTxStore::addToSentTx(Tx tx, QString txid) {
+    QFile data(writeableFile());
+    QJsonDocument jsonDoc;
+
+    // If data doesn't exist, then create a blank one
+    if (!data.exists()) {
+        QJsonArray a;
+        jsonDoc.setArray(a);
+
+        QFile newFile(writeableFile());
+        newFile.open(QFile::WriteOnly);
+        newFile.write(jsonDoc.toJson());
+        newFile.close();
+    } else {
+        data.open(QFile::ReadOnly);    
+        jsonDoc = QJsonDocument().fromJson(data.readAll());
+        data.close();
+    }
+
+    // Calculate total amount in this tx
+    double totalAmount = 0;
+    for (auto i : tx.toAddrs) {
+        totalAmount += i.amount;
+    }
+
+    auto list = jsonDoc.array();
+    QJsonObject txItem;
+    txItem["type"]      = "sent";
+    txItem["datetime"]  = QDateTime().currentSecsSinceEpoch();
+    txItem["address"]   = QString();    // The sent address is blank, to be consistent with t-Addr sent behaviour
+    txItem["txid"]      = txid;
+    txItem["amount"]    = -totalAmount;
+    txItem["fee"]       = -tx.fee;
+    list.append(txItem);
+
+    jsonDoc.setArray(list);
+
+    QFile writer(writeableFile());
+    if (writer.open(QFile::WriteOnly | QFile::Truncate)) {
+        writer.write(jsonDoc.toJson());
+    } 
+    writer.close();
+}

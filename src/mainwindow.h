@@ -21,6 +21,7 @@ struct ToFields {
 struct Tx {
     QString         fromAddr;
     QList<ToFields> toAddrs;
+    double          fee;
 };
 
 namespace Ui {

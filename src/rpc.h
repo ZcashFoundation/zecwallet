@@ -11,6 +11,16 @@
 
 using json = nlohmann::json;
 
+
+struct TransactionItem {
+    QString         type;
+    unsigned long   datetime;
+    QString         address;
+    QString         txid;
+    double          amount;
+    unsigned long   confirmations;
+};
+
 class RPC
 {
 public:
@@ -18,11 +28,12 @@ public:
     ~RPC();
 
     void refresh();             // Refresh all transactions
-    void refreshTxStatus(const QString& newOpid = QString());     // Refresh the status of all pending txs.
     void refreshAddresses();    // Refresh wallet Z-addrs
     void refreshZECPrice();
 
     void sendZTransaction   (json params, const std::function<void(json)>& cb);
+    void watchTxStatus();
+    void addNewTxToWatch(Tx tx, const QString& newOpid); 
 
     BalancesTableModel*               getBalancesModel()  { return balancesTableModel; }    
     const QList<QString>*             getAllZAddresses()  { return zaddresses; }
@@ -40,6 +51,7 @@ private:
 
     void refreshBalances();
     void refreshTransactions();    
+    void refreshZSentTransactions();
 
 	bool processUnspent	(const json& reply);
 	void updateUI		(bool anyUnconfirmed);
@@ -69,7 +81,7 @@ private:
     QMap<QString, double>*      allBalances                 = nullptr;
     QList<QString>*             zaddresses                  = nullptr;
     
-    QSet<QString>               watchingOps;
+    QMap<QString, Tx>           watchingOps;
 
     TxTableModel*               transactionsTableModel      = nullptr;
     BalancesTableModel*         balancesTableModel          = nullptr;

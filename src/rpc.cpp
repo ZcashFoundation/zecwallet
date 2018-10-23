@@ -1,7 +1,7 @@
 #include "rpc.h"
 #include "utils.h"
-#include "transactionitem.h"
 #include "settings.h"
+#include "senttxstore.h"
 
 using json = nlohmann::json;
 
@@ -35,7 +35,7 @@ RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
     // Set up the timer to watch for tx status
     txTimer = new QTimer(main);
     QObject::connect(txTimer, &QTimer::timeout, [=]() {
-        refreshTxStatus();
+        watchTxStatus();
     });
     // Start at every 10s. When an operation is pending, this will change to every second
     txTimer->start(Utils::updateSpeed);  
@@ -45,7 +45,7 @@ RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
     QObject::connect(priceTimer, &QTimer::timeout, [=]() {
         refreshZECPrice();
     });
-    priceTimer->start(60 * 60 * 1000);  // Every hour
+    priceTimer->start(Utils::priceRefreshSpeed);  // Every hour
 }
 
 RPC::~RPC() {
@@ -389,7 +389,7 @@ void RPC::getReceivedZTrans(QList<QString> zaddrs) {
                         }
                     }
 
-                    transactionsTableModel->addNewData(txdata);
+                    transactionsTableModel->addZRecvData(txdata);
 
                     // Cleanup both responses;
                     delete zaddrTxids;
@@ -417,7 +417,7 @@ void RPC::getInfoThenRefresh() {
 
     doRPC(payload, [=] (const json& reply) {   
 		// Testnet?
-		if (reply.find("testnet") != reply.end()) {
+		if (!reply["testnet"].is_null()) {
 			Settings::getInstance()->setTestnet(reply["testnet"].get<json::boolean_t>());
 		};
 
@@ -425,13 +425,11 @@ void RPC::getInfoThenRefresh() {
 		QIcon i(":/icons/res/connected.png");
 		main->statusIcon->setPixmap(i.pixmap(16, 16));
 
-        // Expect 2 data additions, then automatically refresh the table
-        transactionsTableModel->prepNewData(2); 
-
         // Refresh everything.
 		refreshBalances();		
 		refreshAddresses();
         refreshTransactions();
+        refreshZSentTransactions();
 
 		// Call to see if the blockchain is syncing. 
 		json payload = {
@@ -559,14 +557,14 @@ void RPC::refreshTransactions() {
 
         for (auto& it : reply.get<json::array_t>()) {  
 			double fee = 0;
-			if (it.find("fee") != it.end()) {
+			if (!it["fee"].is_null()) {
 				fee = it["fee"].get<json::number_float_t>();
 			}
 
             TransactionItem tx{
                 QString::fromStdString(it["category"]),
                 it["time"].get<json::number_unsigned_t>(),
-                (it["address"].is_null() ? "(shielded)" : QString::fromStdString(it["address"])),
+                (it["address"].is_null() ? "" : QString::fromStdString(it["address"])),
                 QString::fromStdString(it["txid"]),
                 it["amount"].get<json::number_float_t>() + fee,
                 it["confirmations"].get<json::number_unsigned_t>()
@@ -576,15 +574,55 @@ void RPC::refreshTransactions() {
         }
 
         // Update model data, which updates the table view
-        transactionsTableModel->addNewData(txdata);        
+        transactionsTableModel->addTData(txdata);        
     });
 }
 
-void RPC::refreshTxStatus(const QString& newOpid) {
-    if (!newOpid.isEmpty()) {
-        watchingOps.insert(newOpid);
+// Read sent Z transactions from the file.
+void RPC::refreshZSentTransactions() {
+    auto sentZTxs = SentTxStore::readSentTxFile();
+    QList<QString> txids;
+
+    for (auto sentTx: sentZTxs) {
+        txids.push_back(sentTx.txid);
     }
 
+    // Look up all the txids to get the confirmation count for them. 
+    getBatchRPC(txids,
+        [=] (QString txid) {
+            json payload = {
+                {"jsonrpc", "1.0"},
+                {"id", "senttxid"},
+                {"method", "gettransaction"},
+                {"params", {txid.toStdString()}} 
+            };
+
+            return payload;
+        },          
+        [=] (QMap<QString, json>* txidList) {
+            auto newSentZTxs = sentZTxs;
+            // Update the original sent list with the confirmation count
+            // TODO: This whole thing is kinda inefficient. We should probably just update the file
+            // with the confirmed block number, so we don't have to keep calling gettransaction for the
+            // sent items.
+            for (TransactionItem& sentTx: newSentZTxs) {
+                auto error = txidList->value(sentTx.txid)["confirmations"].is_null();
+                if (!error)
+                    sentTx.confirmations = txidList->value(sentTx.txid)["confirmations"].get<json::number_unsigned_t>();
+            }
+            
+            transactionsTableModel->addZSentData(newSentZTxs);
+        }
+     );
+}
+
+void RPC::addNewTxToWatch(Tx tx, const QString& newOpid) {
+    watchingOps.insert(newOpid, tx);
+
+    watchTxStatus();
+}
+
+void RPC::watchTxStatus() {
     // Make an RPC to load pending operation statues
     json payload = {
         {"jsonrpc", "1.0"},
@@ -602,12 +640,13 @@ void RPC::refreshTxStatus(const QString& newOpid) {
                 QString status = QString::fromStdString(it["status"]);
                 if (status == "success") {
                     auto txid = QString::fromStdString(it["result"]["txid"]);
-					qDebug() << "Tx completed: " << txid;
+					
+                    SentTxStore::addToSentTx(watchingOps.value(id), txid);
+
                     main->ui->statusBar->showMessage(Utils::txidStatusMessage + " " + txid);
                     main->loadingLabel->setVisible(false);
 
                     watchingOps.remove(id);
-                    txTimer->start(Utils::updateSpeed);
 
                     // Refresh balances to show unconfirmed balances                    
                     refresh();  
@@ -622,17 +661,19 @@ void RPC::refreshTxStatus(const QString& newOpid) {
                         main
                     );
                     
-                    watchingOps.remove(id);     
-                    txTimer->start(Utils::updateSpeed);                    
+                    watchingOps.remove(id);
                     
                     main->ui->statusBar->showMessage(" Tx " % id % " failed", 15 * 1000);
                     main->loadingLabel->setVisible(false);
 
                     msg.exec();                                                  
-                } else if (status == "executing") {
-                    // If the operation is executing, then watch every second. 
-                    txTimer->start(Utils::quickUpdateSpeed);
-                }
+                } 
+            }
+
+            if (watchingOps.isEmpty()) {
+                txTimer->start(Utils::updateSpeed);
+            } else {
+                txTimer->start(Utils::quickUpdateSpeed);
             }
         }
 
@@ -646,6 +687,7 @@ void RPC::refreshTxStatus(const QString& newOpid) {
     });
 }
 
+// Get the ZEC->USD price from coinmarketcap using their API
 void RPC::refreshZECPrice() {
     QUrl cmcURL("https://api.coinmarketcap.com/v1/ticker/");
 

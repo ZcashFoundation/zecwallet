@@ -1,8 +1,9 @@
 #ifndef STRINGSTABLEMODEL_H
 #define STRINGSTABLEMODEL_H
 
-#include "transactionitem.h"
 #include "precompiled.h"
+
+struct TransactionItem;
 
 class TxTableModel: public QAbstractTableModel
 {
@@ -10,8 +11,9 @@ public:
     TxTableModel(QObject* parent);    
     ~TxTableModel();
 
-    void prepNewData    (int expectedData);
-    void addNewData     (const QList<TransactionItem>& data);
+    void addTData    (const QList<TransactionItem>& data);
+    void addZSentData(const QList<TransactionItem>& data);
+    void addZRecvData(const QList<TransactionItem>& data);     
 
     QString  getTxId(int row);
 
@@ -21,9 +23,13 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
 private:
-    QList<TransactionItem>*  modeldata      = nullptr;
-    QList<TransactionItem>*  newmodeldata   = nullptr;
-    int expectedData;
+    void updateAllData();
+
+    QList<TransactionItem>*  tTrans      = nullptr;
+    QList<TransactionItem>*  zrTrans     = nullptr;     // Z received
+    QList<TransactionItem>*  zsTrans     = nullptr;     // Z sent
+
+    QList<TransactionItem>* modeldata    = nullptr;
 
     QList<QString>           headers;
 };

@@ -1,6 +1,7 @@
 #include "txtablemodel.h"
 #include "settings.h"
 #include "utils.h"
+#include "rpc.h"
 
 TxTableModel::TxTableModel(QObject *parent)
      : QAbstractTableModel(parent) {
@@ -11,33 +12,46 @@ TxTableModel::~TxTableModel() {
     delete modeldata;
 }
 
-void TxTableModel::prepNewData(int expect) {
-    newmodeldata = new QList<TransactionItem>();
-    expectedData = expect;
+void TxTableModel::addZSentData(const QList<TransactionItem>& data) {
+    delete zsTrans;
+    zsTrans = new QList<TransactionItem>();
+    std::copy(data.begin(), data.end(), std::back_inserter(*zsTrans));
+
+    updateAllData();
 }
 
-void TxTableModel::addNewData(const QList<TransactionItem>& data)  {
-    // Make sure we're expecting some data.
-    Q_ASSERT(expectedData > 0);
+void TxTableModel::addZRecvData(const QList<TransactionItem>& data) {
+    delete zrTrans;
+    zrTrans = new QList<TransactionItem>();
+    std::copy(data.begin(), data.end(), std::back_inserter(*zrTrans));
 
-    // Add all 
-    std::copy(data.begin(), data.end(), std::back_inserter(*newmodeldata));
-    expectedData--;
+    updateAllData();
+}
 
-    if (expectedData == 0) {
-        delete modeldata;
 
-        modeldata    = newmodeldata;
-        newmodeldata = nullptr;
+void TxTableModel::addTData(const QList<TransactionItem>& data) {
+    delete tTrans;
+    tTrans = new QList<TransactionItem>();
+    std::copy(data.begin(), data.end(), std::back_inserter(*tTrans));
 
-        // Sort by reverse time
-        std::sort(modeldata->begin(), modeldata->end(), [=] (auto a, auto b) {
-            return a.datetime > b.datetime; // reverse sort
-        });
+    updateAllData();
+}
 
-        dataChanged(index(0, 0), index(modeldata->size()-1, columnCount(index(0,0))-1));
-        layoutChanged();
-    }
+void TxTableModel::updateAllData() {
+    delete modeldata;
+    modeldata = new QList<TransactionItem>();
+
+    if (tTrans != nullptr)  std::copy( tTrans->begin(),  tTrans->end(), std::back_inserter(*modeldata));
+    if (zsTrans != nullptr) std::copy(zsTrans->begin(), zsTrans->end(), std::back_inserter(*modeldata));
+    if (zrTrans != nullptr) std::copy(zrTrans->begin(), zrTrans->end(), std::back_inserter(*modeldata));
+
+    // Sort by reverse time
+    std::sort(modeldata->begin(), modeldata->end(), [=] (auto a, auto b) {
+        return a.datetime > b.datetime; // reverse sort
+    });
+
+    dataChanged(index(0, 0), index(modeldata->size()-1, columnCount(index(0,0))-1));
+    layoutChanged();
 }
 
  int TxTableModel::rowCount(const QModelIndex&) const
@@ -73,7 +87,13 @@ void TxTableModel::addNewData(const QList<TransactionItem>& data)  {
     if (role == Qt::DisplayRole || role == Qt::ToolTipRole) {
         switch (index.column()) {
         case 0: return modeldata->at(index.row()).type;
-        case 1: return modeldata->at(index.row()).address;
+        case 1: { 
+                    auto addr = modeldata->at(index.row()).address;
+                    if (addr.trimmed().isEmpty()) 
+                        return "(Shielded)";
+                    else 
+                        return addr;
+                }
         case 2: return QDateTime::fromSecsSinceEpoch(modeldata->at(index.row()).datetime).toLocalTime().toString();
         case 3: {
                 if (role == Qt::DisplayRole)

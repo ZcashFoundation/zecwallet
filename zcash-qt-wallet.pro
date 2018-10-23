@@ -48,6 +48,7 @@ SOURCES += \
     src/3rdparty/qrcode/QrSegment.cpp \
     src/settings.cpp \
     src/sendtab.cpp \
+    src/senttxstore.cpp \
     src/txtablemodel.cpp \
     src/utils.cpp
 
@@ -63,7 +64,7 @@ HEADERS += \
     src/3rdparty/json/json.hpp \
     src/settings.h \
     src/txtablemodel.h \
-    src/transactionitem.h \
+    src/senttxstore.h \
     src/utils.h
 
 FORMS += \

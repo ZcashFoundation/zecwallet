@@ -319,6 +319,7 @@ Tx MainWindow::createTxFromSendPage() {
         tx.toAddrs.push_back( ToFields{addr, amt, memo, memo.toUtf8().toHex()} );
     }
 
+    tx.fee = Utils::getMinerFee();
     return tx;
 }
 
@@ -416,7 +417,7 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
         minerFee->setObjectName(QStringLiteral("minerFee"));
         minerFee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         confirm.gridLayout->addWidget(minerFee, i, 1, 1, 1);
-        minerFee->setText(Settings::getInstance()->getZECDisplayFormat(Utils::getMinerFee()));
+        minerFee->setText(Settings::getInstance()->getZECDisplayFormat(tx.fee));
 
         auto minerFeeUSD = new QLabel(confirm.sendToAddrs);
 		QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Preferred);
@@ -424,7 +425,7 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
         minerFeeUSD->setObjectName(QStringLiteral("minerFeeUSD"));
         minerFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         confirm.gridLayout->addWidget(minerFeeUSD, i, 2, 1, 1);
-        minerFeeUSD->setText(Settings::getInstance()->getUSDFormat(Utils::getMinerFee()));
+        minerFeeUSD->setText(Settings::getInstance()->getUSDFormat(tx.fee));
 
         if (!devFee.addr.isEmpty()) {
             auto labelDevFee = new QLabel(confirm.sendToAddrs);
@@ -517,7 +518,7 @@ void MainWindow::sendButton() {
 			ui->statusBar->showMessage("Computing Tx: " % opid);
 
             // And then start monitoring the transaction
-            rpc->refreshTxStatus(opid);
+            rpc->addNewTxToWatch(tx, opid);
 		});
 	}	    
 }

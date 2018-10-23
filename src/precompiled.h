@@ -35,6 +35,8 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 #include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
 #include <QAbstractTableModel>
 #include <QAbstractItemModel>
 #include <QObject>
