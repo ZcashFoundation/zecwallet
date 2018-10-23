@@ -71,7 +71,9 @@ FORMS += \
     src/mainwindow.ui \
     src/settings.ui \
     src/about.ui \
-    src/confirm.ui
+    src/confirm.ui \
+    src/turnstile.ui \
+    src/turnstileprogress.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

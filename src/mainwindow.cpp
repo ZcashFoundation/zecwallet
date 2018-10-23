@@ -2,10 +2,13 @@
 #include "ui_mainwindow.h"
 #include "ui_about.h"
 #include "ui_settings.h"
+#include "ui_turnstile.h"
+#include "ui_turnstileprogress.h"
 #include "rpc.h"
 #include "balancestablemodel.h"
 #include "settings.h"
 #include "utils.h"
+
 
 #include "precompiled.h"
 
@@ -23,6 +26,38 @@ MainWindow::MainWindow(QWidget *parent) :
     
 	// Settings editor 
 	setupSettingsModal();
+
+    // Turnstile migration
+    QObject::connect(ui->actionTurnstile_Migration, &QAction::triggered, [=] () {
+        Ui_Turnstile turnstile;
+        QDialog d(this);
+        turnstile.setupUi(&d);
+
+        QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
+        turnstile.msgIcon->setPixmap(icon.pixmap(64, 64));
+
+        turnstile.migrateZaddList->addItem("All Sprout z-Addrs");
+        turnstile.migrateTo->addItem("zs1gv64eu0v2wx7raxqxlmj354y9ycznwaau9kduljzczxztvs4qcl00kn2sjxtejvrxnkucw5xx9u");
+        turnstile.privLevel->addItem("Good - 3 tx over 3 days");
+        turnstile.privLevel->addItem("Excellent - 5 tx over 5 days");
+        turnstile.privLevel->addItem("Paranoid - 10 tx over 7 days");
+
+        turnstile.buttonBox->button(QDialogButtonBox::Ok)->setText("Start");
+
+        d.exec();
+    });
+
+    QObject::connect(ui->actionProgress, &QAction::triggered, [=] () {
+        Ui_TurnstileProgress progress;
+        QDialog d(this);
+        progress.setupUi(&d);
+
+        QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning);
+        progress.msgIcon->setPixmap(icon.pixmap(64, 64));
+
+        progress.buttonBox->button(QDialogButtonBox::Cancel)->setText("Abort");
+        d.exec();
+    });
 
     // Set up exit action
     QObject::connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
