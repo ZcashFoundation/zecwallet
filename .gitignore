@@ -7,7 +7,6 @@ x64/
 src/precompiled.h.cpp
 .qmake.stash
 zec-qt-wallet
-zec-qt-wallet.*
 Makefile
 Makefile.*
 qrc_application.cpp
