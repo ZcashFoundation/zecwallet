@@ -14,7 +14,7 @@ echo "[OK]"
 
 
 echo -n "Configuring..."
-rm -f "bin/linux-zcash-qt-wallet*"
+rm -f bin/linux-zcash-qt-wallet*
 make distclean > /dev/null
 $QT_STATIC/bin/qmake zcash-qt-wallet.pro -spec linux-clang CONFIG+=release > /dev/null
 echo "[OK]"

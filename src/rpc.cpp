@@ -398,11 +398,11 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs, QList<QPair<QString, QStr
                             // First, find if the current txid is in the filtered list
                             auto filteredTxid = std::find_if(txidFilter.begin(), txidFilter.end(), [=] (auto item) {
                                                         return item.second == txid;
-                                                    });
+                                                    });                            
 
                             // If it is in the filtered list and the z-Addr is the fromAddress in the sent
                             // z-Addr, then this is a "change" recieve, so skip it
-                            if (filteredTxid != txidFilter.end() && filteredTxid->first != zaddr) {
+                            if (filteredTxid == txidFilter.end() || filteredTxid->first != zaddr) {
                                 auto txidInfo = txidDetails->value(txid);
                                 // Lookup txid in the map
 
