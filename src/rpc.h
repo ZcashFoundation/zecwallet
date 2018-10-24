@@ -19,6 +19,7 @@ struct TransactionItem {
     QString         txid;
     double          amount;
     unsigned long   confirmations;
+    QString         fromAddr;
 };
 
 class RPC
@@ -53,7 +54,7 @@ private:
 
     void refreshTransactions();    
     void refreshSentZTrans      (QList<QString> zaddresses);
-    void refreshReceivedZTrans  (QList<QString> zaddrs, QList<QString> txidFilter);
+    void refreshReceivedZTrans  (QList<QString> zaddrs, QList<QPair<QString, QString>> txidFilter);
 
 	bool processUnspent	(const json& reply);
 	void updateUI		(bool anyUnconfirmed);
