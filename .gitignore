@@ -6,10 +6,10 @@ x64/
 *.autosave
 src/precompiled.h.cpp
 .qmake.stash
-zcash-qt-wallet
-zcash-qt-wallet.*
+zec-qt-wallet
+zec-qt-wallet.*
 Makefile
 Makefile.*
 qrc_application.cpp
-zcash-qt-wallet_plugin_import.cpp
+zec-qt-wallet_plugin_import.cpp
 workspace.code-workspace

@@ -683,7 +683,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "zcash-qt-wallet", nullptr));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "zec-qt-wallet", nullptr));
         actionExit->setText(QApplication::translate("MainWindow", "Exit", nullptr));
         actionAbout->setText(QApplication::translate("MainWindow", "About", nullptr));
         actionSettings->setText(QApplication::translate("MainWindow", "Settings", nullptr));

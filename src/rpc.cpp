@@ -256,11 +256,11 @@ void RPC::handleConnectionError(const QString& error) {
                    error.contains("loading", Qt::CaseInsensitive)) {
             explanation = QString()
                         % "\n\nIf you just started zcashd, then it's still loading and you might have to wait a while. If zcashd is ready, then you've run into  "
-                        % "something unexpected, and might need to file a bug report here: https://github.com/adityapk00/zcash-qt-wallet/issues";
+                        % "something unexpected, and might need to file a bug report here: https://github.com/adityapk00/zec-qt-wallet/issues";
         } else {
             explanation = QString()
                         % "\n\nThis is most likely an internal error. Something unexpected happened. "
-                        % "You might need to file a bug report here: https://github.com/adityapk00/zcash-qt-wallet/issues";
+                        % "You might need to file a bug report here: https://github.com/adityapk00/zec-qt-wallet/issues";
         }
 
         msg.setText("There was a network connection error. The error was: \n\n" 
@@ -400,20 +400,14 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
                             // Lookup txid in the map
                             auto txidInfo = txidDetails->value(txid);
 
-                            // And then find the values
-                            if (txidInfo == nullptr) {
-                                std::cout << zaddr.toStdString() << std::endl;
-                                std::cout << txid.toStdString() << std::endl;
-                            }
                             unsigned long timestamp;
                             if (txidInfo.find("time") != txidInfo.end()) {
                                 timestamp = txidInfo["time"].get<json::number_unsigned_t>();
                             } else {
                                 timestamp = txidInfo["blocktime"].get<json::number_unsigned_t>();
                             }
-
                             
-                            auto amount    = i["amount"].get<json::number_float_t>();
+                            auto amount        = i["amount"].get<json::number_float_t>();
                             auto confirmations = txidInfo["confirmations"].get<json::number_unsigned_t>();
 
                             TransactionItem tx{ QString("receive"), timestamp, zaddr, txid, amount, confirmations, "" };

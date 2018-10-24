@@ -16,13 +16,13 @@ int main(int argc, char *argv[])
         qApp->setFont(QFont("Ubuntu", 11, QFont::Normal, false));
     #endif
 
-	QCoreApplication::setOrganizationName("zcash-qt-wallet-org");
-	QCoreApplication::setApplicationName("zcash-qt-wallet");
+	QCoreApplication::setOrganizationName("zec-qt-wallet-org");
+	QCoreApplication::setApplicationName("zec-qt-wallet");
 
     Settings::init();
 
     MainWindow w;
-    w.setWindowTitle("zcash-qt-wallet v" + QString(APP_VERSION));
+    w.setWindowTitle("zec-qt-wallet v" + QString(APP_VERSION));
     w.show();
     
     return QApplication::exec();

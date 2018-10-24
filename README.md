@@ -1,30 +1,30 @@
-zcash-qt-wallet is a z-Addr first, Sapling compatible wallet for zcashd that runs on Windows and Linux
+zec-qt-wallet is a z-Addr first, Sapling compatible wallet for zcashd that runs on Windows and Linux
 
 ![Screenshot](docs/screenshot-main.png?raw=true)
 
 # Installation
 
-Head over to the releases page and grab the latest binary. https://github.com/adityapk00/zcash-qt-wallet/releases
+Head over to the releases page and grab the latest binary. https://github.com/adityapk00/zec-qt-wallet/releases
 
 ### Linux
 Extract and run the binary
 ```
-tar -xvf zcash-qt-wallet-v0.2.1.tar.gz
-./zcash-qt-wallet-v0.2.1/zcash-qt-wallet
+tar -xvf zec-qt-wallet-v0.2.1.tar.gz
+./zec-qt-wallet-v0.2.1/zec-qt-wallet
 ```
 
 ### Windows
-Unzip the release binary and double click on zcash-qt-wallet to start.
+Unzip the release binary and double click on zec-qt-wallet to start.
 
 ## Prerequisites: zcashd
-zcash-qt-wallet needs a Zcash node running zcashd. Linux users should download the zcash node software 
+zec-qt-wallet needs a Zcash node running zcashd. Linux users should download the zcash node software 
 from [https://z.cash/download/](https://z.cash/download/), configure `zcash.conf`, download the parameters and start zcashd according to the [official documentation](https://zcash.readthedocs.io/en/latest/rtd_pages/user_guide.html). 
 
 There is currently no official zcashd build for Windows so Windows users may either [cross-compile from source on Linux](https://zcash.readthedocs.io/en/latest/rtd_pages/user_guide.html#installation) to generate the necessary zcashd executables or simply download community hosted pre-compiled executables such as those hosted by WinZEC developer [@radix42](https://github.com/radix42) at https://zcash.dl.mercerweiss.com/zcash-win-v2.0.1.zip.
 
 Alternitavely run zcashd inside [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
-For all installations zcashd needs to run with RPC enabled (`server=1`, which is the default) and with a RPC username/password set. Add the following entries into `~/.zcash/zcash.conf` for Linux or` C:\Users\your-username\AppData\Roaming\Zcash\zcash.conf` on Windows replacing the default values with a strong password. zcash-qt-wallet should detect these settings but if that fails you may edit the connection settings manually via the `File->Settings` menu.
+For all installations zcashd needs to run with RPC enabled (`server=1`, which is the default) and with a RPC username/password set. Add the following entries into `~/.zcash/zcash.conf` for Linux or` C:\Users\your-username\AppData\Roaming\Zcash\zcash.conf` on Windows replacing the default values with a strong password. zec-qt-wallet should detect these settings but if that fails you may edit the connection settings manually via the `File->Settings` menu.
 
 ```
 rpcuser=username
@@ -44,17 +44,17 @@ https://z.cash/downloads/sprout-verifying.key
 If you are running zcashd on WSL, then please set the connection parameters in the `File->Settings` menu. 
 
 ## Compiling from source
-zcash-qt-wallet is written in C++ 14, and can be compiled with g++/clang++/visual c++. It also depends on Qt5, which you can get from here: https://www.qt.io/download
+zec-qt-wallet is written in C++ 14, and can be compiled with g++/clang++/visual c++. It also depends on Qt5, which you can get from here: https://www.qt.io/download
 
 ### Compiling on Linux
 
 ```
-git clone https://github.com/adityapk00/zcash-qt-wallet.git
-cd zcash-qt-wallet
-/path/to/qt5/bin/qmake zcash-qt-wallet.pro CONFIG+=debug
+git clone https://github.com/adityapk00/zec-qt-wallet.git
+cd zec-qt-wallet
+/path/to/qt5/bin/qmake zec-qt-wallet.pro CONFIG+=debug
 make -j$(nproc)
 
-./zcash-qt-wallet
+./zec-qt-wallet
 ```
 
 ### Compiling on Windows
@@ -62,21 +62,21 @@ You need Visual Studio 2017 (The free C++ Community Edition works just fine).
 
 From the VS Tools command prompt
 ```
-c:\Qt5\bin\qmake.exe zcash-qt-wallet.pro CONFIG+=debug
+c:\Qt5\bin\qmake.exe zec-qt-wallet.pro CONFIG+=debug
 nmake
 
-debug\zcash-qt-wallet.exe
+debug\zec-qt-wallet.exe
 ```
 
 To create the Visual Studio project files so you can compile and run from Visual Studio:
 ```
-c:\Qt5\bin\qmake.exe zcash-qt-wallet.pro -tp vc CONFIG+=debug
+c:\Qt5\bin\qmake.exe zec-qt-wallet.pro -tp vc CONFIG+=debug
 ```
 
 ## Troubleshooting FAQ
 ### 1. "Connection Error"
 
-Normally, zcash-qt-wallet can pick up the rpcuser/rpcpassword from zcash.conf. If it doesn't for some reason, you can set the username/password in the File->Settings menu. 
+Normally, zec-qt-wallet can pick up the rpcuser/rpcpassword from zcash.conf. If it doesn't for some reason, you can set the username/password in the File->Settings menu. 
 If you are connecting to a remote node, make sure that zcashd on the remote machine is accepting connections from your machine. The target machine's firewall needs to allow connections
 from your host and also zcashd is set to be configured to accept connections from this host. 
 
@@ -91,4 +91,4 @@ The most likely cause for this is that you are trying to spend unconfirmed funds
 ### Support or other questions
 Tweet at [@zcashqtwallet](https://twitter.com/zcashqtwallet) for help.
 
-_PS: zcash-qt-wallet is NOT an official wallet, and is not affiliated with the Zerocoin Electric Coin Company in any way._
+_PS: zec-qt-wallet is NOT an official wallet, and is not affiliated with the Zerocoin Electric Coin Company in any way._

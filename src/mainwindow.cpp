@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Set up check for updates action
     QObject::connect(ui->actionCheck_for_Updates, &QAction::triggered, [=] () {
-        QDesktopServices::openUrl(QUrl("https://github.com/adityapk00/zcash-qt-wallet/releases"));
+        QDesktopServices::openUrl(QUrl("https://github.com/adityapk00/zec-qt-wallet/releases"));
     });
 
     QObject::connect(ui->actionImport_Private_Keys, &QAction::triggered, this, &MainWindow::importPrivKeys);
@@ -194,7 +194,7 @@ void MainWindow::donate() {
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText("0.01");
 
-    ui->statusBar->showMessage("Donate 0.01 " % Utils::getTokenName() % " to support zcash-qt-wallet");
+    ui->statusBar->showMessage("Donate 0.01 " % Utils::getTokenName() % " to support zec-qt-wallet");
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);
