@@ -49,14 +49,6 @@ MainWindow::MainWindow(QWidget *parent) :
         aboutDialog.exec();
     });
 
-    // Set up delete sent history action
-    QObject::connect(ui->actionDelete_Sent_History, &QAction::triggered, [=] () {
-        bool confirm = QMessageBox::information(this, "Delete Sent History?", 
-                "Shielded z-Address sent transactions are stored locally in your wallet. You may delete this saved information safely any time for your privacy.\nDo you want to delete this now?", 
-                QMessageBox::Yes, QMessageBox::No);
-        if (confirm) SentTxStore::deleteHistory();
-    });
-
     // Initialize to the balances tab
     ui->tabWidget->setCurrentIndex(0);
 
@@ -130,13 +122,13 @@ void MainWindow::setupSettingsModal() {
 
 		// Setup save sent check box
 		QObject::connect(settings.chkSaveTxs, &QCheckBox::stateChanged, [=](auto checked) {
-			Settings::getInstance()->setSaveSent(checked);
+			Settings::getInstance()->setSaveZtxs(checked);
 		});
 
 		// Setup clear button
 		QObject::connect(settings.btnClearSaved, &QCheckBox::clicked, [=]() {
 			if (QMessageBox::warning(this, "Clear saved history?",
-				"Shielded z-Address sent transactions are stored locally in your wallet. You may delete this saved information safely any time for your privacy.\nDo you want to delete this now ?",
+				"Shielded z-Address transactions are stored locally in your wallet, outside zcashd. You may delete this saved information safely any time for your privacy.\nDo you want to delete the saved shielded transactions now ?",
 				QMessageBox::Yes, QMessageBox::Cancel)) {
 					SentTxStore::deleteHistory();
 					// Reload after the clear button so existing txs disappear
@@ -145,7 +137,7 @@ void MainWindow::setupSettingsModal() {
 		});
 
 		// Save sent transactions
-		settings.chkSaveTxs->setChecked(Settings::getInstance()->getSaveSent());
+		settings.chkSaveTxs->setChecked(Settings::getInstance()->getSaveZtxs());
 
 		// Connection Settings
 		QIntValidator validator(0, 65535);
@@ -185,11 +177,12 @@ void MainWindow::setupSettingsModal() {
 					settings.port->text(),
 					settings.rpcuser->text(),
 					settings.rpcpassword->text());
+                
+                this->rpc->reloadConnectionInfo();
+            }
 
-				// Then refresh everything.
-				this->rpc->reloadConnectionInfo();
-				this->rpc->refresh();
-			}
+            // Then refresh everything.			
+            this->rpc->refresh();			
 		};
 	});
 

@@ -332,8 +332,21 @@ void RPC::getBatchRPC(
     waitTimer->start(100);    
 }
 
-/// Batch RPC methods
+// Refresh received z txs by calling z_listreceivedbyaddress/gettransaction
 void RPC::refreshReceivedZTrans(QList<QString> zaddrs, QList<QString> txidFilter) {
+    // We'll only refresh the received Z txs if settings allows us.
+    if (!Settings::getInstance()->getSaveZtxs()) {
+        QList<TransactionItem> emptylist;
+        transactionsTableModel->addZRecvData(emptylist);
+        return;
+    }
+        
+
+    // This method is complicated because z_listreceivedbyaddress only returns the txid, and 
+    // we have to make a follow up call to gettransaction to get details of that transaction. 
+    // Additionally, it has to be done in batches, because there are multiple z-Addresses, 
+    // and each z-Addr can have multiple received txs. 
+
     // 1. For each z-Addr, get list of received txs    
     getBatchRPC(zaddrs,
         [=] (QString zaddr) {
@@ -347,7 +360,8 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs, QList<QString> txidFilter
             return payload;
         },          
         [=] (QMap<QString, json>* zaddrTxids) {
-            // Process all txids
+            // Process all txids, removing duplicates. This can happen if the same address
+            // appears multiple times in a single tx's outputs.
             QSet<QString> txids;
             for (auto it = zaddrTxids->constBegin(); it != zaddrTxids->constEnd(); it++) {
                 for (auto& i : it.value().get<json::array_t>()) {   

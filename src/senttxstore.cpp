@@ -51,7 +51,7 @@ QList<TransactionItem> SentTxStore::readSentTxFile() {
 
 void SentTxStore::addToSentTx(Tx tx, QString txid) {
 	// Save transactions only if the settings are allowed
-	if (!Settings::getInstance()->getSaveSent())
+	if (!Settings::getInstance()->getSaveZtxs())
 		return;
 
     QFile data(writeableFile());

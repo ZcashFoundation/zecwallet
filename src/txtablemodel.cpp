@@ -40,7 +40,7 @@ void TxTableModel::addTData(const QList<TransactionItem>& data) {
 void TxTableModel::updateAllData() {    
     auto newmodeldata = new QList<TransactionItem>();
 
-    if (tTrans != nullptr)  std::copy( tTrans->begin(),  tTrans->end(), std::back_inserter(*newmodeldata));
+    if (tTrans  != nullptr) std::copy( tTrans->begin(),  tTrans->end(), std::back_inserter(*newmodeldata));
     if (zsTrans != nullptr) std::copy(zsTrans->begin(), zsTrans->end(), std::back_inserter(*newmodeldata));
     if (zrTrans != nullptr) std::copy(zrTrans->begin(), zrTrans->end(), std::back_inserter(*newmodeldata));
 
@@ -48,7 +48,7 @@ void TxTableModel::updateAllData() {
     std::sort(newmodeldata->begin(), newmodeldata->end(), [=] (auto a, auto b) {
         return a.datetime > b.datetime; // reverse sort
     });
-    
+
     // And then swap out the modeldata with the new one.
     delete modeldata;
     modeldata = newmodeldata;

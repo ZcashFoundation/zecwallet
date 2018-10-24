@@ -58,7 +58,7 @@ public:
     {
         if (Settings->objectName().isEmpty())
             Settings->setObjectName(QStringLiteral("Settings"));
-        Settings->resize(441, 430);
+        Settings->resize(455, 391);
         Settings->setModal(true);
         verticalLayout = new QVBoxLayout(Settings);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
@@ -196,9 +196,9 @@ public:
         label_3->setText(QApplication::translate("Settings", "RPC Username", nullptr));
         label_4->setText(QApplication::translate("Settings", "RPC Password", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("Settings", "zcashd connection", nullptr));
-        label_5->setText(QApplication::translate("Settings", "Outgoing shielded transactions can be saved locally in the UI for convinence. These are not saved with zcashd.", nullptr));
-        btnClearSaved->setText(QApplication::translate("Settings", "Clear Saved", nullptr));
-        chkSaveTxs->setText(QApplication::translate("Settings", "Save sent shielded transactions", nullptr));
+        label_5->setText(QApplication::translate("Settings", "Shielded transactions are saved locally and shown in the Transactions tab.  If you uncheck this, shielded transactions will not appear in the transactions tab.", nullptr));
+        btnClearSaved->setText(QApplication::translate("Settings", "Delete History", nullptr));
+        chkSaveTxs->setText(QApplication::translate("Settings", "Remember Shielded Transactions", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("Settings", "Options", nullptr));
     } // retranslateUi
 

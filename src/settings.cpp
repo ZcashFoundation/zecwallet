@@ -11,17 +11,13 @@ Settings::~Settings() {
 	delete uisettings;
 }
 
-bool Settings::getSaveSent() {
+bool Settings::getSaveZtxs() {
 	// Load from the QT Settings. 
-	QSettings s;
-
-	return s.value("options/savesenttx", true).toBool();
+	return QSettings().value("options/savesenttx", true).toBool();
 }
 
-void Settings::setSaveSent(bool savesent) {
-	QSettings s;
-
-	s.setValue("options/savesenttx", savesent);
+void Settings::setSaveZtxs(bool save) {
+	QSettings().setValue("options/savesenttx", save);
 }
 
 Settings* Settings::init() {	
