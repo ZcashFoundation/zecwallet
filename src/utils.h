@@ -13,6 +13,7 @@ public:
 
 	static const QString getTokenName();
 	static const QString getDevAddr(Tx tx);
+	static const QString getDonationAddr();
 
 	static double  getMinerFee();
 	static double  getDevFee();

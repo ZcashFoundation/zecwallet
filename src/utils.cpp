@@ -12,6 +12,13 @@ const QString Utils::getTokenName() {
     }
 }
 
+const QString Utils::getDonationAddr() {
+    if (Settings::getInstance()->isTestnet()) 
+        return "tmP1JL19JyJh3jPMUbfovk4W67jB7VJWybu";
+    else 
+        return "t1KfJJrSuVYmnNLrw7EZHRv1kZY3zdGGLyb";    
+}
+
 // Get the dev fee address based on the transaction
 const QString Utils::getDevAddr(Tx tx) {
     auto testnetAddrLookup = [=] (const QString& addr) -> QString {
