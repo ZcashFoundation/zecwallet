@@ -11,11 +11,14 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QFrame>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QVBoxLayout>
@@ -42,6 +45,13 @@ public:
     QLineEdit *rpcpassword;
     QVBoxLayout *verticalLayout_2;
     QSpacerItem *verticalSpacer;
+    QWidget *tab_2;
+    QGridLayout *gridLayout;
+    QSpacerItem *horizontalSpacer;
+    QLabel *label_5;
+    QPushButton *btnClearSaved;
+    QCheckBox *chkSaveTxs;
+    QSpacerItem *verticalSpacer_2;
     QDialogButtonBox *buttonBox;
 
     void setupUi(QDialog *Settings)
@@ -125,6 +135,35 @@ public:
         verticalLayout_3->addItem(verticalSpacer);
 
         tabWidget->addTab(tab, QString());
+        tab_2 = new QWidget();
+        tab_2->setObjectName(QStringLiteral("tab_2"));
+        gridLayout = new QGridLayout(tab_2);
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout->addItem(horizontalSpacer, 2, 0, 1, 1);
+
+        label_5 = new QLabel(tab_2);
+        label_5->setObjectName(QStringLiteral("label_5"));
+        label_5->setWordWrap(true);
+
+        gridLayout->addWidget(label_5, 1, 0, 1, 2);
+
+        btnClearSaved = new QPushButton(tab_2);
+        btnClearSaved->setObjectName(QStringLiteral("btnClearSaved"));
+
+        gridLayout->addWidget(btnClearSaved, 2, 1, 1, 1);
+
+        chkSaveTxs = new QCheckBox(tab_2);
+        chkSaveTxs->setObjectName(QStringLiteral("chkSaveTxs"));
+
+        gridLayout->addWidget(chkSaveTxs, 0, 0, 1, 2);
+
+        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout->addItem(verticalSpacer_2, 3, 0, 1, 2);
+
+        tabWidget->addTab(tab_2, QString());
 
         verticalLayout->addWidget(tabWidget);
 
@@ -140,7 +179,7 @@ public:
         QObject::connect(buttonBox, SIGNAL(accepted()), Settings, SLOT(accept()));
         QObject::connect(buttonBox, SIGNAL(rejected()), Settings, SLOT(reject()));
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(Settings);
@@ -157,6 +196,10 @@ public:
         label_3->setText(QApplication::translate("Settings", "RPC Username", nullptr));
         label_4->setText(QApplication::translate("Settings", "RPC Password", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("Settings", "zcashd connection", nullptr));
+        label_5->setText(QApplication::translate("Settings", "Outgoing shielded transactions can be saved locally in the UI for convinence. These are not saved with zcashd.", nullptr));
+        btnClearSaved->setText(QApplication::translate("Settings", "Clear Saved", nullptr));
+        chkSaveTxs->setText(QApplication::translate("Settings", "Save sent shielded transactions", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("Settings", "Options", nullptr));
     } // retranslateUi
 
 };

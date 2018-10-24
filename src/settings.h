@@ -36,6 +36,9 @@ public:
 	int  getBlockNumber();
 	void setBlockNumber(int number);
 
+	bool getSaveSent();
+	void setSaveSent(bool savesent);
+
 	bool isSaplingActive();
 
 	const QString& getZcashdConfLocation() { return confLocation; }

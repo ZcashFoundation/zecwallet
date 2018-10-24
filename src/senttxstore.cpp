@@ -50,6 +50,10 @@ QList<TransactionItem> SentTxStore::readSentTxFile() {
 }
 
 void SentTxStore::addToSentTx(Tx tx, QString txid) {
+	// Save transactions only if the settings are allowed
+	if (!Settings::getInstance()->getSaveSent())
+		return;
+
     QFile data(writeableFile());
     QJsonDocument jsonDoc;
 

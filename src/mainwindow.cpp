@@ -121,12 +121,33 @@ void MainWindow::setupStatusBar() {
 }
 
 void MainWindow::setupSettingsModal() {
+	
 	// Set up File -> Settings action
 	QObject::connect(ui->actionSettings, &QAction::triggered, [=]() {
 		QDialog settingsDialog(this);
 		Ui_Settings settings;
 		settings.setupUi(&settingsDialog);
 
+		// Setup save sent check box
+		QObject::connect(settings.chkSaveTxs, &QCheckBox::stateChanged, [=](auto checked) {
+			Settings::getInstance()->setSaveSent(checked);
+		});
+
+		// Setup clear button
+		QObject::connect(settings.btnClearSaved, &QCheckBox::clicked, [=]() {
+			if (QMessageBox::warning(this, "Clear saved history?",
+				"Shielded z-Address sent transactions are stored locally in your wallet. You may delete this saved information safely any time for your privacy.\nDo you want to delete this now ?",
+				QMessageBox::Yes, QMessageBox::Cancel)) {
+					SentTxStore::deleteHistory();
+					// Reload after the clear button so existing txs disappear
+					rpc->refresh();
+			}
+		});
+
+		// Save sent transactions
+		settings.chkSaveTxs->setChecked(Settings::getInstance()->getSaveSent());
+
+		// Connection Settings
 		QIntValidator validator(0, 65535);
 		settings.port->setValidator(&validator);
 
@@ -153,6 +174,9 @@ void MainWindow::setupSettingsModal() {
 			settings.rpcpassword->setEnabled(true);
 		}
 
+		// Connection tab by default
+		settings.tabWidget->setCurrentIndex(0);
+
 		if (settingsDialog.exec() == QDialog::Accepted) {
 			if (zcashConfLocation.isEmpty()) {
 				// Save settings
@@ -168,6 +192,7 @@ void MainWindow::setupSettingsModal() {
 			}
 		};
 	});
+
 }
 
 void MainWindow::donate() {

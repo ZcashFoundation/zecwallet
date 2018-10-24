@@ -368,7 +368,7 @@ public:
         sendToScrollArea->setWidgetResizable(true);
         sendToWidgets = new QWidget();
         sendToWidgets->setObjectName(QStringLiteral("sendToWidgets"));
-        sendToWidgets->setGeometry(QRect(0, 0, 841, 321));
+        sendToWidgets->setGeometry(QRect(0, 0, 849, 369));
         sendToLayout = new QVBoxLayout(sendToWidgets);
         sendToLayout->setSpacing(6);
         sendToLayout->setContentsMargins(11, 11, 11, 11);
@@ -640,7 +640,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 889, 22));
+        menuBar->setGeometry(QRect(0, 0, 889, 19));
         menuBalance = new QMenu(menuBar);
         menuBalance->setObjectName(QStringLiteral("menuBalance"));
         menuHelp = new QMenu(menuBar);
@@ -669,7 +669,6 @@ public:
         menuBar->addAction(menuBalance->menuAction());
         menuBar->addAction(menuHelp->menuAction());
         menuBalance->addAction(actionImport_Private_Keys);
-        menuBalance->addAction(actionDelete_Sent_History);
         menuBalance->addAction(actionSettings);
         menuBalance->addSeparator();
         menuBalance->addAction(actionExit);
