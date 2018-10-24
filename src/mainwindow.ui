@@ -316,8 +316,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>849</width>
-                <height>369</height>
+                <width>841</width>
+                <height>321</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -712,7 +712,7 @@
      <x>0</x>
      <y>0</y>
      <width>889</width>
-     <height>19</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuBalance">
@@ -767,11 +767,6 @@
   <action name="actionCheck_for_Updates">
    <property name="text">
     <string>Check github.com for Updates</string>
-   </property>
-  </action>
-  <action name="actionDelete_Sent_History">
-   <property name="text">
-    <string>Delete Sent History</string>
    </property>
   </action>
  </widget>
