@@ -37,18 +37,21 @@ void TxTableModel::addTData(const QList<TransactionItem>& data) {
     updateAllData();
 }
 
-void TxTableModel::updateAllData() {
-    delete modeldata;
-    modeldata = new QList<TransactionItem>();
+void TxTableModel::updateAllData() {    
+    auto newmodeldata = new QList<TransactionItem>();
 
-    if (tTrans != nullptr)  std::copy( tTrans->begin(),  tTrans->end(), std::back_inserter(*modeldata));
-    if (zsTrans != nullptr) std::copy(zsTrans->begin(), zsTrans->end(), std::back_inserter(*modeldata));
-    if (zrTrans != nullptr) std::copy(zrTrans->begin(), zrTrans->end(), std::back_inserter(*modeldata));
+    if (tTrans != nullptr)  std::copy( tTrans->begin(),  tTrans->end(), std::back_inserter(*newmodeldata));
+    if (zsTrans != nullptr) std::copy(zsTrans->begin(), zsTrans->end(), std::back_inserter(*newmodeldata));
+    if (zrTrans != nullptr) std::copy(zrTrans->begin(), zrTrans->end(), std::back_inserter(*newmodeldata));
 
     // Sort by reverse time
-    std::sort(modeldata->begin(), modeldata->end(), [=] (auto a, auto b) {
+    std::sort(newmodeldata->begin(), newmodeldata->end(), [=] (auto a, auto b) {
         return a.datetime > b.datetime; // reverse sort
     });
+    
+    // And then swap out the modeldata with the new one.
+    delete modeldata;
+    modeldata = newmodeldata;
 
     dataChanged(index(0, 0), index(modeldata->size()-1, columnCount(index(0,0))-1));
     layoutChanged();

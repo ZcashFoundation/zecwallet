@@ -50,8 +50,10 @@ private:
     void doSendRPC  (const json& payload, const std::function<void(json)>& cb);
 
     void refreshBalances();
+
     void refreshTransactions();    
-    void refreshZSentTransactions();
+    void refreshSentZTrans      (QList<QString> zaddresses);
+    void refreshReceivedZTrans  (QList<QString> zaddrs, QList<QString> txidFilter);
 
 	bool processUnspent	(const json& reply);
 	void updateUI		(bool anyUnconfirmed);
@@ -69,7 +71,6 @@ private:
     void handleTxError          (const QString& error);
 
     // Batch
-    void                getReceivedZTrans(QList<QString> zaddrs);
     void                getBatchRPC(const QList<QString>& payloads,
                                     std::function<json(QString)> payloadGenerator,
                                     std::function<void(QMap<QString, json>*)> cb);
