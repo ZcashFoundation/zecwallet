@@ -53,8 +53,8 @@ private:
     void refreshBalances();
 
     void refreshTransactions();    
-    void refreshSentZTrans      (QList<QString> zaddresses);
-    void refreshReceivedZTrans  (QList<QString> zaddrs, QList<QPair<QString, QString>> txidFilter);
+    void refreshSentZTrans      ();
+    void refreshReceivedZTrans  (QList<QString> zaddresses);
 
 	bool processUnspent	(const json& reply);
 	void updateUI		(bool anyUnconfirmed);

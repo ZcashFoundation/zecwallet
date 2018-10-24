@@ -333,7 +333,7 @@ void RPC::getBatchRPC(
 }
 
 // Refresh received z txs by calling z_listreceivedbyaddress/gettransaction
-void RPC::refreshReceivedZTrans(QList<QString> zaddrs, QList<QPair<QString, QString>> txidFilter) {
+void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
 
     // We'll only refresh the received Z txs if settings allows us.
     if (!Settings::getInstance()->getSaveZtxs()) {
@@ -366,7 +366,9 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs, QList<QPair<QString, QStr
             QSet<QString> txids;
             for (auto it = zaddrTxids->constBegin(); it != zaddrTxids->constEnd(); it++) {
                 for (auto& i : it.value().get<json::array_t>()) {   
-                    txids.insert(QString::fromStdString(i["txid"].get<json::string_t>()));    
+                    // Filter out change txs
+                    if (! i["change"].get<json::boolean_t>())
+                        txids.insert(QString::fromStdString(i["txid"].get<json::string_t>()));    
                 }        
             }
 
@@ -386,34 +388,36 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs, QList<QPair<QString, QStr
                     QList<TransactionItem> txdata;
 
                     // Combine them both together. For every zAddr's txid, get the amount, fee, confirmations and time
-                    for (auto it = zaddrTxids->constBegin(); it != zaddrTxids->constEnd(); it++) {
+                    for (auto it = zaddrTxids->constBegin(); it != zaddrTxids->constEnd(); it++) {                        
                         for (auto& i : it.value().get<json::array_t>()) {   
+                            // Filter out change txs
+                            if (i["change"].get<json::boolean_t>())
+                                continue;
+                            
                             auto zaddr = it.key();
                             auto txid  = QString::fromStdString(i["txid"].get<json::string_t>());
 
-                            // We're filter out all the txids from this list, so as to not show a "received" transaction 
-                            // for a change address. 
-                            // Note: the txidFilter is the list of all sent TxIDs
+                            // Lookup txid in the map
+                            auto txidInfo = txidDetails->value(txid);
 
-                            // First, find if the current txid is in the filtered list
-                            auto filteredTxid = std::find_if(txidFilter.begin(), txidFilter.end(), [=] (auto item) {
-                                                        return item.second == txid;
-                                                    });                            
-
-                            // If it is in the filtered list and the z-Addr is the fromAddress in the sent
-                            // z-Addr, then this is a "change" recieve, so skip it
-                            if (filteredTxid == txidFilter.end() || filteredTxid->first != zaddr) {
-                                auto txidInfo = txidDetails->value(txid);
-                                // Lookup txid in the map
-
-                                // And then find the values
-                                auto timestamp = txidInfo["time"].get<json::number_unsigned_t>();
-                                auto amount    = i["amount"].get<json::number_float_t>();
-                                auto confirmations = txidInfo["confirmations"].get<json::number_unsigned_t>();
-
-                                TransactionItem tx{ QString("receive"), timestamp, zaddr, txid, amount, confirmations, "" };
-                                txdata.push_front(tx);                            
+                            // And then find the values
+                            if (txidInfo == nullptr) {
+                                std::cout << zaddr.toStdString() << std::endl;
+                                std::cout << txid.toStdString() << std::endl;
                             }
+                            unsigned long timestamp;
+                            if (txidInfo.find("time") != txidInfo.end()) {
+                                timestamp = txidInfo["time"].get<json::number_unsigned_t>();
+                            } else {
+                                timestamp = txidInfo["blocktime"].get<json::number_unsigned_t>();
+                            }
+
+                            
+                            auto amount    = i["amount"].get<json::number_float_t>();
+                            auto confirmations = txidInfo["confirmations"].get<json::number_unsigned_t>();
+
+                            TransactionItem tx{ QString("receive"), timestamp, zaddr, txid, amount, confirmations, "" };
+                            txdata.push_front(tx);
                         }
                     }
 
@@ -455,7 +459,7 @@ void RPC::getInfoThenRefresh() {
 
         // Refresh everything.
 		refreshBalances();		
-		refreshAddresses(); // This calls refreshZSentTransactions() -> which calls refreshReceivedZTrans(0)
+		refreshAddresses(); // This calls refreshZSentTransactions() and refreshReceivedZTrans()
         refreshTransactions();
 
 		// Call to see if the blockchain is syncing. 
@@ -501,8 +505,9 @@ void RPC::refreshAddresses() {
             zaddresses->push_back(addr);
         }
 
-        // Refresh the sent txs from all these zaddresses
-        refreshSentZTrans(*zaddresses);
+        // Refresh the sent and received txs from all these zaddresses
+        refreshSentZTrans();
+        refreshReceivedZTrans(*zaddresses);
     });
 }
 
@@ -615,19 +620,14 @@ void RPC::refreshTransactions() {
 }
 
 // Read sent Z transactions from the file.
-void RPC::refreshSentZTrans(QList<QString> zaddresses) {
+void RPC::refreshSentZTrans() {
     auto sentZTxs = SentTxStore::readSentTxFile();
 
     QList<QString> txids;
-    QList<QPair<QString, QString>> txidsForFilter;
 
     for (auto sentTx: sentZTxs) {
         txids.push_back(sentTx.txid);
-        txidsForFilter.push_back(QPair<QString, QString>(sentTx.fromAddr, sentTx.txid));
     }
-
-    // We need to filter out the sent txids from the zreceived list.
-    refreshReceivedZTrans(zaddresses, txidsForFilter);
 
     // Look up all the txids to get the confirmation count for them. 
     getBatchRPC(txids,
