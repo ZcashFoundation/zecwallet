@@ -10,7 +10,6 @@
 
 #include "precompiled.h"
 
-
 using json = nlohmann::json;
 
 MainWindow::MainWindow(QWidget *parent) :

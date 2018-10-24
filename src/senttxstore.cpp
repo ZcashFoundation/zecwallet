@@ -38,9 +38,11 @@ QList<TransactionItem> SentTxStore::readSentTxFile() {
 
     for (auto i : jsonDoc.array()) {
         auto sentTx = i.toObject();
-        TransactionItem t{"sent", (unsigned long)sentTx["datetime"].toInt(), 
+        TransactionItem t{"send", (unsigned long)sentTx["datetime"].toInt(), 
                           sentTx["address"].toString(), 
-                          sentTx["txid"].toString(), sentTx["amount"].toDouble(), 0};
+                          sentTx["txid"].toString(), 
+						  sentTx["amount"].toDouble() + sentTx["fee"].toDouble(), 
+						  0};
         items.push_back(t);
     }
 
