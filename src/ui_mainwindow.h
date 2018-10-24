@@ -47,7 +47,6 @@ public:
     QAction *actionDonate;
     QAction *actionImport_Private_Keys;
     QAction *actionCheck_for_Updates;
-    QAction *actionDelete_Sent_History;
     QWidget *centralWidget;
     QGridLayout *gridLayout_3;
     QTabWidget *tabWidget;
@@ -160,8 +159,6 @@ public:
         actionImport_Private_Keys->setVisible(false);
         actionCheck_for_Updates = new QAction(MainWindow);
         actionCheck_for_Updates->setObjectName(QStringLiteral("actionCheck_for_Updates"));
-        actionDelete_Sent_History = new QAction(MainWindow);
-        actionDelete_Sent_History->setObjectName(QStringLiteral("actionDelete_Sent_History"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout_3 = new QGridLayout(centralWidget);
@@ -368,7 +365,7 @@ public:
         sendToScrollArea->setWidgetResizable(true);
         sendToWidgets = new QWidget();
         sendToWidgets->setObjectName(QStringLiteral("sendToWidgets"));
-        sendToWidgets->setGeometry(QRect(0, 0, 849, 369));
+        sendToWidgets->setGeometry(QRect(0, 0, 841, 321));
         sendToLayout = new QVBoxLayout(sendToWidgets);
         sendToLayout->setSpacing(6);
         sendToLayout->setContentsMargins(11, 11, 11, 11);
@@ -640,7 +637,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 889, 19));
+        menuBar->setGeometry(QRect(0, 0, 889, 22));
         menuBalance = new QMenu(menuBar);
         menuBalance->setObjectName(QStringLiteral("menuBalance"));
         menuHelp = new QMenu(menuBar);
@@ -693,7 +690,6 @@ public:
         actionDonate->setText(QApplication::translate("MainWindow", "Donate", nullptr));
         actionImport_Private_Keys->setText(QApplication::translate("MainWindow", "Import Private Keys", nullptr));
         actionCheck_for_Updates->setText(QApplication::translate("MainWindow", "Check github.com for Updates", nullptr));
-        actionDelete_Sent_History->setText(QApplication::translate("MainWindow", "Delete Sent History", nullptr));
         groupBox->setTitle(QApplication::translate("MainWindow", "Summary", nullptr));
         label->setText(QApplication::translate("MainWindow", "Shielded", nullptr));
         balSheilded->setText(QString());

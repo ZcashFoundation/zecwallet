@@ -25,6 +25,13 @@ RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
 
 	reloadConnectionInfo();
 
+    // Set up timer to refresh Price
+    priceTimer = new QTimer(main);
+    QObject::connect(priceTimer, &QTimer::timeout, [=]() {
+        refreshZECPrice();
+    });
+    priceTimer->start(Utils::priceRefreshSpeed);  // Every hour
+
 	// Set up a timer to refresh the UI every few seconds
 	timer = new QTimer(main);
 	QObject::connect(timer, &QTimer::timeout, [=]() {
@@ -39,13 +46,6 @@ RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
     });
     // Start at every 10s. When an operation is pending, this will change to every second
     txTimer->start(Utils::updateSpeed);  
-
-    // Set up timer to refresh Price
-    priceTimer = new QTimer(main);
-    QObject::connect(priceTimer, &QTimer::timeout, [=]() {
-        refreshZECPrice();
-    });
-    priceTimer->start(Utils::priceRefreshSpeed);  // Every hour
 }
 
 RPC::~RPC() {
@@ -543,10 +543,18 @@ bool RPC::processUnspent(const json& reply) {
 
 void RPC::refreshBalances() {    
     // 1. Get the Balances
-    getBalance([=] (json reply) {        
-        ui->balSheilded     ->setText(QString::fromStdString(reply["private"]) % " " % Utils::getTokenName());
-        ui->balTransparent  ->setText(QString::fromStdString(reply["transparent"]) % " " % Utils::getTokenName());
-        ui->balTotal        ->setText(QString::fromStdString(reply["total"]) % " " % Utils::getTokenName());
+    getBalance([=] (json reply) {    
+        auto balT = QString::fromStdString(reply["transparent"]).toDouble();
+        auto balZ = QString::fromStdString(reply["private"]).toDouble();
+        auto tot  = QString::fromStdString(reply["total"]).toDouble();
+
+        ui->balSheilded   ->setText(Settings::getInstance()->getZECDisplayFormat(balZ));
+        ui->balTransparent->setText(Settings::getInstance()->getZECDisplayFormat(balT));
+        ui->balTotal      ->setText(Settings::getInstance()->getZECDisplayFormat(tot));
+
+        ui->balSheilded   ->setToolTip(Settings::getInstance()->getUSDFormat(balZ));
+        ui->balTransparent->setToolTip(Settings::getInstance()->getUSDFormat(balT));
+        ui->balTotal      ->setToolTip(Settings::getInstance()->getUSDFormat(tot));
     });
 
     // 2. Get the UTXOs
@@ -744,6 +752,7 @@ void RPC::refreshZECPrice() {
                     QString price = QString::fromStdString(item["price_usd"].get<json::string_t>());
                     qDebug() << "ZEC Price=" << price;
                     Settings::getInstance()->setZECPrice(price.toDouble());
+
                     return;
                 }
             }
