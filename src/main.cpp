@@ -28,6 +28,10 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.setWindowTitle("zec-qt-wallet v" + QString(APP_VERSION));
     w.show();
+
+	// Temp
+	Turnstile t;
+	qDebug() << t.splitAmount(1245.2294371, 3);
     
     return QApplication::exec();
 }
