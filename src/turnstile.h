@@ -13,6 +13,15 @@ struct TurnstileMigrationItem {
 	int			blockNumber;
 	double		amount;
 	bool 		chaff;
+	int 		status;
+};
+
+enum TurnstileMigrationItemStatus {
+	NotStarted = 0,
+	SentToT,
+	SentToZS,
+	NotEnoughBalance,
+	UnknownError
 };
 
 class Turnstile
