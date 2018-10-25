@@ -50,6 +50,7 @@ SOURCES += \
     src/sendtab.cpp \
     src/senttxstore.cpp \
     src/txtablemodel.cpp \
+	src/turnstile.cpp \
     src/utils.cpp
 
 HEADERS += \
@@ -65,6 +66,7 @@ HEADERS += \
     src/settings.h \
     src/txtablemodel.h \
     src/senttxstore.h \
+	src/turnstile.h \
     src/utils.h
 
 FORMS += \

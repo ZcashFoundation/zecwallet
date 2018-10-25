@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "settings.h"
+#include "turnstile.h"
+
 #include "precompiled.h"
 
 int main(int argc, char *argv[])
@@ -16,6 +18,8 @@ int main(int argc, char *argv[])
         qApp->setFont(QFont("Ubuntu", 11, QFont::Normal, false));
     #endif
 
+	std::srand(std::time(nullptr));
+
 	QCoreApplication::setOrganizationName("zec-qt-wallet-org");
 	QCoreApplication::setApplicationName("zec-qt-wallet");
 
@@ -24,6 +28,10 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.setWindowTitle("zec-qt-wallet v" + QString(APP_VERSION));
     w.show();
+
+	// Temp
+	Turnstile t;
+	qDebug() << t.splitAmount(1245.2294371, 3);
     
     return QApplication::exec();
 }
