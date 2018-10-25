@@ -11,6 +11,7 @@
 
 using json = nlohmann::json;
 
+class Turnstile;
 
 struct TransactionItem {
     QString         type;
@@ -44,8 +45,10 @@ public:
 
 	void reloadConnectionInfo();
 
-    void newZaddr               (bool sapling, const std::function<void(json)>& cb);
-    void newTaddr               (const std::function<void(json)>& cb);
+    void newZaddr(bool sapling, const std::function<void(json)>& cb);
+    void newTaddr(const std::function<void(json)>& cb);
+
+    Turnstile* getTurnstile() { return turnstile; }
     
     // Batch method. Note: Because of the template, it has to be in the header file. 
     template<class T>
@@ -139,6 +142,7 @@ private:
 
     Ui::MainWindow*             ui;
     MainWindow*                 main;
+    Turnstile*                  turnstile;
 
     // Current balance in the UI. If this number updates, then refresh the UI
     QString                     currentBalance;

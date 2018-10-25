@@ -12,7 +12,6 @@ struct TurnstileMigrationItem {
 	QString		destAddr;
 	int			blockNumber;
 	double		amount;
-	bool 		chaff;
 	int 		status;
 };
 
