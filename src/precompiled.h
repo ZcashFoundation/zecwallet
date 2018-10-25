@@ -2,6 +2,8 @@
 /* Add C++ includes here */
 
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 #include <QApplication>
 #include <QFontDatabase>
