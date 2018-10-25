@@ -1,10 +1,10 @@
 #ifndef TURNSTILE_H
 #define TURNSTILE_H
 
-
 #include "precompiled.h"
 
 class RPC;
+struct Tx;
 
 struct TurnstileMigrationItem {
 	QString 	fromAddr;
@@ -30,16 +30,21 @@ public:
 	Turnstile(RPC* _rpc);
 	~Turnstile();
 
-	void		   planMigration(QString zaddr, QString destAddr);
-	QList<double>  splitAmount(double amount, int parts);
-	void		   fillAmounts(QList<double>& amounts, double amount, int count);
+	void		   	planMigration(QString zaddr, QString destAddr);
+	QList<double>  	splitAmount(double amount, int parts);
+	void		   	fillAmounts(QList<double>& amounts, double amount, int count);
 
-	void 		   writeMigrationPlan(QList<TurnstileMigrationItem> plan);
 	QList<TurnstileMigrationItem> readMigrationPlan();
+	void 		   	writeMigrationPlan(QList<TurnstileMigrationItem> plan);
+	
+	void 			executeMigrationStep();
 
 private:
 	QList<int>	   	getBlockNumbers(int start, int end, int count);
 	QString		   	writeableFile();
+
+	void 			doSendTx(Tx tx, std::function<void(void)> cb);
+
 	RPC* 	rpc;	
 };
 

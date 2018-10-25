@@ -12,6 +12,7 @@ public:
 	static const QString txidStatusMessage;
 
 	static const QString getTokenName();
+	static const QString getDevSproutAddr();
 	static const QString getDevAddr(Tx tx);
 	static const QString getDonationAddr();
 

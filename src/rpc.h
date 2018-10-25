@@ -32,6 +32,7 @@ public:
     void refreshAddresses();    // Refresh wallet Z-addrs
     void refreshZECPrice();
 
+    void fillTxJsonParams(json& params, Tx tx);
     void sendZTransaction   (json params, const std::function<void(json)>& cb);
     void watchTxStatus();
     void addNewTxToWatch(Tx tx, const QString& newOpid); 
