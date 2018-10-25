@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "settings.h"
 #include "senttxstore.h"
+#include "turnstile.h"
 
 using json = nlohmann::json;
 
@@ -46,6 +47,7 @@ RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
     });
     // Start at every 10s. When an operation is pending, this will change to every second
     txTimer->start(Utils::updateSpeed);  
+
 }
 
 RPC::~RPC() {
@@ -284,54 +286,6 @@ void RPC::handleTxError(const QString& error) {
     msg.exec();
 }
 
-
-void RPC::getBatchRPC(
-            const QList<QString>& payloads,
-            std::function<json(QString)> payloadGenerator,
-            std::function<void(QMap<QString, json>*)> cb) 
-{    
-    auto responses = new QMap<QString, json>(); // zAddr -> list of responses for each call. 
-    int totalSize = payloads.size();
-
-    for (auto item: payloads) {
-        json payload = payloadGenerator(item);
-        
-        QNetworkReply *reply = restclient->post(request, QByteArray::fromStdString(payload.dump()));
-
-        QObject::connect(reply, &QNetworkReply::finished, [=] {
-            reply->deleteLater();
-            
-            auto all = reply->readAll();            
-            auto parsed = json::parse(all.toStdString(), nullptr, false);
-
-            if (reply->error() != QNetworkReply::NoError) {            
-                qDebug() << QString::fromStdString(parsed.dump());
-                qDebug() << reply->errorString();
-
-                (*responses)[item] = json::object();    // Empty object
-            } else {
-                if (parsed.is_discarded()) {
-                    (*responses)[item] = json::object();    // Empty object
-                } else {
-                    (*responses)[item] = parsed["result"];
-                }
-            }
-        });
-    }
-
-    auto waitTimer = new QTimer(main);
-    QObject::connect(waitTimer, &QTimer::timeout, [=]() {
-        if (responses->size() == totalSize) {
-            waitTimer->stop();
-
-            cb(responses);
-
-            waitTimer->deleteLater();            
-        }
-    });
-    waitTimer->start(100);    
-}
-
 // Refresh received z txs by calling z_listreceivedbyaddress/gettransaction
 void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
 
@@ -349,7 +303,7 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
     // and each z-Addr can have multiple received txs. 
 
     // 1. For each z-Addr, get list of received txs    
-    getBatchRPC(zaddrs,
+    getBatchRPC<QString>(zaddrs,
         [=] (QString zaddr) {
             json payload = {
                 {"jsonrpc", "1.0"},
@@ -373,7 +327,7 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
             }
 
             // 2. For all txids, go and get the details of that txid.
-            getBatchRPC(txids.toList(),
+            getBatchRPC<QString>(txids.toList(),
                 [=] (QString txid) {
                     json payload = {
                         {"jsonrpc", "1.0"},
@@ -507,6 +461,11 @@ void RPC::refreshAddresses() {
 
 // Function to create the data model and update the views, used below.
 void RPC::updateUI(bool anyUnconfirmed) {
+
+    // Temp
+    Turnstile t(this);
+    t.planMigration(zaddresses->at(1), zaddresses->at(0));
+
 	ui->unconfirmedWarning->setVisible(anyUnconfirmed);
 
 	// Update balances model data, which will update the table too
@@ -624,7 +583,7 @@ void RPC::refreshSentZTrans() {
     }
 
     // Look up all the txids to get the confirmation count for them. 
-    getBatchRPC(txids,
+    getBatchRPC<QString>(txids,
         [=] (QString txid) {
             json payload = {
                 {"jsonrpc", "1.0"},
