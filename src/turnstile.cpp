@@ -11,6 +11,10 @@ Turnstile::~Turnstile() {
 
 QList<double> Turnstile::splitAmount(double amount, int parts) {
 	QList<double> amounts;
+	// Need at least 0.0004 ZEC for this
+	if (amount < 0.0004)
+		return amounts;
+	
 	fillAmounts(amounts, amount, parts);
 
 	// Ensure they all add up!
