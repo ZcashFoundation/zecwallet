@@ -1,11 +1,16 @@
-#pragma once
+#ifndef TURNSTILE_H
+#define TURNSTILE_H
+
+#include "precompiled.h"
+
 class Turnstile
 {
 public:
 	Turnstile();
 	~Turnstile();
 
-	QList<QString> Turnstile::splitAmount(double amount, int parts);
-	void		   fillAmounts(QList<QString>& amounts, double amount, int count);
+	QList<double>  splitAmount(double amount, int parts);
+	void		   fillAmounts(QList<double>& amounts, double amount, int count);
 };
 
+#endif

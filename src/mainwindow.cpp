@@ -10,7 +10,6 @@
 #include "utils.h"
 #include "senttxstore.h"
 
-
 #include "precompiled.h"
 
 using json = nlohmann::json;
