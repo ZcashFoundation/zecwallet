@@ -56,7 +56,6 @@ private:
 
     Tx      createTxFromSendPage();
     bool    confirmTx(Tx tx, ToFields devFee);
-    void    fillTxJsonParams(json& params, Tx tx);
 
 	void cancelButton();
 	void sendButton();

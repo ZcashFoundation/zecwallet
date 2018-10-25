@@ -286,6 +286,33 @@ void RPC::handleTxError(const QString& error) {
     msg.exec();
 }
 
+
+// Build the RPC JSON Parameters for this tx (with the dev fee included if applicable)
+void RPC::fillTxJsonParams(json& params, Tx tx) {   
+    Q_ASSERT(params.is_array());
+    // Get all the addresses and amounts
+    json allRecepients = json::array();
+
+    // For each addr/amt/memo, construct the JSON and also build the confirm dialog box    
+    for (int i=0; i < tx.toAddrs.size(); i++) {
+        auto toAddr = tx.toAddrs[i];
+
+		// Construct the JSON params
+        json rec = json::object();
+        rec["address"]      = toAddr.addr.toStdString();
+        rec["amount"]       = toAddr.amount;
+        if (toAddr.addr.startsWith("z") && !toAddr.encodedMemo.trimmed().isEmpty())
+            rec["memo"]     = toAddr.encodedMemo.toStdString();
+
+        allRecepients.push_back(rec);
+    }
+
+    // Add sender    
+    params.push_back(tx.fromAddr.toStdString());
+    params.push_back(allRecepients);
+}
+
+
 // Refresh received z txs by calling z_listreceivedbyaddress/gettransaction
 void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
 
@@ -296,7 +323,6 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
         return;
     }
         
-
     // This method is complicated because z_listreceivedbyaddress only returns the txid, and 
     // we have to make a follow up call to gettransaction to get details of that transaction. 
     // Additionally, it has to be done in batches, because there are multiple z-Addresses, 
@@ -464,7 +490,11 @@ void RPC::updateUI(bool anyUnconfirmed) {
 
     // Temp
     Turnstile t(this);
-    t.planMigration(zaddresses->at(1), zaddresses->at(0));
+    // t.planMigration(
+    //     "ztsKtGwc7JTEHxQq1xiRWyU9o1sheA3tYjcaFTBfVtp4RKJ782U6pH9STEYUoWQiGn1epfRMmFhkWCUyCSCqByNj9HKnzKU", 
+    //     "ztbGDqgkmXQjheivgeirwEvJLD4SUNqsWCGwxwVg4YpGz1ARR8P2rXaptkT14z3NDKamcxNmQuvmvktyokMs7HkutRNSx1D"
+    //     );
+    t.executeMigrationStep();
 
 	ui->unconfirmedWarning->setVisible(anyUnconfirmed);
 

@@ -1,4 +1,5 @@
 #include "turnstile.h"
+#include "mainwindow.h"
 #include "rpc.h"
 #include "utils.h"
 #include "settings.h"
@@ -12,6 +13,13 @@ Turnstile::Turnstile(RPC* _rpc) {
 }
 
 Turnstile::~Turnstile() {
+}
+
+void printPlan(QList<TurnstileMigrationItem> plan) {
+	for (auto item : plan) {
+		qDebug() << item.fromAddr << item.intTAddr 
+					<< item.destAddr << item.amount << item.blockNumber << item.chaff << item.status;
+	}
 }
 
 QString Turnstile::writeableFile() {
@@ -41,6 +49,9 @@ QDataStream &operator>>(QDataStream& ds, TurnstileMigrationItem& item) {
 }
 
 void Turnstile::writeMigrationPlan(QList<TurnstileMigrationItem> plan) {
+	qDebug() << QString("Writing plan");
+	printPlan(plan);
+
 	QFile file(writeableFile());
 	file.open(QIODevice::ReadWrite | QIODevice::Truncate);
 	QDataStream out(&file);   // we will serialize the data into the file
@@ -59,13 +70,19 @@ QList<TurnstileMigrationItem> Turnstile::readMigrationPlan() {
 	in >> plan; 
 
 	file.close();
+
+	// Sort to see when the next step is.
+	std::sort(plan.begin(), plan.end(), [&] (auto a, auto b) {
+		return a.blockNumber < b.blockNumber;
+	});		
+
 	return plan;
 }
 
 void Turnstile::planMigration(QString zaddr, QString destAddr) {
 	// First, get the balance and split up the amounts
 	auto bal = rpc->getAllBalances()->value(zaddr);
-	auto splits = splitAmount(bal+2354, 5);
+	auto splits = splitAmount(bal, 5);
 
 	// Then, generate an intermediate t-Address for each part using getBatchRPC
 	rpc->getBatchRPC<double>(splits,
@@ -80,7 +97,7 @@ void Turnstile::planMigration(QString zaddr, QString destAddr) {
 		[=] (QMap<double, json>* newAddrs) {
 			// Get block numbers
 			auto curBlock = Settings::getInstance()->getBlockNumber();
-			auto blockNumbers = getBlockNumbers(curBlock, curBlock + 10, splits.size());
+			auto blockNumbers = getBlockNumbers(curBlock, curBlock + 3, splits.size());
 
 			// Assign the amounts to the addresses.
 			QList<TurnstileMigrationItem> migItems;
@@ -103,14 +120,10 @@ void Turnstile::planMigration(QString zaddr, QString destAddr) {
 
 			writeMigrationPlan(migItems);
 			auto readPlan = readMigrationPlan();
-
-			for (auto item : readPlan) {
-				qDebug() << item.fromAddr << item.intTAddr 
-						 << item.destAddr << item.amount << item.blockNumber << item.chaff << item.status;
-			}
 		}
 	);
 }
+
 
 QList<int> Turnstile::getBlockNumbers(int start, int end, int count) {
 	QList<int> blocks;
@@ -179,4 +192,100 @@ void Turnstile::fillAmounts(QList<double>& amounts, double amount, int count) {
 		amounts.push_back(curAmount);
 
 	fillAmounts(amounts, amount - curAmount, count - 1);
+}
+
+void Turnstile::executeMigrationStep() {
+	auto plan = readMigrationPlan();
+
+	qDebug() << QString("Executing step");
+	printPlan(plan);
+
+	// Get to the next unexecuted step
+	auto eligibleItem = [&] (auto item) {
+		return 	!item.chaff && 		
+					(item.status == TurnstileMigrationItemStatus::NotStarted || 
+					 item.status == TurnstileMigrationItemStatus::SentToT);
+	};
+	auto nextStep = std::find_if(plan.begin(), plan.end(), eligibleItem);
+
+	if (nextStep == plan.end()) return; // Nothing to do
+	qDebug() << nextStep->blockNumber << ":" << Settings::getInstance()->getBlockNumber();
+	if (nextStep->blockNumber > Settings::getInstance()->getBlockNumber()) return;
+
+	// Is this the last step for this address?
+	auto lastStep = std::find_if(std::next(nextStep), plan.end(), [&] (auto item) {
+						return item.fromAddr == nextStep->fromAddr && eligibleItem(item);
+					}) == plan.end();
+
+	// Execute this step
+	if (nextStep->status == TurnstileMigrationItemStatus::NotStarted) {
+		// Does this z addr have enough balance?
+		auto balance = rpc->getAllBalances()->value(nextStep->fromAddr);
+		if (nextStep->amount > balance) {
+			qDebug() << "Not enough balance!";
+			nextStep->status = TurnstileMigrationItemStatus::NotEnoughBalance;
+			writeMigrationPlan(plan);
+			return;
+		}
+
+		QList<ToFields> to = { ToFields{ nextStep->intTAddr, nextStep->amount, "", "" } };
+
+		// If this is the last step, then add chaff and the dev fee to the tx
+		if (lastStep) {
+			auto remainingAmount = balance - nextStep->amount;
+			if (remainingAmount > 0) {
+				auto devFee = ToFields{ Utils::getDevSproutAddr(), remainingAmount, "", "" };
+				to.push_back(devFee);
+			}
+		}
+
+		// Create the Tx
+		auto tx = Tx{ nextStep->fromAddr, to, Utils::getMinerFee() };
+
+		// And send it
+		doSendTx(tx, [=] () {
+			// Update status and write plan to disk
+			nextStep->status = TurnstileMigrationItemStatus::SentToT;
+			writeMigrationPlan(plan);
+		});
+
+	} else if (nextStep->status == TurnstileMigrationItemStatus::SentToT) {
+		// Send it to the final destination address.
+		auto bal = rpc->getAllBalances()->value(nextStep->intTAddr);
+		auto sendAmt = bal - Utils::getMinerFee();
+
+		if (sendAmt < 0) {
+			qDebug() << "Not enough balance!";
+			nextStep->status = TurnstileMigrationItemStatus::NotEnoughBalance;
+			writeMigrationPlan(plan);
+			return;
+		}
+		
+		QList<ToFields> to = { ToFields{ nextStep->destAddr, sendAmt, "", "" } };
+		// Create the Tx
+		auto tx = Tx{ nextStep->intTAddr, to, Utils::getMinerFee() };
+
+		// And send it
+		doSendTx(tx, [=] () {
+			// Update status and write plan to disk
+			nextStep->status = TurnstileMigrationItemStatus::SentToZS;
+			writeMigrationPlan(plan);
+		});
+	}
+}
+
+void Turnstile::doSendTx(Tx tx, std::function<void(void)> cb) {
+	json params = json::array();
+	rpc->fillTxJsonParams(params, tx);
+	std::cout << std::setw(2) << params << std::endl;
+	rpc->sendZTransaction(params, [=] (const json& reply) {
+		QString opid = QString::fromStdString(reply.get<json::string_t>());
+		qDebug() << opid;
+		//ui->statusBar->showMessage("Computing Tx: " % opid);
+
+		// And then start monitoring the transaction
+		rpc->addNewTxToWatch(tx, opid);
+
+		cb();
+	});
 }
