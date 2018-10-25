@@ -45,6 +45,7 @@ public:
     QLabel *label_9;
     QComboBox *migrateTo;
     QFrame *line;
+    QLabel *fromBalance;
     QDialogButtonBox *buttonBox;
 
     void setupUi(QDialog *Turnstile)
@@ -70,12 +71,12 @@ public:
         label_3->setObjectName(QStringLiteral("label_3"));
         label_3->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
 
-        gridLayout->addWidget(label_3, 5, 0, 2, 1);
+        gridLayout->addWidget(label_3, 6, 0, 2, 1);
 
         label_2 = new QLabel(groupBox);
         label_2->setObjectName(QStringLiteral("label_2"));
 
-        gridLayout->addWidget(label_2, 4, 0, 1, 1);
+        gridLayout->addWidget(label_2, 5, 0, 1, 1);
 
         label_4 = new QLabel(groupBox);
         label_4->setObjectName(QStringLiteral("label_4"));
@@ -85,7 +86,7 @@ public:
         sizePolicy.setHeightForWidth(label_4->sizePolicy().hasHeightForWidth());
         label_4->setSizePolicy(sizePolicy);
 
-        gridLayout->addWidget(label_4, 5, 1, 1, 1);
+        gridLayout->addWidget(label_4, 6, 1, 1, 1);
 
         label = new QLabel(groupBox);
         label->setObjectName(QStringLiteral("label"));
@@ -102,21 +103,21 @@ public:
         sizePolicy.setHeightForWidth(label_5->sizePolicy().hasHeightForWidth());
         label_5->setSizePolicy(sizePolicy);
 
-        gridLayout->addWidget(label_5, 6, 1, 1, 1);
+        gridLayout->addWidget(label_5, 7, 1, 1, 1);
 
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        gridLayout->addItem(verticalSpacer, 7, 0, 1, 2);
+        gridLayout->addItem(verticalSpacer, 8, 0, 1, 2);
 
         label_6 = new QLabel(groupBox);
         label_6->setObjectName(QStringLiteral("label_6"));
 
-        gridLayout->addWidget(label_6, 5, 2, 1, 1);
+        gridLayout->addWidget(label_6, 6, 2, 1, 1);
 
         label_7 = new QLabel(groupBox);
         label_7->setObjectName(QStringLiteral("label_7"));
 
-        gridLayout->addWidget(label_7, 6, 2, 1, 1);
+        gridLayout->addWidget(label_7, 7, 2, 1, 1);
 
         migrateZaddList = new QComboBox(groupBox);
         migrateZaddList->setObjectName(QStringLiteral("migrateZaddList"));
@@ -134,7 +135,7 @@ public:
         sizePolicy2.setHeightForWidth(privLevel->sizePolicy().hasHeightForWidth());
         privLevel->setSizePolicy(sizePolicy2);
 
-        gridLayout->addWidget(privLevel, 4, 1, 1, 2);
+        gridLayout->addWidget(privLevel, 5, 1, 1, 2);
 
         label_8 = new QLabel(groupBox);
         label_8->setObjectName(QStringLiteral("label_8"));
@@ -147,12 +148,12 @@ public:
         sizePolicy1.setHeightForWidth(label_9->sizePolicy().hasHeightForWidth());
         label_9->setSizePolicy(sizePolicy1);
 
-        gridLayout->addWidget(label_9, 3, 0, 1, 1);
+        gridLayout->addWidget(label_9, 4, 0, 1, 1);
 
         migrateTo = new QComboBox(groupBox);
         migrateTo->setObjectName(QStringLiteral("migrateTo"));
 
-        gridLayout->addWidget(migrateTo, 3, 1, 1, 2);
+        gridLayout->addWidget(migrateTo, 4, 1, 1, 2);
 
         line = new QFrame(groupBox);
         line->setObjectName(QStringLiteral("line"));
@@ -160,6 +161,11 @@ public:
         line->setFrameShadow(QFrame::Sunken);
 
         gridLayout->addWidget(line, 1, 0, 1, 3);
+
+        fromBalance = new QLabel(groupBox);
+        fromBalance->setObjectName(QStringLiteral("fromBalance"));
+
+        gridLayout->addWidget(fromBalance, 3, 1, 1, 1);
 
 
         verticalLayout_2->addLayout(gridLayout);
@@ -197,6 +203,7 @@ public:
         migrateZaddList->setCurrentText(QString());
         label_8->setText(QApplication::translate("Turnstile", "<html><head/><body><p>Funds from Sprout z-Addresses (which start with &quot;zc&quot;) need to be moved to the upgraded Sapling z-Addresses (which start with &quot;zs&quot;). The funds cannot be moved directly, but need to be sent through intermediate &quot;transparent&quot; addresses in privacy-preserving way.</p><p>This migration can be done automatically for you.</p></body></html>", nullptr));
         label_9->setText(QApplication::translate("Turnstile", "To", nullptr));
+        fromBalance->setText(QApplication::translate("Turnstile", "Balance", nullptr));
     } // retranslateUi
 
 };

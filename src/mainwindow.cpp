@@ -26,38 +26,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	// Settings editor 
 	setupSettingsModal();
 
-    // Turnstile migration
-    QObject::connect(ui->actionTurnstile_Migration, &QAction::triggered, [=] () {
-        Ui_Turnstile turnstile;
-        QDialog d(this);
-        turnstile.setupUi(&d);
-
-        QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
-        turnstile.msgIcon->setPixmap(icon.pixmap(64, 64));
-
-        turnstile.migrateZaddList->addItem("All Sprout z-Addrs");
-        turnstile.migrateTo->addItem("zs1gv64eu0v2wx7raxqxlmj354y9ycznwaau9kduljzczxztvs4qcl00kn2sjxtejvrxnkucw5xx9u");
-        turnstile.privLevel->addItem("Good - 3 tx over 3 days");
-        turnstile.privLevel->addItem("Excellent - 5 tx over 5 days");
-        turnstile.privLevel->addItem("Paranoid - 10 tx over 7 days");
-
-        turnstile.buttonBox->button(QDialogButtonBox::Ok)->setText("Start");
-
-        d.exec();
-    });
-
-    QObject::connect(ui->actionProgress, &QAction::triggered, [=] () {
-        Ui_TurnstileProgress progress;
-        QDialog d(this);
-        progress.setupUi(&d);
-
-        QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning);
-        progress.msgIcon->setPixmap(icon.pixmap(64, 64));
-
-        progress.buttonBox->button(QDialogButtonBox::Cancel)->setText("Abort");
-        d.exec();
-    });
-
     // Set up exit action
     QObject::connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
 
@@ -90,11 +58,85 @@ MainWindow::MainWindow(QWidget *parent) :
     setupTransactionsTab();
     setupRecieveTab();
     setupBalancesTab();
+    setupTurnstileDialog();
 
     rpc = new RPC(new QNetworkAccessManager(this), this);
     rpc->refreshZECPrice();
 
     rpc->refresh();    
+}
+
+void MainWindow::setupTurnstileDialog() {    
+    //Turnstile t(this);
+    // t.planMigration(
+    //     "ztsKtGwc7JTEHxQq1xiRWyU9o1sheA3tYjcaFTBfVtp4RKJ782U6pH9STEYUoWQiGn1epfRMmFhkWCUyCSCqByNj9HKnzKU", 
+    //     "ztbGDqgkmXQjheivgeirwEvJLD4SUNqsWCGwxwVg4YpGz1ARR8P2rXaptkT14z3NDKamcxNmQuvmvktyokMs7HkutRNSx1D"
+    //     );
+    //t.executeMigrationStep();
+
+    // Turnstile migration
+    QObject::connect(ui->actionTurnstile_Migration, &QAction::triggered, [=] () {
+        Ui_Turnstile turnstile;
+        QDialog d(this);
+        turnstile.setupUi(&d);
+
+        QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
+        turnstile.msgIcon->setPixmap(icon.pixmap(64, 64));
+
+        auto getAllSproutBalance = [=] () {
+            double bal = 0;
+            for (auto addr : *rpc->getAllZAddresses()) {
+                if (Settings::getInstance()->isSproutAddress(addr)) {
+                    bal += rpc->getAllBalances()->value(addr);
+                }
+            }
+
+            return bal;
+        };
+
+        turnstile.migrateZaddList->addItem("All Sprout z-Addrs");
+        turnstile.fromBalance->setText(Settings::getInstance()->getZECUSDDisplayFormat(getAllSproutBalance()));
+        for (auto addr : *rpc->getAllZAddresses()) {
+            if (Settings::getInstance()->isSaplingAddress(addr)) {
+                turnstile.migrateTo->addItem(addr);
+            } else {
+                turnstile.migrateZaddList->addItem(addr);
+            }
+        }
+
+        QObject::connect(turnstile.migrateZaddList, &QComboBox::currentTextChanged, [=] (auto addr) {
+            double bal = 0;
+            if (addr.startsWith("All")) {
+               bal = getAllSproutBalance();
+            } else {
+                bal = rpc->getAllBalances()->value(addr);
+            }
+
+            turnstile.fromBalance->setText(Settings::getInstance()->getZECUSDDisplayFormat(bal));
+        });
+        
+        turnstile.privLevel->addItem("Good - 3 tx over 3 days");
+        turnstile.privLevel->addItem("Excellent - 5 tx over 5 days");
+        turnstile.privLevel->addItem("Paranoid - 10 tx over 7 days");
+
+        turnstile.buttonBox->button(QDialogButtonBox::Ok)->setText("Start");
+
+        d.exec();
+    });
+
+
+
+    QObject::connect(ui->actionProgress, &QAction::triggered, [=] () {
+        Ui_TurnstileProgress progress;
+        QDialog d(this);
+        progress.setupUi(&d);
+
+        QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning);
+        progress.msgIcon->setPixmap(icon.pixmap(64, 64));
+
+        progress.buttonBox->button(QDialogButtonBox::Cancel)->setText("Abort");
+        d.exec();
+    });
 }
 
 void MainWindow::setupStatusBar() {

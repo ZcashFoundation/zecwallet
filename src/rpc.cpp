@@ -487,15 +487,6 @@ void RPC::refreshAddresses() {
 
 // Function to create the data model and update the views, used below.
 void RPC::updateUI(bool anyUnconfirmed) {
-
-    // Temp
-    Turnstile t(this);
-    // t.planMigration(
-    //     "ztsKtGwc7JTEHxQq1xiRWyU9o1sheA3tYjcaFTBfVtp4RKJ782U6pH9STEYUoWQiGn1epfRMmFhkWCUyCSCqByNj9HKnzKU", 
-    //     "ztbGDqgkmXQjheivgeirwEvJLD4SUNqsWCGwxwVg4YpGz1ARR8P2rXaptkT14z3NDKamcxNmQuvmvktyokMs7HkutRNSx1D"
-    //     );
-    t.executeMigrationStep();
-
 	ui->unconfirmedWarning->setVisible(anyUnconfirmed);
 
 	// Update balances model data, which will update the table too
