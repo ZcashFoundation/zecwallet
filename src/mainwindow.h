@@ -48,6 +48,7 @@ private:
     void setupRecieveTab();
     void setupBalancesTab();
 
+    void setupTurnstileDialog();
 	void setupSettingsModal();
 	void setupStatusBar();
 
