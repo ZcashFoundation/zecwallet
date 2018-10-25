@@ -30,21 +30,22 @@ QString Turnstile::writeableFile() {
 
 // Data stream write/read methods for migration items
 QDataStream &operator<<(QDataStream& ds, const TurnstileMigrationItem& item) {
-	return ds << "v1" << item.fromAddr << item.intTAddr 
-	   		  << item.destAddr << item.amount << item.blockNumber << item.chaff;
+	return ds << QString("v1") << item.fromAddr << item.intTAddr 
+	   		  << item.destAddr << item.amount << item.blockNumber << item.chaff << item.status;
 }
 
 QDataStream &operator>>(QDataStream& ds, TurnstileMigrationItem& item) {
 	QString version;
 	return ds >> version >> item.fromAddr >> item.intTAddr 
-	   		  >> item.destAddr >> item.amount >> item.blockNumber >> item.chaff;
+	   		  >> item.destAddr >> item.amount >> item.blockNumber >> item.chaff >> item.status;
 }
 
 void Turnstile::writeMigrationPlan(QList<TurnstileMigrationItem> plan) {
 	QFile file(writeableFile());
-	file.open(QIODevice::WriteOnly);
+	file.open(QIODevice::ReadWrite | QIODevice::Truncate);
 	QDataStream out(&file);   // we will serialize the data into the file
 	out << plan;
+	file.close();
 }
 
 QList<TurnstileMigrationItem> Turnstile::readMigrationPlan() {
@@ -57,6 +58,7 @@ QList<TurnstileMigrationItem> Turnstile::readMigrationPlan() {
 	QDataStream in(&file);    // read the data serialized from the file
 	in >> plan; 
 
+	file.close();
 	return plan;
 }
 
@@ -86,7 +88,8 @@ void Turnstile::planMigration(QString zaddr, QString destAddr) {
 			for (int i=0; i < splits.size(); i++) {
 				auto tAddr = newAddrs->values()[i].get<json::string_t>();
 				auto item = TurnstileMigrationItem { zaddr, QString::fromStdString(tAddr), destAddr,
-													 blockNumbers[i], splits[i], i == splits.size() -1 };
+													 blockNumbers[i], splits[i], i == splits.size() -1, 
+													 TurnstileMigrationItemStatus::NotStarted };
 				migItems.push_back(item);
 			}
 
@@ -103,7 +106,7 @@ void Turnstile::planMigration(QString zaddr, QString destAddr) {
 
 			for (auto item : readPlan) {
 				qDebug() << item.fromAddr << item.intTAddr 
-						 << item.destAddr << item.amount << item.blockNumber << item.chaff;
+						 << item.destAddr << item.amount << item.blockNumber << item.chaff << item.status;
 			}
 		}
 	);
