@@ -31,14 +31,8 @@ public:
     QVBoxLayout *verticalLayout_2;
     QGridLayout *gridLayout;
     QLabel *msgIcon;
-    QLabel *label_3;
     QLabel *label_2;
-    QLabel *label_4;
     QLabel *label;
-    QLabel *label_5;
-    QSpacerItem *verticalSpacer;
-    QLabel *label_6;
-    QLabel *label_7;
     QComboBox *migrateZaddList;
     QComboBox *privLevel;
     QLabel *label_8;
@@ -46,6 +40,10 @@ public:
     QComboBox *migrateTo;
     QFrame *line;
     QLabel *fromBalance;
+    QSpacerItem *verticalSpacer;
+    QLabel *label_5;
+    QLabel *label_7;
+    QLabel *label_3;
     QDialogButtonBox *buttonBox;
 
     void setupUi(QDialog *Turnstile)
@@ -67,73 +65,38 @@ public:
 
         gridLayout->addWidget(msgIcon, 0, 0, 1, 1);
 
-        label_3 = new QLabel(groupBox);
-        label_3->setObjectName(QStringLiteral("label_3"));
-        label_3->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop);
-
-        gridLayout->addWidget(label_3, 6, 0, 2, 1);
-
         label_2 = new QLabel(groupBox);
         label_2->setObjectName(QStringLiteral("label_2"));
+        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(label_2->sizePolicy().hasHeightForWidth());
+        label_2->setSizePolicy(sizePolicy);
 
         gridLayout->addWidget(label_2, 5, 0, 1, 1);
 
-        label_4 = new QLabel(groupBox);
-        label_4->setObjectName(QStringLiteral("label_4"));
-        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(label_4->sizePolicy().hasHeightForWidth());
-        label_4->setSizePolicy(sizePolicy);
-
-        gridLayout->addWidget(label_4, 6, 1, 1, 1);
-
         label = new QLabel(groupBox);
         label->setObjectName(QStringLiteral("label"));
-        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Preferred);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
-        label->setSizePolicy(sizePolicy1);
+        sizePolicy.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
+        label->setSizePolicy(sizePolicy);
 
         gridLayout->addWidget(label, 2, 0, 1, 1);
 
-        label_5 = new QLabel(groupBox);
-        label_5->setObjectName(QStringLiteral("label_5"));
-        sizePolicy.setHeightForWidth(label_5->sizePolicy().hasHeightForWidth());
-        label_5->setSizePolicy(sizePolicy);
-
-        gridLayout->addWidget(label_5, 7, 1, 1, 1);
-
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        gridLayout->addItem(verticalSpacer, 8, 0, 1, 2);
-
-        label_6 = new QLabel(groupBox);
-        label_6->setObjectName(QStringLiteral("label_6"));
-
-        gridLayout->addWidget(label_6, 6, 2, 1, 1);
-
-        label_7 = new QLabel(groupBox);
-        label_7->setObjectName(QStringLiteral("label_7"));
-
-        gridLayout->addWidget(label_7, 7, 2, 1, 1);
-
         migrateZaddList = new QComboBox(groupBox);
         migrateZaddList->setObjectName(QStringLiteral("migrateZaddList"));
-        QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(migrateZaddList->sizePolicy().hasHeightForWidth());
-        migrateZaddList->setSizePolicy(sizePolicy2);
+        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(migrateZaddList->sizePolicy().hasHeightForWidth());
+        migrateZaddList->setSizePolicy(sizePolicy1);
         migrateZaddList->setEditable(false);
 
         gridLayout->addWidget(migrateZaddList, 2, 1, 1, 2);
 
         privLevel = new QComboBox(groupBox);
         privLevel->setObjectName(QStringLiteral("privLevel"));
-        sizePolicy2.setHeightForWidth(privLevel->sizePolicy().hasHeightForWidth());
-        privLevel->setSizePolicy(sizePolicy2);
+        sizePolicy1.setHeightForWidth(privLevel->sizePolicy().hasHeightForWidth());
+        privLevel->setSizePolicy(sizePolicy1);
 
         gridLayout->addWidget(privLevel, 5, 1, 1, 2);
 
@@ -145,8 +108,8 @@ public:
 
         label_9 = new QLabel(groupBox);
         label_9->setObjectName(QStringLiteral("label_9"));
-        sizePolicy1.setHeightForWidth(label_9->sizePolicy().hasHeightForWidth());
-        label_9->setSizePolicy(sizePolicy1);
+        sizePolicy.setHeightForWidth(label_9->sizePolicy().hasHeightForWidth());
+        label_9->setSizePolicy(sizePolicy);
 
         gridLayout->addWidget(label_9, 4, 0, 1, 1);
 
@@ -166,6 +129,33 @@ public:
         fromBalance->setObjectName(QStringLiteral("fromBalance"));
 
         gridLayout->addWidget(fromBalance, 3, 1, 1, 1);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout->addItem(verticalSpacer, 7, 0, 2, 3);
+
+        label_5 = new QLabel(groupBox);
+        label_5->setObjectName(QStringLiteral("label_5"));
+        sizePolicy.setHeightForWidth(label_5->sizePolicy().hasHeightForWidth());
+        label_5->setSizePolicy(sizePolicy);
+
+        gridLayout->addWidget(label_5, 6, 0, 1, 1);
+
+        label_7 = new QLabel(groupBox);
+        label_7->setObjectName(QStringLiteral("label_7"));
+        QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(label_7->sizePolicy().hasHeightForWidth());
+        label_7->setSizePolicy(sizePolicy2);
+        label_7->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+
+        gridLayout->addWidget(label_7, 6, 1, 1, 2);
+
+        label_3 = new QLabel(groupBox);
+        label_3->setObjectName(QStringLiteral("label_3"));
+
+        gridLayout->addWidget(label_3, 3, 0, 1, 1);
 
 
         verticalLayout_2->addLayout(gridLayout);
@@ -193,17 +183,15 @@ public:
         Turnstile->setWindowTitle(QApplication::translate("Turnstile", "Turnstile Migration", nullptr));
         groupBox->setTitle(QApplication::translate("Turnstile", "Turnstile Migration", nullptr));
         msgIcon->setText(QString());
-        label_3->setText(QApplication::translate("Turnstile", "Total Fees", nullptr));
         label_2->setText(QApplication::translate("Turnstile", "Privacy Level", nullptr));
-        label_4->setText(QApplication::translate("Turnstile", "Miner Fee:", nullptr));
         label->setText(QApplication::translate("Turnstile", "From", nullptr));
-        label_5->setText(QApplication::translate("Turnstile", "Dev Fee:    ", nullptr));
-        label_6->setText(QApplication::translate("Turnstile", "0.0004 ZEC $0.04", nullptr));
-        label_7->setText(QApplication::translate("Turnstile", "0.0004 ZEC $0.04", nullptr));
         migrateZaddList->setCurrentText(QString());
         label_8->setText(QApplication::translate("Turnstile", "<html><head/><body><p>Funds from Sprout z-Addresses (which start with &quot;zc&quot;) need to be moved to the upgraded Sapling z-Addresses (which start with &quot;zs&quot;). The funds cannot be moved directly, but need to be sent through intermediate &quot;transparent&quot; addresses in privacy-preserving way.</p><p>This migration can be done automatically for you.</p></body></html>", nullptr));
         label_9->setText(QApplication::translate("Turnstile", "To", nullptr));
         fromBalance->setText(QApplication::translate("Turnstile", "Balance", nullptr));
+        label_5->setText(QApplication::translate("Turnstile", "Miner Fees", nullptr));
+        label_7->setText(QApplication::translate("Turnstile", "0.0004 ZEC $0.04", nullptr));
+        label_3->setText(QApplication::translate("Turnstile", "Total Balance", nullptr));
     } // retranslateUi
 
 };

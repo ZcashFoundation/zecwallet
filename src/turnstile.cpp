@@ -144,6 +144,7 @@ QList<double> Turnstile::splitAmount(double amount, int parts) {
 		return amounts;
 	
 	fillAmounts(amounts, amount, parts);
+	qDebug() << amounts;
 
 	// Ensure they all add up!
 	double sumofparts = 0;
@@ -159,7 +160,7 @@ QList<double> Turnstile::splitAmount(double amount, int parts) {
 }
 
 void Turnstile::fillAmounts(QList<double>& amounts, double amount, int count) {
-	if (count == 1 || amount < 1) {
+	if (count == 1 || amount < 0.01) {
 		// Split the chaff.
 		// Chaff is all amounts lesser than 0.0001 ZEC. The chaff will be added to the 
 		// dev fee, and is done so to protect privacy.
@@ -175,15 +176,18 @@ void Turnstile::fillAmounts(QList<double>& amounts, double amount, int count) {
 	}
 
 	// Get a random amount off the amount (between half and full) and call recursively.
-	auto curAmount = std::rand() % (int)std::floor(amount);
+	// Multiply by hundered, because we'll operate on 0.01 ZEC minimum. We'll divide by 100 later
+	double curAmount = std::rand() % (int)std::floor(amount * 100);
 
 	// Try to round it off
-	// TODO: Do this via log
-	if (curAmount > 1000) {
-		curAmount = std::floor(curAmount / 100) * 100;
-	} else if (curAmount > 100) {
-		curAmount = std::floor(curAmount / 10) * 10;
+	auto places = (int)std::floor(std::log10(curAmount));
+	if (places > 0) {
+		auto a = std::pow(10, places);
+		curAmount = std::floor(curAmount / a) * a;
 	}
+
+	// And divide by 100
+	curAmount = curAmount / 100;
 
 	if (curAmount > 0)
 		amounts.push_back(curAmount);
