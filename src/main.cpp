@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 
 	// Temp
 	Turnstile t;
-    double amt = 2329127.99999999;
+    double amt = 0.0003;
 	qDebug() << QString::number(amt, 'f', 8) << ":";
     for (auto a : t.splitAmount(amt, 3)) {
         qDebug() << QString::number(a, 'f', 8);
