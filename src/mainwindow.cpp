@@ -8,6 +8,7 @@
 #include "balancestablemodel.h"
 #include "settings.h"
 #include "utils.h"
+#import "turnstile.h"
 #include "senttxstore.h"
 
 #include "precompiled.h"
@@ -83,7 +84,7 @@ void MainWindow::setupTurnstileDialog() {
         QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
         turnstile.msgIcon->setPixmap(icon.pixmap(64, 64));
 
-        auto getAllSproutBalance = [=] () {
+        auto fnGetAllSproutBalance = [=] () {
             double bal = 0;
             for (auto addr : *rpc->getAllZAddresses()) {
                 if (Settings::getInstance()->isSproutAddress(addr)) {
@@ -95,19 +96,20 @@ void MainWindow::setupTurnstileDialog() {
         };
 
         turnstile.migrateZaddList->addItem("All Sprout z-Addrs");
-        turnstile.fromBalance->setText(Settings::getInstance()->getZECUSDDisplayFormat(getAllSproutBalance()));
+        turnstile.fromBalance->setText(Settings::getInstance()->getZECUSDDisplayFormat(fnGetAllSproutBalance()));
         for (auto addr : *rpc->getAllZAddresses()) {
             if (Settings::getInstance()->isSaplingAddress(addr)) {
                 turnstile.migrateTo->addItem(addr);
             } else {
-                turnstile.migrateZaddList->addItem(addr);
+                if (rpc->getAllBalances()->value(addr) > 0) 
+                    turnstile.migrateZaddList->addItem(addr);
             }
         }
 
         QObject::connect(turnstile.migrateZaddList, &QComboBox::currentTextChanged, [=] (auto addr) {
             double bal = 0;
             if (addr.startsWith("All")) {
-               bal = getAllSproutBalance();
+               bal = fnGetAllSproutBalance();
             } else {
                 bal = rpc->getAllBalances()->value(addr);
             }
@@ -121,10 +123,11 @@ void MainWindow::setupTurnstileDialog() {
 
         turnstile.buttonBox->button(QDialogButtonBox::Ok)->setText("Start");
 
-        d.exec();
+        if (d.exec() == QDialog::Accepted) {
+            rpc->getTurnstile()->planMigration(
+                turnstile.migrateZaddList->currentText(), turnstile.migrateTo->currentText());
+        }
     });
-
-
 
     QObject::connect(ui->actionProgress, &QAction::triggered, [=] () {
         Ui_TurnstileProgress progress;

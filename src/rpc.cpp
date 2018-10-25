@@ -11,6 +11,8 @@ RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
 	this->main = main;
 	this->ui = main->ui;
 
+    this->turnstile = new Turnstile(this);
+
     // Setup balances table model
     balancesTableModel = new BalancesTableModel(main->ui->balancesTable);
     main->ui->balancesTable->setModel(balancesTableModel);
@@ -56,6 +58,7 @@ RPC::~RPC() {
 
     delete transactionsTableModel;
     delete balancesTableModel;
+    delete turnstile;
 
     delete utxos;
     delete allBalances;
@@ -300,7 +303,7 @@ void RPC::fillTxJsonParams(json& params, Tx tx) {
 		// Construct the JSON params
         json rec = json::object();
         rec["address"]      = toAddr.addr.toStdString();
-        rec["amount"]       = toAddr.amount;
+        rec["amount"]       = QString::number(toAddr.amount, 'f', 8).toDouble();        // Force it through string for rounding
         if (toAddr.addr.startsWith("z") && !toAddr.encodedMemo.trimmed().isEmpty())
             rec["memo"]     = toAddr.encodedMemo.toStdString();
 
@@ -487,6 +490,9 @@ void RPC::refreshAddresses() {
 
 // Function to create the data model and update the views, used below.
 void RPC::updateUI(bool anyUnconfirmed) {
+    // See if the turnstile migration has any steps that need to be done.
+    turnstile->executeMigrationStep();
+
 	ui->unconfirmedWarning->setVisible(anyUnconfirmed);
 
 	// Update balances model data, which will update the table too

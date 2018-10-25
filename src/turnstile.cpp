@@ -1,5 +1,6 @@
 #include "turnstile.h"
 #include "mainwindow.h"
+#include "unspentoutput.h"
 #include "rpc.h"
 #include "utils.h"
 #include "settings.h"
@@ -18,7 +19,7 @@ Turnstile::~Turnstile() {
 void printPlan(QList<TurnstileMigrationItem> plan) {
 	for (auto item : plan) {
 		qDebug() << item.fromAddr << item.intTAddr 
-					<< item.destAddr << item.amount << item.blockNumber << item.chaff << item.status;
+					<< item.destAddr << item.amount << item.blockNumber << item.status;
 	}
 }
 
@@ -39,13 +40,13 @@ QString Turnstile::writeableFile() {
 // Data stream write/read methods for migration items
 QDataStream &operator<<(QDataStream& ds, const TurnstileMigrationItem& item) {
 	return ds << QString("v1") << item.fromAddr << item.intTAddr 
-	   		  << item.destAddr << item.amount << item.blockNumber << item.chaff << item.status;
+	   		  << item.destAddr << item.amount << item.blockNumber << item.status;
 }
 
 QDataStream &operator>>(QDataStream& ds, TurnstileMigrationItem& item) {
 	QString version;
 	return ds >> version >> item.fromAddr >> item.intTAddr 
-	   		  >> item.destAddr >> item.amount >> item.blockNumber >> item.chaff >> item.status;
+	   		  >> item.destAddr >> item.amount >> item.blockNumber >> item.status;
 }
 
 void Turnstile::writeMigrationPlan(QList<TurnstileMigrationItem> plan) {
@@ -105,18 +106,18 @@ void Turnstile::planMigration(QString zaddr, QString destAddr) {
 			for (int i=0; i < splits.size(); i++) {
 				auto tAddr = newAddrs->values()[i].get<json::string_t>();
 				auto item = TurnstileMigrationItem { zaddr, QString::fromStdString(tAddr), destAddr,
-													 blockNumbers[i], splits[i], i == splits.size() -1, 
+													 blockNumbers[i], splits[i], 
 													 TurnstileMigrationItemStatus::NotStarted };
 				migItems.push_back(item);
 			}
 
-			std::sort(migItems.begin(), migItems.end(), [&] (auto a, auto b) {
-				return a.blockNumber < b.blockNumber;
-			});		
-
 			// The first migration is shifted to the current block, so the user sees something 
 			// happening immediately
 			migItems[0].blockNumber = curBlock;
+
+			std::sort(migItems.begin(), migItems.end(), [&] (auto a, auto b) {
+				return a.blockNumber < b.blockNumber;
+			});		
 
 			writeMigrationPlan(migItems);
 			auto readPlan = readMigrationPlan();
@@ -149,6 +150,9 @@ QList<double> Turnstile::splitAmount(double amount, int parts) {
 	for (auto a : amounts) {
 		sumofparts += a;
 	}
+	
+	// Add the Tx fees
+	sumofparts += amounts.size() * Utils::getMinerFee();
 
 	Q_ASSERT(sumofparts == amount);
 	return amounts;
@@ -163,18 +167,10 @@ void Turnstile::fillAmounts(QList<double>& amounts, double amount, int count) {
 		// Get the rounded value to 4 decimal places (approx $0.01)
 		double actual = std::floor(amount * 10000) / 10000;
 
-		// Reduce the Dev Tx fee from the amount
-		actual = actual - 0.0001; //Utils::getDevFee();
-
 		// Also account for the fees needed to send all these transactions
 		actual = actual - (Utils::getMinerFee() * (amounts.size() + 1));
 
-		// Calculate the chaff. 
-		double chaff  = amount - actual;
-
 		amounts.push_back(actual);
-		if (chaff > 0.00000001)	// zcash is split down to 8 decimal places
-			amounts.push_back(chaff);
 		return;
 	}
 
@@ -182,6 +178,7 @@ void Turnstile::fillAmounts(QList<double>& amounts, double amount, int count) {
 	auto curAmount = std::rand() % (int)std::floor(amount);
 
 	// Try to round it off
+	// TODO: Do this via log
 	if (curAmount > 1000) {
 		curAmount = std::floor(curAmount / 100) * 100;
 	} else if (curAmount > 100) {
@@ -201,21 +198,30 @@ void Turnstile::executeMigrationStep() {
 	printPlan(plan);
 
 	// Get to the next unexecuted step
-	auto eligibleItem = [&] (auto item) {
-		return 	!item.chaff && 		
-					(item.status == TurnstileMigrationItemStatus::NotStarted || 
-					 item.status == TurnstileMigrationItemStatus::SentToT);
+	auto fnIsEligibleItem = [&] (auto item) {
+		return 	item.status == TurnstileMigrationItemStatus::NotStarted || 
+				item.status == TurnstileMigrationItemStatus::SentToT;
 	};
-	auto nextStep = std::find_if(plan.begin(), plan.end(), eligibleItem);
 
-	if (nextStep == plan.end()) return; // Nothing to do
-	qDebug() << nextStep->blockNumber << ":" << Settings::getInstance()->getBlockNumber();
-	if (nextStep->blockNumber > Settings::getInstance()->getBlockNumber()) return;
+	// Fn to find if there are any unconfirmed funds for this address.
+	auto fnHasUnconfirmed = [=] (QString addr) {
+		auto utxoset = rpc->getUTXOs();
+		return std::find_if(utxoset->begin(), utxoset->end(), [=] (auto utxo) {
+					return utxo.address == addr && utxo.confirmations == 0;
+				}) != utxoset->end();
+	};
+
+	// Find the next step
+	auto nextStep = std::find_if(plan.begin(), plan.end(), fnIsEligibleItem);
+
+	if (nextStep == plan.end()) 
+		return; // Nothing to do	
+	
+	if (nextStep->blockNumber > Settings::getInstance()->getBlockNumber()) 
+		return;
 
 	// Is this the last step for this address?
-	auto lastStep = std::find_if(std::next(nextStep), plan.end(), [&] (auto item) {
-						return item.fromAddr == nextStep->fromAddr && eligibleItem(item);
-					}) == plan.end();
+	auto lastStep = std::find_if(std::next(nextStep), plan.end(), fnIsEligibleItem) == plan.end();
 
 	// Execute this step
 	if (nextStep->status == TurnstileMigrationItemStatus::NotStarted) {
@@ -228,19 +234,18 @@ void Turnstile::executeMigrationStep() {
 			return;
 		}
 
-		QList<ToFields> to = { ToFields{ nextStep->intTAddr, nextStep->amount, "", "" } };
+		auto to = ToFields{ nextStep->intTAddr, nextStep->amount, "", "" };
 
-		// If this is the last step, then add chaff and the dev fee to the tx
+		// If this is the last step, then send the remaining amount instead of the actual amount.
 		if (lastStep) {
-			auto remainingAmount = balance - nextStep->amount;
+			auto remainingAmount = balance - Utils::getMinerFee();
 			if (remainingAmount > 0) {
-				auto devFee = ToFields{ Utils::getDevSproutAddr(), remainingAmount, "", "" };
-				to.push_back(devFee);
+				to.amount = remainingAmount;
 			}
 		}
 
 		// Create the Tx
-		auto tx = Tx{ nextStep->fromAddr, to, Utils::getMinerFee() };
+		auto tx = Tx{ nextStep->fromAddr, { to }, Utils::getMinerFee() };
 
 		// And send it
 		doSendTx(tx, [=] () {
@@ -250,6 +255,12 @@ void Turnstile::executeMigrationStep() {
 		});
 
 	} else if (nextStep->status == TurnstileMigrationItemStatus::SentToT) {
+		// First thing to do is check to see if the funds are confirmed. 
+		if (fnHasUnconfirmed(nextStep->intTAddr)) {
+			qDebug() << QString("unconfirmed, waiting");
+			return;
+		}
+
 		// Send it to the final destination address.
 		auto bal = rpc->getAllBalances()->value(nextStep->intTAddr);
 		auto sendAmt = bal - Utils::getMinerFee();
@@ -262,6 +273,7 @@ void Turnstile::executeMigrationStep() {
 		}
 		
 		QList<ToFields> to = { ToFields{ nextStep->destAddr, sendAmt, "", "" } };
+
 		// Create the Tx
 		auto tx = Tx{ nextStep->intTAddr, to, Utils::getMinerFee() };
 
