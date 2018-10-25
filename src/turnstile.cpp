@@ -35,6 +35,9 @@ void Turnstile::fillAmounts(QList<double>& amounts, double amount, int count) {
 		// Reduce the Dev Tx fee from the amount
 		actual = actual - 0.0001; //Utils::getDevFee();
 
+		// Also account for the fees needed to send all these transactions
+		actual = actual - (Utils::getMinerFee() * (amounts.size() + 1));
+
 		// Calculate the chaff. 
 		double chaff  = amount - actual;
 
