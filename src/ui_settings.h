@@ -52,6 +52,7 @@ public:
     QPushButton *btnClearSaved;
     QCheckBox *chkSaveTxs;
     QSpacerItem *verticalSpacer_2;
+    QFrame *line_2;
     QDialogButtonBox *buttonBox;
 
     void setupUi(QDialog *Settings)
@@ -161,7 +162,14 @@ public:
 
         verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        gridLayout->addItem(verticalSpacer_2, 3, 0, 1, 2);
+        gridLayout->addItem(verticalSpacer_2, 4, 0, 1, 2);
+
+        line_2 = new QFrame(tab_2);
+        line_2->setObjectName(QStringLiteral("line_2"));
+        line_2->setFrameShape(QFrame::HLine);
+        line_2->setFrameShadow(QFrame::Sunken);
+
+        gridLayout->addWidget(line_2, 3, 0, 1, 2);
 
         tabWidget->addTab(tab_2, QString());
 
@@ -197,7 +205,7 @@ public:
         label_4->setText(QApplication::translate("Settings", "RPC Password", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("Settings", "zcashd connection", nullptr));
         label_5->setText(QApplication::translate("Settings", "Shielded transactions are saved locally and shown in the Transactions tab.  If you uncheck this, shielded transactions will not appear in the transactions tab.", nullptr));
-        btnClearSaved->setText(QApplication::translate("Settings", "Delete History", nullptr));
+        btnClearSaved->setText(QApplication::translate("Settings", "Clear History", nullptr));
         chkSaveTxs->setText(QApplication::translate("Settings", "Remember Shielded Transactions", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("Settings", "Options", nullptr));
     } // retranslateUi
