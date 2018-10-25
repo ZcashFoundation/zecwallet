@@ -1,12 +1,123 @@
 #include "turnstile.h"
-
+#include "rpc.h"
 #include "utils.h"
+#include "settings.h"
 
-Turnstile::Turnstile() {
+#include "precompiled.h"
+
+using json = nlohmann::json;
+
+Turnstile::Turnstile(RPC* _rpc) {
+	this->rpc = _rpc;
 }
 
-
 Turnstile::~Turnstile() {
+}
+
+QString Turnstile::writeableFile() {
+    auto filename = QStringLiteral("turnstilemigrationplan.dat");
+
+    auto dir = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+    if (!dir.exists())
+        QDir().mkpath(dir.absolutePath());
+
+    if (Settings::getInstance()->isTestnet()) {
+        return dir.filePath("testnet-" % filename);
+    } else {
+        return dir.filePath(filename);
+    }
+}
+
+// Data stream write/read methods for migration items
+QDataStream &operator<<(QDataStream& ds, const TurnstileMigrationItem& item) {
+	return ds << "v1" << item.fromAddr << item.intTAddr 
+	   		  << item.destAddr << item.amount << item.blockNumber << item.chaff;
+}
+
+QDataStream &operator>>(QDataStream& ds, TurnstileMigrationItem& item) {
+	QString version;
+	return ds >> version >> item.fromAddr >> item.intTAddr 
+	   		  >> item.destAddr >> item.amount >> item.blockNumber >> item.chaff;
+}
+
+void Turnstile::writeMigrationPlan(QList<TurnstileMigrationItem> plan) {
+	QFile file(writeableFile());
+	file.open(QIODevice::WriteOnly);
+	QDataStream out(&file);   // we will serialize the data into the file
+	out << plan;
+}
+
+QList<TurnstileMigrationItem> Turnstile::readMigrationPlan() {
+	QFile file(writeableFile());
+	
+	QList<TurnstileMigrationItem> plan;
+	if (!file.exists()) return plan;
+
+	file.open(QIODevice::ReadOnly);
+	QDataStream in(&file);    // read the data serialized from the file
+	in >> plan; 
+
+	return plan;
+}
+
+void Turnstile::planMigration(QString zaddr, QString destAddr) {
+	// First, get the balance and split up the amounts
+	auto bal = rpc->getAllBalances()->value(zaddr);
+	auto splits = splitAmount(bal+2354, 5);
+
+	// Then, generate an intermediate t-Address for each part using getBatchRPC
+	rpc->getBatchRPC<double>(splits,
+		[=] (double /*unused*/) {
+			json payload = {
+				{"jsonrpc", "1.0"},
+				{"id", "someid"},
+				{"method", "getnewaddress"},
+			};
+			return payload;
+		},
+		[=] (QMap<double, json>* newAddrs) {
+			// Get block numbers
+			auto curBlock = Settings::getInstance()->getBlockNumber();
+			auto blockNumbers = getBlockNumbers(curBlock, curBlock + 10, splits.size());
+
+			// Assign the amounts to the addresses.
+			QList<TurnstileMigrationItem> migItems;
+			
+			for (int i=0; i < splits.size(); i++) {
+				auto tAddr = newAddrs->values()[i].get<json::string_t>();
+				auto item = TurnstileMigrationItem { zaddr, QString::fromStdString(tAddr), destAddr,
+													 blockNumbers[i], splits[i], i == splits.size() -1 };
+				migItems.push_back(item);
+			}
+
+			std::sort(migItems.begin(), migItems.end(), [&] (auto a, auto b) {
+				return a.blockNumber < b.blockNumber;
+			});		
+
+			// The first migration is shifted to the current block, so the user sees something 
+			// happening immediately
+			migItems[0].blockNumber = curBlock;
+
+			writeMigrationPlan(migItems);
+			auto readPlan = readMigrationPlan();
+
+			for (auto item : readPlan) {
+				qDebug() << item.fromAddr << item.intTAddr 
+						 << item.destAddr << item.amount << item.blockNumber << item.chaff;
+			}
+		}
+	);
+}
+
+QList<int> Turnstile::getBlockNumbers(int start, int end, int count) {
+	QList<int> blocks;
+	// Generate 'count' numbers between [start, end]
+	for (int i=0; i < count; i++) {
+		auto blk = (std::rand() % (end - start)) + start;
+		blocks.push_back(blk);
+	}
+
+	return blocks;
 }
 
 QList<double> Turnstile::splitAmount(double amount, int parts) {
