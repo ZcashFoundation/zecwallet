@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "ui_confirm.h"
+#include "ui_memodialog.h"
 #include "settings.h"
 #include "rpc.h"
 #include "utils.h"
@@ -238,13 +239,30 @@ void MainWindow::memoButtonClicked(int number) {
     QString currentMemo = memoTxt->text();
 
     // Ref to see if the button was clicked
-    bool ok;
-    QString newMemo = QInputDialog::getText(this, "Memo", 
-                        "Please type a memo to include with the amount. The memo will be visible to the recepient",
-                        QLineEdit::Normal, currentMemo, &ok);
-    if (ok) {
-        memoTxt->setText(newMemo);
+    // bool ok;
+    // QString newMemo = QInputDialog::getText(this, "Memo", 
+    //                     "Please type a memo to include with the amount. The memo will be visible to the recepient",
+    //                     QLineEdit::Normal, currentMemo, &ok);
+    Ui_MemoDialog memoDialog;
+    QDialog dialog(this);
+    memoDialog.setupUi(&dialog);
+
+    QObject::connect(memoDialog.memoTxt, &QLineEdit::textChanged, [=] (QString txt) {
+        memoDialog.memoSize->setText(QString::number(txt.toUtf8().size()) + "/512");
+
+        memoDialog.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(txt.toUtf8().size() <= 512);
+        if (txt.toUtf8().size() > 512) {
+            memoDialog.memoSize->setStyleSheet("color: red;");
+        } else {
+            memoDialog.memoSize->setStyleSheet("");
+        }
+    });
+    memoDialog.memoTxt->setText(currentMemo);
+
+    if (dialog.exec() == QDialog::Accepted) {
+        memoTxt->setText(memoDialog.memoTxt->text());
     }
+
 }
 
 void MainWindow::removeExtraAddresses() {

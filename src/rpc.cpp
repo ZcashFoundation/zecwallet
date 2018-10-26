@@ -615,8 +615,7 @@ void RPC::refreshTransactions() {
                 QString::fromStdString(it["txid"]),
                 it["amount"].get<json::number_float_t>() + fee,
                 it["confirmations"].get<json::number_unsigned_t>(),
-                "", ""
-            };
+                "", "" };
 
             txdata.push_back(tx);
         }

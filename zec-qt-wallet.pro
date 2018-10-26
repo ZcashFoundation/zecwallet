@@ -71,7 +71,8 @@ FORMS += \
     src/mainwindow.ui \
     src/settings.ui \
     src/about.ui \
-    src/confirm.ui
+    src/confirm.ui \
+    src/memodialog.ui 
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
