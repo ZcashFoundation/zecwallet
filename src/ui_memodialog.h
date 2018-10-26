@@ -15,8 +15,7 @@
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QPlainTextEdit>
 
 QT_BEGIN_NAMESPACE
 
@@ -24,24 +23,18 @@ class Ui_MemoDialog
 {
 public:
     QGridLayout *gridLayout;
-    QLineEdit *memoTxt;
     QLabel *label;
     QLabel *memoSize;
     QDialogButtonBox *buttonBox;
-    QSpacerItem *verticalSpacer;
+    QPlainTextEdit *memoTxt;
 
     void setupUi(QDialog *MemoDialog)
     {
         if (MemoDialog->objectName().isEmpty())
             MemoDialog->setObjectName(QStringLiteral("MemoDialog"));
-        MemoDialog->resize(618, 115);
+        MemoDialog->resize(520, 168);
         gridLayout = new QGridLayout(MemoDialog);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        memoTxt = new QLineEdit(MemoDialog);
-        memoTxt->setObjectName(QStringLiteral("memoTxt"));
-
-        gridLayout->addWidget(memoTxt, 1, 0, 1, 2);
-
         label = new QLabel(MemoDialog);
         label->setObjectName(QStringLiteral("label"));
 
@@ -58,11 +51,12 @@ public:
         buttonBox->setOrientation(Qt::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
 
-        gridLayout->addWidget(buttonBox, 3, 0, 1, 2);
+        gridLayout->addWidget(buttonBox, 2, 0, 1, 2);
 
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        memoTxt = new QPlainTextEdit(MemoDialog);
+        memoTxt->setObjectName(QStringLiteral("memoTxt"));
 
-        gridLayout->addItem(verticalSpacer, 2, 0, 1, 2);
+        gridLayout->addWidget(memoTxt, 1, 0, 1, 2);
 
 
         retranslateUi(MemoDialog);
@@ -76,7 +70,7 @@ public:
     {
         MemoDialog->setWindowTitle(QApplication::translate("MemoDialog", "Dialog", nullptr));
         label->setText(QApplication::translate("MemoDialog", "Memo", nullptr));
-        memoSize->setText(QApplication::translate("MemoDialog", "6 / 512", nullptr));
+        memoSize->setText(QApplication::translate("MemoDialog", "0 / 512", nullptr));
     } // retranslateUi
 
 };

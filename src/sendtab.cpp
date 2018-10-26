@@ -191,6 +191,7 @@ void MainWindow::addAddressSection() {
     QFont font1 = Address1->font();
     font1.setPointSize(font1.pointSize()-1);
     MemoTxt1->setFont(font1);
+    MemoTxt1->setWordWrap(true);
     sendAddressLayout->addWidget(MemoTxt1);
 
     ui->sendToLayout->insertWidget(itemNumber-1, verticalGroupBox);         
@@ -234,33 +235,26 @@ void MainWindow::memoButtonClicked(int number) {
         return;
     }
 
-    auto memoTxt = ui->sendToWidgets->findChild<QLabel *>(QString("MemoTxt") + QString::number(number));
     // Get the current memo if it exists
+    auto memoTxt = ui->sendToWidgets->findChild<QLabel *>(QString("MemoTxt") + QString::number(number));
     QString currentMemo = memoTxt->text();
 
-    // Ref to see if the button was clicked
-    // bool ok;
-    // QString newMemo = QInputDialog::getText(this, "Memo", 
-    //                     "Please type a memo to include with the amount. The memo will be visible to the recepient",
-    //                     QLineEdit::Normal, currentMemo, &ok);
     Ui_MemoDialog memoDialog;
     QDialog dialog(this);
     memoDialog.setupUi(&dialog);
 
-    QObject::connect(memoDialog.memoTxt, &QLineEdit::textChanged, [=] (QString txt) {
+    QObject::connect(memoDialog.memoTxt, &QPlainTextEdit::textChanged, [=] () {
+        QString txt = memoDialog.memoTxt->toPlainText();
         memoDialog.memoSize->setText(QString::number(txt.toUtf8().size()) + "/512");
 
         memoDialog.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(txt.toUtf8().size() <= 512);
-        if (txt.toUtf8().size() > 512) {
-            memoDialog.memoSize->setStyleSheet("color: red;");
-        } else {
-            memoDialog.memoSize->setStyleSheet("");
-        }
     });
-    memoDialog.memoTxt->setText(currentMemo);
+
+    memoDialog.memoTxt->setPlainText(currentMemo);
+    memoDialog.memoTxt->setFocus();
 
     if (dialog.exec() == QDialog::Accepted) {
-        memoTxt->setText(memoDialog.memoTxt->text());
+        memoTxt->setText(memoDialog.memoTxt->toPlainText());
     }
 
 }
@@ -414,6 +408,7 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
                 QFont font1 = Addr->font();
                 font1.setPointSize(font1.pointSize() - 1);
                 Memo->setFont(font1);
+                Memo->setWordWrap(true);
 
                 confirm.gridLayout->addWidget(Memo, (i*2)+1, 0, 1, 3);
             }

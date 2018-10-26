@@ -434,6 +434,7 @@ public:
         QFont font1;
         font1.setPointSize(10);
         MemoTxt1->setFont(font1);
+        MemoTxt1->setWordWrap(true);
 
         sendAddressLayout->addWidget(MemoTxt1);
 
@@ -675,7 +676,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
