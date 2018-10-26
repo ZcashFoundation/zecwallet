@@ -23,13 +23,19 @@ enum TurnstileMigrationItemStatus {
 	UnknownError
 };
 
+struct ProgressReport {
+	int 	step;
+	int 	totalSteps;
+	int 	nextBlock;
+};
+
 class Turnstile
 {
 public:
 	Turnstile(RPC* _rpc);
 	~Turnstile();
 
-	void		   	planMigration(QString zaddr, QString destAddr);
+	void		   	planMigration(QString zaddr, QString destAddr, int splits, int numBlocks);
 	QList<double>  	splitAmount(double amount, int parts);
 	void		   	fillAmounts(QList<double>& amounts, double amount, int count);
 
@@ -37,12 +43,17 @@ public:
 	void 		   	writeMigrationPlan(QList<TurnstileMigrationItem> plan);
 	
 	void 			executeMigrationStep();
+	ProgressReport  getPlanProgress();
+	bool			isMigrationActive();
 
 private:
 	QList<int>	   	getBlockNumbers(int start, int end, int count);
 	QString		   	writeableFile();
 
 	void 			doSendTx(Tx tx, std::function<void(void)> cb);
+
+
+	QList<TurnstileMigrationItem>::Iterator getNextStep(QList<TurnstileMigrationItem>& plan);	
 
 	RPC* 	rpc;	
 };

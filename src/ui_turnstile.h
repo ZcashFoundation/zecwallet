@@ -42,7 +42,7 @@ public:
     QLabel *fromBalance;
     QSpacerItem *verticalSpacer;
     QLabel *label_5;
-    QLabel *label_7;
+    QLabel *minerFee;
     QLabel *label_3;
     QDialogButtonBox *buttonBox;
 
@@ -141,16 +141,16 @@ public:
 
         gridLayout->addWidget(label_5, 6, 0, 1, 1);
 
-        label_7 = new QLabel(groupBox);
-        label_7->setObjectName(QStringLiteral("label_7"));
+        minerFee = new QLabel(groupBox);
+        minerFee->setObjectName(QStringLiteral("minerFee"));
         QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Preferred);
         sizePolicy2.setHorizontalStretch(0);
         sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(label_7->sizePolicy().hasHeightForWidth());
-        label_7->setSizePolicy(sizePolicy2);
-        label_7->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        sizePolicy2.setHeightForWidth(minerFee->sizePolicy().hasHeightForWidth());
+        minerFee->setSizePolicy(sizePolicy2);
+        minerFee->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
 
-        gridLayout->addWidget(label_7, 6, 1, 1, 2);
+        gridLayout->addWidget(minerFee, 6, 1, 1, 2);
 
         label_3 = new QLabel(groupBox);
         label_3->setObjectName(QStringLiteral("label_3"));
@@ -190,7 +190,7 @@ public:
         label_9->setText(QApplication::translate("Turnstile", "To", nullptr));
         fromBalance->setText(QApplication::translate("Turnstile", "Balance", nullptr));
         label_5->setText(QApplication::translate("Turnstile", "Miner Fees", nullptr));
-        label_7->setText(QApplication::translate("Turnstile", "0.0004 ZEC $0.04", nullptr));
+        minerFee->setText(QApplication::translate("Turnstile", "0.0004 ZEC $0.04", nullptr));
         label_3->setText(QApplication::translate("Turnstile", "Total Balance", nullptr));
     } // retranslateUi
 

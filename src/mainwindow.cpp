@@ -68,12 +68,6 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 void MainWindow::setupTurnstileDialog() {    
-    //Turnstile t(this);
-    // t.planMigration(
-    //     "ztsKtGwc7JTEHxQq1xiRWyU9o1sheA3tYjcaFTBfVtp4RKJ782U6pH9STEYUoWQiGn1epfRMmFhkWCUyCSCqByNj9HKnzKU", 
-    //     "ztbGDqgkmXQjheivgeirwEvJLD4SUNqsWCGwxwVg4YpGz1ARR8P2rXaptkT14z3NDKamcxNmQuvmvktyokMs7HkutRNSx1D"
-    //     );
-    //t.executeMigrationStep();
 
     // Turnstile migration
     QObject::connect(ui->actionTurnstile_Migration, &QAction::triggered, [=] () {
@@ -117,18 +111,39 @@ void MainWindow::setupTurnstileDialog() {
             turnstile.fromBalance->setText(Settings::getInstance()->getZECUSDDisplayFormat(bal));
         });
         
-        turnstile.privLevel->addItem("Good - 3 tx over 3 days");
-        turnstile.privLevel->addItem("Excellent - 5 tx over 5 days");
-        turnstile.privLevel->addItem("Paranoid - 10 tx over 7 days");
+        // Privacy level combobox
+        // Num tx over num blocks
+        QList<QPair<int, int>> privOptions; 
+        privOptions.push_back(QPair<double, double>(3, 3));
+        privOptions.push_back(QPair<double, double>(5, 5));
+        privOptions.push_back(QPair<double, double>(10, 7));
+
+        QObject::connect(turnstile.privLevel, QOverload<int>::of(&QComboBox::currentIndexChanged), [=] (auto idx) {
+            // Update the fees
+            turnstile.minerFee->setText(
+                Settings::getInstance()->getZECUSDDisplayFormat(privOptions[idx].first * Utils::getMinerFee()));
+        });
+
+        turnstile.privLevel->addItem("Good - 3 tx over 3 blocks");
+        turnstile.privLevel->addItem("Excellent - 5 tx over 5 blocks");
+        turnstile.privLevel->addItem("Paranoid - 10 tx over 7 blocks");
 
         turnstile.buttonBox->button(QDialogButtonBox::Ok)->setText("Start");
 
         if (d.exec() == QDialog::Accepted) {
+            auto privLevel = privOptions[turnstile.privLevel->currentIndex()];
             rpc->getTurnstile()->planMigration(
-                turnstile.migrateZaddList->currentText(), turnstile.migrateTo->currentText());
+                turnstile.migrateZaddList->currentText(), 
+                turnstile.migrateTo->currentText(),
+                privLevel.first, privLevel.second);
+
+            QMessageBox::information(this, "Backup your wallet.dat", 
+                                        "The migration will now start. You can check progress in the File -> Turnstile Migration menu.\n\nYOU MUST BACKUP YOUR wallet.dat NOW!.\n\nNew Addresses have been added to your wallet which will be used for the migration.", 
+                                        QMessageBox::Ok);
         }
     });
 
+    // Progress update button
     QObject::connect(ui->actionProgress, &QAction::triggered, [=] () {
         Ui_TurnstileProgress progress;
         QDialog d(this);
@@ -138,6 +153,37 @@ void MainWindow::setupTurnstileDialog() {
         progress.msgIcon->setPixmap(icon.pixmap(64, 64));
 
         progress.buttonBox->button(QDialogButtonBox::Cancel)->setText("Abort");
+
+        auto fnUpdateProgressUI = [=] () {
+            // Get the plan progress
+            if (rpc->getTurnstile()->isMigrationActive()) {
+                auto curProgress = rpc->getTurnstile()->getPlanProgress();
+                
+                progress.progressTxt->setText(QString::number(curProgress.step) % QString(" / ") % QString::number(curProgress.totalSteps));
+                progress.progressBar->setValue(100 * curProgress.step / curProgress.totalSteps);
+                
+                auto nextTxBlock = curProgress.nextBlock - Settings::getInstance()->getBlockNumber();
+                
+                if (curProgress.step == curProgress.totalSteps) {
+                    progress.nextTx->setText("Turnstile migration finished");
+                } else {
+                    progress.nextTx->setText(QString("Next transaction in ") 
+                                        % QString::number(nextTxBlock < 0 ? 0 : nextTxBlock)
+                                        % " blocks");
+                }
+                
+            } else {
+                progress.progressTxt->setText("");
+                progress.progressBar->setValue(0);
+                progress.nextTx->setText("No turnstile migration is in progress");
+            }
+        };
+
+        QTimer progressTimer(this);        
+        QObject::connect(&progressTimer, &QTimer::timeout, fnUpdateProgressUI);
+        progressTimer.start(Utils::updateSpeed);
+        fnUpdateProgressUI();
+        
         d.exec();
     });
 }

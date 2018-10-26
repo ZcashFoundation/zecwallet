@@ -80,10 +80,10 @@ QList<TurnstileMigrationItem> Turnstile::readMigrationPlan() {
 	return plan;
 }
 
-void Turnstile::planMigration(QString zaddr, QString destAddr) {
+void Turnstile::planMigration(QString zaddr, QString destAddr, int numsplits, int numBlocks) {
 	// First, get the balance and split up the amounts
 	auto bal = rpc->getAllBalances()->value(zaddr);
-	auto splits = splitAmount(bal, 5);
+	auto splits = splitAmount(bal, numsplits);
 
 	// Then, generate an intermediate t-Address for each part using getBatchRPC
 	rpc->getBatchRPC<double>(splits,
@@ -98,7 +98,7 @@ void Turnstile::planMigration(QString zaddr, QString destAddr) {
 		[=] (QMap<double, json>* newAddrs) {
 			// Get block numbers
 			auto curBlock = Settings::getInstance()->getBlockNumber();
-			auto blockNumbers = getBlockNumbers(curBlock, curBlock + 3, splits.size());
+			auto blockNumbers = getBlockNumbers(curBlock, curBlock + numBlocks, splits.size());
 
 			// Assign the amounts to the addresses.
 			QList<TurnstileMigrationItem> migItems;
@@ -193,6 +193,47 @@ void Turnstile::fillAmounts(QList<double>& amounts, double amount, int count) {
 		amounts.push_back(curAmount);
 
 	fillAmounts(amounts, amount - curAmount, count - 1);
+}
+
+QList<TurnstileMigrationItem>::Iterator
+Turnstile::getNextStep(QList<TurnstileMigrationItem>& plan) {
+	// Get to the next unexecuted step
+	auto fnIsEligibleItem = [&] (auto item) {
+		return 	item.status == TurnstileMigrationItemStatus::NotStarted || 
+				item.status == TurnstileMigrationItemStatus::SentToT;
+	};
+
+	// // Fn to find if there are any unconfirmed funds for this address.
+	// auto fnHasUnconfirmed = [=] (QString addr) {
+	// 	auto utxoset = rpc->getUTXOs();
+	// 	return std::find_if(utxoset->begin(), utxoset->end(), [=] (auto utxo) {
+	// 				return utxo.address == addr && utxo.confirmations == 0;
+	// 			}) != utxoset->end();
+	// };
+
+	// Find the next step
+	auto nextStep = std::find_if(plan.begin(), plan.end(), fnIsEligibleItem);
+	return nextStep;
+}
+
+bool Turnstile::isMigrationActive() {
+	auto plan = readMigrationPlan();
+	if (plan.isEmpty()) return false;
+
+	return true;
+}
+
+ProgressReport Turnstile::getPlanProgress() {
+	auto plan = readMigrationPlan();
+
+	auto nextStep = getNextStep(plan);
+
+	auto step = std::distance(plan.begin(), nextStep);
+	auto total = plan.size();
+
+	auto nextBlock = nextStep == plan.end() ? 0 : nextStep->blockNumber;
+
+	return ProgressReport{(int)step*2, total*2, nextBlock};
 }
 
 void Turnstile::executeMigrationStep() {
