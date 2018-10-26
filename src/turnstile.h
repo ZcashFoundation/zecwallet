@@ -27,6 +27,7 @@ struct ProgressReport {
 	int 	step;
 	int 	totalSteps;
 	int 	nextBlock;
+	bool 	hasErrors;
 };
 
 class Turnstile
