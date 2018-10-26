@@ -58,6 +58,9 @@ private:
     Tx      createTxFromSendPage();
     bool    confirmTx(Tx tx, ToFields devFee);
 
+    void turnstileDoMigration();
+    void turnstileProgress();
+
 	void cancelButton();
 	void sendButton();
 	void inputComboTextChanged(const QString& text);

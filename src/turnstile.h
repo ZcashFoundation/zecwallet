@@ -42,10 +42,11 @@ public:
 
 	QList<TurnstileMigrationItem> readMigrationPlan();
 	void 		   	writeMigrationPlan(QList<TurnstileMigrationItem> plan);
+	void			removeFile();
 	
 	void 			executeMigrationStep();
 	ProgressReport  getPlanProgress();
-	bool			isMigrationActive();
+	bool			isMigrationPresent();
 
 private:
 	QList<int>	   	getBlockNumbers(int start, int end, int count);

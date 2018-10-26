@@ -67,129 +67,150 @@ MainWindow::MainWindow(QWidget *parent) :
     rpc->refresh();    
 }
 
-void MainWindow::setupTurnstileDialog() {    
+void MainWindow::turnstileProgress() {
+    Ui_TurnstileProgress progress;
+    QDialog d(this);
+    progress.setupUi(&d);
 
+    QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning);
+    progress.msgIcon->setPixmap(icon.pixmap(64, 64));
+
+    progress.buttonBox->button(QDialogButtonBox::Cancel)->setText("Abort");
+
+    auto fnUpdateProgressUI = [=] () {
+        // Get the plan progress
+        if (rpc->getTurnstile()->isMigrationPresent()) {
+            auto curProgress = rpc->getTurnstile()->getPlanProgress();
+            
+            progress.progressTxt->setText(QString::number(curProgress.step) % QString(" / ") % QString::number(curProgress.totalSteps));
+            progress.progressBar->setValue(100 * curProgress.step / curProgress.totalSteps);
+            
+            auto nextTxBlock = curProgress.nextBlock - Settings::getInstance()->getBlockNumber();
+            
+            if (curProgress.step == curProgress.totalSteps) {
+                auto txt = QString("Turnstile migration finished");
+                if (curProgress.hasErrors) {
+                    txt = txt + ". There were some errors.\n\nYour funds are all in your wallet, so you should be able to finish moving them manually.";
+                }
+                progress.nextTx->setText(txt);
+            } else {
+                progress.nextTx->setText(QString("Next transaction in ") 
+                                    % QString::number(nextTxBlock < 0 ? 0 : nextTxBlock)
+                                    % " blocks\n" 
+                                    % (nextTxBlock <= 0 ? "(waiting for confirmations)" : ""));
+            }
+            
+        } else {
+            progress.progressTxt->setText("");
+            progress.progressBar->setValue(0);
+            progress.nextTx->setText("No turnstile migration is in progress");
+        }
+    };
+
+    QTimer progressTimer(this);        
+    QObject::connect(&progressTimer, &QTimer::timeout, fnUpdateProgressUI);
+    progressTimer.start(Utils::updateSpeed);
+    fnUpdateProgressUI();
+    
+    auto accpeted = d.exec();
+    auto curProgress = rpc->getTurnstile()->getPlanProgress();
+    if (accpeted == QDialog::Accepted && curProgress.step == curProgress.totalSteps) {
+        // Finished, so delete the file
+        rpc->getTurnstile()->removeFile();
+    }
+    if (accpeted == QDialog::Rejected && curProgress.step != curProgress.totalSteps) {
+        auto abort = QMessageBox::warning(this, "Are you sure you want to Abort?",
+                                "Are you sure you want to abort the migration?\nAll further transactions will be cancelled.\nAll your funds are still in your wallet.",
+                                QMessageBox::Yes, QMessageBox::No);
+        if (abort) {
+            rpc->getTurnstile()->removeFile();
+        }
+    }
+}
+
+void MainWindow::turnstileDoMigration() {
+    Ui_Turnstile turnstile;
+    QDialog d(this);
+    turnstile.setupUi(&d);
+
+    QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
+    turnstile.msgIcon->setPixmap(icon.pixmap(64, 64));
+
+    auto fnGetAllSproutBalance = [=] () {
+        double bal = 0;
+        for (auto addr : *rpc->getAllZAddresses()) {
+            if (Settings::getInstance()->isSproutAddress(addr)) {
+                bal += rpc->getAllBalances()->value(addr);
+            }
+        }
+
+        return bal;
+    };
+
+    //turnstile.migrateZaddList->addItem("All Sprout z-Addrs");
+    turnstile.fromBalance->setText(Settings::getInstance()->getZECUSDDisplayFormat(fnGetAllSproutBalance()));
+    for (auto addr : *rpc->getAllZAddresses()) {
+        if (Settings::getInstance()->isSaplingAddress(addr)) {
+            turnstile.migrateTo->addItem(addr);
+        } else {
+            if (rpc->getAllBalances()->value(addr) > 0) 
+                turnstile.migrateZaddList->addItem(addr);
+        }
+    }
+
+    QObject::connect(turnstile.migrateZaddList, &QComboBox::currentTextChanged, [=] (auto addr) {
+        double bal = 0;
+        if (addr.startsWith("All")) {
+            bal = fnGetAllSproutBalance();
+        } else {
+            bal = rpc->getAllBalances()->value(addr);
+        }
+
+        turnstile.fromBalance->setText(Settings::getInstance()->getZECUSDDisplayFormat(bal));
+    });
+    
+    // Privacy level combobox
+    // Num tx over num blocks
+    QList<QPair<int, int>> privOptions; 
+    privOptions.push_back(QPair<double, double>(3, 3));
+    privOptions.push_back(QPair<double, double>(5, 5));
+    privOptions.push_back(QPair<double, double>(10, 7));
+
+    QObject::connect(turnstile.privLevel, QOverload<int>::of(&QComboBox::currentIndexChanged), [=] (auto idx) {
+        // Update the fees
+        turnstile.minerFee->setText(
+            Settings::getInstance()->getZECUSDDisplayFormat(privOptions[idx].first * Utils::getMinerFee()));
+    });
+
+    turnstile.privLevel->addItem("Good - 3 tx over 3 blocks");
+    turnstile.privLevel->addItem("Excellent - 5 tx over 5 blocks");
+    turnstile.privLevel->addItem("Paranoid - 10 tx over 7 blocks");
+
+    turnstile.buttonBox->button(QDialogButtonBox::Ok)->setText("Start");
+
+    if (d.exec() == QDialog::Accepted) {
+        auto privLevel = privOptions[turnstile.privLevel->currentIndex()];
+        rpc->getTurnstile()->planMigration(
+            turnstile.migrateZaddList->currentText(), 
+            turnstile.migrateTo->currentText(),
+            privLevel.first, privLevel.second);
+
+        QMessageBox::information(this, "Backup your wallet.dat", 
+                                    "The migration will now start. You can check progress in the File -> Turnstile Migration menu.\n\nYOU MUST BACKUP YOUR wallet.dat NOW!.\n\nNew Addresses have been added to your wallet which will be used for the migration.", 
+                                    QMessageBox::Ok);
+    }
+}
+
+void MainWindow::setupTurnstileDialog() {    
     // Turnstile migration
     QObject::connect(ui->actionTurnstile_Migration, &QAction::triggered, [=] () {
-        Ui_Turnstile turnstile;
-        QDialog d(this);
-        turnstile.setupUi(&d);
-
-        QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
-        turnstile.msgIcon->setPixmap(icon.pixmap(64, 64));
-
-        auto fnGetAllSproutBalance = [=] () {
-            double bal = 0;
-            for (auto addr : *rpc->getAllZAddresses()) {
-                if (Settings::getInstance()->isSproutAddress(addr)) {
-                    bal += rpc->getAllBalances()->value(addr);
-                }
-            }
-
-            return bal;
-        };
-
-        turnstile.migrateZaddList->addItem("All Sprout z-Addrs");
-        turnstile.fromBalance->setText(Settings::getInstance()->getZECUSDDisplayFormat(fnGetAllSproutBalance()));
-        for (auto addr : *rpc->getAllZAddresses()) {
-            if (Settings::getInstance()->isSaplingAddress(addr)) {
-                turnstile.migrateTo->addItem(addr);
-            } else {
-                if (rpc->getAllBalances()->value(addr) > 0) 
-                    turnstile.migrateZaddList->addItem(addr);
-            }
-        }
-
-        QObject::connect(turnstile.migrateZaddList, &QComboBox::currentTextChanged, [=] (auto addr) {
-            double bal = 0;
-            if (addr.startsWith("All")) {
-               bal = fnGetAllSproutBalance();
-            } else {
-                bal = rpc->getAllBalances()->value(addr);
-            }
-
-            turnstile.fromBalance->setText(Settings::getInstance()->getZECUSDDisplayFormat(bal));
-        });
-        
-        // Privacy level combobox
-        // Num tx over num blocks
-        QList<QPair<int, int>> privOptions; 
-        privOptions.push_back(QPair<double, double>(3, 3));
-        privOptions.push_back(QPair<double, double>(5, 5));
-        privOptions.push_back(QPair<double, double>(10, 7));
-
-        QObject::connect(turnstile.privLevel, QOverload<int>::of(&QComboBox::currentIndexChanged), [=] (auto idx) {
-            // Update the fees
-            turnstile.minerFee->setText(
-                Settings::getInstance()->getZECUSDDisplayFormat(privOptions[idx].first * Utils::getMinerFee()));
-        });
-
-        turnstile.privLevel->addItem("Good - 3 tx over 3 blocks");
-        turnstile.privLevel->addItem("Excellent - 5 tx over 5 blocks");
-        turnstile.privLevel->addItem("Paranoid - 10 tx over 7 blocks");
-
-        turnstile.buttonBox->button(QDialogButtonBox::Ok)->setText("Start");
-
-        if (d.exec() == QDialog::Accepted) {
-            auto privLevel = privOptions[turnstile.privLevel->currentIndex()];
-            rpc->getTurnstile()->planMigration(
-                turnstile.migrateZaddList->currentText(), 
-                turnstile.migrateTo->currentText(),
-                privLevel.first, privLevel.second);
-
-            QMessageBox::information(this, "Backup your wallet.dat", 
-                                        "The migration will now start. You can check progress in the File -> Turnstile Migration menu.\n\nYOU MUST BACKUP YOUR wallet.dat NOW!.\n\nNew Addresses have been added to your wallet which will be used for the migration.", 
-                                        QMessageBox::Ok);
-        }
+        // If there is current migration that is present, show the progress button
+        if (rpc->getTurnstile()->isMigrationPresent())
+            turnstileProgress();
+        else    
+            turnstileDoMigration();        
     });
 
-    // Progress update button
-    QObject::connect(ui->actionProgress, &QAction::triggered, [=] () {
-        Ui_TurnstileProgress progress;
-        QDialog d(this);
-        progress.setupUi(&d);
-
-        QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning);
-        progress.msgIcon->setPixmap(icon.pixmap(64, 64));
-
-        progress.buttonBox->button(QDialogButtonBox::Cancel)->setText("Abort");
-
-        auto fnUpdateProgressUI = [=] () {
-            // Get the plan progress
-            if (rpc->getTurnstile()->isMigrationActive()) {
-                auto curProgress = rpc->getTurnstile()->getPlanProgress();
-                
-                progress.progressTxt->setText(QString::number(curProgress.step) % QString(" / ") % QString::number(curProgress.totalSteps));
-                progress.progressBar->setValue(100 * curProgress.step / curProgress.totalSteps);
-                
-                auto nextTxBlock = curProgress.nextBlock - Settings::getInstance()->getBlockNumber();
-                
-                if (curProgress.step == curProgress.totalSteps) {
-                    auto txt = QString("Turnstile migration finished");
-                    if (curProgress.hasErrors) {
-                        txt = txt + ". There were some errors.\n\nYour funds are all in your wallet, so you should be able to finish moving them manually.";
-                    }
-                    progress.nextTx->setText(txt);
-                } else {
-                    progress.nextTx->setText(QString("Next transaction in ") 
-                                        % QString::number(nextTxBlock < 0 ? 0 : nextTxBlock)
-                                        % " blocks");
-                }
-                
-            } else {
-                progress.progressTxt->setText("");
-                progress.progressBar->setValue(0);
-                progress.nextTx->setText("No turnstile migration is in progress");
-            }
-        };
-
-        QTimer progressTimer(this);        
-        QObject::connect(&progressTimer, &QTimer::timeout, fnUpdateProgressUI);
-        progressTimer.start(Utils::updateSpeed);
-        fnUpdateProgressUI();
-        
-        d.exec();
-    });
 }
 
 void MainWindow::setupStatusBar() {

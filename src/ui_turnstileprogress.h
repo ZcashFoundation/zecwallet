@@ -122,7 +122,7 @@ public:
 
     void retranslateUi(QDialog *TurnstileProgress)
     {
-        TurnstileProgress->setWindowTitle(QApplication::translate("TurnstileProgress", "Dialog", nullptr));
+        TurnstileProgress->setWindowTitle(QApplication::translate("TurnstileProgress", "Turnstile Migration Progress", nullptr));
         label_4->setText(QApplication::translate("TurnstileProgress", "Please Ensure you have your wallet.dat backed up!", nullptr));
         nextTx->setText(QApplication::translate("TurnstileProgress", "Next Transaction in 4 hours", nullptr));
         progressTxt->setText(QApplication::translate("TurnstileProgress", "4 / 12", nullptr));

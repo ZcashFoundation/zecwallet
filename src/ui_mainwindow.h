@@ -48,7 +48,6 @@ public:
     QAction *actionImport_Private_Keys;
     QAction *actionCheck_for_Updates;
     QAction *actionTurnstile_Migration;
-    QAction *actionProgress;
     QWidget *centralWidget;
     QGridLayout *gridLayout_3;
     QTabWidget *tabWidget;
@@ -163,8 +162,6 @@ public:
         actionCheck_for_Updates->setObjectName(QStringLiteral("actionCheck_for_Updates"));
         actionTurnstile_Migration = new QAction(MainWindow);
         actionTurnstile_Migration->setObjectName(QStringLiteral("actionTurnstile_Migration"));
-        actionProgress = new QAction(MainWindow);
-        actionProgress->setObjectName(QStringLiteral("actionProgress"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout_3 = new QGridLayout(centralWidget);
@@ -674,7 +671,6 @@ public:
         menuBar->addAction(menuHelp->menuAction());
         menuBalance->addAction(actionImport_Private_Keys);
         menuBalance->addAction(actionTurnstile_Migration);
-        menuBalance->addAction(actionProgress);
         menuBalance->addAction(actionSettings);
         menuBalance->addSeparator();
         menuBalance->addAction(actionExit);
@@ -700,7 +696,6 @@ public:
         actionImport_Private_Keys->setText(QApplication::translate("MainWindow", "Import Private Keys", nullptr));
         actionCheck_for_Updates->setText(QApplication::translate("MainWindow", "Check github.com for Updates", nullptr));
         actionTurnstile_Migration->setText(QApplication::translate("MainWindow", "Turnstile Migration", nullptr));
-        actionProgress->setText(QApplication::translate("MainWindow", "Progress", nullptr));
         groupBox->setTitle(QApplication::translate("MainWindow", "Summary", nullptr));
         label->setText(QApplication::translate("MainWindow", "Shielded", nullptr));
         balSheilded->setText(QString());

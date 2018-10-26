@@ -37,6 +37,10 @@ QString Turnstile::writeableFile() {
     }
 }
 
+void Turnstile::removeFile() {
+	QFile(writeableFile()).remove();
+}
+
 // Data stream write/read methods for migration items
 QDataStream &operator<<(QDataStream& ds, const TurnstileMigrationItem& item) {
 	return ds << QString("v1") << item.fromAddr << item.intTAddr 
@@ -210,7 +214,7 @@ Turnstile::getNextStep(QList<TurnstileMigrationItem>& plan) {
 	return nextStep;
 }
 
-bool Turnstile::isMigrationActive() {
+bool Turnstile::isMigrationPresent() {
 	auto plan = readMigrationPlan();
 	if (plan.isEmpty()) return false;
 
@@ -222,7 +226,11 @@ ProgressReport Turnstile::getPlanProgress() {
 
 	auto nextStep = getNextStep(plan);
 
-	auto step = std::distance(plan.begin(), nextStep);
+	auto step = std::distance(plan.begin(), nextStep) * 2;	// 2 steps per item
+	if (nextStep != plan.end() && 
+		nextStep->status == TurnstileMigrationItemStatus::SentToT)
+		step++;
+	
 	auto total = plan.size();
 
 	auto nextBlock = nextStep == plan.end() ? 0 : nextStep->blockNumber;
@@ -232,7 +240,7 @@ ProgressReport Turnstile::getPlanProgress() {
 		 		i.status == TurnstileMigrationItemStatus::UnknownError;
 	}) != plan.end();
 
-	return ProgressReport{(int)step*2, total*2, nextBlock, hasErrors};
+	return ProgressReport{(int)step, total*2, nextBlock, hasErrors};
 }
 
 void Turnstile::executeMigrationStep() {
