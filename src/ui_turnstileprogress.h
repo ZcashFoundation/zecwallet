@@ -28,8 +28,8 @@ public:
     QProgressBar *progressBar;
     QLabel *label_4;
     QFrame *line;
-    QLabel *label;
-    QLabel *label_3;
+    QLabel *nextTx;
+    QLabel *progressTxt;
     QLabel *label_2;
     QLabel *msgIcon;
     QDialogButtonBox *buttonBox;
@@ -67,16 +67,16 @@ public:
 
         gridLayout->addWidget(line, 4, 0, 1, 3);
 
-        label = new QLabel(TurnstileProgress);
-        label->setObjectName(QStringLiteral("label"));
+        nextTx = new QLabel(TurnstileProgress);
+        nextTx->setObjectName(QStringLiteral("nextTx"));
 
-        gridLayout->addWidget(label, 5, 0, 1, 3);
+        gridLayout->addWidget(nextTx, 5, 0, 1, 3);
 
-        label_3 = new QLabel(TurnstileProgress);
-        label_3->setObjectName(QStringLiteral("label_3"));
-        label_3->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        progressTxt = new QLabel(TurnstileProgress);
+        progressTxt->setObjectName(QStringLiteral("progressTxt"));
+        progressTxt->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
-        gridLayout->addWidget(label_3, 2, 2, 1, 1);
+        gridLayout->addWidget(progressTxt, 2, 2, 1, 1);
 
         label_2 = new QLabel(TurnstileProgress);
         label_2->setObjectName(QStringLiteral("label_2"));
@@ -124,8 +124,8 @@ public:
     {
         TurnstileProgress->setWindowTitle(QApplication::translate("TurnstileProgress", "Dialog", nullptr));
         label_4->setText(QApplication::translate("TurnstileProgress", "Please Ensure you have your wallet.dat backed up!", nullptr));
-        label->setText(QApplication::translate("TurnstileProgress", "Next Transaction in 4 hours", nullptr));
-        label_3->setText(QApplication::translate("TurnstileProgress", "4 / 12", nullptr));
+        nextTx->setText(QApplication::translate("TurnstileProgress", "Next Transaction in 4 hours", nullptr));
+        progressTxt->setText(QApplication::translate("TurnstileProgress", "4 / 12", nullptr));
         label_2->setText(QApplication::translate("TurnstileProgress", "Migration Progress", nullptr));
         msgIcon->setText(QApplication::translate("TurnstileProgress", "TextLabel", nullptr));
     } // retranslateUi
