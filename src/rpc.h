@@ -21,6 +21,7 @@ struct TransactionItem {
     double          amount;
     unsigned long   confirmations;
     QString         fromAddr;
+    QString         memo;
 };
 
 class RPC

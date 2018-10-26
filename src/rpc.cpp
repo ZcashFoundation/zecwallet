@@ -347,11 +347,23 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
             // Process all txids, removing duplicates. This can happen if the same address
             // appears multiple times in a single tx's outputs.
             QSet<QString> txids;
+            QMap<QString, QString> memos;
             for (auto it = zaddrTxids->constBegin(); it != zaddrTxids->constEnd(); it++) {
                 for (auto& i : it.value().get<json::array_t>()) {   
                     // Filter out change txs
-                    if (! i["change"].get<json::boolean_t>())
-                        txids.insert(QString::fromStdString(i["txid"].get<json::string_t>()));    
+                    if (! i["change"].get<json::boolean_t>()) {
+                        auto txid = QString::fromStdString(i["txid"].get<json::string_t>());
+                        txids.insert(txid);    
+
+                        // Check for Memos
+                        QString memoBytes = QString::fromStdString(i["memo"].get<json::string_t>());
+                        if (!memoBytes.startsWith("f600"))  {
+                            QString memo(QByteArray::fromHex(
+                                            QByteArray::fromStdString(i["memo"].get<json::string_t>())));
+                            if (!memo.trimmed().isEmpty())
+                                memos[txid] = memo;
+                        }
+                    }
                 }        
             }
 
@@ -391,9 +403,10 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
                             }
                             
                             auto amount        = i["amount"].get<json::number_float_t>();
-                            auto confirmations = txidInfo["confirmations"].get<json::number_unsigned_t>();
+                            auto confirmations = txidInfo["confirmations"].get<json::number_unsigned_t>();                            
 
-                            TransactionItem tx{ QString("receive"), timestamp, zaddr, txid, amount, confirmations, "" };
+                            TransactionItem tx{ QString("receive"), timestamp, zaddr, txid, amount, 
+                                                confirmations, "", memos.value(txid, "") };
                             txdata.push_front(tx);
                         }
                     }
@@ -584,8 +597,7 @@ void RPC::refreshTransactions() {
                 QString::fromStdString(it["txid"]),
                 it["amount"].get<json::number_float_t>() + fee,
                 it["confirmations"].get<json::number_unsigned_t>(),
-                ""
-            };
+                "", "" };
 
             txdata.push_back(tx);
         }

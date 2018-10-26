@@ -101,6 +101,8 @@ bool Settings::loadFromFile() {
 
 #ifdef Q_OS_LINUX
 	confLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, ".zcash/zcash.conf");
+#elif defined(Q_OS_DARWIN)
+	confLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, "/Library/Application Support/Zcash/zcash.conf");
 #else
 	confLocation = QStandardPaths::locate(QStandardPaths::AppDataLocation, "../../Zcash/zcash.conf");
 #endif

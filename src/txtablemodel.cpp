@@ -132,3 +132,7 @@ void TxTableModel::updateAllData() {
 QString TxTableModel::getTxId(int row) {
     return modeldata->at(row).txid;
 }
+
+QString TxTableModel::getMemo(int row) {
+    return modeldata->at(row).memo;
+}
