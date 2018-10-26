@@ -155,7 +155,7 @@ QList<double> Turnstile::splitAmount(double amount, int parts) {
 	// Add the Tx fees
 	sumofparts += amounts.size() * Utils::getMinerFee();
 
-	Q_ASSERT(sumofparts == amount);
+	Q_ASSERT(QString::number(sumofparts, 'f', 8) == QString::number(amount, 'f', 8));
 	return amounts;
 }
 
@@ -276,6 +276,11 @@ void Turnstile::executeMigrationStep() {
 	// Execute this step
 	if (nextStep->status == TurnstileMigrationItemStatus::NotStarted) {
 		// Does this z addr have enough balance?
+		if (fnHasUnconfirmed(nextStep->fromAddr)) {
+			qDebug() << QString("unconfirmed, waiting");
+			return;
+		}
+
 		auto balance = rpc->getAllBalances()->value(nextStep->fromAddr);
 		if (nextStep->amount > balance) {
 			qDebug() << "Not enough balance!";
@@ -306,7 +311,8 @@ void Turnstile::executeMigrationStep() {
 
 	} else if (nextStep->status == TurnstileMigrationItemStatus::SentToT) {
 		// First thing to do is check to see if the funds are confirmed. 
-		if (fnHasUnconfirmed(nextStep->intTAddr)) {
+		// We'll check both the original sprout address and the intermediate T addr for safety.
+		if (fnHasUnconfirmed(nextStep->intTAddr) || fnHasUnconfirmed(nextStep->fromAddr)) {
 			qDebug() << QString("unconfirmed, waiting");
 			return;
 		}
@@ -316,7 +322,7 @@ void Turnstile::executeMigrationStep() {
 		auto sendAmt = bal - Utils::getMinerFee();
 
 		if (sendAmt < 0) {
-			qDebug() << "Not enough balance!";
+			qDebug() << "Not enough balance!." << bal << ":" << sendAmt;
 			nextStep->status = TurnstileMigrationItemStatus::NotEnoughBalance;
 			writeMigrationPlan(plan);
 			return;
