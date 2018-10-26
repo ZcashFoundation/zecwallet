@@ -409,6 +409,7 @@ public:
         Amount1 = new QLineEdit(verticalGroupBox);
         Amount1->setObjectName(QStringLiteral("Amount1"));
         Amount1->setBaseSize(QSize(200, 0));
+        Amount1->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         horizontalLayout_13->addWidget(Amount1);
 
@@ -683,7 +684,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);

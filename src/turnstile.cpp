@@ -155,21 +155,15 @@ QList<double> Turnstile::splitAmount(double amount, int parts) {
 	// Add the Tx fees
 	sumofparts += amounts.size() * Utils::getMinerFee();
 
+	qDebug() << QString::number(sumofparts, 'f', 8) << QString::number(amount, 'f', 8);
 	Q_ASSERT(QString::number(sumofparts, 'f', 8) == QString::number(amount, 'f', 8));
 	return amounts;
 }
 
 void Turnstile::fillAmounts(QList<double>& amounts, double amount, int count) {
 	if (count == 1 || amount < 0.01) {
-		// Split the chaff.
-		// Chaff is all amounts lesser than 0.0001 ZEC. The chaff will be added to the 
-		// dev fee, and is done so to protect privacy.
-
-		// Get the rounded value to 4 decimal places (approx $0.01)
-		double actual = std::floor(amount * 10000) / 10000;
-
 		// Also account for the fees needed to send all these transactions
-		actual = actual - (Utils::getMinerFee() * (amounts.size() + 1));
+		auto actual = amount - (Utils::getMinerFee() * (amounts.size() + 1));
 
 		amounts.push_back(actual);
 		return;
@@ -314,6 +308,11 @@ void Turnstile::executeMigrationStep() {
 		// We'll check both the original sprout address and the intermediate T addr for safety.
 		if (fnHasUnconfirmed(nextStep->intTAddr) || fnHasUnconfirmed(nextStep->fromAddr)) {
 			qDebug() << QString("unconfirmed, waiting");
+			return;
+		}
+
+		if (!rpc->getAllBalances()->keys().contains(nextStep->intTAddr)) {
+			qDebug() << QString("The int address doesn't have balance, even though it is confirmed");
 			return;
 		}
 
