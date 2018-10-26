@@ -60,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
     rpc = new RPC(new QNetworkAccessManager(this), this);
     rpc->refreshZECPrice();
 
-    rpc->refresh();    
+    rpc->refresh(true);  // Force refresh first time
 }
 
 void MainWindow::setupStatusBar() {
@@ -99,7 +99,7 @@ void MainWindow::setupStatusBar() {
 		}
 
 		menu.addAction("Refresh", [=]() {
-			rpc->refresh();
+			rpc->refresh(true);
 		});
 		QPoint gpos(mapToGlobal(pos).x(), mapToGlobal(pos).y() + this->height() - ui->statusBar->height());
 		menu.exec(gpos);
@@ -112,8 +112,7 @@ void MainWindow::setupStatusBar() {
 	ui->statusBar->addPermanentWidget(statusIcon);
 }
 
-void MainWindow::setupSettingsModal() {
-	
+void MainWindow::setupSettingsModal() {	
 	// Set up File -> Settings action
 	QObject::connect(ui->actionSettings, &QAction::triggered, [=]() {
 		QDialog settingsDialog(this);
@@ -132,7 +131,7 @@ void MainWindow::setupSettingsModal() {
 				QMessageBox::Yes, QMessageBox::Cancel)) {
 					SentTxStore::deleteHistory();
 					// Reload after the clear button so existing txs disappear
-					rpc->refresh();
+					rpc->refresh(true);
 			}
 		});
 
@@ -182,7 +181,7 @@ void MainWindow::setupSettingsModal() {
             }
 
             // Then refresh everything.			
-            this->rpc->refresh();			
+            this->rpc->refresh(true);			
 		};
 	});
 

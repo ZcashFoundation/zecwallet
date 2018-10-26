@@ -5,7 +5,7 @@
 
 TxTableModel::TxTableModel(QObject *parent)
      : QAbstractTableModel(parent) {
-    headers << "Category" << "Address" << "Date/Time" << "Amount";
+    headers << "Type" << "Address" << "Date/Time" << "Amount";
 }
 
 TxTableModel::~TxTableModel() {
@@ -86,10 +86,16 @@ void TxTableModel::updateAllData() {
 		b.setColor(Qt::black);
 		return b;		
 	}
-    
-    if (role == Qt::DisplayRole || role == Qt::ToolTipRole) {
+
+    auto dat = modeldata->at(index.row());
+    if (role == Qt::DisplayRole) {
         switch (index.column()) {
-        case 0: return modeldata->at(index.row()).type;
+        case 0: {
+                    QString labels = (dat.type == "send" ? "S" : "R");
+                    if (!dat.memo.isEmpty()) 
+                        labels = labels + " M";
+                    return labels;
+                }
         case 1: { 
                     auto addr = modeldata->at(index.row()).address;
                     if (addr.trimmed().isEmpty()) 
@@ -98,14 +104,24 @@ void TxTableModel::updateAllData() {
                         return addr;
                 }
         case 2: return QDateTime::fromSecsSinceEpoch(modeldata->at(index.row()).datetime).toLocalTime().toString();
-        case 3: {
-                if (role == Qt::DisplayRole)
-                    return Settings::getInstance()->getZECDisplayFormat(modeldata->at(index.row()).amount);
-                else {
-                    return Settings::getInstance()->getUSDFormat(modeldata->at(index.row()).amount);
-                }
-            }
+        case 3: return Settings::getInstance()->getZECDisplayFormat(modeldata->at(index.row()).amount);
         }
+    } 
+
+    if (role == Qt::ToolTipRole) {
+        switch (index.column()) {
+        case 0: return modeldata->at(index.row()).type + 
+                    (dat.memo.isEmpty() ? "" : " tx memo: \"" + dat.memo + "\"");
+        case 1: { 
+                    auto addr = modeldata->at(index.row()).address;
+                    if (addr.trimmed().isEmpty()) 
+                        return "(Shielded)";
+                    else 
+                        return addr;
+                }
+        case 2: return QDateTime::fromSecsSinceEpoch(modeldata->at(index.row()).datetime).toLocalTime().toString();
+        case 3: return Settings::getInstance()->getUSDFormat(modeldata->at(index.row()).amount);
+        }    
     }
 
     return QVariant();
