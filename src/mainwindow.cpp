@@ -268,7 +268,9 @@ void MainWindow::setupTransactionsTab() {
         QMenu menu(this);
 
         auto txModel = dynamic_cast<TxTableModel *>(ui->transactionsTable->model());
+
         QString txid = txModel->getTxId(index.row());
+        QString memo = txModel->getMemo(index.row());
 
         menu.addAction("Copy txid", [=] () {            
             QGuiApplication::clipboard()->setText(txid);
@@ -283,6 +285,11 @@ void MainWindow::setupTransactionsTab() {
             }
             QDesktopServices::openUrl(QUrl(url));
         });
+        if (!memo.isEmpty()) {
+            menu.addAction("View Memo", [=] () {
+                QMessageBox::information(this, "Memo", memo, QMessageBox::Ok);
+            });
+        }
 
         menu.exec(ui->transactionsTable->viewport()->mapToGlobal(pos));        
     });

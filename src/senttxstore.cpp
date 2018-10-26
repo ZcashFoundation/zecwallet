@@ -42,7 +42,7 @@ QList<TransactionItem> SentTxStore::readSentTxFile() {
                           sentTx["address"].toString(), 
                           sentTx["txid"].toString(), 
 						  sentTx["amount"].toDouble() + sentTx["fee"].toDouble(), 
-						  0, sentTx["from"].toString()};
+						  0, sentTx["from"].toString(), ""};
         items.push_back(t);
     }
 

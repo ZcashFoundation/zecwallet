@@ -16,6 +16,7 @@ public:
     void addZRecvData(const QList<TransactionItem>& data);     
 
     QString  getTxId(int row);
+    QString  getMemo(int row);
 
     int      rowCount(const QModelIndex &parent) const;
     int      columnCount(const QModelIndex &parent) const;
