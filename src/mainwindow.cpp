@@ -189,7 +189,8 @@ void MainWindow::setupSettingsModal() {
 
 void MainWindow::donate() {
     // Set up a donation to me :)
-    ui->Address1->setText(Utils::getDonationAddr());
+    ui->Address1->setText(Utils::getDonationAddr(
+                                Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText("0.01");
 

@@ -12,11 +12,17 @@ const QString Utils::getTokenName() {
     }
 }
 
-const QString Utils::getDonationAddr() {
+const QString Utils::getDonationAddr(bool sapling) {
     if (Settings::getInstance()->isTestnet()) 
-        return "tmP1JL19JyJh3jPMUbfovk4W67jB7VJWybu";
+        if (sapling)
+            return "ztestsapling1kdp74adyfsmm9838jaupgfyx3npgw8ut63stjjx757pc248cuc0ymzphqeux60c64qe5qt68ygh";
+        else
+            return "ztbGDqgkmXQjheivgeirwEvJLD4SUNqsWCGwxwVg4YpGz1ARR8P2rXaptkT14z3NDKamcxNmQuvmvktyokMs7HkutRNSx1D";
     else 
-        return "t1KfJJrSuVYmnNLrw7EZHRv1kZY3zdGGLyb";    
+        if (sapling)
+            return "zs1gv64eu0v2wx7raxqxlmj354y9ycznwaau9kduljzczxztvs4qcl00kn2sjxtejvrxnkucw5xx9u";
+        else
+            return "zcEgrceTwvoiFdEvPWcsJHAMrpLsprMF6aRJiQa3fan5ZphyXLPuHghnEPrEPRoEVzUy65GnMVyCTRdkT6BYBepnXh6NBYs";    
 }
 
 // Get the dev fee address based on the transaction
