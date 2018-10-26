@@ -3,6 +3,14 @@ if (-not (Test-Path env:APP_VERSION)) { echo "APP_VERSION is not set. Please set
 
 $target="zec-qt-wallet-v$Env:APP_VERSION"
 
+echo "Git Status"
+$branch= &git branch
+if ($branch -ne "* master") {
+    echo "Not on master branch!"
+    exit;
+}
+git pull 
+
 echo "Cleaning"
 nmake clean *>$null
 Remove-Item -Path debug -Recurse | Out-Null
