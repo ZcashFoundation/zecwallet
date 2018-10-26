@@ -523,13 +523,9 @@ bool RPC::processUnspent(const json& reply) {
 		}
 
 		utxos->push_back(
-			UnspentOutput(
-				qsAddr,
-				QString::fromStdString(it["txid"]),
-				QString::number(it["amount"].get<json::number_float_t>(), 'g', 8),
-				confirmations
-			)
-		);
+			UnspentOutput{ qsAddr, QString::fromStdString(it["txid"]),
+                            QString::number(it["amount"].get<json::number_float_t>(), 'g', 8),
+                            (int)confirmations, it["spendable"].get<json::boolean_t>() });
 
 		(*allBalances)[qsAddr] = (*allBalances)[qsAddr] + it["amount"].get<json::number_float_t>();
 	}

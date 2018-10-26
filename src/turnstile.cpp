@@ -233,7 +233,12 @@ ProgressReport Turnstile::getPlanProgress() {
 
 	auto nextBlock = nextStep == plan.end() ? 0 : nextStep->blockNumber;
 
-	return ProgressReport{(int)step*2, total*2, nextBlock};
+	bool hasErrors = std::find_if(plan.begin(), plan.end(), [=] (auto i) {
+		return  i.status == TurnstileMigrationItemStatus::NotEnoughBalance || 
+		 		i.status == TurnstileMigrationItemStatus::UnknownError;
+	}) != plan.end();
+
+	return ProgressReport{(int)step*2, total*2, nextBlock, hasErrors};
 }
 
 void Turnstile::executeMigrationStep() {
@@ -252,7 +257,7 @@ void Turnstile::executeMigrationStep() {
 	auto fnHasUnconfirmed = [=] (QString addr) {
 		auto utxoset = rpc->getUTXOs();
 		return std::find_if(utxoset->begin(), utxoset->end(), [=] (auto utxo) {
-					return utxo.address == addr && utxo.confirmations == 0;
+					return utxo.address == addr && utxo.confirmations == 0 && utxo.spendable;
 				}) != utxoset->end();
 	};
 

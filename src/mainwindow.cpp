@@ -165,7 +165,11 @@ void MainWindow::setupTurnstileDialog() {
                 auto nextTxBlock = curProgress.nextBlock - Settings::getInstance()->getBlockNumber();
                 
                 if (curProgress.step == curProgress.totalSteps) {
-                    progress.nextTx->setText("Turnstile migration finished");
+                    auto txt = QString("Turnstile migration finished");
+                    if (curProgress.hasErrors) {
+                        txt = txt + ". There were some errors.\n\nYour funds are all in your wallet, so you should be able to finish moving them manually.";
+                    }
+                    progress.nextTx->setText(txt);
                 } else {
                     progress.nextTx->setText(QString("Next transaction in ") 
                                         % QString::number(nextTxBlock < 0 ? 0 : nextTxBlock)

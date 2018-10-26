@@ -3,15 +3,12 @@
 
 #include "precompiled.h"
 
-class UnspentOutput
-{
-public:
-    UnspentOutput(QString address, QString txid, QString amount, int confirmations);
-
+struct UnspentOutput {
     QString address;
     QString txid;
     QString amount;    
     int     confirmations;
+    bool    spendable;
 };
 
 
