@@ -242,6 +242,19 @@ void MainWindow::setupBalancesTab() {
             ui->statusBar->showMessage("Copied to clipboard", 3 * 1000);
         });
 
+		menu.addAction("Send from " % addr.left(40) % (addr.size() > 40 ? "..." : ""), [=]() {
+			// Find the inputs combo
+			for (int i = 0; i < ui->inputsCombo->count(); i++) {
+				if (ui->inputsCombo->itemText(i).startsWith(addr)) {
+					ui->inputsCombo->setCurrentIndex(i);
+					break;
+				}
+			}
+			
+			// And switch to the send tab.
+			ui->tabWidget->setCurrentIndex(1);
+		});
+
         if (addr.startsWith("t")) {
             menu.addAction("View on block explorer", [=] () {
                 QString url;
