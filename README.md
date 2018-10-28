@@ -89,6 +89,6 @@ The most likely cause for this is that you are trying to spend unconfirmed funds
 1-2 blocks for the funds to confirm and retry the transaction. 
 
 ### Support or other questions
-Tweet at [@zcashqtwallet](https://twitter.com/zcashqtwallet) for help.
+Tweet at [@zcashqtwallet](https://twitter.com/zecqtwallet) for help.
 
 _PS: zec-qt-wallet is NOT an official wallet, and is not affiliated with the Zerocoin Electric Coin Company in any way._
