@@ -20,8 +20,8 @@ void BalancesTableModel::setNewData(const QMap<QString, double>* balances,
 	// Process the address balances into a list
 	delete modeldata;
 	modeldata = new QList<std::tuple<QString, QString>>();
-	std::for_each(balances->constKeyValueBegin(), balances->constKeyValueEnd(), [=] (auto it) {
-		modeldata->push_back(std::make_tuple(it.first, QString::number(it.second, 'g', 8)));
+	std::for_each(balances->keyBegin(), balances->keyEnd(), [=] (auto keyIt) {
+		modeldata->push_back(std::make_tuple(keyIt, QString::number(balances->value(keyIt), 'g', 8)));
 	});
 
 	// And then update the data

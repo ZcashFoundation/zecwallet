@@ -38,18 +38,18 @@ void MainWindow::setupSendTab() {
 
     // The first Memo button
     QObject::connect(ui->MemoBtn1, &QPushButton::clicked, [=] () {
-        memoButtonClicked(1);
+        this->memoButtonClicked(1);
     });
     setMemoEnabled(1, false);
 
     // The first Address button
     QObject::connect(ui->Address1, &QLineEdit::textChanged, [=] (auto text) {
-        addressChanged(1, text);
+        this->addressChanged(1, text);
     });
 
     // The first Amount button
     QObject::connect(ui->Amount1, &QLineEdit::textChanged, [=] (auto text) {
-        amountChanged(1, text);
+        this->amountChanged(1, text);
     });
 
 	// Font for the first Memo label
@@ -141,7 +141,7 @@ void MainWindow::addAddressSection() {
     Address1->setObjectName(QString("Address") % QString::number(itemNumber)); 
     Address1->setPlaceholderText("Address");
     QObject::connect(Address1, &QLineEdit::textChanged, [=] (auto text) {
-        addressChanged(itemNumber, text);
+        this->addressChanged(itemNumber, text);
     });
 
     horizontalLayout_12->addWidget(Address1);
@@ -162,7 +162,7 @@ void MainWindow::addAddressSection() {
     auto amtValidator = new QDoubleValidator(0, 21000000, 8, Amount1);
     Amount1->setValidator(amtValidator);
     QObject::connect(Amount1, &QLineEdit::textChanged, [=] (auto text) {
-        amountChanged(itemNumber, text);
+        this->amountChanged(itemNumber, text);
     });
 
     horizontalLayout_13->addWidget(Amount1);
@@ -179,7 +179,7 @@ void MainWindow::addAddressSection() {
     MemoBtn1->setText("Memo");    
     // Connect Memo Clicked button
     QObject::connect(MemoBtn1, &QPushButton::clicked, [=] () {
-        memoButtonClicked(itemNumber);
+        this->memoButtonClicked(itemNumber);
     });
     horizontalLayout_13->addWidget(MemoBtn1);
     setMemoEnabled(itemNumber, false);
