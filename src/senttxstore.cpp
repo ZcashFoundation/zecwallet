@@ -87,7 +87,7 @@ void SentTxStore::addToSentTx(Tx tx, QString txid) {
     QJsonObject txItem;
     txItem["type"]      = "sent";
     txItem["from"]      = tx.fromAddr;
-    txItem["datetime"]  = QDateTime().currentMSecsSinceEpoch();
+    txItem["datetime"]  = QDateTime().currentMSecsSinceEpoch() / 1000;
     txItem["address"]   = QString();    // The sent address is blank, to be consistent with t-Addr sent behaviour
     txItem["txid"]      = txid;
     txItem["amount"]    = -totalAmount;
