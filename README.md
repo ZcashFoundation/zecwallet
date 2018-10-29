@@ -20,7 +20,7 @@ Unzip the release binary and double click on zec-qt-wallet to start.
 zec-qt-wallet needs a Zcash node running zcashd. Linux users should download the zcash node software 
 from [https://z.cash/download/](https://z.cash/download/), configure `zcash.conf`, download the parameters and start zcashd according to the [official documentation](https://zcash.readthedocs.io/en/latest/rtd_pages/user_guide.html). 
 
-There is currently no official zcashd build for Windows so Windows users may either [cross-compile from source on Linux](https://zcash.readthedocs.io/en/latest/rtd_pages/user_guide.html#installation) to generate the necessary zcashd executables or simply download community hosted pre-compiled executables such as those hosted by WinZEC developer [@radix42](https://github.com/radix42) at https://zcash.dl.mercerweiss.com/zcash-win-v2.0.1.zip.
+There is currently no official zcashd build for Windows so Windows users may either [cross-compile from source on Linux](https://zcash.readthedocs.io/en/latest/rtd_pages/user_guide.html#installation) to generate the necessary zcashd executables or simply download community hosted pre-compiled executables such as those hosted by WinZEC developer [@radix42](https://github.com/radix42) at https://zcash.dl.mercerweiss.com/zcash-win-v2.0.1b.zip.
 
 Alternitavely run zcashd inside [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
