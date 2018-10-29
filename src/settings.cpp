@@ -168,6 +168,14 @@ bool Settings::isSaplingAddress(QString addr) {
 	       (!isTestnet() && addr.startsWith("zs"));
 }
 
+bool Settings::isSproutAddress(QString addr) {
+	return isZAddress(addr) && !isSaplingAddress(addr);
+}
+
+bool Settings::isZAddress(QString addr) {
+	return addr.startsWith("z");
+}
+
 bool Settings::isSyncing() {
 	return _isSyncing;
 }

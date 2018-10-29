@@ -11,6 +11,7 @@
 
 using json = nlohmann::json;
 
+class Turnstile;
 
 struct TransactionItem {
     QString         type;
@@ -34,6 +35,7 @@ public:
     void refreshAddresses();    
     void refreshZECPrice();
 
+    void fillTxJsonParams(json& params, Tx tx);
     void sendZTransaction   (json params, const std::function<void(json)>& cb);
     void watchTxStatus();
     void addNewTxToWatch(Tx tx, const QString& newOpid); 
@@ -45,9 +47,60 @@ public:
 
 	void reloadConnectionInfo();
 
-    void newZaddr               (bool sapling, const std::function<void(json)>& cb);
-    void newTaddr               (const std::function<void(json)>& cb);
+    void newZaddr(bool sapling, const std::function<void(json)>& cb);
+    void newTaddr(const std::function<void(json)>& cb);
+
+    Turnstile* getTurnstile() { return turnstile; }
     
+    // Batch method. Note: Because of the template, it has to be in the header file. 
+    template<class T>
+    void getBatchRPC(const QList<T>& payloads,
+                     std::function<json(T)> payloadGenerator,
+                     std::function<void(QMap<T, json>*)> cb) {    
+        auto responses = new QMap<T, json>(); // zAddr -> list of responses for each call. 
+        int totalSize = payloads.size();
+
+        for (auto item: payloads) {
+            json payload = payloadGenerator(item);
+            
+            QNetworkReply *reply = restclient->post(request, QByteArray::fromStdString(payload.dump()));
+
+            QObject::connect(reply, &QNetworkReply::finished, [=] {
+                reply->deleteLater();
+                
+                auto all = reply->readAll();            
+                auto parsed = json::parse(all.toStdString(), nullptr, false);
+
+                if (reply->error() != QNetworkReply::NoError) {            
+                    qDebug() << QString::fromStdString(parsed.dump());
+                    qDebug() << reply->errorString();
+
+                    (*responses)[item] = json::object();    // Empty object
+                } else {
+                    if (parsed.is_discarded()) {
+                        (*responses)[item] = json::object();    // Empty object
+                    } else {
+                        (*responses)[item] = parsed["result"];
+                    }
+                }
+            });
+        }
+
+        auto waitTimer = new QTimer(main);
+        QObject::connect(waitTimer, &QTimer::timeout, [=]() {
+            if (responses->size() == totalSize) {
+                waitTimer->stop();
+
+                cb(responses);
+
+                waitTimer->deleteLater();            
+            }
+        });
+        waitTimer->start(100);    
+    }
+
+
+
 private:
     void doRPC      (const json& payload, const std::function<void(json)>& cb);
     void doSendRPC  (const json& payload, const std::function<void(json)>& cb);
@@ -73,11 +126,6 @@ private:
     void handleConnectionError  (const QString& error);
     void handleTxError          (const QString& error);
 
-    // Batch
-    void                getBatchRPC(const QList<QString>& payloads,
-                                    std::function<json(QString)> payloadGenerator,
-                                    std::function<void(QMap<QString, json>*)> cb);
-
     QNetworkAccessManager*      restclient;    
     QNetworkRequest             request;
 
@@ -96,6 +144,7 @@ private:
 
     Ui::MainWindow*             ui;
     MainWindow*                 main;
+    Turnstile*                  turnstile;
 
     // Current balance in the UI. If this number updates, then refresh the UI
     QString                     currentBalance;

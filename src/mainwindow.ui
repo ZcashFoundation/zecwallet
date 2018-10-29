@@ -22,7 +22,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -361,6 +361,9 @@
                         <width>200</width>
                         <height>0</height>
                        </size>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                       </property>
                       <property name="placeholderText">
                        <string>Amount</string>
@@ -723,6 +726,7 @@
      <string>File</string>
     </property>
     <addaction name="actionImport_Private_Keys"/>
+    <addaction name="actionTurnstile_Migration"/>
     <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -770,6 +774,11 @@
   <action name="actionCheck_for_Updates">
    <property name="text">
     <string>Check github.com for Updates</string>
+   </property>
+  </action>
+  <action name="actionTurnstile_Migration">
+   <property name="text">
+    <string>Sapling Turnstile</string>
    </property>
   </action>
  </widget>

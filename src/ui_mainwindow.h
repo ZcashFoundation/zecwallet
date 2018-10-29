@@ -47,6 +47,7 @@ public:
     QAction *actionDonate;
     QAction *actionImport_Private_Keys;
     QAction *actionCheck_for_Updates;
+    QAction *actionTurnstile_Migration;
     QWidget *centralWidget;
     QGridLayout *gridLayout_3;
     QTabWidget *tabWidget;
@@ -159,6 +160,8 @@ public:
         actionImport_Private_Keys->setVisible(false);
         actionCheck_for_Updates = new QAction(MainWindow);
         actionCheck_for_Updates->setObjectName(QStringLiteral("actionCheck_for_Updates"));
+        actionTurnstile_Migration = new QAction(MainWindow);
+        actionTurnstile_Migration->setObjectName(QStringLiteral("actionTurnstile_Migration"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout_3 = new QGridLayout(centralWidget);
@@ -403,6 +406,7 @@ public:
         Amount1 = new QLineEdit(verticalGroupBox);
         Amount1->setObjectName(QStringLiteral("Amount1"));
         Amount1->setBaseSize(QSize(200, 0));
+        Amount1->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
 
         horizontalLayout_13->addWidget(Amount1);
 
@@ -667,6 +671,7 @@ public:
         menuBar->addAction(menuBalance->menuAction());
         menuBar->addAction(menuHelp->menuAction());
         menuBalance->addAction(actionImport_Private_Keys);
+        menuBalance->addAction(actionTurnstile_Migration);
         menuBalance->addAction(actionSettings);
         menuBalance->addSeparator();
         menuBalance->addAction(actionExit);
@@ -676,7 +681,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -691,6 +696,7 @@ public:
         actionDonate->setText(QApplication::translate("MainWindow", "Donate", nullptr));
         actionImport_Private_Keys->setText(QApplication::translate("MainWindow", "Import Private Keys", nullptr));
         actionCheck_for_Updates->setText(QApplication::translate("MainWindow", "Check github.com for Updates", nullptr));
+        actionTurnstile_Migration->setText(QApplication::translate("MainWindow", "Sapling Turnstile", nullptr));
         groupBox->setTitle(QApplication::translate("MainWindow", "Summary", nullptr));
         label->setText(QApplication::translate("MainWindow", "Shielded", nullptr));
         balSheilded->setText(QString());

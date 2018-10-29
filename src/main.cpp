@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "settings.h"
+#include "turnstile.h"
+
 #include "precompiled.h"
 
 int main(int argc, char *argv[])
@@ -15,6 +17,8 @@ int main(int argc, char *argv[])
         QFontDatabase::addApplicationFont(":/fonts/res/Ubuntu-R.ttf");
         qApp->setFont(QFont("Ubuntu", 11, QFont::Normal, false));
     #endif
+
+	std::srand(std::time(nullptr));
 
 	QCoreApplication::setOrganizationName("zec-qt-wallet-org");
 	QCoreApplication::setApplicationName("zec-qt-wallet");

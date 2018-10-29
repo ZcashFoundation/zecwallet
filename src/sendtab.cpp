@@ -8,8 +8,6 @@
 
 #include "precompiled.h"
 
-#include <iostream>
-#include <iomanip>
 using json = nlohmann::json;
 
 void MainWindow::setupSendTab() {
@@ -474,30 +472,6 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
     }	    
 }
 
-// Build the RPC JSON Parameters for this tx (with the dev fee included if applicable)
-void MainWindow::fillTxJsonParams(json& params, Tx tx) {   
-    // Get all the addresses and amounts
-    json allRecepients = json::array();
-
-    // For each addr/amt/memo, construct the JSON and also build the confirm dialog box    
-    for (int i=0; i < tx.toAddrs.size(); i++) {
-        auto toAddr = tx.toAddrs[i];
-
-		// Construct the JSON params
-        json rec = json::object();
-        rec["address"]      = toAddr.addr.toStdString();
-        rec["amount"]       = toAddr.amount;
-        if (toAddr.addr.startsWith("z") && !toAddr.encodedMemo.trimmed().isEmpty())
-            rec["memo"]     = toAddr.encodedMemo.toStdString();
-
-        allRecepients.push_back(rec);
-    }
-
-    // Add sender    
-    params.push_back(tx.fromAddr.toStdString());
-    params.push_back(allRecepients);
-}
-
 // Send button clicked
 void MainWindow::sendButton() {
     Tx tx = createTxFromSendPage();
@@ -522,7 +496,7 @@ void MainWindow::sendButton() {
             tx.toAddrs.push_back(devFee);
 
         json params = json::array();
-        fillTxJsonParams(params, tx);
+        rpc->fillTxJsonParams(params, tx);
         std::cout << std::setw(2) << params << std::endl;
 
         // And send the Tx

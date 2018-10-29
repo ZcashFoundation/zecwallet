@@ -48,6 +48,7 @@ private:
     void setupRecieveTab();
     void setupBalancesTab();
 
+    void setupTurnstileDialog();
 	void setupSettingsModal();
 	void setupStatusBar();
 
@@ -56,7 +57,9 @@ private:
 
     Tx      createTxFromSendPage();
     bool    confirmTx(Tx tx, ToFields devFee);
-    void    fillTxJsonParams(json& params, Tx tx);
+
+    void turnstileDoMigration();
+    void turnstileProgress();
 
 	void cancelButton();
 	void sendButton();

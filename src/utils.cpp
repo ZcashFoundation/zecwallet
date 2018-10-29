@@ -25,13 +25,17 @@ const QString Utils::getDonationAddr(bool sapling) {
             return "zcEgrceTwvoiFdEvPWcsJHAMrpLsprMF6aRJiQa3fan5ZphyXLPuHghnEPrEPRoEVzUy65GnMVyCTRdkT6BYBepnXh6NBYs";    
 }
 
+const QString Utils::getDevSproutAddr() {
+    return "ztbGDqgkmXQjheivgeirwEvJLD4SUNqsWCGwxwVg4YpGz1ARR8P2rXaptkT14z3NDKamcxNmQuvmvktyokMs7HkutRNSx1D";
+}
+
 // Get the dev fee address based on the transaction
 const QString Utils::getDevAddr(Tx tx) {
     auto testnetAddrLookup = [=] (const QString& addr) -> QString {
         if (addr.startsWith("ztestsapling")) {
             return "ztestsapling1kdp74adyfsmm9838jaupgfyx3npgw8ut63stjjx757pc248cuc0ymzphqeux60c64qe5qt68ygh";
         } else if (addr.startsWith("zt")) {
-            return "ztbGDqgkmXQjheivgeirwEvJLD4SUNqsWCGwxwVg4YpGz1ARR8P2rXaptkT14z3NDKamcxNmQuvmvktyokMs7HkutRNSx1D";
+            return getDevSproutAddr();
         } else {
             return QString();
         }

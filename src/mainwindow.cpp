@@ -2,10 +2,13 @@
 #include "ui_mainwindow.h"
 #include "ui_about.h"
 #include "ui_settings.h"
+#include "ui_turnstile.h"
+#include "ui_turnstileprogress.h"
 #include "rpc.h"
 #include "balancestablemodel.h"
 #include "settings.h"
 #include "utils.h"
+#include "turnstile.h"
 #include "senttxstore.h"
 
 #include "precompiled.h"
@@ -56,11 +59,184 @@ MainWindow::MainWindow(QWidget *parent) :
     setupTransactionsTab();
     setupRecieveTab();
     setupBalancesTab();
+    setupTurnstileDialog();
 
     rpc = new RPC(new QNetworkAccessManager(this), this);
     rpc->refreshZECPrice();
 
     rpc->refresh(true);  // Force refresh first time
+}
+
+void MainWindow::turnstileProgress() {
+    Ui_TurnstileProgress progress;
+    QDialog d(this);
+    progress.setupUi(&d);
+
+    QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning);
+    progress.msgIcon->setPixmap(icon.pixmap(64, 64));
+
+    auto fnUpdateProgressUI = [=] () {
+        // Get the plan progress
+        if (rpc->getTurnstile()->isMigrationPresent()) {
+            auto curProgress = rpc->getTurnstile()->getPlanProgress();
+            
+            progress.progressTxt->setText(QString::number(curProgress.step) % QString(" / ") % QString::number(curProgress.totalSteps));
+            progress.progressBar->setValue(100 * curProgress.step / curProgress.totalSteps);
+            
+            auto nextTxBlock = curProgress.nextBlock - Settings::getInstance()->getBlockNumber();
+            
+            if (curProgress.step == curProgress.totalSteps) {
+                auto txt = QString("Turnstile migration finished");
+                if (curProgress.hasErrors) {
+                    txt = txt + ". There were some errors.\n\nYour funds are all in your wallet, so you should be able to finish moving them manually.";
+                }
+                progress.nextTx->setText(txt);
+            } else {
+                progress.nextTx->setText(QString("Next transaction in ") 
+                                    % QString::number(nextTxBlock < 0 ? 0 : nextTxBlock)
+                                    % " blocks\n" 
+                                    % (nextTxBlock <= 0 ? "(waiting for confirmations)" : ""));
+            }
+            
+        } else {
+            progress.progressTxt->setText("");
+            progress.progressBar->setValue(0);
+            progress.nextTx->setText("No turnstile migration is in progress");
+        }
+    };
+
+    QTimer progressTimer(this);        
+    QObject::connect(&progressTimer, &QTimer::timeout, fnUpdateProgressUI);
+    progressTimer.start(Utils::updateSpeed);
+    fnUpdateProgressUI();
+    
+    auto curProgress = rpc->getTurnstile()->getPlanProgress();
+
+    // Abort button
+    if (curProgress.step != curProgress.totalSteps)
+        progress.buttonBox->button(QDialogButtonBox::Discard)->setText("Abort");
+    else
+        progress.buttonBox->button(QDialogButtonBox::Discard)->setVisible(false);
+    QObject::connect(progress.buttonBox->button(QDialogButtonBox::Discard), &QPushButton::clicked, [&] () {
+        if (curProgress.step != curProgress.totalSteps) {
+            auto abort = QMessageBox::warning(this, "Are you sure you want to Abort?",
+                                    "Are you sure you want to abort the migration?\nAll further transactions will be cancelled.\nAll your funds are still in your wallet.",
+                                    QMessageBox::Yes, QMessageBox::No);
+            if (abort == QMessageBox::Yes) {
+                rpc->getTurnstile()->removeFile();
+                d.close();
+                ui->statusBar->showMessage("Automatic Sapling turnstile migration aborted.");
+            }
+        }
+    });
+
+    auto accpeted = d.exec();    
+    if (accpeted == QDialog::Accepted && curProgress.step == curProgress.totalSteps) {
+        // Finished, so delete the file
+        rpc->getTurnstile()->removeFile();
+    }    
+}
+
+void MainWindow::turnstileDoMigration() {
+    Ui_Turnstile turnstile;
+    QDialog d(this);
+    turnstile.setupUi(&d);
+
+    QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
+    turnstile.msgIcon->setPixmap(icon.pixmap(64, 64));
+
+    auto fnGetAllSproutBalance = [=] () {
+        double bal = 0;
+        for (auto addr : *rpc->getAllZAddresses()) {
+            if (Settings::getInstance()->isSproutAddress(addr)) {
+                bal += rpc->getAllBalances()->value(addr);
+            }
+        }
+
+        return bal;
+    };
+
+    //turnstile.migrateZaddList->addItem("All Sprout z-Addrs");
+    turnstile.fromBalance->setText(Settings::getInstance()->getZECUSDDisplayFormat(fnGetAllSproutBalance()));
+    for (auto addr : *rpc->getAllZAddresses()) {
+        if (Settings::getInstance()->isSaplingAddress(addr)) {
+            turnstile.migrateTo->addItem(addr);
+        } else {
+            if (rpc->getAllBalances()->value(addr) > 0) 
+                turnstile.migrateZaddList->addItem(addr);
+        }
+    }
+
+    auto fnUpdateSproutBalance = [=] (QString addr) {
+        double bal = 0;
+        if (addr.startsWith("All")) {
+            bal = fnGetAllSproutBalance();
+        } else {
+            bal = rpc->getAllBalances()->value(addr);
+        }
+
+        auto balTxt = Settings::getInstance()->getZECUSDDisplayFormat(bal);
+        
+        if (bal < Turnstile::minMigrationAmount) {
+            turnstile.fromBalance->setStyleSheet("color: red;");
+            turnstile.fromBalance->setText(balTxt % " [You need at least " 
+                        % Settings::getInstance()->getZECDisplayFormat(Turnstile::minMigrationAmount)
+                        % " for automatic migration]");
+            turnstile.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+        } else {
+            turnstile.fromBalance->setStyleSheet("");
+            turnstile.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+            turnstile.fromBalance->setText(balTxt);
+        }
+    };
+
+    fnUpdateSproutBalance(turnstile.migrateZaddList->currentText());
+
+    // Combo box selection event
+    QObject::connect(turnstile.migrateZaddList, &QComboBox::currentTextChanged, fnUpdateSproutBalance);
+        
+    // Privacy level combobox
+    // Num tx over num blocks
+    QList<QPair<int, int>> privOptions; 
+    privOptions.push_back(QPair<double, double>(3, 6));
+    privOptions.push_back(QPair<double, double>(5, 10));
+    privOptions.push_back(QPair<double, double>(10, 20));
+
+    QObject::connect(turnstile.privLevel, QOverload<int>::of(&QComboBox::currentIndexChanged), [=] (auto idx) {
+        // Update the fees
+        turnstile.minerFee->setText(
+            Settings::getInstance()->getZECUSDDisplayFormat(privOptions[idx].first * Utils::getMinerFee()));
+    });
+
+    turnstile.privLevel->addItem("Good - 3 tx over 6 blocks");
+    turnstile.privLevel->addItem("Excellent - 5 tx over 10 blocks");
+    turnstile.privLevel->addItem("Paranoid - 10 tx over 20 blocks");
+
+    turnstile.buttonBox->button(QDialogButtonBox::Ok)->setText("Start");
+
+    if (d.exec() == QDialog::Accepted) {
+        auto privLevel = privOptions[turnstile.privLevel->currentIndex()];
+        rpc->getTurnstile()->planMigration(
+            turnstile.migrateZaddList->currentText(), 
+            turnstile.migrateTo->currentText(),
+            privLevel.first, privLevel.second);
+
+        QMessageBox::information(this, "Backup your wallet.dat", 
+                                    "The migration will now start. You can check progress in the File -> Sapling Turnstile menu.\n\nYOU MUST BACKUP YOUR wallet.dat NOW!\n\nNew Addresses have been added to your wallet which will be used for the migration.", 
+                                    QMessageBox::Ok);
+    }
+}
+
+void MainWindow::setupTurnstileDialog() {        
+    // Turnstile migration
+    QObject::connect(ui->actionTurnstile_Migration, &QAction::triggered, [=] () {
+        // If there is current migration that is present, show the progress button
+        if (rpc->getTurnstile()->isMigrationPresent())
+            turnstileProgress();
+        else    
+            turnstileDoMigration();        
+    });
+
 }
 
 void MainWindow::setupStatusBar() {
