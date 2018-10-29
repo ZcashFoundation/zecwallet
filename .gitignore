@@ -7,6 +7,7 @@ x64/
 src/precompiled.h.cpp
 .qmake.stash
 zec-qt-wallet
+zec-qt-wallet-mingw*
 zec-qt-wallet.vcxproj*
 zec-qt-wallet.sln
 zec-qt-wallet.pro.user
