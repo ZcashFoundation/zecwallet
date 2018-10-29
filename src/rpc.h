@@ -30,8 +30,9 @@ public:
     RPC(QNetworkAccessManager* restclient, MainWindow* main);    
     ~RPC();
 
-    void refresh();             // Refresh all transactions
-    void refreshAddresses();    // Refresh wallet Z-addrs
+    void refresh(bool force = false);
+
+    void refreshAddresses();    
     void refreshZECPrice();
 
     void fillTxJsonParams(json& params, Tx tx);
@@ -113,7 +114,7 @@ private:
 	bool processUnspent	(const json& reply);
 	void updateUI		(bool anyUnconfirmed);
 
-    void getInfoThenRefresh();
+    void getInfoThenRefresh(bool force);
 
     void getBalance(const std::function<void(json)>& cb);
 

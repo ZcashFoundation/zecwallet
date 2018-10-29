@@ -125,6 +125,7 @@ public:
 
         Memo1 = new QLabel(sendToAddrs);
         Memo1->setObjectName(QStringLiteral("Memo1"));
+        Memo1->setWordWrap(true);
 
         gridLayout->addWidget(Memo1, 1, 0, 1, 3);
 

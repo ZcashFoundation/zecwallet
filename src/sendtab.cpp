@@ -36,18 +36,18 @@ void MainWindow::setupSendTab() {
 
     // The first Memo button
     QObject::connect(ui->MemoBtn1, &QPushButton::clicked, [=] () {
-        memoButtonClicked(1);
+        this->memoButtonClicked(1);
     });
     setMemoEnabled(1, false);
 
     // The first Address button
     QObject::connect(ui->Address1, &QLineEdit::textChanged, [=] (auto text) {
-        addressChanged(1, text);
+        this->addressChanged(1, text);
     });
 
     // The first Amount button
     QObject::connect(ui->Amount1, &QLineEdit::textChanged, [=] (auto text) {
-        amountChanged(1, text);
+        this->amountChanged(1, text);
     });
 
 	// Font for the first Memo label
@@ -139,7 +139,7 @@ void MainWindow::addAddressSection() {
     Address1->setObjectName(QString("Address") % QString::number(itemNumber)); 
     Address1->setPlaceholderText("Address");
     QObject::connect(Address1, &QLineEdit::textChanged, [=] (auto text) {
-        addressChanged(itemNumber, text);
+        this->addressChanged(itemNumber, text);
     });
 
     horizontalLayout_12->addWidget(Address1);
@@ -160,7 +160,7 @@ void MainWindow::addAddressSection() {
     auto amtValidator = new QDoubleValidator(0, 21000000, 8, Amount1);
     Amount1->setValidator(amtValidator);
     QObject::connect(Amount1, &QLineEdit::textChanged, [=] (auto text) {
-        amountChanged(itemNumber, text);
+        this->amountChanged(itemNumber, text);
     });
 
     horizontalLayout_13->addWidget(Amount1);
@@ -177,7 +177,7 @@ void MainWindow::addAddressSection() {
     MemoBtn1->setText("Memo");    
     // Connect Memo Clicked button
     QObject::connect(MemoBtn1, &QPushButton::clicked, [=] () {
-        memoButtonClicked(itemNumber);
+        this->memoButtonClicked(itemNumber);
     });
     horizontalLayout_13->addWidget(MemoBtn1);
     setMemoEnabled(itemNumber, false);
@@ -189,6 +189,7 @@ void MainWindow::addAddressSection() {
     QFont font1 = Address1->font();
     font1.setPointSize(font1.pointSize()-1);
     MemoTxt1->setFont(font1);
+    MemoTxt1->setWordWrap(true);
     sendAddressLayout->addWidget(MemoTxt1);
 
     ui->sendToLayout->insertWidget(itemNumber-1, verticalGroupBox);         
@@ -232,33 +233,26 @@ void MainWindow::memoButtonClicked(int number) {
         return;
     }
 
-    auto memoTxt = ui->sendToWidgets->findChild<QLabel *>(QString("MemoTxt") + QString::number(number));
     // Get the current memo if it exists
+    auto memoTxt = ui->sendToWidgets->findChild<QLabel *>(QString("MemoTxt") + QString::number(number));
     QString currentMemo = memoTxt->text();
 
-    // Ref to see if the button was clicked
-    // bool ok;
-    // QString newMemo = QInputDialog::getText(this, "Memo", 
-    //                     "Please type a memo to include with the amount. The memo will be visible to the recepient",
-    //                     QLineEdit::Normal, currentMemo, &ok);
     Ui_MemoDialog memoDialog;
     QDialog dialog(this);
     memoDialog.setupUi(&dialog);
 
-    QObject::connect(memoDialog.memoTxt, &QLineEdit::textChanged, [=] (QString txt) {
+    QObject::connect(memoDialog.memoTxt, &QPlainTextEdit::textChanged, [=] () {
+        QString txt = memoDialog.memoTxt->toPlainText();
         memoDialog.memoSize->setText(QString::number(txt.toUtf8().size()) + "/512");
 
         memoDialog.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(txt.toUtf8().size() <= 512);
-        if (txt.toUtf8().size() > 512) {
-            memoDialog.memoSize->setStyleSheet("color: red;");
-        } else {
-            memoDialog.memoSize->setStyleSheet("");
-        }
     });
-    memoDialog.memoTxt->setText(currentMemo);
+
+    memoDialog.memoTxt->setPlainText(currentMemo);
+    memoDialog.memoTxt->setFocus();
 
     if (dialog.exec() == QDialog::Accepted) {
-        memoTxt->setText(memoDialog.memoTxt->text());
+        memoTxt->setText(memoDialog.memoTxt->toPlainText());
     }
 
 }
@@ -412,6 +406,7 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
                 QFont font1 = Addr->font();
                 font1.setPointSize(font1.pointSize() - 1);
                 Memo->setFont(font1);
+                Memo->setWordWrap(true);
 
                 confirm.gridLayout->addWidget(Memo, (i*2)+1, 0, 1, 3);
             }

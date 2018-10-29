@@ -13,7 +13,7 @@ PRECOMPILED_HEADER = src/precompiled.h
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = zec-qt-wallet
-APP_VERSION=\\\"0.2.3\\\"
+APP_VERSION=\\\"0.2.4\\\"
 
 
 TEMPLATE = app

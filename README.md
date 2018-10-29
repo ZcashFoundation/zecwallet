@@ -9,8 +9,8 @@ Head over to the releases page and grab the latest binary. https://github.com/ad
 ### Linux
 Extract and run the binary
 ```
-tar -xvf zec-qt-wallet-v0.2.3.tar.gz
-./zec-qt-wallet-v0.2.3/zec-qt-wallet
+tar -xvf zec-qt-wallet-v0.2.4.tar.gz
+./zec-qt-wallet-v0.2.4/zec-qt-wallet
 ```
 
 ### Windows
@@ -89,6 +89,6 @@ The most likely cause for this is that you are trying to spend unconfirmed funds
 1-2 blocks for the funds to confirm and retry the transaction. 
 
 ### Support or other questions
-Tweet at [@zcashqtwallet](https://twitter.com/zcashqtwallet) for help.
+Tweet at [@zecqtwallet](https://twitter.com/zecqtwallet) for help.
 
 _PS: zec-qt-wallet is NOT an official wallet, and is not affiliated with the Zerocoin Electric Coin Company in any way._

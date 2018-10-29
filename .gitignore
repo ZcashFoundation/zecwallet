@@ -8,6 +8,7 @@ src/precompiled.h.cpp
 .qmake.stash
 zec-qt-wallet
 zec-qt-wallet.vcxproj*
+zec-qt-wallet.sln
 zec-qt-wallet.pro.user
 Makefile
 Makefile.*

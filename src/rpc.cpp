@@ -349,6 +349,7 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
             QSet<QString> txids;
             QMap<QString, QString> memos;
             for (auto it = zaddrTxids->constBegin(); it != zaddrTxids->constEnd(); it++) {
+                auto zaddr = it.key();
                 for (auto& i : it.value().get<json::array_t>()) {   
                     // Filter out change txs
                     if (! i["change"].get<json::boolean_t>()) {
@@ -361,7 +362,7 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
                             QString memo(QByteArray::fromHex(
                                             QByteArray::fromStdString(i["memo"].get<json::string_t>())));
                             if (!memo.trimmed().isEmpty())
-                                memos[txid] = memo;
+                                memos[zaddr + txid] = memo;
                         }
                     }
                 }        
@@ -406,7 +407,7 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
                             auto confirmations = txidInfo["confirmations"].get<json::number_unsigned_t>();                            
 
                             TransactionItem tx{ QString("receive"), timestamp, zaddr, txid, amount, 
-                                                confirmations, "", memos.value(txid, "") };
+                                                confirmations, "", memos.value(zaddr + txid, "") };
                             txdata.push_front(tx);
                         }
                     }
@@ -424,13 +425,12 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
 
 
 /// This will refresh all the balance data from zcashd
-void RPC::refresh() {
-    // First, test the connection to see if we can actually get info.
-    getInfoThenRefresh();
+void RPC::refresh(bool force) {
+    getInfoThenRefresh(force);
 }
 
 
-void RPC::getInfoThenRefresh() {
+void RPC::getInfoThenRefresh(bool force) {
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -447,10 +447,17 @@ void RPC::getInfoThenRefresh() {
 		QIcon i(":/icons/res/connected.png");
 		main->statusIcon->setPixmap(i.pixmap(16, 16));
 
-        // Refresh everything.
-		refreshBalances();		
-		refreshAddresses(); // This calls refreshZSentTransactions() and refreshReceivedZTrans()
-        refreshTransactions();
+        static int    lastBlock = 0;
+        int curBlock  = reply["blocks"].get<json::number_integer_t>();
+
+        if ( force || (curBlock != lastBlock) ) {
+            // Something changed, so refresh everything.
+            lastBlock = curBlock;
+
+            refreshBalances();		
+            refreshAddresses(); // This calls refreshZSentTransactions() and refreshReceivedZTrans()
+            refreshTransactions();
+        }
 
 		// Call to see if the blockchain is syncing. 
 		json payload = {
@@ -679,7 +686,7 @@ void RPC::watchTxStatus() {
                     watchingOps.remove(id);
 
                     // Refresh balances to show unconfirmed balances                    
-                    refresh();  
+                    refresh(true);  
                 } else if (status == "failed") {
                     // If it failed, then we'll actually show a warning. 
                     auto errorMsg = QString::fromStdString(it["error"]["message"]);

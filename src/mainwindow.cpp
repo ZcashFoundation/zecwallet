@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     rpc = new RPC(new QNetworkAccessManager(this), this);
     rpc->refreshZECPrice();
 
-    rpc->refresh();    
+    rpc->refresh(true);  // Force refresh first time
 }
 
 void MainWindow::turnstileProgress() {
@@ -249,7 +249,7 @@ void MainWindow::setupStatusBar() {
 		}
 
 		menu.addAction("Refresh", [=]() {
-			rpc->refresh();
+			rpc->refresh(true);
 		});
 		QPoint gpos(mapToGlobal(pos).x(), mapToGlobal(pos).y() + this->height() - ui->statusBar->height());
 		menu.exec(gpos);
@@ -262,8 +262,7 @@ void MainWindow::setupStatusBar() {
 	ui->statusBar->addPermanentWidget(statusIcon);
 }
 
-void MainWindow::setupSettingsModal() {
-	
+void MainWindow::setupSettingsModal() {	
 	// Set up File -> Settings action
 	QObject::connect(ui->actionSettings, &QAction::triggered, [=]() {
 		QDialog settingsDialog(this);
@@ -282,7 +281,7 @@ void MainWindow::setupSettingsModal() {
 				QMessageBox::Yes, QMessageBox::Cancel)) {
 					SentTxStore::deleteHistory();
 					// Reload after the clear button so existing txs disappear
-					rpc->refresh();
+					rpc->refresh(true);
 			}
 		});
 
@@ -332,7 +331,7 @@ void MainWindow::setupSettingsModal() {
             }
 
             // Then refresh everything.			
-            this->rpc->refresh();			
+            this->rpc->refresh(true);			
 		};
 	});
 
@@ -340,7 +339,8 @@ void MainWindow::setupSettingsModal() {
 
 void MainWindow::donate() {
     // Set up a donation to me :)
-    ui->Address1->setText(Utils::getDonationAddr());
+    ui->Address1->setText(Utils::getDonationAddr(
+                                Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText("0.01");
 
@@ -391,6 +391,19 @@ void MainWindow::setupBalancesTab() {
             clipboard->setText(addr);            
             ui->statusBar->showMessage("Copied to clipboard", 3 * 1000);
         });
+
+		menu.addAction("Send from " % addr.left(40) % (addr.size() > 40 ? "..." : ""), [=]() {
+			// Find the inputs combo
+			for (int i = 0; i < ui->inputsCombo->count(); i++) {
+				if (ui->inputsCombo->itemText(i).startsWith(addr)) {
+					ui->inputsCombo->setCurrentIndex(i);
+					break;
+				}
+			}
+			
+			// And switch to the send tab.
+			ui->tabWidget->setCurrentIndex(1);
+		});
 
         if (addr.startsWith("t")) {
             menu.addAction("View on block explorer", [=] () {

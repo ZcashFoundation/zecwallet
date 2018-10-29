@@ -438,6 +438,7 @@ public:
         QFont font1;
         font1.setPointSize(10);
         MemoTxt1->setFont(font1);
+        MemoTxt1->setWordWrap(true);
 
         sendAddressLayout->addWidget(MemoTxt1);
 
