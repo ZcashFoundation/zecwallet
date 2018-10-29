@@ -393,23 +393,30 @@ void MainWindow::importPrivKey() {
 
     pui.helpLbl->setText(QString() %
                         "Please paste your private keys (z-Addr or t-Addr) here, one per line.\n" %
-                        "The keys will be imported into your connected zcashd node");                        
+                        "The keys will be imported into your connected zcashd node");  
+
     if (d.exec() == QDialog::Accepted && !pui.privKeyTxt->toPlainText().trimmed().isEmpty()) {
         auto keys = pui.privKeyTxt->toPlainText().trimmed().split("\n");
+
+        auto fnFinished = [=] (auto) {
+            qDebug() << "finished";
+            ui->statusBar->showMessage("Key import rescan finished");
+        };
+
         for (int i=0; i < keys.length(); i++) {
             auto key = keys[i].trimmed();
             if (key.startsWith("S") ||
                 key.startsWith("secret")) { // Z key
-                rpc->importZPrivKey(key, [=] (auto) {} );
+                rpc->importZPrivKey(key, i == key.length() -1, fnFinished);
             } else {    // T Key
-                rpc->importTPrivKey(key, [=] (auto) {} );
+                rpc->importTPrivKey(key, i == key.length() -1, fnFinished);
             }
         }
-    }
 
-    QMessageBox::information(this, 
-        "Imported", "The keys were imported. It may be a while to rescan the blockchain with the new keys.",
-        QMessageBox::Ok);
+        QMessageBox::information(this, 
+            "Imported", "The keys were imported. It may take several minutes to rescan the blockchain with the new keys for your balance to be shown accurately.",
+            QMessageBox::Ok);
+    }
 }
 
 void MainWindow::setupBalancesTab() {

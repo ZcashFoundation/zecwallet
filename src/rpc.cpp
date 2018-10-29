@@ -184,24 +184,24 @@ void RPC::getTPrivKey(QString addr, const std::function<void(json)>& cb) {
     doRPC(payload, cb);
 }
 
-void RPC::importZPrivKey(QString addr, const std::function<void(json)>& cb) {
+void RPC::importZPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb) {
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
         {"method", "z_importkey"},
-        {"params", { addr.toStdString() }},
+        {"params", { addr.toStdString(), (rescan? "yes" : "no") }},
     };
     
     doRPC(payload, cb);
 }
 
 
-void RPC::importTPrivKey(QString addr, const std::function<void(json)>& cb) {
+void RPC::importTPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb) {
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
         {"method", "importprivkey"},
-        {"params", { addr.toStdString() }},
+        {"params", { addr.toStdString(), (rescan? "yes" : "no") }},
     };
     
     doRPC(payload, cb);
