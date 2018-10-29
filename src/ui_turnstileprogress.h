@@ -97,7 +97,7 @@ public:
         buttonBox = new QDialogButtonBox(TurnstileProgress);
         buttonBox->setObjectName(QStringLiteral("buttonBox"));
         buttonBox->setOrientation(Qt::Horizontal);
-        buttonBox->setStandardButtons(QDialogButtonBox::Close|QDialogButtonBox::Discard|QDialogButtonBox::Ok);
+        buttonBox->setStandardButtons(QDialogButtonBox::Close|QDialogButtonBox::Discard);
         buttonBox->setCenterButtons(false);
 
         gridLayout->addWidget(buttonBox, 9, 0, 1, 3);
