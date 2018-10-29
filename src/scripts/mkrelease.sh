@@ -42,13 +42,14 @@ cp README.md bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp LICENSE bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cd bin && tar cvf linux-zec-qt-wallet-v$APP_VERSION.tar.gz zec-qt-wallet-v$APP_VERSION/ > /dev/null
 cd .. 
+cp bin/linux-zec-qt-wallet-v$APP_VERSION.tar.gz .
 
-if [ -f bin/linux-zec-qt-wallet-v$APP_VERSION.tar.gz ] ; then
+if [ -f linux-zec-qt-wallet-v$APP_VERSION.tar.gz ] ; then
     echo "[OK]"
 
-    echo "Done. Build is bin/linux-zec-qt-wallet-v$APP_VERSION.tar.gz"
+    echo "Done. Build is linux-zec-qt-wallet-v$APP_VERSION.tar.gz"
     echo "Package contents:"
-    tar tf "bin/linux-zec-qt-wallet-v$APP_VERSION.tar.gz"
+    tar tf "linux-zec-qt-wallet-v$APP_VERSION.tar.gz"
 else
     echo "[ERROR]"
     exit 1

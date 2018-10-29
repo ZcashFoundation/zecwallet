@@ -27,14 +27,15 @@ cp README.md release/zec-qt-wallet-v$APP_VERSION
 cp LICENSE release/zec-qt-wallet-v$APP_VERSION 
 cd release && zip -r Windows-zec-qt-wallet-v$APP_VERSION.zip zec-qt-wallet-v$APP_VERSION/ > /dev/null
 cd ..
+cp release/Windows-zec-qt-wallet-v$APP_VERSION.zip .
 
 
-if [ -f release/Windows-zec-qt-wallet-v$APP_VERSION.zip ] ; then
+if [ -f Windows-zec-qt-wallet-v$APP_VERSION.zip ] ; then
     echo "[OK]"
 
-    echo "Done. Build is release/Windows-zec-qt-wallet-v$APP_VERSION.zip"
+    echo "Done. Build is Windows-zec-qt-wallet-v$APP_VERSION.zip"
     echo "Package contents:"
-    unzip -l "release/Windows-zec-qt-wallet-v$APP_VERSION.zip"
+    unzip -l "Windows-zec-qt-wallet-v$APP_VERSION.zip"
 else
     echo "[ERROR]"
     exit 1
