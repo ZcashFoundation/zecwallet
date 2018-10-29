@@ -75,8 +75,6 @@ void MainWindow::turnstileProgress() {
     QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning);
     progress.msgIcon->setPixmap(icon.pixmap(64, 64));
 
-    progress.buttonBox->button(QDialogButtonBox::Cancel)->setText("Abort");
-
     auto fnUpdateProgressUI = [=] () {
         // Get the plan progress
         if (rpc->getTurnstile()->isMigrationPresent()) {
@@ -112,20 +110,31 @@ void MainWindow::turnstileProgress() {
     progressTimer.start(Utils::updateSpeed);
     fnUpdateProgressUI();
     
-    auto accpeted = d.exec();
     auto curProgress = rpc->getTurnstile()->getPlanProgress();
+
+    // Abort button
+    if (curProgress.step != curProgress.totalSteps)
+        progress.buttonBox->button(QDialogButtonBox::Discard)->setText("Abort");
+    else
+        progress.buttonBox->button(QDialogButtonBox::Discard)->setVisible(false);
+    QObject::connect(progress.buttonBox->button(QDialogButtonBox::Discard), &QPushButton::clicked, [&] () {
+        if (curProgress.step != curProgress.totalSteps) {
+            auto abort = QMessageBox::warning(this, "Are you sure you want to Abort?",
+                                    "Are you sure you want to abort the migration?\nAll further transactions will be cancelled.\nAll your funds are still in your wallet.",
+                                    QMessageBox::Yes, QMessageBox::No);
+            if (abort == QMessageBox::Yes) {
+                rpc->getTurnstile()->removeFile();
+                d.close();
+                ui->statusBar->showMessage("Automatic Sapling turnstile migration aborted.");
+            }
+        }
+    });
+
+    auto accpeted = d.exec();    
     if (accpeted == QDialog::Accepted && curProgress.step == curProgress.totalSteps) {
         // Finished, so delete the file
         rpc->getTurnstile()->removeFile();
-    }
-    if (accpeted == QDialog::Rejected && curProgress.step != curProgress.totalSteps) {
-        auto abort = QMessageBox::warning(this, "Are you sure you want to Abort?",
-                                "Are you sure you want to abort the migration?\nAll further transactions will be cancelled.\nAll your funds are still in your wallet.",
-                                QMessageBox::Yes, QMessageBox::No);
-        if (abort) {
-            rpc->getTurnstile()->removeFile();
-        }
-    }
+    }    
 }
 
 void MainWindow::turnstileDoMigration() {
@@ -158,7 +167,7 @@ void MainWindow::turnstileDoMigration() {
         }
     }
 
-    QObject::connect(turnstile.migrateZaddList, &QComboBox::currentTextChanged, [=] (auto addr) {
+    auto fnUpdateSproutBalance = [=] (QString addr) {
         double bal = 0;
         if (addr.startsWith("All")) {
             bal = fnGetAllSproutBalance();
@@ -166,9 +175,26 @@ void MainWindow::turnstileDoMigration() {
             bal = rpc->getAllBalances()->value(addr);
         }
 
-        turnstile.fromBalance->setText(Settings::getInstance()->getZECUSDDisplayFormat(bal));
-    });
-    
+        auto balTxt = Settings::getInstance()->getZECUSDDisplayFormat(bal);
+        
+        if (bal < Turnstile::minMigrationAmount) {
+            turnstile.fromBalance->setStyleSheet("color: red;");
+            turnstile.fromBalance->setText(balTxt % " [You need at least " 
+                        % Settings::getInstance()->getZECDisplayFormat(Turnstile::minMigrationAmount)
+                        % " for automatic migration]");
+            turnstile.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+        } else {
+            turnstile.fromBalance->setStyleSheet("");
+            turnstile.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+            turnstile.fromBalance->setText(balTxt);
+        }
+    };
+
+    fnUpdateSproutBalance(turnstile.migrateZaddList->currentText());
+
+    // Combo box selection event
+    QObject::connect(turnstile.migrateZaddList, &QComboBox::currentTextChanged, fnUpdateSproutBalance);
+        
     // Privacy level combobox
     // Num tx over num blocks
     QList<QPair<int, int>> privOptions; 
@@ -196,12 +222,12 @@ void MainWindow::turnstileDoMigration() {
             privLevel.first, privLevel.second);
 
         QMessageBox::information(this, "Backup your wallet.dat", 
-                                    "The migration will now start. You can check progress in the File -> Turnstile Migration menu.\n\nYOU MUST BACKUP YOUR wallet.dat NOW!.\n\nNew Addresses have been added to your wallet which will be used for the migration.", 
+                                    "The migration will now start. You can check progress in the File -> Sapling Turnstile menu.\n\nYOU MUST BACKUP YOUR wallet.dat NOW!\n\nNew Addresses have been added to your wallet which will be used for the migration.", 
                                     QMessageBox::Ok);
     }
 }
 
-void MainWindow::setupTurnstileDialog() {    
+void MainWindow::setupTurnstileDialog() {        
     // Turnstile migration
     QObject::connect(ui->actionTurnstile_Migration, &QAction::triggered, [=] () {
         // If there is current migration that is present, show the progress button

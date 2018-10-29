@@ -681,7 +681,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -696,7 +696,7 @@ public:
         actionDonate->setText(QApplication::translate("MainWindow", "Donate", nullptr));
         actionImport_Private_Keys->setText(QApplication::translate("MainWindow", "Import Private Keys", nullptr));
         actionCheck_for_Updates->setText(QApplication::translate("MainWindow", "Check github.com for Updates", nullptr));
-        actionTurnstile_Migration->setText(QApplication::translate("MainWindow", "Turnstile Migration", nullptr));
+        actionTurnstile_Migration->setText(QApplication::translate("MainWindow", "Sapling Turnstile", nullptr));
         groupBox->setTitle(QApplication::translate("MainWindow", "Summary", nullptr));
         label->setText(QApplication::translate("MainWindow", "Shielded", nullptr));
         balSheilded->setText(QString());

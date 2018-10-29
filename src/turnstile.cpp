@@ -9,8 +9,9 @@
 
 using json = nlohmann::json;
 
-Turnstile::Turnstile(RPC* _rpc) {
+Turnstile::Turnstile(RPC* _rpc, QWidget* mainwindow) {
 	this->rpc = _rpc;
+	this->mainwindow = mainwindow;
 }
 
 Turnstile::~Turnstile() {
@@ -117,6 +118,13 @@ void Turnstile::planMigration(QString zaddr, QString destAddr, int numsplits, in
 
 			// The first migration is shifted to the current block, so the user sees something 
 			// happening immediately
+			if (migItems.size() == 0) {
+				// Show error and abort
+				QMessageBox::warning(mainwindow, 
+					"Locked funds", "Could not initiate migration.\nYou either have unconfirmed funds or the balance is too low for an automatic migration.");
+				return;
+			}
+
 			migItems[0].blockNumber = curBlock;
 
 			std::sort(migItems.begin(), migItems.end(), [&] (auto a, auto b) {
@@ -124,7 +132,7 @@ void Turnstile::planMigration(QString zaddr, QString destAddr, int numsplits, in
 			});		
 
 			writeMigrationPlan(migItems);
-			auto readPlan = readMigrationPlan();
+			rpc->refresh(true);	// Force refresh, to start the migration immediately
 		}
 	);
 }
@@ -141,10 +149,13 @@ QList<int> Turnstile::getBlockNumbers(int start, int end, int count) {
 	return blocks;
 }
 
+	// Need at least 0.0005 ZEC for this
+double Turnstile::minMigrationAmount = 0.0005;
+
 QList<double> Turnstile::splitAmount(double amount, int parts) {
 	QList<double> amounts;
-	// Need at least 0.0004 ZEC for this
-	if (amount < 0.0004)
+
+	if (amount < minMigrationAmount)
 		return amounts;
 	
 	fillAmounts(amounts, amount, parts);
@@ -200,14 +211,6 @@ Turnstile::getNextStep(QList<TurnstileMigrationItem>& plan) {
 		return 	item.status == TurnstileMigrationItemStatus::NotStarted || 
 				item.status == TurnstileMigrationItemStatus::SentToT;
 	};
-
-	// // Fn to find if there are any unconfirmed funds for this address.
-	// auto fnHasUnconfirmed = [=] (QString addr) {
-	// 	auto utxoset = rpc->getUTXOs();
-	// 	return std::find_if(utxoset->begin(), utxoset->end(), [=] (auto utxo) {
-	// 				return utxo.address == addr && utxo.confirmations == 0;
-	// 			}) != utxoset->end();
-	// };
 
 	// Find the next step
 	auto nextStep = std::find_if(plan.begin(), plan.end(), fnIsEligibleItem);

@@ -33,7 +33,7 @@ struct ProgressReport {
 class Turnstile
 {
 public:
-	Turnstile(RPC* _rpc);
+	Turnstile(RPC* _rpc, QWidget* mainwindow);
 	~Turnstile();
 
 	void		   	planMigration(QString zaddr, QString destAddr, int splits, int numBlocks);
@@ -48,6 +48,7 @@ public:
 	ProgressReport  getPlanProgress();
 	bool			isMigrationPresent();
 
+	static double	minMigrationAmount;
 private:
 	QList<int>	   	getBlockNumbers(int start, int end, int count);
 	QString		   	writeableFile();
@@ -57,7 +58,8 @@ private:
 
 	QList<TurnstileMigrationItem>::Iterator getNextStep(QList<TurnstileMigrationItem>& plan);	
 
-	RPC* 	rpc;	
+	RPC* 		rpc;	
+	QWidget* 	mainwindow;
 };
 
 #endif

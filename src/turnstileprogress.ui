@@ -30,7 +30,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Please Ensure you have your wallet.dat backed up!</string>
+      <string>Please ensure you have your wallet.dat backed up!</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -90,7 +90,10 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Discard|QDialogButtonBox::Ok</set>
+     </property>
+     <property name="centerButtons">
+      <bool>false</bool>
      </property>
     </widget>
    </item>

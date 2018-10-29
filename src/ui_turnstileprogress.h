@@ -97,7 +97,8 @@ public:
         buttonBox = new QDialogButtonBox(TurnstileProgress);
         buttonBox->setObjectName(QStringLiteral("buttonBox"));
         buttonBox->setOrientation(Qt::Horizontal);
-        buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
+        buttonBox->setStandardButtons(QDialogButtonBox::Close|QDialogButtonBox::Discard|QDialogButtonBox::Ok);
+        buttonBox->setCenterButtons(false);
 
         gridLayout->addWidget(buttonBox, 9, 0, 1, 3);
 
@@ -123,7 +124,7 @@ public:
     void retranslateUi(QDialog *TurnstileProgress)
     {
         TurnstileProgress->setWindowTitle(QApplication::translate("TurnstileProgress", "Turnstile Migration Progress", nullptr));
-        label_4->setText(QApplication::translate("TurnstileProgress", "Please Ensure you have your wallet.dat backed up!", nullptr));
+        label_4->setText(QApplication::translate("TurnstileProgress", "Please ensure you have your wallet.dat backed up!", nullptr));
         nextTx->setText(QApplication::translate("TurnstileProgress", "Next Transaction in 4 hours", nullptr));
         progressTxt->setText(QApplication::translate("TurnstileProgress", "4 / 12", nullptr));
         label_2->setText(QApplication::translate("TurnstileProgress", "Migration Progress", nullptr));
