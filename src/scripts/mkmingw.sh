@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z $APP_VERSION ]; then echo "APP_VERSION is not set"; exit 1; fi
-
+if [ -z $MXE_PATH ]; then echo "MXE_PATH is not set. Set it to ~/github/mxe/usr/bin"; exit 1; fi
 
 export PATH=$MXE_PATH:$PATH
 
