@@ -3,13 +3,14 @@
 #include "utils.h"
 
 BalancesTableModel::BalancesTableModel(QObject *parent)
-	: QAbstractTableModel(parent)
-{	
+	: QAbstractTableModel(parent) {	
 }
 
 void BalancesTableModel::setNewData(const QMap<QString, double>* balances, 
 	const QList<UnspentOutput>* outputs)
 {	
+	loading = false;
+
 	int currentRows = rowCount(QModelIndex());
 	// Copy over the utxos for our use
 	delete utxos;
@@ -39,7 +40,12 @@ BalancesTableModel::~BalancesTableModel() {
 
 int BalancesTableModel::rowCount(const QModelIndex&) const
 {
-	if (modeldata == nullptr) return 0;
+	if (modeldata == nullptr) {
+		if (loading) 
+			return 1;
+		else 
+			return 0;
+	}
 	return modeldata->size();
 }
 
@@ -50,6 +56,13 @@ int BalancesTableModel::columnCount(const QModelIndex&) const
 
 QVariant BalancesTableModel::data(const QModelIndex &index, int role) const
 {
+	if (loading) {
+		if (role == Qt::DisplayRole) 
+			return "Loading...";
+		else
+			return QVariant();
+	}
+
     if (role == Qt::TextAlignmentRole && index.column() == 1) return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 	
 	if (role == Qt::ForegroundRole) {

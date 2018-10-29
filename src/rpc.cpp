@@ -648,9 +648,12 @@ void RPC::refreshSentZTrans() {
             // with the confirmed block number, so we don't have to keep calling gettransaction for the
             // sent items.
             for (TransactionItem& sentTx: newSentZTxs) {
-                auto error = txidList->value(sentTx.txid)["confirmations"].is_null();
+                auto j = txidList->value(sentTx.txid);
+                if (j.is_null())
+                    continue;
+                auto error = j["confirmations"].is_null();
                 if (!error)
-                    sentTx.confirmations = txidList->value(sentTx.txid)["confirmations"].get<json::number_unsigned_t>();
+                    sentTx.confirmations = j["confirmations"].get<json::number_unsigned_t>();
             }
             
             transactionsTableModel->addZSentData(newSentZTxs);

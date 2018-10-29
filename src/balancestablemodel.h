@@ -21,6 +21,8 @@ public:
 private:
     QList<std::tuple<QString, QString>>*    modeldata   = nullptr;    
     QList<UnspentOutput>*                   utxos       = nullptr;  
+
+    bool loading = true;
 };
 
 #endif // BALANCESTABLEMODEL_H
