@@ -8,7 +8,7 @@
 #include "balancestablemodel.h"
 #include "settings.h"
 #include "utils.h"
-#import "turnstile.h"
+#include "turnstile.h"
 #include "senttxstore.h"
 
 #include "precompiled.h"
@@ -198,9 +198,9 @@ void MainWindow::turnstileDoMigration() {
     // Privacy level combobox
     // Num tx over num blocks
     QList<QPair<int, int>> privOptions; 
-    privOptions.push_back(QPair<double, double>(3, 3));
-    privOptions.push_back(QPair<double, double>(5, 5));
-    privOptions.push_back(QPair<double, double>(10, 7));
+    privOptions.push_back(QPair<double, double>(3, 6));
+    privOptions.push_back(QPair<double, double>(5, 10));
+    privOptions.push_back(QPair<double, double>(10, 20));
 
     QObject::connect(turnstile.privLevel, QOverload<int>::of(&QComboBox::currentIndexChanged), [=] (auto idx) {
         // Update the fees
@@ -208,9 +208,9 @@ void MainWindow::turnstileDoMigration() {
             Settings::getInstance()->getZECUSDDisplayFormat(privOptions[idx].first * Utils::getMinerFee()));
     });
 
-    turnstile.privLevel->addItem("Good - 3 tx over 3 blocks");
-    turnstile.privLevel->addItem("Excellent - 5 tx over 5 blocks");
-    turnstile.privLevel->addItem("Paranoid - 10 tx over 7 blocks");
+    turnstile.privLevel->addItem("Good - 3 tx over 6 blocks");
+    turnstile.privLevel->addItem("Excellent - 5 tx over 10 blocks");
+    turnstile.privLevel->addItem("Paranoid - 10 tx over 20 blocks");
 
     turnstile.buttonBox->button(QDialogButtonBox::Ok)->setText("Start");
 

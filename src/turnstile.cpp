@@ -9,7 +9,7 @@
 
 using json = nlohmann::json;
 
-Turnstile::Turnstile(RPC* _rpc, QWidget* mainwindow) {
+Turnstile::Turnstile(RPC* _rpc, MainWindow* mainwindow) {
 	this->rpc = _rpc;
 	this->mainwindow = mainwindow;
 }
@@ -19,8 +19,8 @@ Turnstile::~Turnstile() {
 
 void printPlan(QList<TurnstileMigrationItem> plan) {
 	for (auto item : plan) {
-		qDebug() << item.fromAddr << item.intTAddr 
-					<< item.destAddr << item.amount << item.blockNumber << item.status;
+		//qDebug() << item.fromAddr << item.intTAddr 
+		//			<< item.destAddr << item.amount << item.blockNumber << item.status;
 	}
 }
 
@@ -55,7 +55,7 @@ QDataStream &operator>>(QDataStream& ds, TurnstileMigrationItem& item) {
 }
 
 void Turnstile::writeMigrationPlan(QList<TurnstileMigrationItem> plan) {
-	qDebug() << QString("Writing plan");
+	//qDebug() << QString("Writing plan");
 	printPlan(plan);
 
 	QFile file(writeableFile());
@@ -159,7 +159,7 @@ QList<double> Turnstile::splitAmount(double amount, int parts) {
 		return amounts;
 	
 	fillAmounts(amounts, amount, parts);
-	qDebug() << amounts;
+	//qDebug() << amounts;
 
 	// Ensure they all add up!
 	double sumofparts = 0;
@@ -170,8 +170,8 @@ QList<double> Turnstile::splitAmount(double amount, int parts) {
 	// Add the Tx fees
 	sumofparts += amounts.size() * Utils::getMinerFee();
 
-	qDebug() << QString::number(sumofparts, 'f', 8) << QString::number(amount, 'f', 8);
-	Q_ASSERT(QString::number(sumofparts, 'f', 8) == QString::number(amount, 'f', 8));
+	//qDebug() << QString::number(sumofparts, 'f', 8) << QString::number(amount, 'f', 8);
+	//Q_ASSERT(QString::number(sumofparts, 'f', 8) == QString::number(amount, 'f', 8));
 	return amounts;
 }
 
@@ -249,7 +249,7 @@ ProgressReport Turnstile::getPlanProgress() {
 void Turnstile::executeMigrationStep() {
 	auto plan = readMigrationPlan();
 
-	qDebug() << QString("Executing step");
+	//qDebug() << QString("Executing step");
 	printPlan(plan);
 
 	// Get to the next unexecuted step
@@ -282,7 +282,7 @@ void Turnstile::executeMigrationStep() {
 	if (nextStep->status == TurnstileMigrationItemStatus::NotStarted) {
 		// Does this z addr have enough balance?
 		if (fnHasUnconfirmed(nextStep->fromAddr)) {
-			qDebug() << QString("unconfirmed, waiting");
+			//qDebug() << QString("unconfirmed, waiting");
 			return;
 		}
 
@@ -318,12 +318,12 @@ void Turnstile::executeMigrationStep() {
 		// First thing to do is check to see if the funds are confirmed. 
 		// We'll check both the original sprout address and the intermediate T addr for safety.
 		if (fnHasUnconfirmed(nextStep->intTAddr) || fnHasUnconfirmed(nextStep->fromAddr)) {
-			qDebug() << QString("unconfirmed, waiting");
+			//qDebug() << QString("unconfirmed, waiting");
 			return;
 		}
 
 		if (!rpc->getAllBalances()->keys().contains(nextStep->intTAddr)) {
-			qDebug() << QString("The int address doesn't have balance, even though it is confirmed");
+			qDebug() << QString("The intermediate Taddress doesn't have balance, even though it is confirmed");
 			return;
 		}
 
@@ -358,8 +358,8 @@ void Turnstile::doSendTx(Tx tx, std::function<void(void)> cb) {
 	std::cout << std::setw(2) << params << std::endl;
 	rpc->sendZTransaction(params, [=] (const json& reply) {
 		QString opid = QString::fromStdString(reply.get<json::string_t>());
-		qDebug() << opid;
-		//ui->statusBar->showMessage("Computing Tx: " % opid);
+		//qDebug() << opid;
+		mainwindow->ui->statusBar->showMessage("Computing Tx: " % opid);
 
 		// And then start monitoring the transaction
 		rpc->addNewTxToWatch(tx, opid);

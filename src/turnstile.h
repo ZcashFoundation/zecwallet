@@ -4,7 +4,9 @@
 #include "precompiled.h"
 
 class RPC;
+class MainWindow;
 struct Tx;
+
 
 struct TurnstileMigrationItem {
 	QString 	fromAddr;
@@ -33,7 +35,7 @@ struct ProgressReport {
 class Turnstile
 {
 public:
-	Turnstile(RPC* _rpc, QWidget* mainwindow);
+	Turnstile(RPC* _rpc, MainWindow* mainwindow);
 	~Turnstile();
 
 	void		   	planMigration(QString zaddr, QString destAddr, int splits, int numBlocks);
@@ -59,7 +61,7 @@ private:
 	QList<TurnstileMigrationItem>::Iterator getNextStep(QList<TurnstileMigrationItem>& plan);	
 
 	RPC* 		rpc;	
-	QWidget* 	mainwindow;
+	MainWindow* mainwindow;
 };
 
 #endif
