@@ -376,6 +376,7 @@ void MainWindow::donate() {
                                 Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText("0.01");
+    ui->MemoTxt1->setText("Thanks for supporting zec-qt-wallet!");
 
     ui->statusBar->showMessage("Donate 0.01 " % Utils::getTokenName() % " to support zec-qt-wallet");
 
