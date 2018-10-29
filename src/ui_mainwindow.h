@@ -45,9 +45,9 @@ public:
     QAction *actionAbout;
     QAction *actionSettings;
     QAction *actionDonate;
-    QAction *actionImport_Private_Keys;
     QAction *actionCheck_for_Updates;
     QAction *actionTurnstile_Migration;
+    QAction *actionImport_Private_Key;
     QWidget *centralWidget;
     QGridLayout *gridLayout_3;
     QTabWidget *tabWidget;
@@ -155,13 +155,12 @@ public:
         actionSettings->setObjectName(QStringLiteral("actionSettings"));
         actionDonate = new QAction(MainWindow);
         actionDonate->setObjectName(QStringLiteral("actionDonate"));
-        actionImport_Private_Keys = new QAction(MainWindow);
-        actionImport_Private_Keys->setObjectName(QStringLiteral("actionImport_Private_Keys"));
-        actionImport_Private_Keys->setVisible(false);
         actionCheck_for_Updates = new QAction(MainWindow);
         actionCheck_for_Updates->setObjectName(QStringLiteral("actionCheck_for_Updates"));
         actionTurnstile_Migration = new QAction(MainWindow);
         actionTurnstile_Migration->setObjectName(QStringLiteral("actionTurnstile_Migration"));
+        actionImport_Private_Key = new QAction(MainWindow);
+        actionImport_Private_Key->setObjectName(QStringLiteral("actionImport_Private_Key"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout_3 = new QGridLayout(centralWidget);
@@ -670,7 +669,7 @@ public:
 
         menuBar->addAction(menuBalance->menuAction());
         menuBar->addAction(menuHelp->menuAction());
-        menuBalance->addAction(actionImport_Private_Keys);
+        menuBalance->addAction(actionImport_Private_Key);
         menuBalance->addAction(actionTurnstile_Migration);
         menuBalance->addAction(actionSettings);
         menuBalance->addSeparator();
@@ -694,9 +693,9 @@ public:
         actionAbout->setText(QApplication::translate("MainWindow", "About", nullptr));
         actionSettings->setText(QApplication::translate("MainWindow", "Settings", nullptr));
         actionDonate->setText(QApplication::translate("MainWindow", "Donate", nullptr));
-        actionImport_Private_Keys->setText(QApplication::translate("MainWindow", "Import Private Keys", nullptr));
         actionCheck_for_Updates->setText(QApplication::translate("MainWindow", "Check github.com for Updates", nullptr));
         actionTurnstile_Migration->setText(QApplication::translate("MainWindow", "Sapling Turnstile", nullptr));
+        actionImport_Private_Key->setText(QApplication::translate("MainWindow", "Import Private Key", nullptr));
         groupBox->setTitle(QApplication::translate("MainWindow", "Summary", nullptr));
         label->setText(QApplication::translate("MainWindow", "Shielded", nullptr));
         balSheilded->setText(QString());

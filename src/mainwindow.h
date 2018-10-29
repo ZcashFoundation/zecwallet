@@ -79,7 +79,7 @@ private:
     QString doSendTxValidations(Tx tx);
 
     void donate();
-    void importPrivKeys();
+    void importPrivKey();
 
     RPC*                rpc;
 

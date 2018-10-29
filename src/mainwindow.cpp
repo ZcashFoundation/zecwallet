@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "ui_privkey.h"
 #include "ui_about.h"
 #include "ui_settings.h"
 #include "ui_turnstile.h"
@@ -38,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
         QDesktopServices::openUrl(QUrl("https://github.com/adityapk00/zec-qt-wallet/releases"));
     });
 
-    QObject::connect(ui->actionImport_Private_Keys, &QAction::triggered, this, &MainWindow::importPrivKeys);
+    QObject::connect(ui->actionImport_Private_Key, &QAction::triggered, this, &MainWindow::importPrivKey);
 
     // Set up about action
     QObject::connect(ui->actionAbout, &QAction::triggered, [=] () {
@@ -384,26 +385,31 @@ void MainWindow::donate() {
     ui->tabWidget->setCurrentIndex(1);
 }
 
-void MainWindow::importPrivKeys() {
-    bool ok;
-    QString text = QInputDialog::getMultiLineText(
-                        this, "Import Private Keys", 
-                        QString() + 
-                        "Please paste your private keys (z-Addr or t-Addr) here, one per line.\n" +
-                        "The keys will be imported into your connected zcashd node", 
-                        "", &ok);
-    if (ok && !text.isEmpty()) {
-        auto keys = text.split("\n");
+
+void MainWindow::importPrivKey() {
+    QDialog d(this);
+    Ui_PrivKey pui;
+    pui.setupUi(&d);
+
+    pui.helpLbl->setText(QString() %
+                        "Please paste your private keys (z-Addr or t-Addr) here, one per line.\n" %
+                        "The keys will be imported into your connected zcashd node");                        
+    if (d.exec() == QDialog::Accepted && !pui.privKeyTxt->toPlainText().trimmed().isEmpty()) {
+        auto keys = pui.privKeyTxt->toPlainText().trimmed().split("\n");
         for (int i=0; i < keys.length(); i++) {
             auto key = keys[i].trimmed();
             if (key.startsWith("S") ||
                 key.startsWith("secret")) { // Z key
-
+                rpc->importZPrivKey(key, [=] (auto) {} );
             } else {    // T Key
-
+                rpc->importTPrivKey(key, [=] (auto) {} );
             }
         }
     }
+
+    QMessageBox::information(this, 
+        "Imported", "The keys were imported. It may be a while to rescan the blockchain with the new keys.",
+        QMessageBox::Ok);
 }
 
 void MainWindow::setupBalancesTab() {
@@ -420,10 +426,32 @@ void MainWindow::setupBalancesTab() {
 
         QMenu menu(this);
 
-        menu.addAction("Copy Address", [=] () {
+        menu.addAction("Copy address", [=] () {
             QClipboard *clipboard = QGuiApplication::clipboard();
             clipboard->setText(addr);            
             ui->statusBar->showMessage("Copied to clipboard", 3 * 1000);
+        });
+
+        menu.addAction("Get private key", [=] () {
+            auto fnCB = [=] (const json& reply) {
+                auto privKey = QString::fromStdString(reply.get<json::string_t>());
+                QDialog d(this);
+                Ui_PrivKey pui;
+                pui.setupUi(&d);
+
+                pui.helpLbl->setText("Private Key:");
+                pui.privKeyTxt->setPlainText(privKey);
+                pui.privKeyTxt->setReadOnly(true);
+                pui.privKeyTxt->selectAll();
+                pui.buttonBox->button(QDialogButtonBox::Ok)->setVisible(false);
+
+                d.exec();
+            };
+
+            if (Settings::getInstance()->isZAddress(addr)) 
+                rpc->getZPrivKey(addr, fnCB);
+            else
+                rpc->getTPrivKey(addr, fnCB);
         });
 
 		menu.addAction("Send from " % addr.left(40) % (addr.size() > 40 ? "..." : ""), [=]() {

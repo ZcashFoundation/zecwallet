@@ -50,6 +50,12 @@ public:
     void newZaddr(bool sapling, const std::function<void(json)>& cb);
     void newTaddr(const std::function<void(json)>& cb);
 
+
+    void getZPrivKey(QString addr, const std::function<void(json)>& cb);
+    void getTPrivKey(QString addr, const std::function<void(json)>& cb);
+    void importZPrivKey(QString addr, const std::function<void(json)>& cb);
+    void importTPrivKey(QString addr, const std::function<void(json)>& cb);
+
     Turnstile* getTurnstile() { return turnstile; }
     
     // Batch method. Note: Because of the template, it has to be in the header file. 
