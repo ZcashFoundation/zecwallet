@@ -137,7 +137,7 @@ void MainWindow::turnstileProgress() {
     }    
 }
 
-void MainWindow::turnstileDoMigration() {
+void MainWindow::turnstileDoMigration(QString fromAddr) {
     // Return if there is no connection
     if (rpc->getAllZAddresses() == nullptr)
         return;
@@ -166,8 +166,7 @@ void MainWindow::turnstileDoMigration() {
         if (Settings::getInstance()->isSaplingAddress(addr)) {
             turnstile.migrateTo->addItem(addr);
         } else {
-            if (rpc->getAllBalances()->value(addr) > 0) 
-                turnstile.migrateZaddList->addItem(addr);
+            turnstile.migrateZaddList->addItem(addr);
         }
     }
 
@@ -194,7 +193,11 @@ void MainWindow::turnstileDoMigration() {
         }
     };
 
+    if (!fromAddr.isEmpty())
+        turnstile.migrateZaddList->setCurrentText(fromAddr);
+
     fnUpdateSproutBalance(turnstile.migrateZaddList->currentText());
+    
 
     // Combo box selection event
     QObject::connect(turnstile.migrateZaddList, &QComboBox::currentTextChanged, fnUpdateSproutBalance);
@@ -444,6 +447,12 @@ void MainWindow::setupBalancesTab() {
                     url = "https://explorer.zcha.in/accounts/" + addr;
                 }
                 QDesktopServices::openUrl(QUrl(url));
+            });
+        }
+
+        if (Settings::getInstance()->isSproutAddress(addr)) {
+            menu.addAction("Migrate to Sapling", [=] () {
+                this->turnstileDoMigration(addr);
             });
         }
 

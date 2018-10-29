@@ -58,7 +58,7 @@ private:
     Tx      createTxFromSendPage();
     bool    confirmTx(Tx tx, ToFields devFee);
 
-    void turnstileDoMigration();
+    void turnstileDoMigration(QString fromAddr = "");
     void turnstileProgress();
 
 	void cancelButton();
