@@ -138,6 +138,10 @@ void MainWindow::turnstileProgress() {
 }
 
 void MainWindow::turnstileDoMigration() {
+    // Return if there is no connection
+    if (rpc->getAllZAddresses() == nullptr)
+        return;
+
     Ui_Turnstile turnstile;
     QDialog d(this);
     turnstile.setupUi(&d);

@@ -9,8 +9,8 @@ Head over to the releases page and grab the latest binary. https://github.com/ad
 ### Linux
 Extract and run the binary
 ```
-tar -xvf zec-qt-wallet-v0.2.4.tar.gz
-./zec-qt-wallet-v0.2.4/zec-qt-wallet
+tar -xvf zec-qt-wallet-v0.2.5.tar.gz
+./zec-qt-wallet-v0.2.5/zec-qt-wallet
 ```
 
 ### Windows
