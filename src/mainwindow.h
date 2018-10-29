@@ -80,6 +80,7 @@ private:
 
     void donate();
     void importPrivKey();
+    void doImport(QList<QString>* keys);
 
     RPC*                rpc;
 

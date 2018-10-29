@@ -385,6 +385,27 @@ void MainWindow::donate() {
     ui->tabWidget->setCurrentIndex(1);
 }
 
+void MainWindow::doImport(QList<QString>* keys) {
+    qDebug() << keys->size();
+    if (keys->isEmpty()) {
+        delete keys;
+        ui->statusBar->showMessage("Private key import rescan finished");
+        return;
+    }
+
+    // Pop the first key
+    QString key = keys->first();
+    keys->pop_front();
+    bool rescan = keys->isEmpty();
+
+    if (key.startsWith("S") ||
+        key.startsWith("secret")) { // Z key
+        rpc->importZPrivKey(key, rescan, [=] (auto) { doImport(keys); });                   
+    } else {
+        rpc->importTPrivKey(key, rescan, [=] (auto) { doImport(keys); });   
+    }
+}
+
 
 void MainWindow::importPrivKey() {
     QDialog d(this);
@@ -396,27 +417,22 @@ void MainWindow::importPrivKey() {
                         "The keys will be imported into your connected zcashd node");  
 
     if (d.exec() == QDialog::Accepted && !pui.privKeyTxt->toPlainText().trimmed().isEmpty()) {
-        auto keys = pui.privKeyTxt->toPlainText().trimmed().split("\n");
+        auto rawkeys = pui.privKeyTxt->toPlainText().trimmed().split("\n");
 
-        auto fnFinished = [=] (auto) {
-            qDebug() << "finished";
-            ui->statusBar->showMessage("Key import rescan finished");
-        };
+        auto keys = new QList<QString>();
+        // Filter out all the empty keys.
+        std::copy_if(rawkeys.begin(), rawkeys.end(), std::back_inserter(*keys), [=] (auto key) {
+            return !key.trimmed().isEmpty();
+        });
 
-        for (int i=0; i < keys.length(); i++) {
-            auto key = keys[i].trimmed();
-            if (key.startsWith("S") ||
-                key.startsWith("secret")) { // Z key
-                rpc->importZPrivKey(key, i == key.length() -1, fnFinished);
-            } else {    // T Key
-                rpc->importTPrivKey(key, i == key.length() -1, fnFinished);
-            }
-        }
-
+        // Start the import
+        doImport(keys);
         QMessageBox::information(this, 
             "Imported", "The keys were imported. It may take several minutes to rescan the blockchain with the new keys for your balance to be shown accurately.",
             QMessageBox::Ok);
+
     }
+
 }
 
 void MainWindow::setupBalancesTab() {
