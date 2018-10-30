@@ -135,7 +135,7 @@ public:
     QVBoxLayout *verticalLayout_2;
     QTableView *transactionsTable;
     QMenuBar *menuBar;
-    QMenu *menuBalance;
+    QMenu *menuFile;
     QMenu *menuHelp;
     QStatusBar *statusBar;
 
@@ -367,7 +367,7 @@ public:
         sendToScrollArea->setWidgetResizable(true);
         sendToWidgets = new QWidget();
         sendToWidgets->setObjectName(QStringLiteral("sendToWidgets"));
-        sendToWidgets->setGeometry(QRect(0, 0, 841, 321));
+        sendToWidgets->setGeometry(QRect(0, 0, 849, 369));
         sendToLayout = new QVBoxLayout(sendToWidgets);
         sendToLayout->setSpacing(6);
         sendToLayout->setContentsMargins(11, 11, 11, 11);
@@ -641,9 +641,9 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 889, 22));
-        menuBalance = new QMenu(menuBar);
-        menuBalance->setObjectName(QStringLiteral("menuBalance"));
+        menuBar->setGeometry(QRect(0, 0, 889, 19));
+        menuFile = new QMenu(menuBar);
+        menuFile->setObjectName(QStringLiteral("menuFile"));
         menuHelp = new QMenu(menuBar);
         menuHelp->setObjectName(QStringLiteral("menuHelp"));
         MainWindow->setMenuBar(menuBar);
@@ -667,20 +667,20 @@ public:
         QWidget::setTabOrder(btnRecieveNewAddr, txtRecieve);
         QWidget::setTabOrder(txtRecieve, transactionsTable);
 
-        menuBar->addAction(menuBalance->menuAction());
+        menuBar->addAction(menuFile->menuAction());
         menuBar->addAction(menuHelp->menuAction());
-        menuBalance->addAction(actionImport_Private_Key);
-        menuBalance->addAction(actionTurnstile_Migration);
-        menuBalance->addAction(actionSettings);
-        menuBalance->addSeparator();
-        menuBalance->addAction(actionExit);
+        menuFile->addAction(actionImport_Private_Key);
+        menuFile->addAction(actionTurnstile_Migration);
+        menuFile->addAction(actionSettings);
+        menuFile->addSeparator();
+        menuFile->addAction(actionExit);
         menuHelp->addAction(actionDonate);
         menuHelp->addAction(actionCheck_for_Updates);
         menuHelp->addAction(actionAbout);
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -689,13 +689,16 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "zec-qt-wallet", nullptr));
-        actionExit->setText(QApplication::translate("MainWindow", "Exit", nullptr));
-        actionAbout->setText(QApplication::translate("MainWindow", "About", nullptr));
-        actionSettings->setText(QApplication::translate("MainWindow", "Settings", nullptr));
-        actionDonate->setText(QApplication::translate("MainWindow", "Donate", nullptr));
-        actionCheck_for_Updates->setText(QApplication::translate("MainWindow", "Check github.com for Updates", nullptr));
-        actionTurnstile_Migration->setText(QApplication::translate("MainWindow", "Sapling Turnstile", nullptr));
-        actionImport_Private_Key->setText(QApplication::translate("MainWindow", "Import Private Key", nullptr));
+        actionExit->setText(QApplication::translate("MainWindow", "E&xit", nullptr));
+        actionAbout->setText(QApplication::translate("MainWindow", "&About", nullptr));
+        actionSettings->setText(QApplication::translate("MainWindow", "&Settings", nullptr));
+#ifndef QT_NO_SHORTCUT
+        actionSettings->setShortcut(QApplication::translate("MainWindow", "Ctrl+P", nullptr));
+#endif // QT_NO_SHORTCUT
+        actionDonate->setText(QApplication::translate("MainWindow", "&Donate", nullptr));
+        actionCheck_for_Updates->setText(QApplication::translate("MainWindow", "Check github.com for &Updates", nullptr));
+        actionTurnstile_Migration->setText(QApplication::translate("MainWindow", "Sapling &Turnstile", nullptr));
+        actionImport_Private_Key->setText(QApplication::translate("MainWindow", "&Import Private Key", nullptr));
         groupBox->setTitle(QApplication::translate("MainWindow", "Summary", nullptr));
         label->setText(QApplication::translate("MainWindow", "Shielded", nullptr));
         balSheilded->setText(QString());
@@ -740,8 +743,8 @@ public:
         qrcodeDisplay->setText(QString());
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("MainWindow", "Receive", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_4), QApplication::translate("MainWindow", "Transactions", nullptr));
-        menuBalance->setTitle(QApplication::translate("MainWindow", "File", nullptr));
-        menuHelp->setTitle(QApplication::translate("MainWindow", "Help", nullptr));
+        menuFile->setTitle(QApplication::translate("MainWindow", "&File", nullptr));
+        menuHelp->setTitle(QApplication::translate("MainWindow", "&Help", nullptr));
     } // retranslateUi
 
 };

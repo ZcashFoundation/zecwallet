@@ -22,7 +22,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -316,8 +316,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>841</width>
-                <height>321</height>
+                <width>849</width>
+                <height>369</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -718,12 +718,12 @@
      <x>0</x>
      <y>0</y>
      <width>889</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuBalance">
+   <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>&amp;File</string>
     </property>
     <addaction name="actionImport_Private_Key"/>
     <addaction name="actionTurnstile_Migration"/>
@@ -733,49 +733,52 @@
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
-     <string>Help</string>
+     <string>&amp;Help</string>
     </property>
     <addaction name="actionDonate"/>
     <addaction name="actionCheck_for_Updates"/>
     <addaction name="actionAbout"/>
    </widget>
-   <addaction name="menuBalance"/>
+   <addaction name="menuFile"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionExit">
    <property name="text">
-    <string>Exit</string>
+    <string>E&amp;xit</string>
    </property>
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>About</string>
+    <string>&amp;About</string>
    </property>
   </action>
   <action name="actionSettings">
    <property name="text">
-    <string>Settings</string>
+    <string>&amp;Settings</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
   <action name="actionDonate">
    <property name="text">
-    <string>Donate</string>
+    <string>&amp;Donate</string>
    </property>
   </action>
   <action name="actionCheck_for_Updates">
    <property name="text">
-    <string>Check github.com for Updates</string>
+    <string>Check github.com for &amp;Updates</string>
    </property>
   </action>
   <action name="actionTurnstile_Migration">
    <property name="text">
-    <string>Sapling Turnstile</string>
+    <string>Sapling &amp;Turnstile</string>
    </property>
   </action>
   <action name="actionImport_Private_Key">
    <property name="text">
-    <string>Import Private Key</string>
+    <string>&amp;Import Private Key</string>
    </property>
   </action>
  </widget>

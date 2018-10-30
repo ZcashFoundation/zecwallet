@@ -76,7 +76,7 @@ FORMS += \
     src/confirm.ui \
     src/turnstile.ui \
     src/turnstileprogress.ui \
-    src/privkey.ui
+    src/privkey.ui \
     src/memodialog.ui 
 
 # Default rules for deployment.

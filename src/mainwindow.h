@@ -57,8 +57,8 @@ private:
 	void removeExtraAddresses();
 	void setDefaultPayFrom();
 
-    Tx      createTxFromSendPage();
-    bool    confirmTx(Tx tx, ToFields devFee);
+    Tx   createTxFromSendPage();
+    bool confirmTx(Tx tx, ToFields devFee);
 
     void turnstileDoMigration(QString fromAddr = "");
     void turnstileProgress();
