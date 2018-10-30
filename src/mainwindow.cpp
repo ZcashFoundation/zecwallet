@@ -155,8 +155,8 @@ void MainWindow::turnstileProgress() {
         }
     });
 
-    auto accpeted = d.exec();    
-    if (accpeted == QDialog::Accepted && curProgress.step == curProgress.totalSteps) {
+    d.exec();    
+    if (curProgress.step == curProgress.totalSteps) {
         // Finished, so delete the file
         rpc->getTurnstile()->removeFile();
     }    

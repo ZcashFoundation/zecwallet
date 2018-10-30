@@ -447,7 +447,7 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
                             // Lookup txid in the map
                             auto txidInfo = txidDetails->value(txid);
 
-                            unsigned long timestamp;
+                            qint64 timestamp;
                             if (txidInfo.find("time") != txidInfo.end()) {
                                 timestamp = txidInfo["time"].get<json::number_unsigned_t>();
                             } else {
@@ -655,7 +655,7 @@ void RPC::refreshTransactions() {
 
             TransactionItem tx{
                 QString::fromStdString(it["category"]),
-                (unsigned long)it["time"].get<json::number_unsigned_t>(),
+                (qint64)it["time"].get<json::number_unsigned_t>(),
                 (it["address"].is_null() ? "" : QString::fromStdString(it["address"])),
                 QString::fromStdString(it["txid"]),
                 it["amount"].get<json::number_float_t>() + fee,
