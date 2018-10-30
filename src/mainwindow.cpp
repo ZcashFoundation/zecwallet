@@ -434,14 +434,12 @@ void MainWindow::importPrivKey() {
             return !key.trimmed().isEmpty();
         });
 
-        // Start the import
+        // Start the import. The function takes ownership of keys
         doImport(keys);
         QMessageBox::information(this, 
             "Imported", "The keys were imported. It may take several minutes to rescan the blockchain with the new keys for your balance to be shown accurately.",
             QMessageBox::Ok);
-
     }
-
 }
 
 void MainWindow::setupBalancesTab() {
