@@ -3,6 +3,7 @@ debug/
 release/
 x64/
 .vscode/
+src/ui_*.h
 *.autosave
 src/precompiled.h.cpp
 .qmake.stash
