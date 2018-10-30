@@ -110,6 +110,7 @@ public:
 private:
     void doRPC      (const json& payload, const std::function<void(json)>& cb);
     void doSendRPC  (const json& payload, const std::function<void(json)>& cb);
+	void doSendRPC(const json& payload, const std::function<void(json)>& cb, const std::function<void(QString)>& err);
 
     void refreshBalances();
 

@@ -243,7 +243,9 @@ ProgressReport Turnstile::getPlanProgress() {
 		 		i.status == TurnstileMigrationItemStatus::UnknownError;
 	}) != plan.end();
 
-	return ProgressReport{(int)step, total*2, nextBlock, hasErrors};
+	auto stepData = (nextStep == plan.end() ? std::prev(nextStep) : nextStep);
+
+	return ProgressReport{(int)step, total*2, nextBlock, hasErrors, stepData->fromAddr, stepData->destAddr, stepData->intTAddr};
 }
 
 void Turnstile::executeMigrationStep() {

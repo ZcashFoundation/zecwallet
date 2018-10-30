@@ -30,6 +30,9 @@ struct ProgressReport {
 	int 	totalSteps;
 	int 	nextBlock;
 	bool 	hasErrors;
+	QString from;
+	QString to;
+	QString via;
 };
 
 class Turnstile

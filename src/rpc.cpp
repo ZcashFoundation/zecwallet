@@ -194,7 +194,7 @@ void RPC::importZPrivKey(QString addr, bool rescan, const std::function<void(jso
 
     qDebug() << QString::fromStdString(payload.dump());
     
-    doRPC(payload, cb);
+    doSendRPC(payload, cb);
 }
 
 
@@ -207,7 +207,7 @@ void RPC::importTPrivKey(QString addr, bool rescan, const std::function<void(jso
     };
     
     qDebug() << QString::fromStdString(payload.dump());
-    doRPC(payload, cb);
+    doSendRPC(payload, cb);
 }
 
 
@@ -232,30 +232,36 @@ void RPC::getTransactions(const std::function<void(json)>& cb) {
     doRPC(payload, cb);
 }
 
-void RPC::doSendRPC(const json& payload, const std::function<void(json)>& cb) {
-    QNetworkReply *reply = restclient->post(request, QByteArray::fromStdString(payload.dump()));
+void RPC::doSendRPC(const json& payload, const std::function<void(json)>& cb, const std::function<void(QString)>& err) {
+	QNetworkReply *reply = restclient->post(request, QByteArray::fromStdString(payload.dump()));
 
-    QObject::connect(reply, &QNetworkReply::finished, [=] {
-        reply->deleteLater();
-        
-        if (reply->error() != QNetworkReply::NoError) {
-            auto parsed = json::parse(reply->readAll(), nullptr, false);
-            if (!parsed.is_discarded() && !parsed["error"]["message"].is_null()) {
-                handleTxError(QString::fromStdString(parsed["error"]["message"]));    
-            } else {
-                handleTxError(reply->errorString());
-            }
-            
-            return;
-        } 
-        
-        auto parsed = json::parse(reply->readAll(), nullptr, false);
-        if (parsed.is_discarded()) {
-            handleTxError("Unknown error");
-        }
-        
-        cb(parsed["result"]);
-    });
+	QObject::connect(reply, &QNetworkReply::finished, [=] {
+		reply->deleteLater();
+
+		if (reply->error() != QNetworkReply::NoError) {
+			auto parsed = json::parse(reply->readAll(), nullptr, false);
+			if (!parsed.is_discarded() && !parsed["error"]["message"].is_null()) {
+				err(QString::fromStdString(parsed["error"]["message"]));
+			}
+			else {
+				err(reply->errorString());
+			}
+
+			return;
+		}
+
+		auto parsed = json::parse(reply->readAll(), nullptr, false);
+		if (parsed.is_discarded()) {
+			err("Unknown error");
+		}
+
+		cb(parsed["result"]);
+	});
+}
+
+// Default implementation of a Send RPC that default shows an error message box with the error. 
+void RPC::doSendRPC(const json& payload, const std::function<void(json)>& cb) {
+	doSendRPC(payload, cb, [=](auto error) { this->handleTxError(error); });
 }
 
 void RPC::sendZTransaction(json params, const std::function<void(json)>& cb) {

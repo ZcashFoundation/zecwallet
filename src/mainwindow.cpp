@@ -106,6 +106,9 @@ void MainWindow::turnstileProgress() {
             
             auto nextTxBlock = curProgress.nextBlock - Settings::getInstance()->getBlockNumber();
             
+			progress.fromAddr->setText(curProgress.from);
+			progress.toAddr->setText(curProgress.to);
+
             if (curProgress.step == curProgress.totalSteps) {
                 auto txt = QString("Turnstile migration finished");
                 if (curProgress.hasErrors) {
@@ -115,7 +118,7 @@ void MainWindow::turnstileProgress() {
             } else {
                 progress.nextTx->setText(QString("Next transaction in ") 
                                     % QString::number(nextTxBlock < 0 ? 0 : nextTxBlock)
-                                    % " blocks\n" 
+                                    % " blocks via " % curProgress.via % "\n" 
                                     % (nextTxBlock <= 0 ? "(waiting for confirmations)" : ""));
             }
             
@@ -138,6 +141,7 @@ void MainWindow::turnstileProgress() {
         progress.buttonBox->button(QDialogButtonBox::Discard)->setText("Abort");
     else
         progress.buttonBox->button(QDialogButtonBox::Discard)->setVisible(false);
+
     QObject::connect(progress.buttonBox->button(QDialogButtonBox::Discard), &QPushButton::clicked, [&] () {
         if (curProgress.step != curProgress.totalSteps) {
             auto abort = QMessageBox::warning(this, "Are you sure you want to Abort?",
@@ -520,7 +524,7 @@ void MainWindow::setupBalancesTab() {
             });
         }
 
-        if (Settings::getInstance()->isSproutAddress(addr)) {
+        if (Settings::getInstance()->isTestnet() && Settings::getInstance()->isSproutAddress(addr)) {
             menu.addAction("Migrate to Sapling", [=] () {
                 this->turnstileDoMigration(addr);
             });
