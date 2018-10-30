@@ -409,9 +409,9 @@ void MainWindow::doImport(QList<QString>* keys) {
 
     if (key.startsWith("S") ||
         key.startsWith("secret")) { // Z key
-        rpc->importZPrivKey(key, rescan, [=] (auto) { doImport(keys); });                   
+        rpc->importZPrivKey(key, rescan, [=] (auto) { this->doImport(keys); });                   
     } else {
-        rpc->importTPrivKey(key, rescan, [=] (auto) { doImport(keys); });   
+        rpc->importTPrivKey(key, rescan, [=] (auto) { this->doImport(keys); });
     }
 }
 
