@@ -84,6 +84,8 @@ private:
     void importPrivKey();
     void doImport(QList<QString>* keys);
 
+	void restoreSavedStates();
+
     RPC*                rpc;
 
     QMovie*             loadingMovie;

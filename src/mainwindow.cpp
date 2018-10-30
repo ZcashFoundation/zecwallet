@@ -22,9 +22,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	QSettings s;
-	restoreGeometry(s.value("geometry").toByteArray());
-
 	// Status Bar
 	setupStatusBar();
     
@@ -69,12 +66,26 @@ MainWindow::MainWindow(QWidget *parent) :
     rpc->refreshZECPrice();
 
     rpc->refresh(true);  // Force refresh first time
+
+	restoreSavedStates();
+}
+
+void MainWindow::restoreSavedStates() {
+	QSettings s;
+	restoreGeometry(s.value("geometry").toByteArray());
+
+	ui->balancesTable->horizontalHeader()->restoreState(s.value("baltablegeometry").toByteArray());
+	ui->transactionsTable->horizontalHeader()->restoreState(s.value("tratablegeometry").toByteArray());
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {
 	QSettings s;
+
 	s.setValue("geometry", saveGeometry());
-	QWidget::closeEvent(event);
+	s.setValue("baltablegeometry", ui->balancesTable->horizontalHeader()->saveState());
+	s.setValue("tratablegeometry", ui->transactionsTable->horizontalHeader()->saveState());
+
+	QMainWindow::closeEvent(event);
 }
 
 void MainWindow::turnstileProgress() {
