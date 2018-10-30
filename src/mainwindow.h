@@ -43,6 +43,8 @@ public:
     QLabel*             loadingLabel;
 
 private:    
+	void closeEvent(QCloseEvent* event);
+
     void setupSendTab();
     void setupTransactionsTab();
     void setupRecieveTab();

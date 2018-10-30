@@ -22,6 +22,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+	QSettings s;
+	restoreGeometry(s.value("geometry").toByteArray());
+
 	// Status Bar
 	setupStatusBar();
     
@@ -66,6 +69,12 @@ MainWindow::MainWindow(QWidget *parent) :
     rpc->refreshZECPrice();
 
     rpc->refresh(true);  // Force refresh first time
+}
+
+void MainWindow::closeEvent(QCloseEvent* event) {
+	QSettings s;
+	s.setValue("geometry", saveGeometry());
+	QWidget::closeEvent(event);
 }
 
 void MainWindow::turnstileProgress() {
