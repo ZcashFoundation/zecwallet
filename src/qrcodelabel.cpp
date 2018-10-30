@@ -13,7 +13,7 @@ QSize QRCodeLabel::sizeHint() const
     return QSize(w, w);   // 1:1 
 }
 
-void QRCodeLabel::resizeEvent(QResizeEvent * e)
+void QRCodeLabel::resizeEvent(QResizeEvent*)
 {
     if(!address.isEmpty())
         QLabel::setPixmap(scaledPixmap());
