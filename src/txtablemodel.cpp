@@ -98,10 +98,7 @@ void TxTableModel::updateAllData() {
                     else 
                         return addr;
                 }
-		case 2: {
-			qDebug() << modeldata->at(index.row()).datetime;
-			return QDateTime::fromMSecsSinceEpoch(modeldata->at(index.row()).datetime * 1000).toLocalTime().toString();
-		}
+		case 2: return QDateTime::fromMSecsSinceEpoch(modeldata->at(index.row()).datetime *  (qint64)1000).toLocalTime().toString();
         case 3: return Settings::getInstance()->getZECDisplayFormat(modeldata->at(index.row()).amount);
         }
     } 
@@ -117,7 +114,7 @@ void TxTableModel::updateAllData() {
                     else 
                         return addr;
                 }
-        case 2: return QDateTime::fromMSecsSinceEpoch(modeldata->at(index.row()).datetime * 1000).toLocalTime().toString();
+        case 2: return QDateTime::fromMSecsSinceEpoch(modeldata->at(index.row()).datetime * (qint64)1000).toLocalTime().toString();
         case 3: return Settings::getInstance()->getUSDFormat(modeldata->at(index.row()).amount);
         }    
     }

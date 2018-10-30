@@ -15,7 +15,7 @@ class Turnstile;
 
 struct TransactionItem {
     QString         type;
-    unsigned long   datetime;
+    qint64			datetime;
     QString         address;
     QString         txid;
     double          amount;
