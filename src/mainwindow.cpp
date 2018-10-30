@@ -443,16 +443,21 @@ void MainWindow::importPrivKey() {
     if (d.exec() == QDialog::Accepted && !pui.privKeyTxt->toPlainText().trimmed().isEmpty()) {
         auto rawkeys = pui.privKeyTxt->toPlainText().trimmed().split("\n");
 
-        auto keys = new QList<QString>();
+        QList<QString> keysTmp;
         // Filter out all the empty keys.
-        std::copy_if(rawkeys.begin(), rawkeys.end(), std::back_inserter(*keys), [=] (auto key) {
-            return !key.trimmed().isEmpty();
+        std::copy_if(rawkeys.begin(), rawkeys.end(), std::back_inserter(keysTmp), [=] (auto key) {
+            return !key.startsWith("#") && !key.trimmed().isEmpty();
+        });
+
+        auto keys = new QList<QString>();
+        std::transform(keysTmp.begin(), keysTmp.end(), std::back_inserter(*keys), [=](auto key) {
+            return key.trimmed().split(" ")[0];
         });
 
         // Start the import. The function takes ownership of keys
         doImport(keys);
         QMessageBox::information(this, 
-            "Imported", "The keys were imported. It may take several minutes to rescan the blockchain with the new keys for your balance to be shown accurately.",
+            "Imported", "The keys were imported. It may take several minutes to rescan the blockchain. Until then, functionality may be limited",
             QMessageBox::Ok);
     }
 }

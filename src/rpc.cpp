@@ -191,8 +191,6 @@ void RPC::importZPrivKey(QString addr, bool rescan, const std::function<void(jso
         {"method", "z_importkey"},
         {"params", { addr.toStdString(), (rescan? "yes" : "no") }},
     };
-
-    qDebug() << QString::fromStdString(payload.dump());
     
     doSendRPC(payload, cb);
 }
@@ -206,7 +204,6 @@ void RPC::importTPrivKey(QString addr, bool rescan, const std::function<void(jso
         {"params", { addr.toStdString(), (rescan? "yes" : "no") }},
     };
     
-    qDebug() << QString::fromStdString(payload.dump());
     doSendRPC(payload, cb);
 }
 

@@ -101,7 +101,7 @@ void Turnstile::planMigration(QString zaddr, QString destAddr, int numsplits, in
 			return payload;
 		},
 		[=] (QMap<double, json>* newAddrs) {
-			// Get block numbers
+            // Get block numbers
 			auto curBlock = Settings::getInstance()->getBlockNumber();
 			auto blockNumbers = getBlockNumbers(curBlock, curBlock + numBlocks, splits.size());
 
