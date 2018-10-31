@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="WixProject1" Language="1033" Version="1.0.0.0" Manufacturer="zec-qt-wallet-org" UpgradeCode="fb9bf166-b55f-46b5-a990-9189bdf64533">
+	<Product Id="*" Name="zec-qt-wallet" Language="1033" Version="1.0.0.0" Manufacturer="zec-qt-wallet-org" UpgradeCode="fb9bf166-b55f-46b5-a990-9189bdf64533">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-		<MediaTemplate />
+		<MediaTemplate EmbedCab="yes"/>
 
-		<Feature Id="ProductFeature" Title="WixProject1" Level="1">
+		<Feature Id="ProductFeature" Title="zec-qt-wallet" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
             <ComponentRef Id="ProgramMenuDir"/>
 		</Feature>
@@ -31,13 +31,13 @@
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			<Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLFOLDER" Name="WixProject1" />
+				<Directory Id="INSTALLFOLDER" Name="zec-qt-wallet" />
 			</Directory>
             <Directory Id="ProgramMenuFolder" Name="Programs">
-                <Directory Id="ApplicationProgramsFolder" Name="WixSingleSetup">
+                <Directory Id="ApplicationProgramsFolder" Name="zec-qt-wallet">
                     <Component Id="ProgramMenuDir" Guid="0D560F5A-53E0-4E7E-ADDA-15A26995505E">
                         <RemoveFolder Id="ProgramMenuDir" On="uninstall"/>
-                        <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\WixSetup"
+                        <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\zec-qt-wallet\WixSetup"
                                        Type="integer" Value="1" Name="installed" KeyPath="yes" />
                     </Component>
                 </Directory>
@@ -50,7 +50,7 @@
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
 			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
 			<Component Id="ProductComponent">
-                <File Source="$(var.zec-qt-wallet.TargetPath)">
+                <File Source="zec-qt-wallet.exe">
                     <Shortcut Id="startMenuShotcut" Advertise="yes" Directory="ApplicationProgramsFolder"
                         Name="zec-qt-wallet" WorkingDirectory="INSTALLFOLDER" >
                     </Shortcut>
