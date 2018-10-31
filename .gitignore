@@ -2,6 +2,7 @@ bin/
 debug/
 release/
 x64/
+artifacts/
 .vscode/
 src/ui_*.h
 *.autosave

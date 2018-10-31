@@ -53,14 +53,15 @@ cp README.md bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp LICENSE bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cd bin && tar cvf linux-zec-qt-wallet-v$APP_VERSION.tar.gz zec-qt-wallet-v$APP_VERSION/ > /dev/null
 cd .. 
-cp bin/linux-zec-qt-wallet-v$APP_VERSION.tar.gz .
+mkdir artifacts
+cp bin/linux-zec-qt-wallet-v$APP_VERSION.tar.gz ./artifacts
 
-if [ -f linux-zec-qt-wallet-v$APP_VERSION.tar.gz ] ; then
+if [ -f artifacts/linux-zec-qt-wallet-v$APP_VERSION.tar.gz ] ; then
     echo "[OK]"
 
-    echo "Done. Build is linux-zec-qt-wallet-v$APP_VERSION.tar.gz"
+    echo "Done. Build is artifacts/linux-zec-qt-wallet-v$APP_VERSION.tar.gz"
     echo "Package contents:"
-    tar tf "linux-zec-qt-wallet-v$APP_VERSION.tar.gz"
+    tar tf "artifacts/linux-zec-qt-wallet-v$APP_VERSION.tar.gz"
 else
     echo "[ERROR]"
     exit 1
@@ -92,15 +93,16 @@ cp README.md release/zec-qt-wallet-v$APP_VERSION
 cp LICENSE release/zec-qt-wallet-v$APP_VERSION 
 cd release && zip -r Windows-zec-qt-wallet-v$APP_VERSION.zip zec-qt-wallet-v$APP_VERSION/ > /dev/null
 cd ..
-cp release/Windows-zec-qt-wallet-v$APP_VERSION.zip .
+mkdir artifacts
+cp release/Windows-zec-qt-wallet-v$APP_VERSION.zip ./artifacts
 
 
-if [ -f Windows-zec-qt-wallet-v$APP_VERSION.zip ] ; then
+if [ -f artifacts/Windows-zec-qt-wallet-v$APP_VERSION.zip ] ; then
     echo "[OK]"
 
-    echo "Done. Build is Windows-zec-qt-wallet-v$APP_VERSION.zip"
+    echo "Done. Build is artifacts/Windows-zec-qt-wallet-v$APP_VERSION.zip"
     echo "Package contents:"
-    unzip -l "Windows-zec-qt-wallet-v$APP_VERSION.zip"
+    unzip -l "artifacts/Windows-zec-qt-wallet-v$APP_VERSION.zip"
 else
     echo "[ERROR]"
     exit 1

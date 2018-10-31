@@ -55,6 +55,7 @@
                         Name="zec-qt-wallet" WorkingDirectory="INSTALLFOLDER" >
                     </Shortcut>
                 </File>
+                <File Source="LICENSE" />
 			</Component>
 		</ComponentGroup>
 	</Fragment>
