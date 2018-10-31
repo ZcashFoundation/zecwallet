@@ -16,6 +16,7 @@ Makefile
 Makefile.*
 qrc_application.cpp
 zec-qt-wallet_plugin_import.cpp
+zec-qt-wallet_resource*
 workspace.code-workspace
 *.zip
 *.tar.gz
