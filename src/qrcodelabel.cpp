@@ -31,7 +31,8 @@ QPixmap QRCodeLabel::scaledPixmap() const {
     const double aspect = w/h;
     const double size   = ((aspect>1.0)?h:w);
     const double scale  = size/(s+2);
-    const double offset = (w - size) > 0 ? (w - size) / 2 : 0;
+    const double woff   = (w - size) > 0 ? (w - size) / 2 : 0;
+    const double hoff   = (h - size) > 0 ? (h - size) / 2 : 0;
     
     // NOTE: For performance reasons my implementation only draws the foreground parts    
     painter.setPen(Qt::NoPen);
@@ -40,7 +41,7 @@ QPixmap QRCodeLabel::scaledPixmap() const {
         for(int x=0; x<s; x++) {
             const int color=qr.getModule(x, y);  // 0 for white, 1 for black
             if(0!=color) {
-                const double rx1=(x+1)*scale+ offset, ry1=(y+1)*scale;
+                const double rx1=(x+1)*scale + woff, ry1=(y+1)*scale + hoff;
                 QRectF r(rx1, ry1, scale, scale);
                 painter.drawRects(&r,1);
             }
