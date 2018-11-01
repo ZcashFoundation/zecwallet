@@ -53,7 +53,8 @@ SOURCES += \
     src/txtablemodel.cpp \
 	src/turnstile.cpp \
     src/utils.cpp \
-    src/qrcodelabel.cpp
+    src/qrcodelabel.cpp \
+    src/connection.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -70,7 +71,8 @@ HEADERS += \
     src/senttxstore.h \
 	src/turnstile.h \
     src/utils.h \
-    src/qrcodelabel.h
+    src/qrcodelabel.h \
+    src/connection.h
 
 FORMS += \
     src/mainwindow.ui \

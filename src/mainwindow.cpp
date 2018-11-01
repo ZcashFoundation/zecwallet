@@ -11,6 +11,7 @@
 #include "utils.h"
 #include "turnstile.h"
 #include "senttxstore.h"
+#include "connection.h"
 
 #include "precompiled.h"
 
@@ -62,13 +63,17 @@ MainWindow::MainWindow(QWidget *parent) :
     setupBalancesTab();
     setupTurnstileDialog();
 
-    rpc = new RPC(new QNetworkAccessManager(this), this);
-    rpc->refreshZECPrice();
-
-    rpc->refresh(true);  // Force refresh first time
-
     restoreSavedStates();
+
+    new ConnectionLoader(this).getConnection([=] (RPC* rpc) {
+        if (rpc == nullptr)
+            return;
+        this->rpc = rpc;
+        this->rpc->refreshZECPrice();
+        this->rpc->refresh(true);  // Force refresh first time
+    });    
 }
+ 
 
 void MainWindow::restoreSavedStates() {
     QSettings s;
@@ -385,11 +390,14 @@ void MainWindow::setupSettingsModal() {
                     settings.rpcuser->text(),
                     settings.rpcpassword->text());
                 
-                this->rpc->reloadConnectionInfo();
+                auto me = this;
+                ConnectionLoader(this).getConnection([&me] (auto newrpc) {
+                    delete me->rpc;
+                    me->rpc = newrpc;
+                    // Then refresh everything.            
+                    me->rpc->refresh(true);            
+                });
             }
-
-            // Then refresh everything.            
-            this->rpc->refresh(true);            
         };
     });
 

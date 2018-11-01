@@ -6,8 +6,8 @@
 
 using json = nlohmann::json;
 
-RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
-    this->restclient = client;
+RPC::RPC(Connection* conn, MainWindow* main) {
+    this->conn = conn;
     this->main = main;
     this->ui = main->ui;
 
@@ -25,8 +25,6 @@ RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
     main->ui->transactionsTable->setColumnWidth(1, 350);
     main->ui->transactionsTable->setColumnWidth(2, 200);
     main->ui->transactionsTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
-
-    reloadConnectionInfo();
 
     // Set up timer to refresh Price
     priceTimer = new QTimer(main);
@@ -49,7 +47,6 @@ RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
     });
     // Start at every 10s. When an operation is pending, this will change to every second
     txTimer->start(Utils::updateSpeed);  
-
 }
 
 RPC::~RPC() {
@@ -64,27 +61,12 @@ RPC::~RPC() {
     delete allBalances;
     delete zaddresses;
 
-    delete restclient;
+    delete conn;
 }
 
-void RPC::reloadConnectionInfo() {
-    // Reset for any errors caused.
-    firstTime = true;
-         
-    QUrl myurl;
-    myurl.setScheme("http"); //https also applicable
-    myurl.setHost(Settings::getInstance()->getHost());
-    myurl.setPort(Settings::getInstance()->getPort().toInt());
-
-    request.setUrl(myurl);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "text/plain");
-    
-    QString headerData = "Basic " + Settings::getInstance()->getUsernamePassword().toLocal8Bit().toBase64();
-    request.setRawHeader("Authorization", headerData.toLocal8Bit());
-}
 
 void RPC::doRPC(const json& payload, const std::function<void(json)>& cb) {
-    QNetworkReply *reply = restclient->post(request, QByteArray::fromStdString(payload.dump()));
+    QNetworkReply *reply = conn->restclient->post(*conn->request, QByteArray::fromStdString(payload.dump()));
 
     QObject::connect(reply, &QNetworkReply::finished, [=] {
         reply->deleteLater();
@@ -230,7 +212,7 @@ void RPC::getTransactions(const std::function<void(json)>& cb) {
 }
 
 void RPC::doSendRPC(const json& payload, const std::function<void(json)>& cb, const std::function<void(QString)>& err) {
-    QNetworkReply *reply = restclient->post(request, QByteArray::fromStdString(payload.dump()));
+    QNetworkReply *reply = conn->restclient->post(*conn->request, QByteArray::fromStdString(payload.dump()));
 
     QObject::connect(reply, &QNetworkReply::finished, [=] {
         reply->deleteLater();
@@ -790,7 +772,7 @@ void RPC::refreshZECPrice() {
     QNetworkRequest req;
     req.setUrl(cmcURL);
     
-    QNetworkReply *reply = restclient->get(req);
+    QNetworkReply *reply = conn->restclient->get(req);
 
     QObject::connect(reply, &QNetworkReply::finished, [=] {
         reply->deleteLater();

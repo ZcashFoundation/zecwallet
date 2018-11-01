@@ -8,6 +8,7 @@
 #include "txtablemodel.h"
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
+#include "connection.h"
 
 using json = nlohmann::json;
 
@@ -27,7 +28,7 @@ struct TransactionItem {
 class RPC
 {
 public:
-    RPC(QNetworkAccessManager* restclient, MainWindow* main);    
+    RPC(Connection* conn, MainWindow* main);
     ~RPC();
 
     void refresh(bool force = false);
@@ -44,8 +45,6 @@ public:
     const QList<QString>*             getAllZAddresses()  { return zaddresses; }
     const QList<UnspentOutput>*       getUTXOs()          { return utxos; }
     const QMap<QString, double>*      getAllBalances()    { return allBalances; }
-
-    void reloadConnectionInfo();
 
     void newZaddr(bool sapling, const std::function<void(json)>& cb);
     void newTaddr(const std::function<void(json)>& cb);
@@ -69,7 +68,7 @@ public:
         for (auto item: payloads) {
             json payload = payloadGenerator(item);
             
-            QNetworkReply *reply = restclient->post(request, QByteArray::fromStdString(payload.dump()));
+            QNetworkReply *reply = conn->restclient->post(*conn->request, QByteArray::fromStdString(payload.dump()));
 
             QObject::connect(reply, &QNetworkReply::finished, [=] {
                 reply->deleteLater();
@@ -133,8 +132,7 @@ private:
     void handleConnectionError  (const QString& error);
     void handleTxError          (const QString& error);
 
-    QNetworkAccessManager*      restclient;    
-    QNetworkRequest             request;
+    Connection*                 conn                        = nullptr;
 
     QList<UnspentOutput>*       utxos                       = nullptr;
     QMap<QString, double>*      allBalances                 = nullptr;
