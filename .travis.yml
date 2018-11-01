@@ -2,15 +2,22 @@ matrix:
   include:
     # works on Precise and Trusty
     - os: linux
+      compiler: clang
       addons:
         apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
-          packages:
-            - clang-3.7
+          sources: ['llvm-toolchain-trusty-5.0']
+          packages: ['clang-5.0']  
       env:
-        - MATRIX_EVAL="QMAKE_CC=clang-3.7 && QMAKE_CXX=clang++-3.7"
+        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+    
+    - os: linux
+      compiler: g++
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-8']
+      env:
+        - MATRIX_EVAL="CC=gcc-8 CXX=g++-8"
 
 before_install:
  - eval "${MATRIX_EVAL}"
@@ -21,6 +28,5 @@ before_install:
 
 script:
  - qmake -v
- - clang++ -v
- - qmake zec-qt-wallet.pro CONFIG+=release -spec linux-clang
- - make
+ - qmake zec-qt-wallet.pro CONFIG+=release 
+ - make $MATRIX_EVAL -j4
