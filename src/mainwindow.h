@@ -70,7 +70,7 @@ private:
     void maxAmountChecked(int checked);
 
     void addressChanged(int number, const QString& text);
-    void amountChanged (int numer, const QString& text);
+    void amountChanged (int number, const QString& text);
 
     void addNewZaddr(bool sapling);
     std::function<void(bool)> addZAddrsToComboList(bool sapling);
@@ -86,9 +86,9 @@ private:
 
     void restoreSavedStates();
 
-    RPC*                rpc;
+    RPC*       rpc;
 
-    QMovie*             loadingMovie;
+    QMovie*    loadingMovie;
 };
 
 #endif // MAINWINDOW_H

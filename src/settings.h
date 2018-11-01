@@ -45,12 +45,12 @@ public:
 
     const QString& getZcashdConfLocation() { return confLocation; }
 
-    void       setZECPrice(double p)         { zecPrice = p; }
-    double     getZECPrice();
+    void    setZECPrice(double p) { zecPrice = p; }
+    double  getZECPrice();
 
-    QString getUSDFormat            (double bal);
-    QString getZECDisplayFormat        (double bal);
-    QString getZECUSDDisplayFormat    (double bal);
+    QString getUSDFormat          (double bal);
+    QString getZECDisplayFormat   (double bal);
+    QString getZECUSDDisplayFormat(double bal);
 
 private:
     // This class can only be accessed through Settings::getInstance()
@@ -61,9 +61,9 @@ private:
 
     Config*        currentConfig;
 
-    Config*        defaults    = nullptr;
-    Config*        zcashconf    = nullptr;
-    Config*     uisettings    = nullptr;
+    Config* defaults    = nullptr;
+    Config* zcashconf   = nullptr;
+    Config* uisettings  = nullptr;
 
     QString     confLocation;
 
