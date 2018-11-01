@@ -7,9 +7,9 @@
 using json = nlohmann::json;
 
 RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
-	this->restclient = client;
-	this->main = main;
-	this->ui = main->ui;
+    this->restclient = client;
+    this->main = main;
+    this->ui = main->ui;
 
     this->turnstile = new Turnstile(this, main);
 
@@ -26,7 +26,7 @@ RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
     main->ui->transactionsTable->setColumnWidth(2, 200);
     main->ui->transactionsTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
 
-	reloadConnectionInfo();
+    reloadConnectionInfo();
 
     // Set up timer to refresh Price
     priceTimer = new QTimer(main);
@@ -35,12 +35,12 @@ RPC::RPC(QNetworkAccessManager* client, MainWindow* main) {
     });
     priceTimer->start(Utils::priceRefreshSpeed);  // Every hour
 
-	// Set up a timer to refresh the UI every few seconds
-	timer = new QTimer(main);
-	QObject::connect(timer, &QTimer::timeout, [=]() {
-		refresh();
-	});
-	timer->start(Utils::updateSpeed);    
+    // Set up a timer to refresh the UI every few seconds
+    timer = new QTimer(main);
+    QObject::connect(timer, &QTimer::timeout, [=]() {
+        refresh();
+    });
+    timer->start(Utils::updateSpeed);    
 
     // Set up the timer to watch for tx status
     txTimer = new QTimer(main);
@@ -68,9 +68,9 @@ RPC::~RPC() {
 }
 
 void RPC::reloadConnectionInfo() {
-	// Reset for any errors caused.
-	firstTime = true;
-		 
+    // Reset for any errors caused.
+    firstTime = true;
+         
     QUrl myurl;
     myurl.setScheme("http"); //https also applicable
     myurl.setHost(Settings::getInstance()->getHost());
@@ -230,35 +230,35 @@ void RPC::getTransactions(const std::function<void(json)>& cb) {
 }
 
 void RPC::doSendRPC(const json& payload, const std::function<void(json)>& cb, const std::function<void(QString)>& err) {
-	QNetworkReply *reply = restclient->post(request, QByteArray::fromStdString(payload.dump()));
+    QNetworkReply *reply = restclient->post(request, QByteArray::fromStdString(payload.dump()));
 
-	QObject::connect(reply, &QNetworkReply::finished, [=] {
-		reply->deleteLater();
+    QObject::connect(reply, &QNetworkReply::finished, [=] {
+        reply->deleteLater();
 
-		if (reply->error() != QNetworkReply::NoError) {
-			auto parsed = json::parse(reply->readAll(), nullptr, false);
-			if (!parsed.is_discarded() && !parsed["error"]["message"].is_null()) {
-				err(QString::fromStdString(parsed["error"]["message"]));
-			}
-			else {
-				err(reply->errorString());
-			}
+        if (reply->error() != QNetworkReply::NoError) {
+            auto parsed = json::parse(reply->readAll(), nullptr, false);
+            if (!parsed.is_discarded() && !parsed["error"]["message"].is_null()) {
+                err(QString::fromStdString(parsed["error"]["message"]));
+            }
+            else {
+                err(reply->errorString());
+            }
 
-			return;
-		}
+            return;
+        }
 
-		auto parsed = json::parse(reply->readAll(), nullptr, false);
-		if (parsed.is_discarded()) {
-			err("Unknown error");
-		}
+        auto parsed = json::parse(reply->readAll(), nullptr, false);
+        if (parsed.is_discarded()) {
+            err("Unknown error");
+        }
 
-		cb(parsed["result"]);
-	});
+        cb(parsed["result"]);
+    });
 }
 
 // Default implementation of a Send RPC that default shows an error message box with the error. 
 void RPC::doSendRPC(const json& payload, const std::function<void(json)>& cb) {
-	doSendRPC(payload, cb, [=](auto error) { this->handleTxError(error); });
+    doSendRPC(payload, cb, [=](auto error) { this->handleTxError(error); });
 }
 
 void RPC::sendZTransaction(json params, const std::function<void(json)>& cb) {
@@ -296,17 +296,17 @@ void RPC::handleConnectionError(const QString& error) {
                         % "\nIf you're connecting to a remote note, you can change the username/password in the "
                         % "File->Settings menu.";
         } else if (error.contains("connection refused", Qt::CaseInsensitive)) {
-			auto confLocation = Settings::getInstance()->getZcashdConfLocation();
-			if (confLocation.isEmpty()) {
-				explanation = QString()
-					% "\n\nA zcash.conf was not found on this machine. If you are connecting to a remote/non-standard node " 
-					% "please set the host/port and user/password in the File->Settings menu.";
-			}
-			else {
-				explanation = QString()
-					% "\n\nA zcash.conf was found at\n" % confLocation
-					% "\nbut we can't connect to zcashd. Is rpcuser=<user> and rpcpassword=<pass> set in the zcash.conf file?";
-			}
+            auto confLocation = Settings::getInstance()->getZcashdConfLocation();
+            if (confLocation.isEmpty()) {
+                explanation = QString()
+                    % "\n\nA zcash.conf was not found on this machine. If you are connecting to a remote/non-standard node " 
+                    % "please set the host/port and user/password in the File->Settings menu.";
+            }
+            else {
+                explanation = QString()
+                    % "\n\nA zcash.conf was found at\n" % confLocation
+                    % "\nbut we can't connect to zcashd. Is rpcuser=<user> and rpcpassword=<pass> set in the zcash.conf file?";
+            }
         } else if (error.contains("internal server error", Qt::CaseInsensitive) ||
                    error.contains("rewinding", Qt::CaseInsensitive) || 
                    error.contains("loading", Qt::CaseInsensitive)) {
@@ -351,7 +351,7 @@ void RPC::fillTxJsonParams(json& params, Tx tx) {
     for (int i=0; i < tx.toAddrs.size(); i++) {
         auto toAddr = tx.toAddrs[i];
 
-		// Construct the JSON params
+        // Construct the JSON params
         json rec = json::object();
         rec["address"]      = toAddr.addr.toStdString();
         rec["amount"]       = QString::number(toAddr.amount, 'f', 8).toDouble();        // Force it through string for rounding
@@ -489,14 +489,14 @@ void RPC::getInfoThenRefresh(bool force) {
     };
 
     doRPC(payload, [=] (const json& reply) {   
-		// Testnet?
-		if (!reply["testnet"].is_null()) {
-			Settings::getInstance()->setTestnet(reply["testnet"].get<json::boolean_t>());
-		};
+        // Testnet?
+        if (!reply["testnet"].is_null()) {
+            Settings::getInstance()->setTestnet(reply["testnet"].get<json::boolean_t>());
+        };
 
-		// Connected, so display checkmark.
-		QIcon i(":/icons/res/connected.png");
-		main->statusIcon->setPixmap(i.pixmap(16, 16));
+        // Connected, so display checkmark.
+        QIcon i(":/icons/res/connected.png");
+        main->statusIcon->setPixmap(i.pixmap(16, 16));
 
         static int    lastBlock = 0;
         int curBlock  = reply["blocks"].get<json::number_integer_t>();
@@ -505,19 +505,19 @@ void RPC::getInfoThenRefresh(bool force) {
             // Something changed, so refresh everything.
             lastBlock = curBlock;
 
-            refreshBalances();		
+            refreshBalances();        
             refreshAddresses(); // This calls refreshZSentTransactions() and refreshReceivedZTrans()
             refreshTransactions();
         }
 
-		// Call to see if the blockchain is syncing. 
-		json payload = {
-			{"jsonrpc", "1.0"},
-			{"id", "someid"},
-			{"method", "getblockchaininfo"}
-		};
+        // Call to see if the blockchain is syncing. 
+        json payload = {
+            {"jsonrpc", "1.0"},
+            {"id", "someid"},
+            {"method", "getblockchaininfo"}
+        };
 
-		doRPC(payload, [=](const json& reply) {
+        doRPC(payload, [=](const json& reply) {
             auto progress    = reply["verificationprogress"].get<double>();
             bool isSyncing   = progress < 0.999; // 99.9%
             int  blockNumber = reply["blocks"].get<json::number_unsigned_t>();
@@ -525,20 +525,20 @@ void RPC::getInfoThenRefresh(bool force) {
             Settings::getInstance()->setSyncing(isSyncing);
             Settings::getInstance()->setBlockNumber(blockNumber);
 
-			QString statusText = QString() %
-				(isSyncing ? "Syncing" : "Connected") %
-				" (" %
-				(Settings::getInstance()->isTestnet() ? "testnet:" : "") %
-				QString::number(blockNumber) %
-				(isSyncing ? ("/" % QString::number(progress*100, 'f', 0) % "%") : QString()) %
-				")";
-			main->statusLabel->setText(statusText);	
+            QString statusText = QString() %
+                (isSyncing ? "Syncing" : "Connected") %
+                " (" %
+                (Settings::getInstance()->isTestnet() ? "testnet:" : "") %
+                QString::number(blockNumber) %
+                (isSyncing ? ("/" % QString::number(progress*100, 'f', 0) % "%") : QString()) %
+                ")";
+            main->statusLabel->setText(statusText);    
             auto zecPrice = Settings::getInstance()->getUSDFormat(1);
             if (!zecPrice.isEmpty()) {
                 main->statusLabel->setToolTip("1 ZEC = " + zecPrice);
                 main->statusIcon->setToolTip("1 ZEC = " + zecPrice);
             }
-		});
+        });
 
     });        
 }
@@ -569,43 +569,43 @@ void RPC::updateUI(bool anyUnconfirmed) {
         main->ui->actionTurnstile_Migration->setVisible(false);
     }    
 
-	ui->unconfirmedWarning->setVisible(anyUnconfirmed);
+    ui->unconfirmedWarning->setVisible(anyUnconfirmed);
 
-	// Update balances model data, which will update the table too
-	balancesTableModel->setNewData(allBalances, utxos);
+    // Update balances model data, which will update the table too
+    balancesTableModel->setNewData(allBalances, utxos);
 
-	// Add all the addresses into the inputs combo box
-	auto lastFromAddr = ui->inputsCombo->currentText().split("(")[0].trimmed();
+    // Add all the addresses into the inputs combo box
+    auto lastFromAddr = ui->inputsCombo->currentText().split("(")[0].trimmed();
 
-	ui->inputsCombo->clear();
-	auto i = allBalances->constBegin();
-	while (i != allBalances->constEnd()) {
-		QString item = i.key() % "(" % QString::number(i.value(), 'g', 8) % " " % Utils::getTokenName() % ")";
-		ui->inputsCombo->addItem(item);
-		if (item.startsWith(lastFromAddr)) ui->inputsCombo->setCurrentText(item);
+    ui->inputsCombo->clear();
+    auto i = allBalances->constBegin();
+    while (i != allBalances->constEnd()) {
+        QString item = i.key() % "(" % QString::number(i.value(), 'g', 8) % " " % Utils::getTokenName() % ")";
+        ui->inputsCombo->addItem(item);
+        if (item.startsWith(lastFromAddr)) ui->inputsCombo->setCurrentText(item);
 
-		++i;
-	}
+        ++i;
+    }
 };
 
 // Function to process reply of the listunspent and z_listunspent API calls, used below.
 bool RPC::processUnspent(const json& reply) {
-	bool anyUnconfirmed = false;
-	for (auto& it : reply.get<json::array_t>()) {
-		QString qsAddr = QString::fromStdString(it["address"]);
-		auto confirmations = it["confirmations"].get<json::number_unsigned_t>();
-		if (confirmations == 0) {
-			anyUnconfirmed = true;
-		}
+    bool anyUnconfirmed = false;
+    for (auto& it : reply.get<json::array_t>()) {
+        QString qsAddr = QString::fromStdString(it["address"]);
+        auto confirmations = it["confirmations"].get<json::number_unsigned_t>();
+        if (confirmations == 0) {
+            anyUnconfirmed = true;
+        }
 
-		utxos->push_back(
-			UnspentOutput{ qsAddr, QString::fromStdString(it["txid"]),
+        utxos->push_back(
+            UnspentOutput{ qsAddr, QString::fromStdString(it["txid"]),
                             QString::number(it["amount"].get<json::number_float_t>(), 'g', 8),
                             (int)confirmations, it["spendable"].get<json::boolean_t>() });
 
-		(*allBalances)[qsAddr] = (*allBalances)[qsAddr] + it["amount"].get<json::number_float_t>();
-	}
-	return anyUnconfirmed;
+        (*allBalances)[qsAddr] = (*allBalances)[qsAddr] + it["amount"].get<json::number_float_t>();
+    }
+    return anyUnconfirmed;
 };
 
 void RPC::refreshBalances() {    
@@ -648,10 +648,10 @@ void RPC::refreshTransactions() {
         QList<TransactionItem> txdata;
 
         for (auto& it : reply.get<json::array_t>()) {  
-			double fee = 0;
-			if (!it["fee"].is_null()) {
-				fee = it["fee"].get<json::number_float_t>();
-			}
+            double fee = 0;
+            if (!it["fee"].is_null()) {
+                fee = it["fee"].get<json::number_float_t>();
+            }
 
             TransactionItem tx{
                 QString::fromStdString(it["category"]),
@@ -736,7 +736,7 @@ void RPC::watchTxStatus() {
                 QString status = QString::fromStdString(it["status"]);
                 if (status == "success") {
                     auto txid = QString::fromStdString(it["result"]["txid"]);
-					
+                    
                     SentTxStore::addToSentTx(watchingOps.value(id), txid);
 
                     main->ui->statusBar->showMessage(Utils::txidStatusMessage + " " + txid);

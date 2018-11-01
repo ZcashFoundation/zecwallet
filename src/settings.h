@@ -4,10 +4,10 @@
 #include "precompiled.h"
 
 struct Config {
-	QString host;
-	QString port;
-	QString rpcuser;
-	QString rpcpassword;
+    QString host;
+    QString port;
+    QString rpcuser;
+    QString rpcpassword;
 };
 
 class Settings
@@ -17,61 +17,61 @@ public:
     static Settings* getInstance();
 
     QString getUsernamePassword();
-	QString getHost();
-	QString getPort();
+    QString getHost();
+    QString getPort();
 
-	bool    loadFromSettings();
+    bool    loadFromSettings();
     bool    loadFromFile();
 
-	void saveSettings(const QString& host, const QString& port, const QString& username, const QString& password);
+    void saveSettings(const QString& host, const QString& port, const QString& username, const QString& password);
 
     bool isTestnet();
     void setTestnet(bool isTestnet);
 
-	bool isSaplingAddress(QString addr);
-	bool isSproutAddress(QString addr);
-	bool isZAddress(QString addr);
+    bool isSaplingAddress(QString addr);
+    bool isSproutAddress(QString addr);
+    bool isZAddress(QString addr);
 
-	bool isSyncing();
-	void setSyncing(bool syncing);
+    bool isSyncing();
+    void setSyncing(bool syncing);
 
-	int  getBlockNumber();
-	void setBlockNumber(int number);
+    int  getBlockNumber();
+    void setBlockNumber(int number);
 
-	bool getSaveZtxs();
-	void setSaveZtxs(bool save);
+    bool getSaveZtxs();
+    void setSaveZtxs(bool save);
 
-	bool isSaplingActive();
+    bool isSaplingActive();
 
-	const QString& getZcashdConfLocation() { return confLocation; }
+    const QString& getZcashdConfLocation() { return confLocation; }
 
-	void   	setZECPrice(double p) 		{ zecPrice = p; }
-	double 	getZECPrice();
+    void       setZECPrice(double p)         { zecPrice = p; }
+    double     getZECPrice();
 
-	QString getUSDFormat			(double bal);
-	QString getZECDisplayFormat		(double bal);
-	QString getZECUSDDisplayFormat	(double bal);
+    QString getUSDFormat            (double bal);
+    QString getZECDisplayFormat        (double bal);
+    QString getZECUSDDisplayFormat    (double bal);
 
 private:
     // This class can only be accessed through Settings::getInstance()
     Settings() = default;
-	~Settings();
+    ~Settings();
 
     static Settings* instance;
 
-	Config*		currentConfig;
+    Config*        currentConfig;
 
-	Config*		defaults	= nullptr;
-	Config*		zcashconf	= nullptr;
-	Config*     uisettings	= nullptr;
+    Config*        defaults    = nullptr;
+    Config*        zcashconf    = nullptr;
+    Config*     uisettings    = nullptr;
 
-	QString     confLocation;
+    QString     confLocation;
 
     bool _isTestnet   = false;
-	bool _isSyncing   = false;
-	int  _blockNumber = 0;
+    bool _isSyncing   = false;
+    int  _blockNumber = 0;
 
-	double zecPrice = 0.0;
+    double zecPrice = 0.0;
 };
 
 #endif // SETTINGS_H

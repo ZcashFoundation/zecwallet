@@ -6,8 +6,8 @@
 
 int main(int argc, char *argv[])
 {
-	QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QApplication a(argc, argv);
     QIcon icon(":/icons/res/icon.ico");
@@ -18,10 +18,10 @@ int main(int argc, char *argv[])
         qApp->setFont(QFont("Ubuntu", 11, QFont::Normal, false));
     #endif
 
-	std::srand(std::time(nullptr));
+    std::srand(std::time(nullptr));
 
-	QCoreApplication::setOrganizationName("zec-qt-wallet-org");
-	QCoreApplication::setApplicationName("zec-qt-wallet");
+    QCoreApplication::setOrganizationName("zec-qt-wallet-org");
+    QCoreApplication::setApplicationName("zec-qt-wallet");
 
     Settings::init();
 

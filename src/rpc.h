@@ -15,7 +15,7 @@ class Turnstile;
 
 struct TransactionItem {
     QString         type;
-    qint64			datetime;
+    qint64            datetime;
     QString         address;
     QString         txid;
     double          amount;
@@ -45,7 +45,7 @@ public:
     const QList<UnspentOutput>*       getUTXOs()          { return utxos; }
     const QMap<QString, double>*      getAllBalances()    { return allBalances; }
 
-	void reloadConnectionInfo();
+    void reloadConnectionInfo();
 
     void newZaddr(bool sapling, const std::function<void(json)>& cb);
     void newTaddr(const std::function<void(json)>& cb);
@@ -110,7 +110,7 @@ public:
 private:
     void doRPC      (const json& payload, const std::function<void(json)>& cb);
     void doSendRPC  (const json& payload, const std::function<void(json)>& cb);
-	void doSendRPC(const json& payload, const std::function<void(json)>& cb, const std::function<void(QString)>& err);
+    void doSendRPC(const json& payload, const std::function<void(json)>& cb, const std::function<void(QString)>& err);
 
     void refreshBalances();
 
@@ -118,8 +118,8 @@ private:
     void refreshSentZTrans      ();
     void refreshReceivedZTrans  (QList<QString> zaddresses);
 
-	bool processUnspent	(const json& reply);
-	void updateUI		(bool anyUnconfirmed);
+    bool processUnspent    (const json& reply);
+    void updateUI        (bool anyUnconfirmed);
 
     void getInfoThenRefresh(bool force);
 

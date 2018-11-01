@@ -43,7 +43,7 @@ public:
     QLabel*             loadingLabel;
 
 private:    
-	void closeEvent(QCloseEvent* event);
+    void closeEvent(QCloseEvent* event);
 
     void setupSendTab();
     void setupTransactionsTab();
@@ -51,11 +51,11 @@ private:
     void setupBalancesTab();
 
     void setupTurnstileDialog();
-	void setupSettingsModal();
-	void setupStatusBar();
+    void setupSettingsModal();
+    void setupStatusBar();
 
-	void removeExtraAddresses();
-	void setDefaultPayFrom();
+    void removeExtraAddresses();
+    void setDefaultPayFrom();
 
     Tx   createTxFromSendPage();
     bool confirmTx(Tx tx, ToFields devFee);
@@ -63,11 +63,11 @@ private:
     void turnstileDoMigration(QString fromAddr = "");
     void turnstileProgress();
 
-	void cancelButton();
-	void sendButton();
-	void inputComboTextChanged(const QString& text);
-	void addAddressSection();
-	void maxAmountChecked(int checked);
+    void cancelButton();
+    void sendButton();
+    void inputComboTextChanged(const QString& text);
+    void addAddressSection();
+    void maxAmountChecked(int checked);
 
     void addressChanged(int number, const QString& text);
     void amountChanged (int numer, const QString& text);
@@ -84,7 +84,7 @@ private:
     void importPrivKey();
     void doImport(QList<QString>* keys);
 
-	void restoreSavedStates();
+    void restoreSavedStates();
 
     RPC*                rpc;
 

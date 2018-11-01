@@ -11,28 +11,28 @@
 using json = nlohmann::json;
 
 void MainWindow::setupSendTab() {
-	// Create the validator for send to/amount fields
-	auto amtValidator = new QDoubleValidator(0, 21000000, 8, ui->Amount1);
-	amtValidator->setNotation(QDoubleValidator::StandardNotation);
-	ui->Amount1->setValidator(amtValidator);
+    // Create the validator for send to/amount fields
+    auto amtValidator = new QDoubleValidator(0, 21000000, 8, ui->Amount1);
+    amtValidator->setNotation(QDoubleValidator::StandardNotation);
+    ui->Amount1->setValidator(amtValidator);
 
     setDefaultPayFrom();
-	
-	// Send button
-	QObject::connect(ui->sendTransactionButton, &QPushButton::clicked, this, &MainWindow::sendButton);
+    
+    // Send button
+    QObject::connect(ui->sendTransactionButton, &QPushButton::clicked, this, &MainWindow::sendButton);
 
-	// Cancel Button
-	QObject::connect(ui->cancelSendButton, &QPushButton::clicked, this, &MainWindow::cancelButton);
+    // Cancel Button
+    QObject::connect(ui->cancelSendButton, &QPushButton::clicked, this, &MainWindow::cancelButton);
 
-	// Input Combobox current text changed
-	QObject::connect(ui->inputsCombo, QOverload<const QString &>::of(&QComboBox::currentIndexChanged),
-		this, &MainWindow::inputComboTextChanged);
+    // Input Combobox current text changed
+    QObject::connect(ui->inputsCombo, QOverload<const QString &>::of(&QComboBox::currentIndexChanged),
+        this, &MainWindow::inputComboTextChanged);
 
-	// Hook up add address button click
-	QObject::connect(ui->addAddressButton, &QPushButton::clicked, this, &MainWindow::addAddressSection);
+    // Hook up add address button click
+    QObject::connect(ui->addAddressButton, &QPushButton::clicked, this, &MainWindow::addAddressSection);
 
-	// Max available Checkbox
-	QObject::connect(ui->Max1, &QCheckBox::stateChanged, this, &MainWindow::maxAmountChecked);
+    // Max available Checkbox
+    QObject::connect(ui->Max1, &QCheckBox::stateChanged, this, &MainWindow::maxAmountChecked);
 
     // The first Memo button
     QObject::connect(ui->MemoBtn1, &QPushButton::clicked, [=] () {
@@ -50,10 +50,10 @@ void MainWindow::setupSendTab() {
         this->amountChanged(1, text);
     });
 
-	// Font for the first Memo label
-	QFont f = ui->Address1->font();
-	f.setPointSize(f.pointSize() - 1);
-	ui->MemoTxt1->setFont(f);
+    // Font for the first Memo label
+    QFont f = ui->Address1->font();
+    f.setPointSize(f.pointSize() - 1);
+    ui->MemoTxt1->setFont(f);
 
     // Set up focus enter to set fees
     QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int pos) {
@@ -287,14 +287,14 @@ void MainWindow::removeExtraAddresses() {
 void MainWindow::maxAmountChecked(int checked) {
     if (checked == Qt::Checked) {
         ui->Amount1->setReadOnly(true);
-		if (rpc->getAllBalances() == nullptr) return;
+        if (rpc->getAllBalances() == nullptr) return;
            
         // Calculate maximum amount
         double sumAllAmounts = 0.0;
         // Calculate all other amounts
         int totalItems = ui->sendToWidgets->children().size() - 2;   // The last one is a spacer, so ignore that        
-		// Start counting the sum skipping the first one, because the MAX button is on the first one, and we don't
-		// want to include it in the sum. 
+        // Start counting the sum skipping the first one, because the MAX button is on the first one, and we don't
+        // want to include it in the sum. 
         for (int i=1; i < totalItems; i++) {
             auto amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1));
             sumAllAmounts += amt->text().toDouble();
@@ -335,32 +335,32 @@ Tx MainWindow::createTxFromSendPage() {
 
 bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
     auto fnSplitAddressForWrap = [=] (const QString& a) -> QString {
-		if (!a.startsWith("z")) return a;
+        if (!a.startsWith("z")) return a;
 
-		auto half = a.length() / 2;
-		auto splitted = a.left(half) + "\n" + a.right(a.length() - half);
-		return splitted;
-	};
+        auto half = a.length() / 2;
+        auto splitted = a.left(half) + "\n" + a.right(a.length() - half);
+        return splitted;
+    };
 
 
-	// Show a confirmation dialog
-	QDialog d(this);
-	Ui_confirm confirm;
-	confirm.setupUi(&d);
+    // Show a confirmation dialog
+    QDialog d(this);
+    Ui_confirm confirm;
+    confirm.setupUi(&d);
 
-	// Remove all existing address/amt qlabels on the confirm dialog.
-	int totalConfirmAddrItems = confirm.sendToAddrs->children().size();
+    // Remove all existing address/amt qlabels on the confirm dialog.
+    int totalConfirmAddrItems = confirm.sendToAddrs->children().size();
     for (int i = 0; i < totalConfirmAddrItems / 3; i++) {
-		auto addr   = confirm.sendToAddrs->findChild<QLabel*>(QString("Addr")   % QString::number(i+1));
-		auto amt    = confirm.sendToAddrs->findChild<QLabel*>(QString("Amt")    % QString::number(i+1));
+        auto addr   = confirm.sendToAddrs->findChild<QLabel*>(QString("Addr")   % QString::number(i+1));
+        auto amt    = confirm.sendToAddrs->findChild<QLabel*>(QString("Amt")    % QString::number(i+1));
         auto memo   = confirm.sendToAddrs->findChild<QLabel*>(QString("Memo")   % QString::number(i+1));
         auto amtUSD = confirm.sendToAddrs->findChild<QLabel*>(QString("AmtUSD") % QString::number(i+1));
 
         delete memo;
-		delete addr;
-		delete amt;
+        delete addr;
+        delete amt;
         delete amtUSD;
-	}
+    }
 
     // Remove the fee labels
     delete confirm.sendToAddrs->findChild<QLabel*>("labelMinerFee");
@@ -371,25 +371,25 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
     delete confirm.sendToAddrs->findChild<QLabel*>("devFee");
     delete confirm.sendToAddrs->findChild<QLabel*>("devFeeUSD");
 
-	// For each addr/amt/memo, construct the JSON and also build the confirm dialog box    
+    // For each addr/amt/memo, construct the JSON and also build the confirm dialog box    
     for (int i=0; i < tx.toAddrs.size(); i++) {
         auto toAddr = tx.toAddrs[i];
 
-		// Add new Address widgets instead of the same one.
-		{
+        // Add new Address widgets instead of the same one.
+        {
             // Address
-			auto Addr = new QLabel(confirm.sendToAddrs);
-			Addr->setObjectName(QString("Addr") % QString::number(i + 1));
-			Addr->setWordWrap(true);
-			Addr->setText(fnSplitAddressForWrap(toAddr.addr));
-			confirm.gridLayout->addWidget(Addr, i*2, 0, 1, 1);
+            auto Addr = new QLabel(confirm.sendToAddrs);
+            Addr->setObjectName(QString("Addr") % QString::number(i + 1));
+            Addr->setWordWrap(true);
+            Addr->setText(fnSplitAddressForWrap(toAddr.addr));
+            confirm.gridLayout->addWidget(Addr, i*2, 0, 1, 1);
 
             // Amount (ZEC)
-			auto Amt = new QLabel(confirm.sendToAddrs);
-			Amt->setObjectName(QString("Amt") % QString::number(i + 1));
-			Amt->setText(Settings::getInstance()->getZECDisplayFormat(toAddr.amount));
-			Amt->setAlignment(Qt::AlignRight | Qt::AlignTrailing | Qt::AlignVCenter);
-			confirm.gridLayout->addWidget(Amt, i*2, 1, 1, 1);
+            auto Amt = new QLabel(confirm.sendToAddrs);
+            Amt->setObjectName(QString("Amt") % QString::number(i + 1));
+            Amt->setText(Settings::getInstance()->getZECDisplayFormat(toAddr.amount));
+            Amt->setAlignment(Qt::AlignRight | Qt::AlignTrailing | Qt::AlignVCenter);
+            confirm.gridLayout->addWidget(Amt, i*2, 1, 1, 1);
 
             // Amount (USD)
             auto AmtUSD = new QLabel(confirm.sendToAddrs);
@@ -410,7 +410,7 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
 
                 confirm.gridLayout->addWidget(Memo, (i*2)+1, 0, 1, 3);
             }
-		}
+        }
     }
 
     // Add two rows for fees
@@ -423,16 +423,16 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
         labelMinerFee->setText("Miner Fee");
 
         auto minerFee = new QLabel(confirm.sendToAddrs);
-		QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-		minerFee->setSizePolicy(sizePolicy);
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        minerFee->setSizePolicy(sizePolicy);
         minerFee->setObjectName(QStringLiteral("minerFee"));
         minerFee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         confirm.gridLayout->addWidget(minerFee, i, 1, 1, 1);
         minerFee->setText(Settings::getInstance()->getZECDisplayFormat(tx.fee));
 
         auto minerFeeUSD = new QLabel(confirm.sendToAddrs);
-		QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Preferred);
-		minerFeeUSD->setSizePolicy(sizePolicy1);
+        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Preferred);
+        minerFeeUSD->setSizePolicy(sizePolicy1);
         minerFeeUSD->setObjectName(QStringLiteral("minerFeeUSD"));
         minerFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         confirm.gridLayout->addWidget(minerFeeUSD, i, 2, 1, 1);
@@ -451,7 +451,7 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
             fee         ->setText(Settings::getInstance()->getZECDisplayFormat(Utils::getDevFee()));
 
             auto devFeeUSD = new QLabel(confirm.sendToAddrs);
-			devFeeUSD->setSizePolicy(sizePolicy1);
+            devFeeUSD->setSizePolicy(sizePolicy1);
             devFeeUSD->setObjectName(QStringLiteral("devFeeUSD"));
             devFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
             confirm.gridLayout->addWidget(devFeeUSD, i+1, 2, 1, 1);
@@ -459,17 +459,17 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
         } 
     }
 
-	// And FromAddress in the confirm dialog 
-	confirm.sendFrom->setText(fnSplitAddressForWrap(tx.fromAddr));
+    // And FromAddress in the confirm dialog 
+    confirm.sendFrom->setText(fnSplitAddressForWrap(tx.fromAddr));
 
-	// Show the dialog and submit it if the user confirms
-	if (d.exec() == QDialog::Accepted) {        
-		// Then delete the additional fields from the sendTo tab
-		removeExtraAddresses();
+    // Show the dialog and submit it if the user confirms
+    if (d.exec() == QDialog::Accepted) {        
+        // Then delete the additional fields from the sendTo tab
+        removeExtraAddresses();
         return true;
-	} else {
+    } else {
         return false;
-    }	    
+    }        
 }
 
 // Send button clicked
@@ -500,14 +500,14 @@ void MainWindow::sendButton() {
         std::cout << std::setw(2) << params << std::endl;
 
         // And send the Tx
-		rpc->sendZTransaction(params, [=](const json& reply) {
-			QString opid = QString::fromStdString(reply.get<json::string_t>());
-			ui->statusBar->showMessage("Computing Tx: " % opid);
+        rpc->sendZTransaction(params, [=](const json& reply) {
+            QString opid = QString::fromStdString(reply.get<json::string_t>());
+            ui->statusBar->showMessage("Computing Tx: " % opid);
 
             // And then start monitoring the transaction
             rpc->addNewTxToWatch(tx, opid);
-		});
-	}	    
+        });
+    }        
 }
 
 QString MainWindow::doSendTxValidations(Tx tx) {
@@ -535,7 +535,7 @@ QString MainWindow::doSendTxValidations(Tx tx) {
 }
 
 void MainWindow::cancelButton() {
-	removeExtraAddresses();
+    removeExtraAddresses();
     // Back to the balances tab
     ui->tabWidget->setCurrentIndex(0);   
 }

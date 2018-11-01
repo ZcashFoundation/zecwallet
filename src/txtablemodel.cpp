@@ -73,19 +73,19 @@ void TxTableModel::updateAllData() {
  {
      // Align column 4 (amount) right
     if (role == Qt::TextAlignmentRole && index.column() == 3) return QVariant(Qt::AlignRight | Qt::AlignVCenter);
-	
-	if (role == Qt::ForegroundRole) {
+    
+    if (role == Qt::ForegroundRole) {
         if (modeldata->at(index.row()).confirmations == 0) {
             QBrush b;
             b.setColor(Qt::red);
             return b;
-		}
+        }
 
-		// Else, just return the default brush
+        // Else, just return the default brush
         QBrush b;
-		b.setColor(Qt::black);
-		return b;		
-	}
+        b.setColor(Qt::black);
+        return b;        
+    }
 
     auto dat = modeldata->at(index.row());
     if (role == Qt::DisplayRole) {
@@ -98,7 +98,7 @@ void TxTableModel::updateAllData() {
                     else 
                         return addr;
                 }
-		case 2: return QDateTime::fromMSecsSinceEpoch(modeldata->at(index.row()).datetime *  (qint64)1000).toLocalTime().toString();
+        case 2: return QDateTime::fromMSecsSinceEpoch(modeldata->at(index.row()).datetime *  (qint64)1000).toLocalTime().toString();
         case 3: return Settings::getInstance()->getZECDisplayFormat(modeldata->at(index.row()).amount);
         }
     } 
@@ -140,11 +140,11 @@ void TxTableModel::updateAllData() {
  {
      if (role == Qt::TextAlignmentRole && section == 3) return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 
-	 if (role == Qt::FontRole) {
-		 QFont f;
-		 f.setBold(true);
-		 return f;
-	 }
+     if (role == Qt::FontRole) {
+         QFont f;
+         f.setBold(true);
+         return f;
+     }
 
      if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
          return headers.at(section);

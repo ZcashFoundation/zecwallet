@@ -9,62 +9,62 @@ struct Tx;
 
 
 struct TurnstileMigrationItem {
-	QString 	fromAddr;
-	QString		intTAddr;
-	QString		destAddr;
-	int			blockNumber;
-	double		amount;
-	int 		status;
+    QString     fromAddr;
+    QString        intTAddr;
+    QString        destAddr;
+    int            blockNumber;
+    double        amount;
+    int         status;
 };
 
 enum TurnstileMigrationItemStatus {
-	NotStarted = 0,
-	SentToT,
-	SentToZS,
-	NotEnoughBalance,
-	UnknownError
+    NotStarted = 0,
+    SentToT,
+    SentToZS,
+    NotEnoughBalance,
+    UnknownError
 };
 
 struct ProgressReport {
-	int 	step;
-	int 	totalSteps;
-	int 	nextBlock;
-	bool 	hasErrors;
-	QString from;
-	QString to;
-	QString via;
+    int     step;
+    int     totalSteps;
+    int     nextBlock;
+    bool     hasErrors;
+    QString from;
+    QString to;
+    QString via;
 };
 
 class Turnstile
 {
 public:
-	Turnstile(RPC* _rpc, MainWindow* mainwindow);
-	~Turnstile();
+    Turnstile(RPC* _rpc, MainWindow* mainwindow);
+    ~Turnstile();
 
-	void		   	planMigration(QString zaddr, QString destAddr, int splits, int numBlocks);
-	QList<double>  	splitAmount(double amount, int parts);
-	void		   	fillAmounts(QList<double>& amounts, double amount, int count);
+    void               planMigration(QString zaddr, QString destAddr, int splits, int numBlocks);
+    QList<double>      splitAmount(double amount, int parts);
+    void               fillAmounts(QList<double>& amounts, double amount, int count);
 
-	QList<TurnstileMigrationItem> readMigrationPlan();
-	void 		   	writeMigrationPlan(QList<TurnstileMigrationItem> plan);
-	void			removeFile();
-	
-	void 			executeMigrationStep();
-	ProgressReport  getPlanProgress();
-	bool			isMigrationPresent();
+    QList<TurnstileMigrationItem> readMigrationPlan();
+    void                writeMigrationPlan(QList<TurnstileMigrationItem> plan);
+    void            removeFile();
+    
+    void             executeMigrationStep();
+    ProgressReport  getPlanProgress();
+    bool            isMigrationPresent();
 
-	static double	minMigrationAmount;
+    static double    minMigrationAmount;
 private:
-	QList<int>	   	getBlockNumbers(int start, int end, int count);
-	QString		   	writeableFile();
+    QList<int>           getBlockNumbers(int start, int end, int count);
+    QString               writeableFile();
 
-	void 			doSendTx(Tx tx, std::function<void(void)> cb);
+    void             doSendTx(Tx tx, std::function<void(void)> cb);
 
 
-	QList<TurnstileMigrationItem>::Iterator getNextStep(QList<TurnstileMigrationItem>& plan);	
+    QList<TurnstileMigrationItem>::Iterator getNextStep(QList<TurnstileMigrationItem>& plan);    
 
-	RPC* 		rpc;	
-	MainWindow* mainwindow;
+    RPC*         rpc;    
+    MainWindow* mainwindow;
 };
 
 #endif

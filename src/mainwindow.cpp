@@ -22,11 +22,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	// Status Bar
-	setupStatusBar();
+    // Status Bar
+    setupStatusBar();
     
-	// Settings editor 
-	setupSettingsModal();
+    // Settings editor 
+    setupSettingsModal();
 
     // Set up exit action
     QObject::connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
@@ -45,10 +45,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionAbout, &QAction::triggered, [=] () {
         QDialog aboutDialog(this);
         Ui_about about;
-		about.setupUi(&aboutDialog);
+        about.setupUi(&aboutDialog);
 
-		QString version	= QString("Version ") % QString(APP_VERSION) % " (" % QString(__DATE__) % ")";
-		about.versionLabel->setText(version);
+        QString version    = QString("Version ") % QString(APP_VERSION) % " (" % QString(__DATE__) % ")";
+        about.versionLabel->setText(version);
         
         aboutDialog.exec();
     });
@@ -67,25 +67,25 @@ MainWindow::MainWindow(QWidget *parent) :
 
     rpc->refresh(true);  // Force refresh first time
 
-	restoreSavedStates();
+    restoreSavedStates();
 }
 
 void MainWindow::restoreSavedStates() {
-	QSettings s;
-	restoreGeometry(s.value("geometry").toByteArray());
+    QSettings s;
+    restoreGeometry(s.value("geometry").toByteArray());
 
-	ui->balancesTable->horizontalHeader()->restoreState(s.value("baltablegeometry").toByteArray());
-	ui->transactionsTable->horizontalHeader()->restoreState(s.value("tratablegeometry").toByteArray());
+    ui->balancesTable->horizontalHeader()->restoreState(s.value("baltablegeometry").toByteArray());
+    ui->transactionsTable->horizontalHeader()->restoreState(s.value("tratablegeometry").toByteArray());
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {
-	QSettings s;
+    QSettings s;
 
-	s.setValue("geometry", saveGeometry());
-	s.setValue("baltablegeometry", ui->balancesTable->horizontalHeader()->saveState());
-	s.setValue("tratablegeometry", ui->transactionsTable->horizontalHeader()->saveState());
+    s.setValue("geometry", saveGeometry());
+    s.setValue("baltablegeometry", ui->balancesTable->horizontalHeader()->saveState());
+    s.setValue("tratablegeometry", ui->transactionsTable->horizontalHeader()->saveState());
 
-	QMainWindow::closeEvent(event);
+    QMainWindow::closeEvent(event);
 }
 
 void MainWindow::turnstileProgress() {
@@ -106,8 +106,8 @@ void MainWindow::turnstileProgress() {
             
             auto nextTxBlock = curProgress.nextBlock - Settings::getInstance()->getBlockNumber();
             
-			progress.fromAddr->setText(curProgress.from);
-			progress.toAddr->setText(curProgress.to);
+            progress.fromAddr->setText(curProgress.from);
+            progress.toAddr->setText(curProgress.to);
 
             if (curProgress.step == curProgress.totalSteps) {
                 auto txt = QString("Turnstile migration finished");
@@ -272,126 +272,126 @@ void MainWindow::setupTurnstileDialog() {
 }
 
 void MainWindow::setupStatusBar() {
-	// Status Bar
-	loadingLabel = new QLabel();
-	loadingMovie = new QMovie(":/icons/res/loading.gif");
-	loadingMovie->setScaledSize(QSize(32, 16));
-	loadingMovie->start();
-	loadingLabel->setAttribute(Qt::WA_NoSystemBackground);
-	loadingLabel->setMovie(loadingMovie);
+    // Status Bar
+    loadingLabel = new QLabel();
+    loadingMovie = new QMovie(":/icons/res/loading.gif");
+    loadingMovie->setScaledSize(QSize(32, 16));
+    loadingMovie->start();
+    loadingLabel->setAttribute(Qt::WA_NoSystemBackground);
+    loadingLabel->setMovie(loadingMovie);
 
-	ui->statusBar->addPermanentWidget(loadingLabel);
-	loadingLabel->setVisible(false);
+    ui->statusBar->addPermanentWidget(loadingLabel);
+    loadingLabel->setVisible(false);
 
-	// Custom status bar menu
-	ui->statusBar->setContextMenuPolicy(Qt::CustomContextMenu);
-	QObject::connect(ui->statusBar, &QStatusBar::customContextMenuRequested, [=](QPoint pos) {
-		auto msg = ui->statusBar->currentMessage();
-		QMenu menu(this);
+    // Custom status bar menu
+    ui->statusBar->setContextMenuPolicy(Qt::CustomContextMenu);
+    QObject::connect(ui->statusBar, &QStatusBar::customContextMenuRequested, [=](QPoint pos) {
+        auto msg = ui->statusBar->currentMessage();
+        QMenu menu(this);
 
-		if (!msg.isEmpty() && msg.startsWith(Utils::txidStatusMessage)) {
-			auto txid = msg.split(":")[1].trimmed();
-			menu.addAction("Copy txid", [=]() {
-				QGuiApplication::clipboard()->setText(txid);
-			});
-			menu.addAction("View tx on block explorer", [=]() {
-				QString url;
-				if (Settings::getInstance()->isTestnet()) {
-					url = "https://explorer.testnet.z.cash/tx/" + txid;
-				}
-				else {
-					url = "https://explorer.zcha.in/transactions/" + txid;
-				}
-				QDesktopServices::openUrl(QUrl(url));
-			});
-		}
+        if (!msg.isEmpty() && msg.startsWith(Utils::txidStatusMessage)) {
+            auto txid = msg.split(":")[1].trimmed();
+            menu.addAction("Copy txid", [=]() {
+                QGuiApplication::clipboard()->setText(txid);
+            });
+            menu.addAction("View tx on block explorer", [=]() {
+                QString url;
+                if (Settings::getInstance()->isTestnet()) {
+                    url = "https://explorer.testnet.z.cash/tx/" + txid;
+                }
+                else {
+                    url = "https://explorer.zcha.in/transactions/" + txid;
+                }
+                QDesktopServices::openUrl(QUrl(url));
+            });
+        }
 
-		menu.addAction("Refresh", [=]() {
-			rpc->refresh(true);
-		});
-		QPoint gpos(mapToGlobal(pos).x(), mapToGlobal(pos).y() + this->height() - ui->statusBar->height());
-		menu.exec(gpos);
-	});
+        menu.addAction("Refresh", [=]() {
+            rpc->refresh(true);
+        });
+        QPoint gpos(mapToGlobal(pos).x(), mapToGlobal(pos).y() + this->height() - ui->statusBar->height());
+        menu.exec(gpos);
+    });
 
-	statusLabel = new QLabel();
-	ui->statusBar->addPermanentWidget(statusLabel);
+    statusLabel = new QLabel();
+    ui->statusBar->addPermanentWidget(statusLabel);
 
-	statusIcon = new QLabel();
-	ui->statusBar->addPermanentWidget(statusIcon);
+    statusIcon = new QLabel();
+    ui->statusBar->addPermanentWidget(statusIcon);
 }
 
-void MainWindow::setupSettingsModal() {	
-	// Set up File -> Settings action
-	QObject::connect(ui->actionSettings, &QAction::triggered, [=]() {
-		QDialog settingsDialog(this);
-		Ui_Settings settings;
-		settings.setupUi(&settingsDialog);
+void MainWindow::setupSettingsModal() {    
+    // Set up File -> Settings action
+    QObject::connect(ui->actionSettings, &QAction::triggered, [=]() {
+        QDialog settingsDialog(this);
+        Ui_Settings settings;
+        settings.setupUi(&settingsDialog);
 
-		// Setup save sent check box
-		QObject::connect(settings.chkSaveTxs, &QCheckBox::stateChanged, [=](auto checked) {
-			Settings::getInstance()->setSaveZtxs(checked);
-		});
+        // Setup save sent check box
+        QObject::connect(settings.chkSaveTxs, &QCheckBox::stateChanged, [=](auto checked) {
+            Settings::getInstance()->setSaveZtxs(checked);
+        });
 
-		// Setup clear button
-		QObject::connect(settings.btnClearSaved, &QCheckBox::clicked, [=]() {
-			if (QMessageBox::warning(this, "Clear saved history?",
-				"Shielded z-Address transactions are stored locally in your wallet, outside zcashd. You may delete this saved information safely any time for your privacy.\nDo you want to delete the saved shielded transactions now ?",
-				QMessageBox::Yes, QMessageBox::Cancel)) {
-					SentTxStore::deleteHistory();
-					// Reload after the clear button so existing txs disappear
-					rpc->refresh(true);
-			}
-		});
+        // Setup clear button
+        QObject::connect(settings.btnClearSaved, &QCheckBox::clicked, [=]() {
+            if (QMessageBox::warning(this, "Clear saved history?",
+                "Shielded z-Address transactions are stored locally in your wallet, outside zcashd. You may delete this saved information safely any time for your privacy.\nDo you want to delete the saved shielded transactions now ?",
+                QMessageBox::Yes, QMessageBox::Cancel)) {
+                    SentTxStore::deleteHistory();
+                    // Reload after the clear button so existing txs disappear
+                    rpc->refresh(true);
+            }
+        });
 
-		// Save sent transactions
-		settings.chkSaveTxs->setChecked(Settings::getInstance()->getSaveZtxs());
+        // Save sent transactions
+        settings.chkSaveTxs->setChecked(Settings::getInstance()->getSaveZtxs());
 
-		// Connection Settings
-		QIntValidator validator(0, 65535);
-		settings.port->setValidator(&validator);
+        // Connection Settings
+        QIntValidator validator(0, 65535);
+        settings.port->setValidator(&validator);
 
-        // Load current values into the dialog		
+        // Load current values into the dialog        
         settings.hostname->setText(Settings::getInstance()->getHost());
         settings.port->setText(Settings::getInstance()->getPort());
         settings.rpcuser->setText(Settings::getInstance()->getUsernamePassword().split(":")[0]);
         settings.rpcpassword->setText(Settings::getInstance()->getUsernamePassword().split(":")[1]);
 
-		// If values are coming from zcash.conf, then disable all the fields
-		auto zcashConfLocation = Settings::getInstance()->getZcashdConfLocation();
-		if (!zcashConfLocation.isEmpty()) {
-			settings.confMsg->setText("Settings are being read from \n" + zcashConfLocation);
-			settings.hostname->setEnabled(false);
-			settings.port->setEnabled(false);
-			settings.rpcuser->setEnabled(false);
-			settings.rpcpassword->setEnabled(false);
-		}
-		else {
-			settings.confMsg->setText("No local zcash.conf found. Please configure connection manually.");
-			settings.hostname->setEnabled(true);
-			settings.port->setEnabled(true);
-			settings.rpcuser->setEnabled(true);
-			settings.rpcpassword->setEnabled(true);
-		}
+        // If values are coming from zcash.conf, then disable all the fields
+        auto zcashConfLocation = Settings::getInstance()->getZcashdConfLocation();
+        if (!zcashConfLocation.isEmpty()) {
+            settings.confMsg->setText("Settings are being read from \n" + zcashConfLocation);
+            settings.hostname->setEnabled(false);
+            settings.port->setEnabled(false);
+            settings.rpcuser->setEnabled(false);
+            settings.rpcpassword->setEnabled(false);
+        }
+        else {
+            settings.confMsg->setText("No local zcash.conf found. Please configure connection manually.");
+            settings.hostname->setEnabled(true);
+            settings.port->setEnabled(true);
+            settings.rpcuser->setEnabled(true);
+            settings.rpcpassword->setEnabled(true);
+        }
 
-		// Connection tab by default
-		settings.tabWidget->setCurrentIndex(0);
+        // Connection tab by default
+        settings.tabWidget->setCurrentIndex(0);
 
-		if (settingsDialog.exec() == QDialog::Accepted) {
-			if (zcashConfLocation.isEmpty()) {
-				// Save settings
-				Settings::getInstance()->saveSettings(
-					settings.hostname->text(),
-					settings.port->text(),
-					settings.rpcuser->text(),
-					settings.rpcpassword->text());
+        if (settingsDialog.exec() == QDialog::Accepted) {
+            if (zcashConfLocation.isEmpty()) {
+                // Save settings
+                Settings::getInstance()->saveSettings(
+                    settings.hostname->text(),
+                    settings.port->text(),
+                    settings.rpcuser->text(),
+                    settings.rpcpassword->text());
                 
                 this->rpc->reloadConnectionInfo();
             }
 
-            // Then refresh everything.			
-            this->rpc->refresh(true);			
-		};
-	});
+            // Then refresh everything.            
+            this->rpc->refresh(true);            
+        };
+    });
 
 }
 
@@ -504,18 +504,18 @@ void MainWindow::setupBalancesTab() {
                 rpc->getTPrivKey(addr, fnCB);
         });
 
-		menu.addAction("Send from " % addr.left(40) % (addr.size() > 40 ? "..." : ""), [=]() {
-			// Find the inputs combo
-			for (int i = 0; i < ui->inputsCombo->count(); i++) {
-				if (ui->inputsCombo->itemText(i).startsWith(addr)) {
-					ui->inputsCombo->setCurrentIndex(i);
-					break;
-				}
-			}
-			
-			// And switch to the send tab.
-			ui->tabWidget->setCurrentIndex(1);
-		});
+        menu.addAction("Send from " % addr.left(40) % (addr.size() > 40 ? "..." : ""), [=]() {
+            // Find the inputs combo
+            for (int i = 0; i < ui->inputsCombo->count(); i++) {
+                if (ui->inputsCombo->itemText(i).startsWith(addr)) {
+                    ui->inputsCombo->setCurrentIndex(i);
+                    break;
+                }
+            }
+            
+            // And switch to the send tab.
+            ui->tabWidget->setCurrentIndex(1);
+        });
 
         if (addr.startsWith("t")) {
             menu.addAction("View on block explorer", [=] () {

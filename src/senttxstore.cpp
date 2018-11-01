@@ -41,8 +41,8 @@ QList<TransactionItem> SentTxStore::readSentTxFile() {
         TransactionItem t{"send", (qint64)sentTx["datetime"].toVariant().toLongLong(), 
                           sentTx["address"].toString(), 
                           sentTx["txid"].toString(), 
-						  sentTx["amount"].toDouble() + sentTx["fee"].toDouble(), 
-						  0, sentTx["from"].toString(), ""};
+                          sentTx["amount"].toDouble() + sentTx["fee"].toDouble(), 
+                          0, sentTx["from"].toString(), ""};
         items.push_back(t);
     }
 
@@ -50,9 +50,9 @@ QList<TransactionItem> SentTxStore::readSentTxFile() {
 }
 
 void SentTxStore::addToSentTx(Tx tx, QString txid) {
-	// Save transactions only if the settings are allowed
-	if (!Settings::getInstance()->getSaveZtxs())
-		return;
+    // Save transactions only if the settings are allowed
+    if (!Settings::getInstance()->getSaveZtxs())
+        return;
 
     // Also, only store outgoing Txs where the from address is a z-Addr. Else, regular zcashd 
     // stores it just fine
