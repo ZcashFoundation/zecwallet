@@ -71,32 +71,6 @@ void RPC::setConnection(Connection* c) {
     refresh();
 }
 
-void RPC::doRPC(const json& payload, const std::function<void(json)>& cb) {
-    QNetworkReply *reply = conn->restclient->post(*conn->request, QByteArray::fromStdString(payload.dump()));
-
-    QObject::connect(reply, &QNetworkReply::finished, [=] {
-        reply->deleteLater();
-        
-        if (reply->error() != QNetworkReply::NoError) {
-            auto parsed = json::parse(reply->readAll(), nullptr, false);
-            if (!parsed.is_discarded() && !parsed["error"]["message"].is_null()) {
-                handleConnectionError(QString::fromStdString(parsed["error"]["message"]));    
-            } else {
-                handleConnectionError(reply->errorString());
-            }
-            
-            return;
-        } 
-        
-        auto parsed = json::parse(reply->readAll(), nullptr, false);
-        if (parsed.is_discarded()) {
-            handleConnectionError("Unknown error");
-        }
-        
-        cb(parsed["result"]);        
-    });
-}
-
 void RPC::getZAddresses(const std::function<void(json)>& cb) {
     json payload = {
         {"jsonrpc", "1.0"},
@@ -104,7 +78,7 @@ void RPC::getZAddresses(const std::function<void(json)>& cb) {
         {"method", "z_listaddresses"},
     };
 
-    doRPC(payload, cb);
+    conn->doRPCWithDefaultErrorHandling(payload, cb);
 }
 
 void RPC::getTransparentUnspent(const std::function<void(json)>& cb) {
@@ -115,7 +89,7 @@ void RPC::getTransparentUnspent(const std::function<void(json)>& cb) {
         {"params", {0}}             // Get UTXOs with 0 confirmations as well.
     };
 
-    doRPC(payload, cb);
+    conn->doRPCWithDefaultErrorHandling(payload, cb);
 }
 
 void RPC::getZUnspent(const std::function<void(json)>& cb) {
@@ -126,7 +100,7 @@ void RPC::getZUnspent(const std::function<void(json)>& cb) {
         {"params", {0}}             // Get UTXOs with 0 confirmations as well.
     };
 
-    doRPC(payload, cb);
+    conn->doRPCWithDefaultErrorHandling(payload, cb);
 }
 
 void RPC::newZaddr(bool sapling, const std::function<void(json)>& cb) {
@@ -137,7 +111,7 @@ void RPC::newZaddr(bool sapling, const std::function<void(json)>& cb) {
         {"params", { sapling ? "sapling" : "sprout" }},
     };
     
-    doRPC(payload, cb);
+    conn->doRPCWithDefaultErrorHandling(payload, cb);
 }
 
 void RPC::newTaddr(const std::function<void(json)>& cb) {
@@ -147,7 +121,7 @@ void RPC::newTaddr(const std::function<void(json)>& cb) {
         {"method", "getnewaddress"},
     };
 
-    doRPC(payload, cb);
+    conn->doRPCWithDefaultErrorHandling(payload, cb);
 }
 
 void RPC::getZPrivKey(QString addr, const std::function<void(json)>& cb) {
@@ -158,7 +132,7 @@ void RPC::getZPrivKey(QString addr, const std::function<void(json)>& cb) {
         {"params", { addr.toStdString() }},
     };
     
-    doRPC(payload, cb);
+    conn->doRPCWithDefaultErrorHandling(payload, cb);
 }
 
 void RPC::getTPrivKey(QString addr, const std::function<void(json)>& cb) {
@@ -169,7 +143,7 @@ void RPC::getTPrivKey(QString addr, const std::function<void(json)>& cb) {
         {"params", { addr.toStdString() }},
     };
     
-    doRPC(payload, cb);
+    conn->doRPCWithDefaultErrorHandling(payload, cb);
 }
 
 void RPC::importZPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb) {
@@ -180,7 +154,7 @@ void RPC::importZPrivKey(QString addr, bool rescan, const std::function<void(jso
         {"params", { addr.toStdString(), (rescan? "yes" : "no") }},
     };
     
-    doSendRPC(payload, cb);
+    conn->doRPCWithDefaultErrorHandling(payload, cb);
 }
 
 
@@ -192,7 +166,7 @@ void RPC::importTPrivKey(QString addr, bool rescan, const std::function<void(jso
         {"params", { addr.toStdString(), (rescan? "yes" : "no") }},
     };
     
-    doSendRPC(payload, cb);
+    conn->doRPCWithDefaultErrorHandling(payload, cb);
 }
 
 
@@ -204,7 +178,7 @@ void RPC::getBalance(const std::function<void(json)>& cb) {
         {"params", {0}}             // Get Unconfirmed balance as well.
     };
 
-    doRPC(payload, cb);
+    conn->doRPCWithDefaultErrorHandling(payload, cb);
 }
 
 void RPC::getTransactions(const std::function<void(json)>& cb) {
@@ -214,39 +188,7 @@ void RPC::getTransactions(const std::function<void(json)>& cb) {
         {"method", "listtransactions"}
     };
 
-    doRPC(payload, cb);
-}
-
-void RPC::doSendRPC(const json& payload, const std::function<void(json)>& cb, const std::function<void(QString)>& err) {
-    QNetworkReply *reply = conn->restclient->post(*conn->request, QByteArray::fromStdString(payload.dump()));
-
-    QObject::connect(reply, &QNetworkReply::finished, [=] {
-        reply->deleteLater();
-
-        if (reply->error() != QNetworkReply::NoError) {
-            auto parsed = json::parse(reply->readAll(), nullptr, false);
-            if (!parsed.is_discarded() && !parsed["error"]["message"].is_null()) {
-                err(QString::fromStdString(parsed["error"]["message"]));
-            }
-            else {
-                err(reply->errorString());
-            }
-
-            return;
-        }
-
-        auto parsed = json::parse(reply->readAll(), nullptr, false);
-        if (parsed.is_discarded()) {
-            err("Unknown error");
-        }
-
-        cb(parsed["result"]);
-    });
-}
-
-// Default implementation of a Send RPC that default shows an error message box with the error. 
-void RPC::doSendRPC(const json& payload, const std::function<void(json)>& cb) {
-    doSendRPC(payload, cb, [=](auto error) { this->handleTxError(error); });
+    conn->doRPCWithDefaultErrorHandling(payload, cb);
 }
 
 void RPC::sendZTransaction(json params, const std::function<void(json)>& cb) {
@@ -257,76 +199,9 @@ void RPC::sendZTransaction(json params, const std::function<void(json)>& cb) {
         {"params", params}
     };
 
-    doSendRPC(payload, cb);
+    conn->doRPCWithDefaultErrorHandling(payload, cb);
 }
 
-void RPC::handleConnectionError(const QString& error) {
-    if (error.isNull()) return;
-
-    QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical);            
-    main->statusIcon->setPixmap(icon.pixmap(16, 16));
-    main->statusLabel->setText("No Connection");
-
-    if (firstTime) {
-        this->firstTime = false;            
-
-        QMessageBox msg(main);
-        msg.setIcon(QMessageBox::Icon::Critical); 
-        msg.setWindowTitle("Connection Error");
-        
-        QString explanation;
-        if (error.contains("authentication", Qt::CaseInsensitive)) {
-            explanation = QString() 
-                        % "\n\nThis is most likely because of misconfigured rpcuser/rpcpassword. "
-                        % "zcashd needs the following options set in ~/.zcash/zcash.conf\n\n"
-                        % "rpcuser=<someusername>\n"
-                        % "rpcpassword=<somepassword>\n"
-                        % "\nIf you're connecting to a remote note, you can change the username/password in the "
-                        % "File->Settings menu.";
-        } else if (error.contains("connection refused", Qt::CaseInsensitive)) {
-            auto confLocation = Settings::getInstance()->getZcashdConfLocation();
-            if (confLocation.isEmpty()) {
-                explanation = QString()
-                    % "\n\nA zcash.conf was not found on this machine. If you are connecting to a remote/non-standard node " 
-                    % "please set the host/port and user/password in the File->Settings menu.";
-            }
-            else {
-                explanation = QString()
-                    % "\n\nA zcash.conf was found at\n" % confLocation
-                    % "\nbut we can't connect to zcashd. Is rpcuser=<user> and rpcpassword=<pass> set in the zcash.conf file?";
-            }
-        } else if (error.contains("internal server error", Qt::CaseInsensitive) ||
-                   error.contains("rewinding", Qt::CaseInsensitive) || 
-                   error.contains("loading", Qt::CaseInsensitive)) {
-            explanation = QString()
-                        % "\n\nIf you just started zcashd, then it's still loading and you might have to wait a while. If zcashd is ready, then you've run into  "
-                        % "something unexpected, and might need to file a bug report here: https://github.com/adityapk00/zec-qt-wallet/issues";
-        } else {
-            explanation = QString()
-                        % "\n\nThis is most likely an internal error. Something unexpected happened. "
-                        % "You might need to file a bug report here: https://github.com/adityapk00/zec-qt-wallet/issues";
-        }
-
-        msg.setText("There was a network connection error. The error was: \n\n" 
-                    + error + explanation);        
-
-        msg.exec();      
-        return;
-    } 
-}
-
-void RPC::handleTxError(const QString& error) {
-    if (error.isNull()) return;
-
-    QMessageBox msg(main);
-    msg.setIcon(QMessageBox::Icon::Critical); 
-    msg.setWindowTitle("Transaction Error");
-    
-    msg.setText("There was an error sending the transaction. The error was: \n\n" 
-                + error);        
-
-    msg.exec();
-}
 
 
 // Build the RPC JSON Parameters for this tx (with the dev fee included if applicable)
@@ -377,7 +252,7 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
     // and each z-Addr can have multiple received txs. 
 
     // 1. For each z-Addr, get list of received txs    
-    getBatchRPC<QString>(zaddrs,
+    conn->doBatchRPC<QString>(zaddrs,
         [=] (QString zaddr) {
             json payload = {
                 {"jsonrpc", "1.0"},
@@ -414,7 +289,7 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
             }
 
             // 2. For all txids, go and get the details of that txid.
-            getBatchRPC<QString>(txids.toList(),
+            conn->doBatchRPC<QString>(txids.toList(),
                 [=] (QString txid) {
                     json payload = {
                         {"jsonrpc", "1.0"},
@@ -488,7 +363,7 @@ void RPC::getInfoThenRefresh(bool force) {
         {"method", "getinfo"}
     };
 
-    doRPC(payload, [=] (const json& reply) {   
+    conn->doRPCIgnoreError(payload, [=] (const json& reply) {   
         // Testnet?
         if (!reply["testnet"].is_null()) {
             Settings::getInstance()->setTestnet(reply["testnet"].get<json::boolean_t>());
@@ -517,7 +392,7 @@ void RPC::getInfoThenRefresh(bool force) {
             {"method", "getblockchaininfo"}
         };
 
-        doRPC(payload, [=](const json& reply) {
+        conn->doRPCIgnoreError(payload, [=](const json& reply) {
             auto progress    = reply["verificationprogress"].get<double>();
             bool isSyncing   = progress < 0.999; // 99.9%
             int  blockNumber = reply["blocks"].get<json::number_unsigned_t>();
@@ -693,7 +568,7 @@ void RPC::refreshSentZTrans() {
     }
 
     // Look up all the txids to get the confirmation count for them. 
-    getBatchRPC<QString>(txids,
+    conn->doBatchRPC<QString>(txids,
         [=] (QString txid) {
             json payload = {
                 {"jsonrpc", "1.0"},
@@ -741,7 +616,7 @@ void RPC::watchTxStatus() {
         {"method", "z_getoperationstatus"},
     };
 
-    doRPC(payload, [=] (const json& reply) {
+    conn->doRPCWithDefaultErrorHandling(payload, [=] (const json& reply) {
         // There's an array for each item in the status
         for (auto& it : reply.get<json::array_t>()) {  
             // If we were watching this Tx and it's status became "success", then we'll show a status bar alert

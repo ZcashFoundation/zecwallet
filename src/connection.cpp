@@ -90,7 +90,7 @@ Connection* ConnectionLoader::makeConnection(std::shared_ptr<ConnectionConfig> c
     QString headerData = "Basic " + userpass.toLocal8Bit().toBase64();
     request->setRawHeader("Authorization", headerData.toLocal8Bit());    
 
-    return new Connection(client, request, config);
+    return new Connection(main, client, request, config);
 }
 
 void ConnectionLoader::refreshZcashdState(Connection* connection) {
@@ -105,7 +105,8 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
             d->hide();
             rpc->setConnection(connection);
         },
-        [=] (auto err, auto res) {
+        [=] (auto reply, auto res) {
+            auto err = reply->error();
             // Failed, see what it is. 
             qDebug() << err << ":" << QString::fromStdString(res.dump());
 
@@ -251,10 +252,11 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::loadFromSettings() {
 
 
 
-Connection::Connection(QNetworkAccessManager* c, QNetworkRequest* r, std::shared_ptr<ConnectionConfig> conf) {
+Connection::Connection(MainWindow* m, QNetworkAccessManager* c, QNetworkRequest* r, std::shared_ptr<ConnectionConfig> conf) {
     this->restclient  = c;
     this->request     = r;
     this->config      = conf;
+    this->main        = m;
 }
 
 Connection::~Connection() {
@@ -265,7 +267,7 @@ Connection::~Connection() {
 
 
 void Connection::doRPC(const json& payload, const std::function<void(json)>& cb, 
-                       const std::function<void(QNetworkReply::NetworkError, const json&)>& ne) {
+                       const std::function<void(QNetworkReply*, const json&)>& ne) {
     QNetworkReply *reply = restclient->post(*request, QByteArray::fromStdString(payload.dump()));
 
     QObject::connect(reply, &QNetworkReply::finished, [=] {
@@ -273,16 +275,45 @@ void Connection::doRPC(const json& payload, const std::function<void(json)>& cb,
         
         if (reply->error() != QNetworkReply::NoError) {
             auto parsed = json::parse(reply->readAll(), nullptr, false);
-            ne(reply->error(), parsed);
+            ne(reply, parsed);
             
             return;
         } 
         
         auto parsed = json::parse(reply->readAll(), nullptr, false);
         if (parsed.is_discarded()) {
-            ne(reply->error(), "Unknown error");
+            ne(reply, "Unknown error");
         }
         
         cb(parsed["result"]);        
     });
+}
+
+void Connection::doRPCWithDefaultErrorHandling(const json& payload, const std::function<void(json)>& cb) {
+    doRPC(payload, cb, [=] (auto reply, auto parsed) {
+        if (!parsed.is_discarded() && !parsed["error"]["message"].is_null()) {
+            showTxError(QString::fromStdString(parsed["error"]["message"]));    
+        } else {
+            showTxError(reply->errorString());
+        }
+    });
+}
+
+void Connection::doRPCIgnoreError(const json& payload, const std::function<void(json)>& cb) {
+    doRPC(payload, cb, [=] (auto, auto) {
+        // Ignored error handling
+    });
+}
+
+void Connection::showTxError(const QString& error) {
+    if (error.isNull()) return;
+
+    QMessageBox msg(main);
+    msg.setIcon(QMessageBox::Icon::Critical); 
+    msg.setWindowTitle("Transaction Error");
+    
+    msg.setText("There was an error sending the transaction. The error was: \n\n" 
+                + error);        
+
+    msg.exec();
 }
