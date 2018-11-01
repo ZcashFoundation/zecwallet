@@ -47,13 +47,10 @@ ConnectionLoader::~ConnectionLoader() {
 
 void ConnectionLoader::loadConnection() {    
     // Priority 1: Try to connect to detect zcash.conf and connect to it.
-    bool isZcashConfPresent = false;
     auto config = autoDetectZcashConf();
 
     // If not autodetected, go and read the UI Settings
-    if (config.get() != nullptr)  {
-        isZcashConfPresent = true;
-    } else {
+    if (config.get() == nullptr)  {
         config = loadFromSettings();
 
         if (config.get() == nullptr) {
@@ -118,13 +115,13 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
                         % "If you are connecting to a remote/non-standard node " 
                         % "please set the host/port and user/password in the File->Settings menu";
 
-                showError(explanation);
+                this->showError(explanation);
             } else if (err == QNetworkReply::NetworkError::AuthenticationRequiredError) {
                 auto explanation = QString() 
                         % "Authentication failed. The username / password you specified was "
                         % "not accepted by zcashd. Try changing it in the File->Settings menu";
 
-                showError(explanation);
+                this->showError(explanation);
             } else if (err == QNetworkReply::NetworkError::InternalServerError && !res.is_discarded()) {
                 // The server is loading, so just poll until it succeeds
                 QString status = QString::fromStdString(res["error"]["message"]);
@@ -292,9 +289,9 @@ void Connection::doRPC(const json& payload, const std::function<void(json)>& cb,
 void Connection::doRPCWithDefaultErrorHandling(const json& payload, const std::function<void(json)>& cb) {
     doRPC(payload, cb, [=] (auto reply, auto parsed) {
         if (!parsed.is_discarded() && !parsed["error"]["message"].is_null()) {
-            showTxError(QString::fromStdString(parsed["error"]["message"]));    
+            this->showTxError(QString::fromStdString(parsed["error"]["message"]));    
         } else {
-            showTxError(reply->errorString());
+            this->showTxError(reply->errorString());
         }
     });
 }
