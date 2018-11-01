@@ -16,14 +16,8 @@ public:
     static Settings* init();
     static Settings* getInstance();
 
-    QString getUsernamePassword();
-    QString getHost();
-    QString getPort();
-
-    bool    loadFromSettings();
-    bool    loadFromFile();
-
-    void saveSettings(const QString& host, const QString& port, const QString& username, const QString& password);
+    Config getSettings();
+    void   saveSettings(const QString& host, const QString& port, const QString& username, const QString& password);
 
     bool isTestnet();
     void setTestnet(bool isTestnet);
@@ -43,11 +37,13 @@ public:
 
     bool isSaplingActive();
 
-    const QString& getZcashdConfLocation() { return confLocation; }
+    void  setUsingZcashConf(QString confLocation);
+    const QString& getZcashdConfLocation() { return _confLocation; }
 
     void    setZECPrice(double p) { zecPrice = p; }
     double  getZECPrice();
 
+    
     QString getUSDFormat          (double bal);
     QString getZECDisplayFormat   (double bal);
     QString getZECUSDDisplayFormat(double bal);
@@ -59,17 +55,10 @@ private:
 
     static Settings* instance;
 
-    Config*        currentConfig;
-
-    Config* defaults    = nullptr;
-    Config* zcashconf   = nullptr;
-    Config* uisettings  = nullptr;
-
-    QString     confLocation;
-
-    bool _isTestnet   = false;
-    bool _isSyncing   = false;
-    int  _blockNumber = 0;
+    QString _confLocation;
+    bool    _isTestnet      = false;
+    bool    _isSyncing      = false;
+    int     _blockNumber    = 0;
 
     double zecPrice = 0.0;
 };

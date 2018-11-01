@@ -7,7 +7,7 @@
 #include "precompiled.h"
 
 using json = nlohmann::json;
-
+/*
 class LoadingDialog : public QDialog {
     //Q_OBJECT
 public:
@@ -22,11 +22,12 @@ LoadingDialog::~LoadingDialog() {}
 void LoadingDialog::reject() {
     //event->ignore();
 }
-
-ConnectionLoader::ConnectionLoader(MainWindow* main) {
+*/
+ConnectionLoader::ConnectionLoader(MainWindow* main, RPC* rpc) {
     this->main = main;
+    this->rpc  = rpc;
 
-    d = new LoadingDialog(main);
+    d = new QDialog(main);
     connD = new Ui_ConnectionDialog();
     connD->setupUi(d);
 
@@ -44,84 +45,124 @@ ConnectionLoader::~ConnectionLoader() {
     delete connD;
 }
 
-void ConnectionLoader::getConnection(std::function<void(RPC*)> cb) {    
-
+void ConnectionLoader::loadConnection() {    
     // Priority 1: Try to connect to detect zcash.conf and connect to it.
     bool isZcashConfPresent = false;
-    auto conn = autoDetectZcashConf();
+    auto config = autoDetectZcashConf();
 
     // If not autodetected, go and read the UI Settings
-    if (conn.get() != nullptr)  {
+    if (config.get() != nullptr)  {
         isZcashConfPresent = true;
     } else {
-        conn = loadFromSettings();
+        config = loadFromSettings();
 
-        if (conn.get() == nullptr) {
+        if (config.get() == nullptr) {
             // Nothing configured, show an error
             auto explanation = QString()
                     % "A zcash.conf was not found on this machine.\n\n"
                     % "If you are connecting to a remote/non-standard node " 
                     % "please set the host/port and user/password in the File->Settings menu.";
 
-            QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical);
-            connD->icon->setPixmap(icon.pixmap(64, 64));
-            connD->status->setText(explanation);
-            connD->progressBar->setValue(0);
+            showError(explanation);
+            rpc->setConnection(nullptr);
 
-            connD->buttonBox->setEnabled(true);
-            cb(nullptr);
+            return;
         }
     }
 
+    auto connection = makeConnection(config);
+    refreshZcashdState(connection);
+}
+
+Connection* ConnectionLoader::makeConnection(std::shared_ptr<ConnectionConfig> config) {
     QNetworkAccessManager* client = new QNetworkAccessManager(main);
          
     QUrl myurl;
     myurl.setScheme("http");
-    myurl.setHost(Settings::getInstance()->getHost());
-    myurl.setPort(Settings::getInstance()->getPort().toInt());
+    myurl.setHost(config.get()->host);
+    myurl.setPort(config.get()->port.toInt());
 
     QNetworkRequest* request = new QNetworkRequest();
     request->setUrl(myurl);
     request->setHeader(QNetworkRequest::ContentTypeHeader, "text/plain");
     
-    QString headerData = "Basic " + Settings::getInstance()->getUsernamePassword().toLocal8Bit().toBase64();
-    request->setRawHeader("Authorization", headerData.toLocal8Bit());
+    QString userpass = config.get()->rpcuser % ":" % config.get()->rpcpassword;
+    QString headerData = "Basic " + userpass.toLocal8Bit().toBase64();
+    request->setRawHeader("Authorization", headerData.toLocal8Bit());    
 
-    auto connection = new Connection(client, request);
+    return new Connection(client, request, config);
+}
+
+void ConnectionLoader::refreshZcashdState(Connection* connection) {
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
         {"method", "getinfo"}
     };
     connection->doRPC(payload,
-        [=] (auto result) {
+        [=] (auto) {
             // Success
-            d->close();
-            cb(new RPC(connection, main));
+            d->hide();
+            rpc->setConnection(connection);
         },
         [=] (auto err, auto res) {
-            // Failed
-            auto explanation = QString()
-                    % (isZcashConfPresent ? "A zcash.conf file was found, but a" : "A")
-                    % " connection to zcashd could not be established.\n\n"
-                    % "If you are connecting to a remote/non-standard node " 
-                    % "please set the host/port and user/password in the File->Settings menu.";
+            // Failed, see what it is. 
+            qDebug() << err << ":" << QString::fromStdString(res.dump());
 
-            QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical);
-            connD->icon->setPixmap(icon.pixmap(64, 64));
-            connD->status->setText(explanation);
-            connD->progressBar->setValue(0);
+            if (err == QNetworkReply::NetworkError::ConnectionRefusedError) {    
+                auto isZcashConfFound = connection->config.get()->usingZcashConf;
+                auto explanation = QString()
+                        % (isZcashConfFound ? "A zcash.conf file was found, but a" : "A") 
+                        % " connection to zcashd could not be established.\n\n"
+                        % "If you are connecting to a remote/non-standard node " 
+                        % "please set the host/port and user/password in the File->Settings menu";
 
-            connD->buttonBox->setEnabled(true);
+                showError(explanation);
+            } else if (err == QNetworkReply::NetworkError::AuthenticationRequiredError) {
+                auto explanation = QString() 
+                        % "Authentication failed. The username / password you specified was "
+                        % "not accepted by zcashd. Try changing it in the File->Settings menu";
+
+                showError(explanation);
+            } else if (err == QNetworkReply::NetworkError::InternalServerError && !res.is_discarded()) {
+                // The server is loading, so just poll until it succeeds
+                QString status = QString::fromStdString(res["error"]["message"]);
+
+                QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
+                connD->icon->setPixmap(icon.pixmap(128, 128));
+                connD->status->setText(status);
+
+                // Refresh after one second
+                QTimer::singleShot(1000, [=]() { this->refreshZcashdState(connection); });
+            }
         }
     );
 }
 
+void ConnectionLoader::showError(QString explanation) {
+    QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical);
+    connD->icon->setPixmap(icon.pixmap(128, 128));
+    connD->status->setText(explanation);
+    connD->title->setText("");
+
+    connD->buttonBox->setEnabled(true);
+}
+
+/*
+int ConnectionLoader::getProgressFromStatus(QString status) {
+    if (status.startsWith("Loading block")) return 20;
+    if (status.startsWith("Verifying")) return 40;
+    if (status.startsWith("Loading Wallet")) return 60;
+    if (status.startsWith("Activating")) return 80;
+    if (status.startsWith("Rescanning")) return 90;
+    return 0;
+}
+*/
 
 /**
  * Try to automatically detect a zcash.conf file in the correct location and load parameters
  */ 
-std::shared_ptr<ConnectionConfig*> ConnectionLoader::autoDetectZcashConf() {    
+std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {    
 
 #ifdef Q_OS_LINUX
     auto confLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, ".zcash/zcash.conf");
@@ -149,6 +190,9 @@ std::shared_ptr<ConnectionConfig*> ConnectionLoader::autoDetectZcashConf() {
     auto zcashconf = new ConnectionConfig();
     zcashconf->host     = "127.0.0.1";
     zcashconf->connType = ConnectionType::DetectedConfExternalZcashD;
+    zcashconf->usingZcashConf = true;
+
+    Settings::getInstance()->setUsingZcashConf(confLocation);
 
     while (!in.atEnd()) {
         QString line = in.readLine();
@@ -177,13 +221,13 @@ std::shared_ptr<ConnectionConfig*> ConnectionLoader::autoDetectZcashConf() {
 
     file.close();
 
-    return std::make_shared<ConnectionConfig*>(zcashconf);
+    return std::shared_ptr<ConnectionConfig>(zcashconf);
 }
 
 /**
  * Load connection settings from the UI, which indicates an unknown, external zcashd
  */ 
-std::shared_ptr<ConnectionConfig*> ConnectionLoader::loadFromSettings() {
+std::shared_ptr<ConnectionConfig> ConnectionLoader::loadFromSettings() {
     // Load from the QT Settings. 
     QSettings s;
     
@@ -195,9 +239,9 @@ std::shared_ptr<ConnectionConfig*> ConnectionLoader::loadFromSettings() {
     if (username.isEmpty() || password.isEmpty())
         return nullptr;
 
-    auto uiConfig = new ConnectionConfig{ host, port, username, password, ConnectionType::UISettingsZCashD };
+    auto uiConfig = new ConnectionConfig{ host, port, username, password, false, ConnectionType::UISettingsZCashD };
 
-    return std::make_shared<ConnectionConfig*>(uiConfig);
+    return std::shared_ptr<ConnectionConfig>(uiConfig);
 }
 
 
@@ -207,9 +251,10 @@ std::shared_ptr<ConnectionConfig*> ConnectionLoader::loadFromSettings() {
 
 
 
-Connection::Connection(QNetworkAccessManager* c, QNetworkRequest* r) {
+Connection::Connection(QNetworkAccessManager* c, QNetworkRequest* r, std::shared_ptr<ConnectionConfig> conf) {
     this->restclient  = c;
-    this->request = r;
+    this->request     = r;
+    this->config      = conf;
 }
 
 Connection::~Connection() {

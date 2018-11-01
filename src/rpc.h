@@ -28,8 +28,10 @@ struct TransactionItem {
 class RPC
 {
 public:
-    RPC(Connection* conn, MainWindow* main);
+    RPC(MainWindow* main);
     ~RPC();
+
+    void setConnection(Connection* c);
 
     void refresh(bool force = false);
 
@@ -48,7 +50,6 @@ public:
 
     void newZaddr(bool sapling, const std::function<void(json)>& cb);
     void newTaddr(const std::function<void(json)>& cb);
-
 
     void getZPrivKey(QString addr, const std::function<void(json)>& cb);
     void getTPrivKey(QString addr, const std::function<void(json)>& cb);
@@ -107,6 +108,8 @@ public:
 
 
 private:
+    void noConnection();
+
     void doRPC    (const json& payload, const std::function<void(json)>& cb);
     void doSendRPC(const json& payload, const std::function<void(json)>& cb);
     void doSendRPC(const json& payload, const std::function<void(json)>& cb, const std::function<void(QString)>& err);

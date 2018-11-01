@@ -63,15 +63,9 @@ MainWindow::MainWindow(QWidget *parent) :
     setupBalancesTab();
     setupTurnstileDialog();
 
-    restoreSavedStates();
+    rpc = new RPC(this);
 
-    new ConnectionLoader(this).getConnection([=] (RPC* rpc) {
-        if (rpc == nullptr)
-            return;
-        this->rpc = rpc;
-        this->rpc->refreshZECPrice();
-        this->rpc->refresh(true);  // Force refresh first time
-    });    
+    restoreSavedStates();
 }
  
 
@@ -356,10 +350,11 @@ void MainWindow::setupSettingsModal() {
         settings.port->setValidator(&validator);
 
         // Load current values into the dialog        
-        settings.hostname->setText(Settings::getInstance()->getHost());
-        settings.port->setText(Settings::getInstance()->getPort());
-        settings.rpcuser->setText(Settings::getInstance()->getUsernamePassword().split(":")[0]);
-        settings.rpcpassword->setText(Settings::getInstance()->getUsernamePassword().split(":")[1]);
+        auto conf = Settings::getInstance()->getSettings();
+        settings.hostname->setText(conf.host);
+        settings.port->setText(conf.port);
+        settings.rpcuser->setText(conf.rpcuser);
+        settings.rpcpassword->setText(conf.rpcpassword);
 
         // If values are coming from zcash.conf, then disable all the fields
         auto zcashConfLocation = Settings::getInstance()->getZcashdConfLocation();
@@ -390,13 +385,8 @@ void MainWindow::setupSettingsModal() {
                     settings.rpcuser->text(),
                     settings.rpcpassword->text());
                 
-                auto me = this;
-                ConnectionLoader(this).getConnection([&me] (auto newrpc) {
-                    delete me->rpc;
-                    me->rpc = newrpc;
-                    // Then refresh everything.            
-                    me->rpc->refresh(true);            
-                });
+                auto cl = new ConnectionLoader(this, rpc);
+                cl->loadConnection();
             }
         };
     });

@@ -6,8 +6,10 @@
 
 using json = nlohmann::json;
 
-RPC::RPC(Connection* conn, MainWindow* main) {
-    this->conn = conn;
+RPC::RPC(MainWindow* main) {
+    auto cl = new ConnectionLoader(main, this);
+    cl->loadConnection();
+
     this->main = main;
     this->ui = main->ui;
 
@@ -16,14 +18,10 @@ RPC::RPC(Connection* conn, MainWindow* main) {
     // Setup balances table model
     balancesTableModel = new BalancesTableModel(main->ui->balancesTable);
     main->ui->balancesTable->setModel(balancesTableModel);
-    main->ui->balancesTable->setColumnWidth(0, 300);
 
     // Setup transactions table model
     transactionsTableModel = new TxTableModel(ui->transactionsTable);
     main->ui->transactionsTable->setModel(transactionsTableModel);
-    main->ui->transactionsTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
-    main->ui->transactionsTable->setColumnWidth(1, 350);
-    main->ui->transactionsTable->setColumnWidth(2, 200);
     main->ui->transactionsTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
 
     // Set up timer to refresh Price
@@ -64,6 +62,14 @@ RPC::~RPC() {
     delete conn;
 }
 
+void RPC::setConnection(Connection* c) {
+    if (c == nullptr) return;
+
+    delete conn;
+    this->conn = c;
+
+    refresh();
+}
 
 void RPC::doRPC(const json& payload, const std::function<void(json)>& cb) {
     QNetworkReply *reply = conn->restclient->post(*conn->request, QByteArray::fromStdString(payload.dump()));
@@ -349,8 +355,14 @@ void RPC::fillTxJsonParams(json& params, Tx tx) {
 }
 
 
+void RPC::noConnection() {
+    ui->statusBar->showMessage("No Connection to zcashd");
+}
+
 // Refresh received z txs by calling z_listreceivedbyaddress/gettransaction
 void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
+    if  (conn == nullptr) 
+        return noConnection();
 
     // We'll only refresh the received Z txs if settings allows us.
     if (!Settings::getInstance()->getSaveZtxs()) {
@@ -459,11 +471,17 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
 
 /// This will refresh all the balance data from zcashd
 void RPC::refresh(bool force) {
+    if  (conn == nullptr) 
+        return noConnection();
+
     getInfoThenRefresh(force);
 }
 
 
 void RPC::getInfoThenRefresh(bool force) {
+    if  (conn == nullptr) 
+        return noConnection();
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -526,6 +544,9 @@ void RPC::getInfoThenRefresh(bool force) {
 }
 
 void RPC::refreshAddresses() {
+    if  (conn == nullptr) 
+        return noConnection();
+
     delete zaddresses;
     zaddresses = new QList<QString>();
 
@@ -591,6 +612,9 @@ bool RPC::processUnspent(const json& reply) {
 };
 
 void RPC::refreshBalances() {    
+    if  (conn == nullptr) 
+        return noConnection();
+
     // 1. Get the Balances
     getBalance([=] (json reply) {    
         auto balT = QString::fromStdString(reply["transparent"]).toDouble();
@@ -626,6 +650,9 @@ void RPC::refreshBalances() {
 }
 
 void RPC::refreshTransactions() {    
+    if  (conn == nullptr) 
+        return noConnection();
+
     getTransactions([=] (json reply) {
         QList<TransactionItem> txdata;
 
@@ -654,6 +681,9 @@ void RPC::refreshTransactions() {
 
 // Read sent Z transactions from the file.
 void RPC::refreshSentZTrans() {
+    if  (conn == nullptr) 
+        return noConnection();
+
     auto sentZTxs = SentTxStore::readSentTxFile();
 
     QList<QString> txids;
@@ -694,13 +724,16 @@ void RPC::refreshSentZTrans() {
      );
 }
 
-void RPC::addNewTxToWatch(Tx tx, const QString& newOpid) {
+void RPC::addNewTxToWatch(Tx tx, const QString& newOpid) {    
     watchingOps.insert(newOpid, tx);
 
     watchTxStatus();
 }
 
 void RPC::watchTxStatus() {
+    if  (conn == nullptr) 
+        return noConnection();
+
     // Make an RPC to load pending operation statues
     json payload = {
         {"jsonrpc", "1.0"},
@@ -767,6 +800,9 @@ void RPC::watchTxStatus() {
 
 // Get the ZEC->USD price from coinmarketcap using their API
 void RPC::refreshZECPrice() {
+    if  (conn == nullptr) 
+        return noConnection();
+
     QUrl cmcURL("https://api.coinmarketcap.com/v1/ticker/");
 
     QNetworkRequest req;
