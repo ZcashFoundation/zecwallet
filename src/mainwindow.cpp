@@ -96,7 +96,8 @@ void MainWindow::turnstileProgress() {
     QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning);
     progress.msgIcon->setPixmap(icon.pixmap(64, 64));
 
-    auto fnUpdateProgressUI = [=] () {
+    bool migrationFinished = false;
+    auto fnUpdateProgressUI = [=, &migrationFinished] () mutable {
         // Get the plan progress
         if (rpc->getTurnstile()->isMigrationPresent()) {
             auto curProgress = rpc->getTurnstile()->getPlanProgress();
@@ -110,6 +111,7 @@ void MainWindow::turnstileProgress() {
             progress.toAddr->setText(curProgress.to);
 
             if (curProgress.step == curProgress.totalSteps) {
+                migrationFinished = true;
                 auto txt = QString("Turnstile migration finished");
                 if (curProgress.hasErrors) {
                     txt = txt + ". There were some errors.\n\nYour funds are all in your wallet, so you should be able to finish moving them manually.";
@@ -156,7 +158,7 @@ void MainWindow::turnstileProgress() {
     });
 
     d.exec();    
-    if (curProgress.step == curProgress.totalSteps) {
+    if (migrationFinished || curProgress.step == curProgress.totalSteps) {
         // Finished, so delete the file
         rpc->getTurnstile()->removeFile();
     }    
