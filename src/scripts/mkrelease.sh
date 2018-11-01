@@ -53,7 +53,7 @@ cp README.md bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp LICENSE bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cd bin && tar cvf linux-zec-qt-wallet-v$APP_VERSION.tar.gz zec-qt-wallet-v$APP_VERSION/ > /dev/null
 cd .. 
-mkdir artifacts
+mkdir artifacts >/dev/null 2>&1
 cp bin/linux-zec-qt-wallet-v$APP_VERSION.tar.gz ./artifacts
 
 if [ -f artifacts/linux-zec-qt-wallet-v$APP_VERSION.tar.gz ] ; then
@@ -87,13 +87,13 @@ echo "[OK]"
 
 
 echo -n "Packaging....."
-mkdir release/zec-qt-wallet-v$APP_VERSION 
+mkdir release/zec-qt-wallet-v$APP_VERSION  
 cp release/zec-qt-wallet.exe release/zec-qt-wallet-v$APP_VERSION 
 cp README.md release/zec-qt-wallet-v$APP_VERSION 
 cp LICENSE release/zec-qt-wallet-v$APP_VERSION 
 cd release && zip -r Windows-zec-qt-wallet-v$APP_VERSION.zip zec-qt-wallet-v$APP_VERSION/ > /dev/null
 cd ..
-mkdir artifacts
+mkdir artifacts >/dev/null 2>&1
 cp release/Windows-zec-qt-wallet-v$APP_VERSION.zip ./artifacts
 
 

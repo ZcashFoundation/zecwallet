@@ -5,7 +5,7 @@ matrix:
       compiler: clang
       addons:
         apt:
-          sources: ['llvm-toolchain-precise-3.7']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
           packages: ['clang-3.7']
       env:
         - MATRIX_EVAL="CC=clang CXX=clang++"
@@ -30,5 +30,5 @@ script:
  - qmake -v
  - clang++ -v
  - g++ -v
- - qmake zec-qt-wallet.pro CONFIG+=release -spec linux-clang
+ - qmake zec-qt-wallet.pro CONFIG+=release -spec linux-g++
  - make $MATRIX_EVAL 
