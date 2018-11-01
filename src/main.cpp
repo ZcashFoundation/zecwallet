@@ -19,11 +19,10 @@ int main(int argc, char *argv[])
     #endif
 
     std::srand(std::time(nullptr));
+    Settings::init();
 
     QCoreApplication::setOrganizationName("zec-qt-wallet-org");
     QCoreApplication::setApplicationName("zec-qt-wallet");
-
-    Settings::init();
 
     MainWindow w;
     w.setWindowTitle("zec-qt-wallet v" + QString(APP_VERSION));
