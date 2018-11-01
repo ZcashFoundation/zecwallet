@@ -8,7 +8,7 @@ matrix:
           sources: ['llvm-toolchain-trusty-5.0']
           packages: ['clang-5.0']  
       env:
-        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+        - MATRIX_EVAL="CC=clang-5.0 CXX=clang++-5.0"
     
     - os: linux
       compiler: g++
@@ -29,4 +29,4 @@ before_install:
 script:
  - qmake -v
  - qmake zec-qt-wallet.pro CONFIG+=release 
- - make $MATRIX_EVAL -j4
+ - make $MATRIX_EVAL 
