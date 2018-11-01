@@ -80,7 +80,8 @@ FORMS += \
     src/turnstile.ui \
     src/turnstileprogress.ui \
     src/privkey.ui \
-    src/memodialog.ui 
+    src/memodialog.ui \ 
+    src/connection.ui
 
 win32: RC_ICONS = res/icon.ico
 
