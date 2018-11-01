@@ -13,11 +13,12 @@ matrix:
 
 before_install:
  - eval "${MATRIX_EVAL}"
- - sudo add-apt-repository ppa:beineri/opt-qt571 -y
+ - sudo add-apt-repository ppa:beineri/opt-qt58-trusty -y
  - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
  - sudo apt-get update -qq
- - sudo apt-get install qtbase57-dev 
- - sudo apt-get install qt57-default qttools57-dev-tools
+ - sudo apt-get install qtbase58-dev 
+ - sudo apt-get install qt58-default qttools58-dev-tools
+ - source /opt/qt58/bin/qt58env.sh
 
 script:
  - qmake -v
