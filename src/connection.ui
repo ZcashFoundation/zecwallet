@@ -7,36 +7,78 @@
     <x>0</x>
     <y>0</y>
     <width>513</width>
-    <height>286</height>
+    <height>201</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Connecting to zcashd</string>
+   <string>zec-qt-wallet</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0">
+   <item row="0" column="1">
+    <widget class="QLabel" name="title">
+     <property name="text">
+      <string>Your zcashd is still loading. Please wait...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Close</set>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QProgressBar" name="progressBar">
-     <property name="value">
-      <number>24</number>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
+   <item row="1" column="1">
     <widget class="QLabel" name="status">
      <property name="text">
       <string>Connection Status</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
     </widget>
+   </item>
+   <item row="0" column="0" rowspan="2">
+    <widget class="QLabel" name="icon">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="margin">
+      <number>20</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>

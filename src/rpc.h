@@ -8,6 +8,7 @@
 #include "txtablemodel.h"
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
+#include "connection.h"
 
 using json = nlohmann::json;
 
@@ -27,8 +28,10 @@ struct TransactionItem {
 class RPC
 {
 public:
-    RPC(QNetworkAccessManager* restclient, MainWindow* main);    
+    RPC(MainWindow* main);
     ~RPC();
+
+    void setConnection(Connection* c);
 
     void refresh(bool force = false);
 
@@ -45,72 +48,19 @@ public:
     const QList<UnspentOutput>*       getUTXOs()          { return utxos; }
     const QMap<QString, double>*      getAllBalances()    { return allBalances; }
 
-    void reloadConnectionInfo();
-
     void newZaddr(bool sapling, const std::function<void(json)>& cb);
     void newTaddr(const std::function<void(json)>& cb);
-
 
     void getZPrivKey(QString addr, const std::function<void(json)>& cb);
     void getTPrivKey(QString addr, const std::function<void(json)>& cb);
     void importZPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb);
     void importTPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb);
 
-    Turnstile* getTurnstile() { return turnstile; }
-    
-    // Batch method. Note: Because of the template, it has to be in the header file. 
-    template<class T>
-    void getBatchRPC(const QList<T>& payloads,
-                     std::function<json(T)> payloadGenerator,
-                     std::function<void(QMap<T, json>*)> cb) {    
-        auto responses = new QMap<T, json>(); // zAddr -> list of responses for each call. 
-        int totalSize = payloads.size();
-
-        for (auto item: payloads) {
-            json payload = payloadGenerator(item);
-            
-            QNetworkReply *reply = restclient->post(request, QByteArray::fromStdString(payload.dump()));
-
-            QObject::connect(reply, &QNetworkReply::finished, [=] {
-                reply->deleteLater();
-                
-                auto all = reply->readAll();            
-                auto parsed = json::parse(all.toStdString(), nullptr, false);
-
-                if (reply->error() != QNetworkReply::NoError) {            
-                    qDebug() << QString::fromStdString(parsed.dump());
-                    qDebug() << reply->errorString();
-
-                    (*responses)[item] = json::object();    // Empty object
-                } else {
-                    if (parsed.is_discarded()) {
-                        (*responses)[item] = json::object();    // Empty object
-                    } else {
-                        (*responses)[item] = parsed["result"];
-                    }
-                }
-            });
-        }
-
-        auto waitTimer = new QTimer(main);
-        QObject::connect(waitTimer, &QTimer::timeout, [=]() {
-            if (responses->size() == totalSize) {
-                waitTimer->stop();
-
-                cb(responses);
-
-                waitTimer->deleteLater();            
-            }
-        });
-        waitTimer->start(100);    
-    }
-
-
+    Turnstile*  getTurnstile()  { return turnstile; }
+    Connection* getConnection() { return conn; }
 
 private:
-    void doRPC    (const json& payload, const std::function<void(json)>& cb);
-    void doSendRPC(const json& payload, const std::function<void(json)>& cb);
-    void doSendRPC(const json& payload, const std::function<void(json)>& cb, const std::function<void(QString)>& err);
+    void noConnection();
 
     void refreshBalances();
 
@@ -133,8 +83,7 @@ private:
     void handleConnectionError  (const QString& error);
     void handleTxError          (const QString& error);
 
-    QNetworkAccessManager*      restclient;    
-    QNetworkRequest             request;
+    Connection*                 conn                        = nullptr;
 
     QList<UnspentOutput>*       utxos                       = nullptr;
     QMap<QString, double>*      allBalances                 = nullptr;

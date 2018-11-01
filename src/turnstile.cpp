@@ -91,7 +91,7 @@ void Turnstile::planMigration(QString zaddr, QString destAddr, int numsplits, in
     auto splits = splitAmount(bal, numsplits);
 
     // Then, generate an intermediate t-Address for each part using getBatchRPC
-    rpc->getBatchRPC<double>(splits,
+    rpc->getConnection()->doBatchRPC<double>(splits,
         [=] (double /*unused*/) {
             json payload = {
                 {"jsonrpc", "1.0"},

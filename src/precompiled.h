@@ -7,7 +7,6 @@
 #include <ctime>
 #include <cmath>
 
-#include <QApplication>
 #include <QFontDatabase>
 #include <QAbstractTableModel>
 #include <QClipboard>
@@ -23,6 +22,7 @@
 #include <QDateTime>
 #include <QTimer>
 #include <QSettings>
+#include <QStyle>
 #include <QFile>
 #include <QErrorMessage>
 #include <QApplication>
@@ -44,6 +44,8 @@
 #include <QAbstractTableModel>
 #include <QAbstractItemModel>
 #include <QObject>
+#include <QApplication>
+#include <QDesktopWidget>
 
 #include "3rdparty/json/json.hpp"
 #include "3rdparty/qrcode/QrCode.hpp"

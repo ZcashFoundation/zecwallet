@@ -86,7 +86,7 @@ private:
 
     void restoreSavedStates();
 
-    RPC*       rpc;
+    RPC*       rpc  = nullptr;
 
     QMovie*    loadingMovie;
 };
