@@ -6,10 +6,11 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
           packages:
-            - g++-7
+            - clang-3.7
       env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+        - MATRIX_EVAL="QMAKE_CC=clang-3.7 && QMAKE_CXX=clang++-3.7"
 
 before_install:
  - eval "${MATRIX_EVAL}"
@@ -20,6 +21,6 @@ before_install:
 
 script:
  - qmake -v
- - g++ -v
- - qmake zec-qt-wallet.pro CONFIG+=release 
+ - clang++ -v
+ - qmake zec-qt-wallet.pro CONFIG+=release -spec linux-clang
  - make
