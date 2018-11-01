@@ -77,7 +77,7 @@ QVariant BalancesTableModel::data(const QModelIndex &index, int role) const
         }
 
         // Else, just return the default brush
-        QBrush b;++
+        QBrush b;
         b.setColor(Qt::black);
         return b;    
     }
