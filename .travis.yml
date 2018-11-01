@@ -6,21 +6,9 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
-          packages: ['clang-3.7']
-      env:
-        - MATRIX_EVAL="CC=clang CXX=clang++"
-    
-    - os: linux
-      compiler: g++
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-8']
-      env:
-        - MATRIX_EVAL="CC=gcc-8 CXX=g++-8"
+          packages: ['clang-3.7', 'g++-8']
 
 before_install:
- - eval "${MATRIX_EVAL}"
  - sudo add-apt-repository ppa:beineri/opt-qt591-trusty -y
  - sudo apt-get update -qq
  - sudo apt-get install qt59base qt59tools
@@ -29,6 +17,8 @@ before_install:
 script:
  - qmake -v
  - clang++ -v
- - g++ -v
+ - g++8 -v
  - qmake zec-qt-wallet.pro CONFIG+=release -spec linux-g++
- - make $MATRIX_EVAL 
+ - make CC=gcc-8 CXX=g++-8 -j2
+ - make distclean
+ - make CC=clang CXX=clang++ -j2
