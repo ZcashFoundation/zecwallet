@@ -9,5 +9,5 @@ before_install:
  - sudo apt-get install qt5-default qttools5-dev-tools
 
 script:
- - qmake zec-qt-wallet.pro
+ - qmake zec-qt-wallet.pro CONFIG+=release platform=linux-clang
  - make
