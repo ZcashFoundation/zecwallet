@@ -7,22 +7,7 @@
 #include "precompiled.h"
 
 using json = nlohmann::json;
-/*
-class LoadingDialog : public QDialog {
-    //Q_OBJECT
-public:
-    LoadingDialog(QWidget* parent);
-    ~LoadingDialog();
-public slots:
-    void reject();
-};
 
-LoadingDialog::LoadingDialog(QWidget* parent) : QDialog(parent) {}
-LoadingDialog::~LoadingDialog() {}
-void LoadingDialog::reject() {
-    //event->ignore();
-}
-*/
 ConnectionLoader::ConnectionLoader(MainWindow* main, RPC* rpc) {
     this->main = main;
     this->rpc  = rpc;
@@ -61,7 +46,7 @@ void ConnectionLoader::loadConnection() {
                     % "please set the host/port and user/password in the File->Settings menu.";
 
             showError(explanation);
-            rpc->setConnection(nullptr);
+            doRPCSetConnection(nullptr);
 
             return;
         }
@@ -69,6 +54,11 @@ void ConnectionLoader::loadConnection() {
 
     auto connection = makeConnection(config);
     refreshZcashdState(connection);
+}
+
+void ConnectionLoader::doRPCSetConnection(Connection* conn) {
+    rpc->setConnection(conn);
+    delete this;
 }
 
 Connection* ConnectionLoader::makeConnection(std::shared_ptr<ConnectionConfig> config) {
@@ -100,7 +90,7 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
         [=] (auto) {
             // Success, hide the dialog if it was shown. 
             d->hide();
-            rpc->setConnection(connection);
+            doRPCSetConnection(connection);
         },
         [=] (auto reply, auto res) {
             d->show();
@@ -148,16 +138,6 @@ void ConnectionLoader::showError(QString explanation) {
     connD->buttonBox->setEnabled(true);
 }
 
-/*
-int ConnectionLoader::getProgressFromStatus(QString status) {
-    if (status.startsWith("Loading block")) return 20;
-    if (status.startsWith("Verifying")) return 40;
-    if (status.startsWith("Loading Wallet")) return 60;
-    if (status.startsWith("Activating")) return 80;
-    if (status.startsWith("Rescanning")) return 90;
-    return 0;
-}
-*/
 
 /**
  * Try to automatically detect a zcash.conf file in the correct location and load parameters
@@ -248,10 +228,11 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::loadFromSettings() {
 
 
 
-
-
-
-Connection::Connection(MainWindow* m, QNetworkAccessManager* c, QNetworkRequest* r, std::shared_ptr<ConnectionConfig> conf) {
+/***********************************************************************************
+ *  Connection Class
+ ************************************************************************************/ 
+Connection::Connection(MainWindow* m, QNetworkAccessManager* c, QNetworkRequest* r, 
+                        std::shared_ptr<ConnectionConfig> conf) {
     this->restclient  = c;
     this->request     = r;
     this->config      = conf;
@@ -262,8 +243,6 @@ Connection::~Connection() {
     delete restclient;
     delete request;
 }
-
-
 
 void Connection::doRPC(const json& payload, const std::function<void(json)>& cb, 
                        const std::function<void(QNetworkReply*, const json&)>& ne) {

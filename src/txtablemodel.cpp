@@ -10,6 +10,9 @@ TxTableModel::TxTableModel(QObject *parent)
 
 TxTableModel::~TxTableModel() {
     delete modeldata;
+    delete tTrans;
+    delete zsTrans;
+    delete zrTrans;
 }
 
 void TxTableModel::addZSentData(const QList<TransactionItem>& data) {

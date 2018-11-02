@@ -261,6 +261,7 @@ void RPC::getAllPrivKeys(const std::function<void(QList<QPair<QString, QString>>
                     }
 
                     fnCombineTwoLists(allTKeys);
+                    delete privkeys;
                 }
             );
         });
@@ -677,6 +678,7 @@ void RPC::refreshSentZTrans() {
             }
             
             transactionsTableModel->addZSentData(newSentZTxs);
+            delete txidList;
         }
      );
 }

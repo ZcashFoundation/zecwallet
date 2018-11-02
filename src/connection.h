@@ -46,6 +46,8 @@ private:
 
     void showError(QString explanation);
 
+    void doRPCSetConnection(Connection* conn);
+
     QDialog*                d;
     Ui_ConnectionDialog*    connD;
 
