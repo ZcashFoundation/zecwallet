@@ -499,7 +499,11 @@ void MainWindow::exportAllKeys() {
     });
 
     // Call the API
+    auto isDialogAlive = std::make_shared<bool>(true);
     rpc->getAllPrivKeys([=] (auto privKeys) {
+        // Check to see if we are still showing.
+        if (! *isDialogAlive.get()) return;
+
         QString allKeysTxt;
         for (auto keypair : privKeys) {
             allKeysTxt = allKeysTxt % keypair.second % " # addr=" % keypair.first % "\n";
@@ -509,10 +513,8 @@ void MainWindow::exportAllKeys() {
         pui.buttonBox->button(QDialogButtonBox::Save)->setEnabled(true);
     });
 
-    
-
-
     d.exec();
+    *isDialogAlive.get() = false;
 }
 
 void MainWindow::setupBalancesTab() {

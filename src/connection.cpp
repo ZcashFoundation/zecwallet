@@ -36,8 +36,7 @@ ConnectionLoader::ConnectionLoader(MainWindow* main, RPC* rpc) {
     int x = (screenGeometry.width() - d->width()) / 2;
     int y = (screenGeometry.height() - d->height()) / 2;
     d->move(x, y);
-    connD->buttonBox->setEnabled(false);
-    d->show();
+    connD->buttonBox->setEnabled(false);    
 }
 
 ConnectionLoader::~ConnectionLoader() {
@@ -54,6 +53,7 @@ void ConnectionLoader::loadConnection() {
         config = loadFromSettings();
 
         if (config.get() == nullptr) {
+            d->show();
             // Nothing configured, show an error
             auto explanation = QString()
                     % "A zcash.conf was not found on this machine.\n\n"
@@ -98,11 +98,13 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
     };
     connection->doRPC(payload,
         [=] (auto) {
-            // Success
+            // Success, hide the dialog if it was shown. 
             d->hide();
             rpc->setConnection(connection);
         },
         [=] (auto reply, auto res) {
+            d->show();
+
             auto err = reply->error();
             // Failed, see what it is. 
             qDebug() << err << ":" << QString::fromStdString(res.dump());
