@@ -36,7 +36,6 @@ OBJECTS_DIR = bin
 UI_DIR = src
 
 CONFIG += c++14
-QMAKE_CXXFLAGS += -std=c++1y
 
 SOURCES += \
     src/main.cpp \

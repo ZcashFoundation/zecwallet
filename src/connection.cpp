@@ -120,7 +120,7 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
 
                 QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
                 connD->icon->setPixmap(icon.pixmap(128, 128));
-                connD->status->setText(status);
+                connD->status->setText("Your zcashd is starting up. Please wait.\n\n" % status);
 
                 // Refresh after one second
                 QTimer::singleShot(1000, [=]() { this->refreshZcashdState(connection); });
@@ -133,7 +133,6 @@ void ConnectionLoader::showError(QString explanation) {
     QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical);
     connD->icon->setPixmap(icon.pixmap(128, 128));
     connD->status->setText(explanation);
-    connD->title->setText("");
 
     connD->buttonBox->setEnabled(true);
 }

@@ -17,13 +17,6 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="1">
-    <widget class="QLabel" name="title">
-     <property name="text">
-      <string>Your zcashd is still loading. Please wait...</string>
-     </property>
-    </widget>
-   </item>
    <item row="4" column="1">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
@@ -31,19 +24,6 @@
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Close</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLabel" name="status">
-     <property name="text">
-      <string>Connection Status</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -79,6 +59,19 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="0" column="1" rowspan="2">
+    <widget class="QLabel" name="status">
+     <property name="text">
+      <string>Connection Status</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
