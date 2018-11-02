@@ -493,7 +493,7 @@ void MainWindow::exportAllKeys() {
         if (!file.open(QIODevice::WriteOnly)) {
             QMessageBox::information(this, tr("Unable to open file"), file.errorString());
             return;
-        }                           
+        }        
         QTextStream out(&file);
         out << pui.privKeyTxt->toPlainText();
     });

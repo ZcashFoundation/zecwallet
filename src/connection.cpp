@@ -90,7 +90,7 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
         [=] (auto) {
             // Success, hide the dialog if it was shown. 
             d->hide();
-            doRPCSetConnection(connection);
+            this->doRPCSetConnection(connection);
         },
         [=] (auto reply, auto res) {
             d->show();
