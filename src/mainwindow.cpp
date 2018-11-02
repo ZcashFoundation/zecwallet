@@ -40,7 +40,11 @@ MainWindow::MainWindow(QWidget *parent) :
         QDesktopServices::openUrl(QUrl("https://github.com/adityapk00/zec-qt-wallet/releases"));
     });
 
+    // Import Private Key
     QObject::connect(ui->actionImport_Private_Key, &QAction::triggered, this, &MainWindow::importPrivKey);
+
+    // Export All Private Keys
+    QObject::connect(ui->actionExport_All_Private_Keys, &QAction::triggered, this, &MainWindow::exportAllKeys);
 
     // Set up about action
     QObject::connect(ui->actionAbout, &QAction::triggered, [=] () {
@@ -436,6 +440,7 @@ void MainWindow::importPrivKey() {
     Ui_PrivKey pui;
     pui.setupUi(&d);
 
+    pui.buttonBox->button(QDialogButtonBox::Save)->setVisible(false);
     pui.helpLbl->setText(QString() %
                         "Please paste your private keys (z-Addr or t-Addr) here, one per line.\n" %
                         "The keys will be imported into your connected zcashd node");  
@@ -462,6 +467,54 @@ void MainWindow::importPrivKey() {
     }
 }
 
+void MainWindow::exportAllKeys() {
+    QDialog d(this);
+    Ui_PrivKey pui;
+    pui.setupUi(&d);
+
+    auto ps = this->geometry();
+    QMargins margin = QMargins() + 50;
+    d.setGeometry(ps.marginsRemoved(margin));
+
+    pui.privKeyTxt->setPlainText("Loading...");
+    pui.privKeyTxt->setReadOnly(true);
+    pui.privKeyTxt->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
+    pui.helpLbl->setText("These are all the private keys for all the addresses in your wallet");
+
+    // Disable the save button until it finishes loading
+    pui.buttonBox->button(QDialogButtonBox::Save)->setEnabled(false);
+    pui.buttonBox->button(QDialogButtonBox::Ok)->setVisible(false);
+
+    // Wire up save button
+    QObject::connect(pui.buttonBox->button(QDialogButtonBox::Save), &QPushButton::clicked, [=] () {
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+                           "zcash-all-privatekeys.txt");
+        QFile file(fileName);
+        if (!file.open(QIODevice::WriteOnly)) {
+            QMessageBox::information(this, tr("Unable to open file"), file.errorString());
+            return;
+        }                           
+        QTextStream out(&file);
+        out << pui.privKeyTxt->toPlainText();
+    });
+
+    // Call the API
+    rpc->getAllPrivKeys([=] (auto privKeys) {
+        QString allKeysTxt;
+        for (auto keypair : privKeys) {
+            allKeysTxt = allKeysTxt % keypair.second % " # addr=" % keypair.first % "\n";
+        }
+
+        pui.privKeyTxt->setPlainText(allKeysTxt);
+        pui.buttonBox->button(QDialogButtonBox::Save)->setEnabled(true);
+    });
+
+    
+
+
+    d.exec();
+}
+
 void MainWindow::setupBalancesTab() {
     ui->unconfirmedWarning->setVisible(false);
 
@@ -486,13 +539,14 @@ void MainWindow::setupBalancesTab() {
             auto fnCB = [=] (const json& reply) {
                 auto privKey = QString::fromStdString(reply.get<json::string_t>());
                 QDialog d(this);
-                Ui_PrivKey pui;
+                Ui_PrivKey pui;                
                 pui.setupUi(&d);
 
                 pui.helpLbl->setText("Private Key:");
                 pui.privKeyTxt->setPlainText(privKey);
                 pui.privKeyTxt->setReadOnly(true);
                 pui.privKeyTxt->selectAll();
+                pui.buttonBox->button(QDialogButtonBox::Save)->setVisible(false);
                 pui.buttonBox->button(QDialogButtonBox::Ok)->setVisible(false);
 
                 d.exec();
@@ -542,6 +596,7 @@ void MainWindow::setupBalancesTab() {
 void MainWindow::setupTransactionsTab() {
     // Set up context menu on transactions tab
     ui->transactionsTable->setContextMenuPolicy(Qt::CustomContextMenu);
+
     QObject::connect(ui->transactionsTable, &QTableView::customContextMenuRequested, [=] (QPoint pos) {
         QModelIndex index = ui->transactionsTable->indexAt(pos);
         if (index.row() < 0) return;

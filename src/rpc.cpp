@@ -202,6 +202,88 @@ void RPC::sendZTransaction(json params, const std::function<void(json)>& cb) {
     conn->doRPCWithDefaultErrorHandling(payload, cb);
 }
 
+/**
+ * Method to get all the private keys for both z and t addresses. It will make 2 batch calls,
+ * combine the result, and call the callback with a single list containing both the t-addr and z-addr
+ * private keys
+ */ 
+void RPC::getAllPrivKeys(const std::function<void(QList<QPair<QString, QString>>)> cb) {
+
+    // A special function that will call the callback when two lists have been added
+    auto holder = new QPair<int, QList<QPair<QString, QString>>>();
+    holder->first = 0;  // This is the number of times the callback has been called, initalized to 0
+    auto fnCombineTwoLists = [=] (QList<QPair<QString, QString>> list) {
+        // Increment the callback counter
+        holder->first++;    
+
+        // Add all
+        std::copy(list.begin(), list.end(), std::back_inserter(holder->second));
+        
+        // And if the caller has been called twice, do the parent callback with the 
+        // collected list
+        if (holder->first == 2) {
+            // Sort so z addresses are on top
+            std::sort(holder->second.begin(), holder->second.end(), 
+                        [=] (auto a, auto b) { return a.first > b.first; });
+
+            cb(holder->second);
+            delete holder;
+        }            
+    };
+
+    // A utility fn to do the batch calling
+    auto fnDoBatchGetPrivKeys = [=](json getAddressPayload, std::string privKeyDumpMethodName) {
+        conn->doRPCWithDefaultErrorHandling(getAddressPayload, [=] (json resp) {
+            QList<QString> addrs;
+            for (auto addr : resp.get<json::array_t>()) {   
+                addrs.push_back(QString::fromStdString(addr.get<json::string_t>()));
+            }
+
+            // Then, do a batch request to get all the private keys
+            conn->doBatchRPC<QString>(
+                addrs, 
+                [=] (auto addr) {
+                    json payload = {
+                        {"jsonrpc", "1.0"},
+                        {"id", "someid"},
+                        {"method", privKeyDumpMethodName},
+                        {"params", { addr.toStdString() }},
+                    };
+                    return payload;
+                },
+                [=] (QMap<QString, json>* privkeys) {
+                    QList<QPair<QString, QString>> allTKeys;
+                    for (QString addr: privkeys->keys()) {
+                        allTKeys.push_back(
+                            QPair<QString, QString>(
+                                addr, 
+                                QString::fromStdString(privkeys->value(addr).get<json::string_t>())));
+                    }
+
+                    fnCombineTwoLists(allTKeys);
+                }
+            );
+        });
+    };
+
+
+    // First get all the T and Z addresses.
+    json payloadT = {
+        {"jsonrpc", "1.0"},
+        {"id", "someid"},
+        {"method", "getaddressesbyaccount"},
+        {"params", {""} }
+    };
+
+    json payloadZ = {
+        {"jsonrpc", "1.0"},
+        {"id", "someid"},
+        {"method", "z_listaddresses"}
+    };
+
+    fnDoBatchGetPrivKeys(payloadT, "dumpprivkey");
+    fnDoBatchGetPrivKeys(payloadZ, "z_exportkey");
+}
 
 
 // Build the RPC JSON Parameters for this tx (with the dev fee included if applicable)

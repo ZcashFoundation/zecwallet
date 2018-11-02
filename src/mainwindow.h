@@ -82,6 +82,7 @@ private:
 
     void donate();
     void importPrivKey();
+    void exportAllKeys();
     void doImport(QList<QString>* keys);
 
     void restoreSavedStates();

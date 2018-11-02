@@ -32,6 +32,7 @@
 #include <QLabel>
 #include <QDialog>
 #include <QInputDialog>
+#include <QFileDialog>
 #include <QDebug>
 #include <QUrl>
 #include <QDesktopServices>

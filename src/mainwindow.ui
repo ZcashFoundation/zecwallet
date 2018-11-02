@@ -726,6 +726,7 @@
      <string>&amp;File</string>
     </property>
     <addaction name="actionImport_Private_Key"/>
+    <addaction name="actionExport_All_Private_Keys"/>
     <addaction name="actionTurnstile_Migration"/>
     <addaction name="actionSettings"/>
     <addaction name="separator"/>
@@ -779,6 +780,11 @@
   <action name="actionImport_Private_Key">
    <property name="text">
     <string>&amp;Import Private Key</string>
+   </property>
+  </action>
+  <action name="actionExport_All_Private_Keys">
+   <property name="text">
+    <string>Export All Private Keys</string>
    </property>
   </action>
  </widget>
