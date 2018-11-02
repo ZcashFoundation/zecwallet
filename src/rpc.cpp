@@ -68,6 +68,7 @@ void RPC::setConnection(Connection* c) {
     delete conn;
     this->conn = c;
 
+    refreshZECPrice();
     refresh();
 }
 
@@ -754,6 +755,7 @@ void RPC::watchTxStatus() {
 
 // Get the ZEC->USD price from coinmarketcap using their API
 void RPC::refreshZECPrice() {
+    qDebug() << QString::fromStdString("Getting zec price");
     if  (conn == nullptr) 
         return noConnection();
 

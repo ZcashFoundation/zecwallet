@@ -40,7 +40,7 @@ void ConnectionLoader::loadConnection() {
         if (config.get() == nullptr) {
             d->show();
             // Nothing configured, show an error
-            auto explanation = QString()
+            QString explanation = QString()
                     % "A zcash.conf was not found on this machine.\n\n"
                     % "If you are connecting to a remote/non-standard node " 
                     % "please set the host/port and user/password in the File->Settings menu.";
@@ -97,11 +97,11 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
 
             auto err = reply->error();
             // Failed, see what it is. 
-            qDebug() << err << ":" << QString::fromStdString(res.dump());
+            //qDebug() << err << ":" << QString::fromStdString(res.dump());
 
             if (err == QNetworkReply::NetworkError::ConnectionRefusedError) {    
                 auto isZcashConfFound = connection->config.get()->usingZcashConf;
-                auto explanation = QString()
+                QString explanation = QString()
                         % (isZcashConfFound ? "A zcash.conf file was found, but a" : "A") 
                         % " connection to zcashd could not be established.\n\n"
                         % "If you are connecting to a remote/non-standard node " 
@@ -109,7 +109,7 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
 
                 this->showError(explanation);
             } else if (err == QNetworkReply::NetworkError::AuthenticationRequiredError) {
-                auto explanation = QString() 
+                QString explanation = QString() 
                         % "Authentication failed. The username / password you specified was "
                         % "not accepted by zcashd. Try changing it in the File->Settings menu";
 
