@@ -48,10 +48,13 @@ private:
     QString locateZcashConfFile();
     QString zcashConfWritableLocation();
 
+    bool startEmbeddedZcashd();
+
     void refreshZcashdState(Connection* connection);
     int  getProgressFromStatus(QString status);
 
     void showError(QString explanation);
+    void showInformation(QString info);
 
     void doRPCSetConnection(Connection* conn);
 

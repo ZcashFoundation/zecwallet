@@ -35,6 +35,9 @@ public:
     QString getExecName() { return _executable; }
     void    setExecName(QString name) { _executable = name; }
 
+    void setEmbeddedZcashdRunning(bool r) { _isEmbeddedZcashd = r; }
+    bool isEmbeddedZcashdRunning() { return _isEmbeddedZcashd; }
+
     int  getBlockNumber();
     void setBlockNumber(int number);
 
@@ -63,10 +66,11 @@ private:
 
     QString _confLocation;
     QString _executable;
-    bool    _isTestnet      = false;
-    bool    _isSyncing      = false;
-    int     _blockNumber    = 0;
-    bool    _manualConn     = false;
+    bool    _isTestnet        = false;
+    bool    _isSyncing        = false;
+    int     _blockNumber      = 0;
+    bool    _manualConn       = false;
+    bool    _isEmbeddedZcashd = false;
 
     double zecPrice = 0.0;
 };

@@ -56,10 +56,14 @@ public:
     void importZPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb);
     void importTPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb);
 
+    void shutdownZcashd();
+
     void getAllPrivKeys(const std::function<void(QList<QPair<QString, QString>>)>);
 
     Turnstile*  getTurnstile()  { return turnstile; }
     Connection* getConnection() { return conn; }
+
+    void closeEvent();
 
 private:
     void noConnection();

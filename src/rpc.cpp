@@ -807,3 +807,19 @@ void RPC::refreshZECPrice() {
         Settings::getInstance()->setZECPrice(0);
     });
 }
+
+void RPC::shutdownZcashd() {
+    json payload = {
+        {"jsonrpc", "1.0"},
+        {"id", "someid"},
+        {"method", "stop"}
+    };
+    
+    conn->doRPCWithDefaultErrorHandling(payload, [=](auto) {});
+}
+
+void RPC::closeEvent() {
+    if (Settings::getInstance()->isEmbeddedZcashdRunning()) {
+        shutdownZcashd();
+    }
+}

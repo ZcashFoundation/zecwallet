@@ -66,7 +66,11 @@ void ConnectionLoader::createZcashConf() {
         QDir().mkdir(fi.dir().absolutePath());
 
         QFile file(confLocation);
-        file.open(QIODevice::ReadWrite | QIODevice::Truncate);
+        if (!file.open(QIODevice::ReadWrite | QIODevice::Truncate)) {
+            qDebug() << "Could not create zcash.conf, returning";
+            return;
+        }
+            
         QTextStream out(&file); 
         
         out << "server=1\n";
@@ -113,6 +117,53 @@ void ConnectionLoader::createZcashConf() {
         // stdout: "renamed '/home/adityapk/.zcash-params/sprout-groth16.params.dl' -> '/home/adityapk/.zcash-params/sprout-groth16.params'\n"
         // finished with code  0
     }
+
+    {
+        startEmbeddedZcashd();
+
+        auto config = autoDetectZcashConf();
+        if (config.get() != nullptr) {
+            auto connection = makeConnection(config);
+            refreshZcashdState(connection);
+
+            return;
+        } else {
+            qDebug() << "Coulnd't get embedded startup zcashd";
+        }
+    }
+}
+
+bool ConnectionLoader::startEmbeddedZcashd() {
+    static bool erroredOut = false;
+
+    if (erroredOut) {
+        qDebug() << "Last zcashd start attempted errored, so not restarting";
+        return false;
+    }
+
+    // Finally, start zcashd    
+    qDebug() << "Starting zcashd";
+    QFileInfo fi(Settings::getInstance()->getExecName());
+    auto zcashdProgram = fi.dir().filePath("zcashd");
+
+    QProcess* p = new QProcess(main);
+    QObject::connect(p, &QProcess::started, [=] () {
+        Settings::getInstance()->setEmbeddedZcashdRunning(true);
+    });
+
+    QObject::connect(p, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+                        [=](int exitCode, QProcess::ExitStatus exitStatus) {
+        qDebug() << "zcashd finished with code " << exitCode;
+        p->deleteLater();
+    });
+
+    QObject::connect(p, &QProcess::errorOccurred, [&] (auto error) mutable {
+        qDebug() << "Couldn't start zcashd: " << error;
+        erroredOut = true;
+    });
+
+    p->start(zcashdProgram);    
+    return true;
 }
 
 void ConnectionLoader::doManualConnect() {
@@ -178,15 +229,26 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
             // Failed, see what it is. 
             //qDebug() << err << ":" << QString::fromStdString(res.dump());
 
-            if (err == QNetworkReply::NetworkError::ConnectionRefusedError) {    
-                auto isZcashConfFound = connection->config.get()->usingZcashConf;
-                QString explanation = QString()
-                        % (isZcashConfFound ? "A zcash.conf file was found, but a" : "A") 
-                        % " connection to zcashd could not be established.\n\n"
-                        % "If you are connecting to a remote/non-standard node " 
-                        % "please set the host/port and user/password in the File->Settings menu";
+            if (err == QNetworkReply::NetworkError::ConnectionRefusedError) {   
+                // Start embedded zcasd
+                this->showInformation("Starting Embedded zcashd");
+                if (this->startEmbeddedZcashd()) {                
+                    // Refresh after one second
+                    QTimer::singleShot(1000, [=]() { this->refreshZcashdState(connection); });
+                } else {
+                    // Errored out, show error and exit
+                    QString explanation = "Couldn't start zcashd";
+                    this->showError(explanation);
+                }
 
-                this->showError(explanation);
+                // auto isZcashConfFound = connection->config.get()->usingZcashConf;
+                // QString explanation = QString()
+                //         % (isZcashConfFound ? "A zcash.conf file was found, but a" : "A") 
+                //         % " connection to zcashd could not be established.\n\n"
+                //         % "If you are connecting to a remote/non-standard node " 
+                //         % "please set the host/port and user/password in the File->Settings menu";
+
+                // this->showError(explanation);
             } else if (err == QNetworkReply::NetworkError::AuthenticationRequiredError) {
                 QString explanation = QString() 
                         % "Authentication failed. The username / password you specified was "
@@ -196,16 +258,19 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
             } else if (err == QNetworkReply::NetworkError::InternalServerError && !res.is_discarded()) {
                 // The server is loading, so just poll until it succeeds
                 QString status = QString::fromStdString(res["error"]["message"]);
-
-                QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
-                connD->icon->setPixmap(icon.pixmap(128, 128));
-                connD->status->setText("Your zcashd is starting up. Please wait.\n\n" % status);
+                showInformation("Your zcashd is starting up. Please wait.\n\n" % status);
 
                 // Refresh after one second
                 QTimer::singleShot(1000, [=]() { this->refreshZcashdState(connection); });
             }
         }
     );
+}
+
+void ConnectionLoader::showInformation(QString info) {
+    QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
+    connD->icon->setPixmap(icon.pixmap(128, 128));
+    connD->status->setText(info);
 }
 
 void ConnectionLoader::showError(QString explanation) {
