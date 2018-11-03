@@ -62,6 +62,8 @@ You need Visual Studio 2017 (The free C++ Community Edition works just fine).
 
 From the VS Tools command prompt
 ```
+git clone https://github.com/adityapk00/zec-qt-wallet.git
+cd zec-qt-wallet
 c:\Qt5\bin\qmake.exe zec-qt-wallet.pro CONFIG+=debug
 nmake
 
