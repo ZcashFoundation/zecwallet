@@ -121,7 +121,8 @@ void Turnstile::planMigration(QString zaddr, QString destAddr, int numsplits, in
             if (migItems.size() == 0) {
                 // Show error and abort
                 QMessageBox::warning(mainwindow, 
-                    "Locked funds", "Could not initiate migration.\nYou either have unconfirmed funds or the balance is too low for an automatic migration.");
+                    "Locked funds", 
+                    "Could not initiate migration.\nYou either have unconfirmed funds or the balance is too low for an automatic migration.");
                 return;
             }
 

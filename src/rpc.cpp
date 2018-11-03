@@ -68,6 +68,7 @@ void RPC::setConnection(Connection* c) {
     delete conn;
     this->conn = c;
 
+    refreshZECPrice();
     refresh();
 }
 
@@ -522,14 +523,9 @@ void RPC::refreshAddresses() {
 
 // Function to create the data model and update the views, used below.
 void RPC::updateUI(bool anyUnconfirmed) {
-    if (Settings::getInstance()->isTestnet()) {
-        // See if the turnstile migration has any steps that need to be done.
-        turnstile->executeMigrationStep();
-    } else {
-        // Not available on mainnet yet.
-        main->ui->actionTurnstile_Migration->setVisible(false);
-    }    
-
+    // See if the turnstile migration has any steps that need to be done.
+    turnstile->executeMigrationStep();
+    
     ui->unconfirmedWarning->setVisible(anyUnconfirmed);
 
     // Update balances model data, which will update the table too
@@ -759,6 +755,7 @@ void RPC::watchTxStatus() {
 
 // Get the ZEC->USD price from coinmarketcap using their API
 void RPC::refreshZECPrice() {
+    qDebug() << QString::fromStdString("Getting zec price");
     if  (conn == nullptr) 
         return noConnection();
 
