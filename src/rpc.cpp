@@ -213,6 +213,10 @@ void RPC::sendZTransaction(json params, const std::function<void(json)>& cb) {
  * private keys
  */ 
 void RPC::getAllPrivKeys(const std::function<void(QList<QPair<QString, QString>>)> cb) {
+    if (conn == nullptr) {
+        // No connection, just return
+        return;
+    }
 
     // A special function that will call the callback when two lists have been added
     auto holder = new QPair<int, QList<QPair<QString, QString>>>();
@@ -813,6 +817,12 @@ void RPC::refreshZECPrice() {
 }
 
 void RPC::shutdownZcashd() {
+    // Shutdown embedded zcashd if it was started
+    if (ezcashd == nullptr || conn == nullptr) {
+        // No zcashd running internally, just return
+        return;
+    }
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
