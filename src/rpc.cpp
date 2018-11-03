@@ -839,6 +839,9 @@ void RPC::shutdownZcashd() {
     d.setWindowFlags(Qt::SplashScreen);
 
     QTimer waiter(main);
+
+    // We capture by reference all the local variables because of the d.exec() 
+    // below, which blocks this function until we exit. 
     QObject::connect(&waiter, &QTimer::timeout, [&] () {
         if (ezcashd->atEnd()) {
             qDebug() << "Ended";

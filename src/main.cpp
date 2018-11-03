@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
 
     std::srand(std::time(nullptr));
     Settings::init();
+    Settings::getInstance()->setExecName(argv[0]);
 
     if (argc >= 2 && QString::fromStdString(argv[1]) == "-manual") {
         Settings::getInstance()->setManualConnection(true);

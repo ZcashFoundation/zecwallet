@@ -146,9 +146,18 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     // Finally, start zcashd    
     qDebug() << "Starting zcashd";
     QFileInfo fi(Settings::getInstance()->getExecName());
-    auto zcashdProgram = fi.dir().filePath("zcashd");
+#ifdef Q_OS_LINUX
+    auto zcashdProgram = "zcashd";
+#elif defined(Q_OS_DARWIN)
+    auto zcashdProgram = "zcashd";
+#else
+    auto zcashdProgram = "zcashd.exe";
+#endif
+    
+    qDebug() << zcashdProgram << QFile(zcashdProgram).exists();
 
     ezcashd = new QProcess(main);    
+    ezcashd->setWorkingDirectory(fi.dir().absolutePath());
     QObject::connect(ezcashd, &QProcess::started, [=] () {
         qDebug() << "zcashd started";
         Settings::getInstance()->setEmbeddedZcashdRunning(true);
@@ -160,7 +169,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     });
 
     QObject::connect(ezcashd, &QProcess::errorOccurred, [&] (auto error) mutable {
-        qDebug() << "Couldn't start zcashd: " << error;
+        qDebug() << "Couldn't start zcashd: " << error << ezcashd->errorString();
     });
 
     ezcashd->start(zcashdProgram);
