@@ -134,11 +134,13 @@ void ConnectionLoader::createZcashConf() {
 }
 
 bool ConnectionLoader::startEmbeddedZcashd() {
-    static bool erroredOut = false;
-
-    if (erroredOut) {
-        qDebug() << "Last zcashd start attempted errored, so not restarting";
-        return false;
+    if (ezcashd != nullptr) {
+        if (ezcashd->state() == QProcess::NotRunning) {
+            qDebug() << "Process started and then crashed";
+            return false;
+        } else {
+            return true;
+        }        
     }
 
     // Finally, start zcashd    
@@ -146,23 +148,23 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     QFileInfo fi(Settings::getInstance()->getExecName());
     auto zcashdProgram = fi.dir().filePath("zcashd");
 
-    QProcess* p = new QProcess(main);
-    QObject::connect(p, &QProcess::started, [=] () {
+    ezcashd = new QProcess(main);    
+    QObject::connect(ezcashd, &QProcess::started, [=] () {
+        qDebug() << "zcashd started";
         Settings::getInstance()->setEmbeddedZcashdRunning(true);
     });
 
-    QObject::connect(p, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+    QObject::connect(ezcashd, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                         [=](int exitCode, QProcess::ExitStatus exitStatus) {
-        qDebug() << "zcashd finished with code " << exitCode;
-        p->deleteLater();
+        qDebug() << "zcashd finished with code " << exitCode << "," << exitStatus;
     });
 
-    QObject::connect(p, &QProcess::errorOccurred, [&] (auto error) mutable {
+    QObject::connect(ezcashd, &QProcess::errorOccurred, [&] (auto error) mutable {
         qDebug() << "Couldn't start zcashd: " << error;
-        erroredOut = true;
     });
 
-    p->start(zcashdProgram);    
+    ezcashd->start(zcashdProgram);
+
     return true;
 }
 
@@ -187,6 +189,10 @@ void ConnectionLoader::doManualConnect() {
 }
 
 void ConnectionLoader::doRPCSetConnection(Connection* conn) {
+    if (ezcashd != nullptr) {
+        rpc->setEZcashd(ezcashd);
+    }
+
     rpc->setConnection(conn);
     delete this;
 }
@@ -257,7 +263,7 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
                 this->showError(explanation);
             } else if (err == QNetworkReply::NetworkError::InternalServerError && !res.is_discarded()) {
                 // The server is loading, so just poll until it succeeds
-                QString status = QString::fromStdString(res["error"]["message"]);
+                QString status    = QString::fromStdString(res["error"]["message"]);
                 showInformation("Your zcashd is starting up. Please wait.\n\n" % status);
 
                 // Refresh after one second

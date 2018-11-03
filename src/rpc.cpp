@@ -62,6 +62,10 @@ RPC::~RPC() {
     delete conn;
 }
 
+void RPC::setEZcashd(QProcess* p) {
+    ezcashd = p;
+}
+
 void RPC::setConnection(Connection* c) {
     if (c == nullptr) return;
 
@@ -478,7 +482,7 @@ void RPC::getInfoThenRefresh(bool force) {
 
         conn->doRPCIgnoreError(payload, [=](const json& reply) {
             auto progress    = reply["verificationprogress"].get<double>();
-            bool isSyncing   = progress < 0.999; // 99.9%
+            bool isSyncing   = progress < 0.995; // 99.59%
             int  blockNumber = reply["blocks"].get<json::number_unsigned_t>();
 
             Settings::getInstance()->setSyncing(isSyncing);
@@ -816,10 +820,25 @@ void RPC::shutdownZcashd() {
     };
     
     conn->doRPCWithDefaultErrorHandling(payload, [=](auto) {});
-}
 
-void RPC::closeEvent() {
-    if (Settings::getInstance()->isEmbeddedZcashdRunning()) {
-        shutdownZcashd();
-    }
+    QMessageBox d(main);
+    d.setIcon(QMessageBox::Icon::Information);
+    d.setWindowTitle("Waiting for zcashd to exit");
+    d.setText("Please wait for zcashd to exit. Don't click OK!");
+    d.setStandardButtons(QMessageBox::NoButton);
+    d.setWindowFlags(Qt::SplashScreen);
+
+    QTimer waiter(main);
+    QObject::connect(&waiter, &QTimer::timeout, [&] () {
+        if (ezcashd->atEnd()) {
+            qDebug() << "Ended";
+            d.accept();
+        } else {
+            qDebug() << "Not ended";
+        }
+    });
+    waiter.start(1000);
+
+    // Wait for the zcash process to exit.     
+    d.exec(); 
 }

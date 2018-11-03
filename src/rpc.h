@@ -32,6 +32,7 @@ public:
     ~RPC();
 
     void setConnection(Connection* c);
+    void setEZcashd(QProcess* p);
 
     void refresh(bool force = false);
 
@@ -63,7 +64,6 @@ public:
     Turnstile*  getTurnstile()  { return turnstile; }
     Connection* getConnection() { return conn; }
 
-    void closeEvent();
 
 private:
     void noConnection();
@@ -90,6 +90,7 @@ private:
     void handleTxError          (const QString& error);
 
     Connection*                 conn                        = nullptr;
+    QProcess*                   ezcashd                     = nullptr;
 
     QList<UnspentOutput>*       utxos                       = nullptr;
     QMap<QString, double>*      allBalances                 = nullptr;

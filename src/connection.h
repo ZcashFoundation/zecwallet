@@ -58,6 +58,8 @@ private:
 
     void doRPCSetConnection(Connection* conn);
 
+    QProcess*               ezcashd  = nullptr;
+
     QDialog*                d;
     Ui_ConnectionDialog*    connD;
 
