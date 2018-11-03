@@ -285,12 +285,6 @@ void Connection::doRPCIgnoreError(const json& payload, const std::function<void(
 void Connection::showTxError(const QString& error) {
     if (error.isNull()) return;
 
-    QMessageBox msg(main);
-    msg.setIcon(QMessageBox::Icon::Critical); 
-    msg.setWindowTitle("Transaction Error");
-    
-    msg.setText("There was an error sending the transaction. The error was: \n\n" 
-                + error);        
-
-    msg.exec();
+    QMessageBox::critical(main, "Transaction Error", "There was an error sending the transaction. The error was: \n\n"
+        + error, QMessageBox::StandardButton::Ok);
 }
