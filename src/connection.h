@@ -41,6 +41,13 @@ private:
 
     Connection* makeConnection(std::shared_ptr<ConnectionConfig> config);
 
+    void doAutoConnect();
+    void doManualConnect();
+
+    void createZcashConf();
+    QString locateZcashConfFile();
+    QString zcashConfWritableLocation();
+
     void refreshZcashdState(Connection* connection);
     int  getProgressFromStatus(QString status);
 

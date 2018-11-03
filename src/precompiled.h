@@ -35,6 +35,7 @@
 #include <QFileDialog>
 #include <QDebug>
 #include <QUrl>
+#include <QProcess>
 #include <QDesktopServices>
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkAccessManager>

@@ -30,26 +30,105 @@ ConnectionLoader::~ConnectionLoader() {
 }
 
 void ConnectionLoader::loadConnection() {    
+    // Load from settings if it is a manual connection.
+    if (Settings::getInstance()->getIsManualConnection()) {
+        doManualConnect();
+    } else {
+        doAutoConnect();
+    }
+}
+
+void ConnectionLoader::doAutoConnect() {
     // Priority 1: Try to connect to detect zcash.conf and connect to it.
     auto config = autoDetectZcashConf();
 
-    // If not autodetected, go and read the UI Settings
-    if (config.get() == nullptr)  {
-        config = loadFromSettings();
+    if (config.get() != nullptr) {
+        auto connection = makeConnection(config);
+        refreshZcashdState(connection);
 
-        if (config.get() == nullptr) {
-            d->show();
-            // Nothing configured, show an error
-            QString explanation = QString()
-                    % "A zcash.conf was not found on this machine.\n\n"
-                    % "If you are connecting to a remote/non-standard node " 
-                    % "please set the host/port and user/password in the File->Settings menu.";
+        return;
+    } else {
+        // zcash.conf was not found, so create one
+        createZcashConf();
+    }
+}
 
-            showError(explanation);
-            doRPCSetConnection(nullptr);
+/**
+ * This will create a new zcash.conf, download zcash parameters.
+ */ 
+void ConnectionLoader::createZcashConf() {
+    // Create zcash.conf
+    {
+        auto confLocation = zcashConfWritableLocation();
+        qDebug() << "Creating file " << confLocation;
 
-            return;
-        }
+        QFileInfo fi(confLocation);
+        QDir().mkdir(fi.dir().absolutePath());
+
+        QFile file(confLocation);
+        file.open(QIODevice::ReadWrite | QIODevice::Truncate);
+        QTextStream out(&file); 
+        
+        out << "server=1\n";
+        out << "rpcuser=zec-qt-wallet\n";
+        out << "rpcpassword=" % QString::number(std::rand()) << "\n";
+        file.close();
+    }
+
+    // Fetch params. 
+    {
+        QFileInfo fi(Settings::getInstance()->getExecName());
+        auto fetchParamsProgram = fi.dir().filePath("zcash-fetch-params");
+
+        QProcess* p = new QProcess(main);
+        QObject::connect(p, &QProcess::readyReadStandardOutput, [=] () {
+            qDebug() << "stdout:" << p->readAllStandardOutput();
+        });
+        QObject::connect(p, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+                         [=](int exitCode, QProcess::ExitStatus exitStatus) {
+            qDebug() << "finished with code " << exitCode;
+            p->deleteLater();
+        });
+        p->start(fetchParamsProgram);
+
+        // stdout: "Zcash - fetch-params.sh\n\nThis script will fetch the Zcash zkSNARK parameters and verify their\nintegrity with sha256sum.\n\nIf they already exist locally, it will exit now and do nothing else.\nThe parameters are currently just under 911MB in size, so plan accordingly\nfor your bandwidth constraints. If the files are already present and\nhave the correct sha256sum, no networking is used.\n\nCreating params directory. For details about this directory, see:\n/home/adityapk/.zcash-params/README\n\n\nRetrieving (wget): https://z.cash/downloads/sprout-proving.key\n"
+        // stdout: "Download successful!\n"
+        // stdout: "/home/adityapk/.zcash-params/sprout-proving.key.dl: OK\n"
+        // stdout: "renamed '/home/adityapk/.zcash-params/sprout-proving.key.dl' -> '/home/adityapk/.zcash-params/sprout-proving.key'\n"
+        // stdout: "\nRetrieving (wget): https://z.cash/downloads/sprout-verifying.key\n"
+        // stdout: "Download successful!\n"
+        // stdout: "/home/adityapk/.zcash-params/sprout-verifying.key.dl: OK\n"
+        // stdout: "renamed '/home/adityapk/.zcash-params/sprout-verifying.key.dl' -> '/home/adityapk/.zcash-params/sprout-verifying.key'\n"
+        // stdout: "\nRetrieving (wget): https://z.cash/downloads/sapling-spend.params\n"
+        // stdout: "Download successful!\n"
+        // stdout: "/home/adityapk/.zcash-params/sapling-spend.params.dl: OK\n"
+        // stdout: "renamed '/home/adityapk/.zcash-params/sapling-spend.params.dl' -> '/home/adityapk/.zcash-params/sapling-spend.params'\n"
+        // stdout: "\nRetrieving (wget): https://z.cash/downloads/sapling-output.params\n"
+        // stdout: "Download successful!\n"
+        // stdout: "/home/adityapk/.zcash-params/sapling-output.params.dl: OK\n"
+        // stdout: "renamed '/home/adityapk/.zcash-params/sapling-output.params.dl' -> '/home/adityapk/.zcash-params/sapling-output.params'\n"
+        // stdout: "\nRetrieving (wget): https://z.cash/downloads/sprout-groth16.params\n"
+        // stdout: "Download successful!\n"
+        // stdout: "/home/adityapk/.zcash-params/sprout-groth16.params.dl: OK\n"
+        // stdout: "renamed '/home/adityapk/.zcash-params/sprout-groth16.params.dl' -> '/home/adityapk/.zcash-params/sprout-groth16.params'\n"
+        // finished with code  0
+    }
+}
+
+void ConnectionLoader::doManualConnect() {
+    auto config = loadFromSettings();
+
+    if (config.get() == nullptr) {
+        d->show();
+        // Nothing configured, show an error
+        QString explanation = QString()
+                % "A manual connection was requested, but the settings are not configured.\n\n" 
+                % "Please set the host/port and user/password in the File->Settings menu.";
+
+        showError(explanation);
+        doRPCSetConnection(nullptr);
+
+        return;
     }
 
     auto connection = makeConnection(config);
@@ -137,12 +216,7 @@ void ConnectionLoader::showError(QString explanation) {
     connD->buttonBox->setEnabled(true);
 }
 
-
-/**
- * Try to automatically detect a zcash.conf file in the correct location and load parameters
- */ 
-std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {    
-
+QString ConnectionLoader::locateZcashConfFile() {
 #ifdef Q_OS_LINUX
     auto confLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, ".zcash/zcash.conf");
 #elif defined(Q_OS_DARWIN)
@@ -150,8 +224,26 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {
 #else
     auto confLocation = QStandardPaths::locate(QStandardPaths::AppDataLocation, "../../Zcash/zcash.conf");
 #endif
+    return QDir::cleanPath(confLocation);
+}
 
-    confLocation = QDir::cleanPath(confLocation);
+QString ConnectionLoader::zcashConfWritableLocation() {
+#ifdef Q_OS_LINUX
+    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath(".zcash/zcash.conf");
+#elif defined(Q_OS_DARWIN)
+    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath("/Library/Application Support/Zcash/zcash.conf");
+#else
+    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("../../Zcash/zcash.conf");
+#endif
+
+    return confLocation;
+}
+
+/**
+ * Try to automatically detect a zcash.conf file in the correct location and load parameters
+ */ 
+std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {    
+    auto confLocation = locateZcashConfFile();
 
     if (confLocation.isNull()) {
         // No zcash file, just return with nothing

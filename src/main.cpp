@@ -21,6 +21,10 @@ int main(int argc, char *argv[])
     std::srand(std::time(nullptr));
     Settings::init();
 
+    if (argc >= 2 && QString::fromStdString(argv[1]) == "-manual") {
+        Settings::getInstance()->setManualConnection(true);
+    }
+
     QCoreApplication::setOrganizationName("zec-qt-wallet-org");
     QCoreApplication::setApplicationName("zec-qt-wallet");
 
