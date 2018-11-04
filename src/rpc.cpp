@@ -212,7 +212,7 @@ void RPC::getAllPrivKeys(const std::function<void(QList<QPair<QString, QString>>
 
     // A special function that will call the callback when two lists have been added
     auto holder = new QPair<int, QList<QPair<QString, QString>>>();
-    holder->first = 0;  // This is the number of times the callback has been called, initalized to 0
+    holder->first = 0;  // This is the number of times the callback has been called, initialized to 0
     auto fnCombineTwoLists = [=] (QList<QPair<QString, QString>> list) {
         // Increment the callback counter
         holder->first++;    
@@ -269,7 +269,7 @@ void RPC::getAllPrivKeys(const std::function<void(QList<QPair<QString, QString>>
     };
 
 
-    // First get all the T and Z addresses.
+    // First get all the t and z addresses.
     json payloadT = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -699,7 +699,7 @@ void RPC::watchTxStatus() {
     conn->doRPCWithDefaultErrorHandling(payload, [=] (const json& reply) {
         // There's an array for each item in the status
         for (auto& it : reply.get<json::array_t>()) {  
-            // If we were watching this Tx and it's status became "success", then we'll show a status bar alert
+            // If we were watching this Tx and its status became "success", then we'll show a status bar alert
             QString id = QString::fromStdString(it["id"]);
             if (watchingOps.contains(id)) {
                 // And if it ended up successful
@@ -755,7 +755,7 @@ void RPC::watchTxStatus() {
 
 // Get the ZEC->USD price from coinmarketcap using their API
 void RPC::refreshZECPrice() {
-    qDebug() << QString::fromStdString("Getting zec price");
+    qDebug() << QString::fromStdString("Getting ZEC price");
     if  (conn == nullptr) 
         return noConnection();
 

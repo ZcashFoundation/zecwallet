@@ -344,7 +344,7 @@ void MainWindow::setupSettingsModal() {
         // Setup clear button
         QObject::connect(settings.btnClearSaved, &QCheckBox::clicked, [=]() {
             if (QMessageBox::warning(this, "Clear saved history?",
-                "Shielded z-Address transactions are stored locally in your wallet, outside zcashd. You may delete this saved information safely any time for your privacy.\nDo you want to delete the saved shielded transactions now ?",
+                "Shielded z-Address transactions are stored locally in your wallet, outside zcashd. You may delete this saved information safely any time for your privacy.\nDo you want to delete the saved shielded transactions now?",
                 QMessageBox::Yes, QMessageBox::Cancel)) {
                     SentTxStore::deleteHistory();
                     // Reload after the clear button so existing txs disappear
@@ -640,10 +640,10 @@ void MainWindow::setupTransactionsTab() {
 void MainWindow::addNewZaddr(bool sapling) {
     rpc->newZaddr(sapling, [=] (json reply) {
         QString addr = QString::fromStdString(reply.get<json::string_t>());
-        // Make sure the RPC class reloads the Z-addrs for future use
+        // Make sure the RPC class reloads the z-addrs for future use
         rpc->refreshAddresses();
 
-        // Just double make sure the Z-address is still checked
+        // Just double make sure the z-address is still checked
         if (( sapling && ui->rdioZSAddr->isChecked()) ||
             (!sapling && ui->rdioZAddr->isChecked())) {
             ui->listRecieveAddresses->insertItem(0, addr);
@@ -684,7 +684,7 @@ void MainWindow::setupRecieveTab() {
         rpc->newTaddr([=] (json reply) {
                 QString addr = QString::fromStdString(reply.get<json::string_t>());
 
-                // Just double make sure the T-address is still checked
+                // Just double make sure the t-address is still checked
                 if (ui->rdioTAddr->isChecked()) {
                     ui->listRecieveAddresses->insertItem(0, addr);
                     ui->listRecieveAddresses->setCurrentIndex(0);
@@ -696,8 +696,8 @@ void MainWindow::setupRecieveTab() {
 
     // Connect t-addr radio button
     QObject::connect(ui->rdioTAddr, &QRadioButton::toggled, [=] (bool checked) { 
-        // Whenever the T-address is selected, we generate a new address, because we don't
-        // want to reuse T-addrs
+        // Whenever the t-address is selected, we generate a new address, because we don't
+        // want to reuse t-addrs
         if (checked && this->rpc->getUTXOs() != nullptr) { 
             auto utxos = this->rpc->getUTXOs();
             ui->listRecieveAddresses->clear();
@@ -729,12 +729,12 @@ void MainWindow::setupRecieveTab() {
         }
     });
 
-    // Focus enter for the Recieve Tab
+    // Focus enter for the Receive Tab
     QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int tab) {
         if (tab == 2) {
-            // Switched to recieve tab, so update everything. 
+            // Switched to receive tab, so update everything. 
 
-            // Hide Sapling radio button if sapling is not active
+            // Hide Sapling radio button if Sapling is not active
             if (Settings::getInstance()->isSaplingActive()) {
                 ui->rdioZSAddr->setVisible(true);    
                 ui->rdioZSAddr->setChecked(true);
@@ -742,7 +742,7 @@ void MainWindow::setupRecieveTab() {
             } else {
                 ui->rdioZSAddr->setVisible(false);    
                 ui->rdioZAddr->setChecked(true);
-                ui->rdioZAddr->setText("z-Addr");   // Don't use the "Sprout" label if there's no sapling
+                ui->rdioZAddr->setText("z-Addr");   // Don't use the "Sprout" label if there's no Sapling
             }
             
             // And then select the first one
