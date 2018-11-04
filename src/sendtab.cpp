@@ -217,7 +217,7 @@ void MainWindow::setMemoEnabled(int number, bool enabled) {
         memoBtn->setToolTip("");
     } else {
         memoBtn->setEnabled(false);
-        memoBtn->setToolTip("Only Z addresses can have memos");
+        memoBtn->setToolTip("Only z-addresses can have memos");
     }
 }
 
@@ -225,8 +225,8 @@ void MainWindow::memoButtonClicked(int number) {
     // Memos can only be used with zAddrs. So check that first
     auto addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") + QString::number(number));
     if (!addr->text().trimmed().startsWith("z")) {
-        QMessageBox msg(QMessageBox::Critical, "Memos can only be used with z Addresses",
-        "The Memo field can only be used with a z Address.\n" + addr->text() + "\ndoesn't look like a z Address",
+        QMessageBox msg(QMessageBox::Critical, "Memos can only be used with z-addresses",
+        "The memo field can only be used with a z-address.\n" + addr->text() + "\ndoesn't look like a z-address",
         QMessageBox::Ok, this);
 
         msg.exec();
@@ -261,7 +261,7 @@ void MainWindow::removeExtraAddresses() {
     // The last one is a spacer, so ignore that
     int totalItems = ui->sendToWidgets->children().size() - 2; 
 
-    // Clear the first recepient fields
+    // Clear the first recipient fields
     auto addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address1"));
     addr->clear();
     auto amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount1"));
@@ -511,7 +511,7 @@ void MainWindow::sendButton() {
 }
 
 QString MainWindow::doSendTxValidations(Tx tx) {
-    // 1. Addresses are valid format. 
+    // 1. Addresses have valid format. 
     QRegExp zcexp("^z[a-z0-9]{94}$",  Qt::CaseInsensitive);
     QRegExp zsexp("^z[a-z0-9]{77}$",  Qt::CaseInsensitive);
     QRegExp ztsexp("^ztestsapling[a-z0-9]{76}", Qt::CaseInsensitive);

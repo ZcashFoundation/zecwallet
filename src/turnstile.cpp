@@ -90,7 +90,7 @@ void Turnstile::planMigration(QString zaddr, QString destAddr, int numsplits, in
     auto bal = rpc->getAllBalances()->value(zaddr);
     auto splits = splitAmount(bal, numsplits);
 
-    // Then, generate an intermediate t-Address for each part using getBatchRPC
+    // Then, generate an intermediate t-address for each part using getBatchRPC
     rpc->getConnection()->doBatchRPC<double>(splits,
         [=] (double /*unused*/) {
             json payload = {
@@ -186,7 +186,7 @@ void Turnstile::fillAmounts(QList<double>& amounts, double amount, int count) {
     }
 
     // Get a random amount off the amount (between half and full) and call recursively.
-    // Multiply by hundered, because we'll operate on 0.01 ZEC minimum. We'll divide by 100 later
+    // Multiply by hundred, because we'll operate on 0.01 ZEC minimum. We'll divide by 100 later
     double curAmount = std::rand() % (int)std::floor(amount * 100);
 
     // Try to round it off
@@ -319,14 +319,14 @@ void Turnstile::executeMigrationStep() {
 
     } else if (nextStep->status == TurnstileMigrationItemStatus::SentToT) {
         // First thing to do is check to see if the funds are confirmed. 
-        // We'll check both the original sprout address and the intermediate T addr for safety.
+        // We'll check both the original sprout address and the intermediate t-addr for safety.
         if (fnHasUnconfirmed(nextStep->intTAddr) || fnHasUnconfirmed(nextStep->fromAddr)) {
             //qDebug() << QString("unconfirmed, waiting");
             return;
         }
 
         if (!rpc->getAllBalances()->keys().contains(nextStep->intTAddr)) {
-            qDebug() << QString("The intermediate Taddress doesn't have balance, even though it is confirmed");
+            qDebug() << QString("The intermediate t-address doesn't have balance, even though it is confirmed");
             return;
         }
 

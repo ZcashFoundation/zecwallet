@@ -47,7 +47,7 @@ const QString Utils::getDevAddr(Tx tx) {
             return devAddr;
         }
 
-        // t-Addr, find if it is going to a sprout or sapling address
+        // t-Addr, find if it is going to a Sprout or Sapling address
         for (const ToFields& to : tx.toAddrs) {
             devAddr = testnetAddrLookup(to.addr);
             if (!devAddr.isEmpty()) {
@@ -55,7 +55,7 @@ const QString Utils::getDevAddr(Tx tx) {
             }
         }
         
-        // If this is a t-Addr -> t-Addr transaction, use the sapling address by default
+        // If this is a t-Addr -> t-Addr transaction, use the Sapling address by default
         return testnetAddrLookup("ztestsapling");
     } else {
         // Mainnet doesn't have a fee yet!
