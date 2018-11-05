@@ -81,6 +81,7 @@ private:
     QString doSendTxValidations(Tx tx);
 
     void donate();
+    void postToZBoard();
     void importPrivKey();
     void exportAllKeys();
     void doImport(QList<QString>* keys);

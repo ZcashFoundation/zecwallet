@@ -245,7 +245,17 @@ void MainWindow::memoButtonClicked(int number) {
         QString txt = memoDialog.memoTxt->toPlainText();
         memoDialog.memoSize->setText(QString::number(txt.toUtf8().size()) + "/512");
 
-        memoDialog.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(txt.toUtf8().size() <= 512);
+        if (txt.toUtf8().size() <= 512) {
+            // Everything is fine
+            memoDialog.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+            memoDialog.memoSize->setStyleSheet("");
+        }
+        else {
+           // Overweight
+            memoDialog.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+            memoDialog.memoSize->setStyleSheet("color: red;");
+        }
+        
     });
 
     memoDialog.memoTxt->setPlainText(currentMemo);

@@ -17,6 +17,8 @@ public:
     static const QString getDonationAddr(bool sapling);
 
     static double  getMinerFee();
+    static double  getZboardAmount();
+    static QString getZboardAddr();
     static double  getDevFee();
     static double  getTotalFee();
 

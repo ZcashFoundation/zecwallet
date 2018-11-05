@@ -67,6 +67,19 @@ const QString Utils::getDevAddr(Tx tx) {
 double Utils::getMinerFee() {
     return 0.0001;
 }
+
+double Utils::getZboardAmount() {
+    return 0.0001;
+}
+
+QString Utils::getZboardAddr() {
+    if (Settings::getInstance()->isTestnet()) {
+        return getDonationAddr(true);
+    }
+    else {
+        return "zs10m00rvkhfm4f7n23e4sxsx275r7ptnggx39ygl0vy46j9mdll5c97gl6dxgpk0njuptg2mn9w5s";
+    }
+}
 double Utils::getDevFee() {
     if (Settings::getInstance()->isTestnet()) {
         return 0.0001;

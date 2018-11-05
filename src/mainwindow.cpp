@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "ui_zboard.h"
 #include "ui_privkey.h"
 #include "ui_about.h"
 #include "ui_settings.h"
@@ -45,6 +46,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Export All Private Keys
     QObject::connect(ui->actionExport_All_Private_Keys, &QAction::triggered, this, &MainWindow::exportAllKeys);
+
+    // z-Board.net
+    QObject::connect(ui->actionz_board_net, &QAction::triggered, this, &MainWindow::postToZBoard);
 
     // Set up about action
     QObject::connect(ui->actionAbout, &QAction::triggered, [=] () {
@@ -415,6 +419,59 @@ void MainWindow::donate() {
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);
+}
+
+void MainWindow::postToZBoard() {
+    QDialog d(this);
+    Ui_zboard zb;
+    zb.setupUi(&d);
+
+    // Fill the from field with sapling addresses.
+    for (auto i = rpc->getAllBalances()->keyBegin(); i != rpc->getAllBalances()->keyEnd(); i++) {
+        if (Settings::getInstance()->isSaplingAddress(*i) && rpc->getAllBalances()->value(*i) > 0) {
+            zb.fromAddr->addItem(*i);
+        }
+    }
+
+    // Testnet warning
+    if (Settings::getInstance()->isTestnet()) {
+        zb.testnetWarning->setText("You are on testnet, your post won't actually appear on z-board.net");
+    }
+    else {
+        zb.testnetWarning->setText("");
+    }
+
+    zb.feeAmount->setText(Settings::getInstance()->getZECUSDDisplayFormat(Utils::getZboardAmount() + Utils::getMinerFee()));
+    if (d.exec() == QDialog::Accepted) {
+        // Create a transaction.
+        Tx tx;
+        
+        // Send from your first sapling address that has a balance.
+        tx.fromAddr = zb.fromAddr->currentText();
+        if (tx.fromAddr.isEmpty()) {
+            QMessageBox::critical(this, "Error Posting Message", "You need a sapling address with available balance to post", QMessageBox::Ok);
+        }
+
+        auto memo = zb.memoTxt->toPlainText().trimmed();
+        if (!zb.postAs->text().trimmed().isEmpty())
+            memo = "Name::" + zb.postAs->text().trimmed() + " " + memo;
+
+        tx.toAddrs.push_back(ToFields{ Utils::getZboardAddr(), Utils::getZboardAmount(), memo, memo.toUtf8().toHex() });
+        tx.fee = Utils::getMinerFee();
+
+        json params = json::array();
+        rpc->fillTxJsonParams(params, tx);
+        std::cout << std::setw(2) << params << std::endl;
+
+        // And send the Tx
+        rpc->sendZTransaction(params, [=](const json& reply) {
+            QString opid = QString::fromStdString(reply.get<json::string_t>());
+            ui->statusBar->showMessage("Computing Tx: " % opid);
+
+            // And then start monitoring the transaction
+            rpc->addNewTxToWatch(tx, opid);
+        });
+    }
 }
 
 void MainWindow::doImport(QList<QString>* keys) {
