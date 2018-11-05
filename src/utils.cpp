@@ -87,4 +87,15 @@ double Utils::getDevFee() {
         return 0;
     }
 }
+
 double Utils::getTotalFee() { return getMinerFee() + getDevFee(); }
+
+bool Utils::isValidAddress(QString addr) {
+    QRegExp zcexp("^z[a-z0-9]{94}$",  Qt::CaseInsensitive);
+    QRegExp zsexp("^z[a-z0-9]{77}$",  Qt::CaseInsensitive);
+    QRegExp ztsexp("^ztestsapling[a-z0-9]{76}", Qt::CaseInsensitive);
+    QRegExp texp("^t[a-z0-9]{34}$", Qt::CaseInsensitive);
+
+    return  zcexp.exactMatch(addr)  || texp.exactMatch(addr) || 
+            ztsexp.exactMatch(addr) || zsexp.exactMatch(addr);
+}

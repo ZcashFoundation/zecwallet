@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "addressbook.h"
 #include "ui_confirm.h"
 #include "ui_memodialog.h"
 #include "settings.h"
@@ -44,6 +45,12 @@ void MainWindow::setupSendTab() {
     QObject::connect(ui->Address1, &QLineEdit::textChanged, [=] (auto text) {
         this->addressChanged(1, text);
     });
+
+    // The first address book button
+    QObject::connect(ui->AddressBook1, &QPushButton::clicked, [=] () {
+        AddressBook::open(this, ui->Address1);
+    });
+
 
     // The first Amount button
     QObject::connect(ui->Amount1, &QLineEdit::textChanged, [=] (auto text) {
@@ -143,6 +150,16 @@ void MainWindow::addAddressSection() {
     });
 
     horizontalLayout_12->addWidget(Address1);
+
+    auto addressBook1 = new QPushButton(verticalGroupBox);
+    addressBook1->setObjectName(QStringLiteral("AddressBook") % QString::number(itemNumber));
+    addressBook1->setText("Address Book");
+    QObject::connect(addressBook1, &QPushButton::clicked, [=] () {
+        AddressBook::open(this, Address1);
+    });
+
+    horizontalLayout_12->addWidget(addressBook1);
+
     sendAddressLayout->addLayout(horizontalLayout_12);
 
     auto horizontalLayout_13 = new QHBoxLayout();
@@ -546,7 +563,5 @@ QString MainWindow::doSendTxValidations(Tx tx) {
 
 void MainWindow::cancelButton() {
     removeExtraAddresses();
-    // Back to the balances tab
-    ui->tabWidget->setCurrentIndex(0);   
 }
 

@@ -53,7 +53,8 @@ SOURCES += \
 	src/turnstile.cpp \
     src/utils.cpp \
     src/qrcodelabel.cpp \
-    src/connection.cpp
+    src/connection.cpp \
+    src/addressbook.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -71,7 +72,8 @@ HEADERS += \
 	src/turnstile.h \
     src/utils.h \
     src/qrcodelabel.h \
-    src/connection.h
+    src/connection.h \
+    src/addressbook.h
 
 FORMS += \
     src/mainwindow.ui \
@@ -83,7 +85,8 @@ FORMS += \
     src/privkey.ui \
     src/memodialog.ui \ 
     src/connection.ui \
-    src/zboard.ui
+    src/zboard.ui \
+    src/addressbook.ui
 
 win32: RC_ICONS = res/icon.ico
 

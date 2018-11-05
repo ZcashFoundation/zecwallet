@@ -1,5 +1,7 @@
 #include "mainwindow.h"
+#include "addressbook.h"
 #include "ui_mainwindow.h"
+#include "ui_addressbook.h"
 #include "ui_zboard.h"
 #include "ui_privkey.h"
 #include "ui_about.h"
@@ -49,6 +51,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // z-Board.net
     QObject::connect(ui->actionz_board_net, &QAction::triggered, this, &MainWindow::postToZBoard);
+
+    // Address Book
+    QObject::connect(ui->action_Address_Book, &QAction::triggered, this, &MainWindow::addressBook);
 
     // Set up about action
     QObject::connect(ui->actionAbout, &QAction::triggered, [=] () {
@@ -404,8 +409,22 @@ void MainWindow::setupSettingsModal() {
             }
         };
     });
-
 }
+
+void MainWindow::addressBook() {
+    // Check to see if there is a target.
+    QRegExp re("Address[0-9]+", Qt::CaseInsensitive);
+    for (auto target: ui->sendToWidgets->findChildren<QLineEdit *>(re)) {
+        if (target->hasFocus()) {
+            AddressBook::open(this, target);
+            return;
+        }
+    };
+
+    // If there was no target, then just run with no target.
+    AddressBook::open(this);
+}
+
 
 void MainWindow::donate() {
     // Set up a donation to me :)
@@ -452,11 +471,12 @@ void MainWindow::postToZBoard() {
         tx.fromAddr = zb.fromAddr->currentText();
         if (tx.fromAddr.isEmpty()) {
             QMessageBox::critical(this, "Error Posting Message", "You need a sapling address with available balance to post", QMessageBox::Ok);
+            return;
         }
 
         auto memo = zb.memoTxt->toPlainText().trimmed();
         if (!zb.postAs->text().trimmed().isEmpty())
-            memo = zb.postAs->text().trimmed() + "::" + memo;
+            memo = zb.postAs->text().trimmed() + ":: " + memo;
 
         tx.toAddrs.push_back(ToFields{ Utils::getZboardAddr(), Utils::getZboardAmount(), memo, memo.toUtf8().toHex() });
         tx.fee = Utils::getMinerFee();

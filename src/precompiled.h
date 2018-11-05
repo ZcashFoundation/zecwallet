@@ -12,6 +12,8 @@
 #include <QClipboard>
 #include <QStringBuilder>
 #include <QAbstractItemModel>
+#include <QTableView>
+#include <QHeaderView>
 #include <QMessageBox>
 #include <QCheckBox>
 #include <QScrollBar>
@@ -19,6 +21,7 @@
 #include <QMovie>
 #include <QPair>
 #include <QDir>
+#include <QMenu>
 #include <QDateTime>
 #include <QTimer>
 #include <QSettings>

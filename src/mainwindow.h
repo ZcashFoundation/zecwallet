@@ -81,6 +81,7 @@ private:
     QString doSendTxValidations(Tx tx);
 
     void donate();
+    void addressBook();
     void postToZBoard();
     void importPrivKey();
     void exportAllKeys();

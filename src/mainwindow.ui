@@ -22,7 +22,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -340,6 +340,13 @@
                      <widget class="QLineEdit" name="Address1">
                       <property name="placeholderText">
                        <string>Address</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="AddressBook1">
+                      <property name="text">
+                       <string>Address Book</string>
                       </property>
                      </widget>
                     </item>
@@ -727,7 +734,6 @@
     </property>
     <addaction name="actionImport_Private_Key"/>
     <addaction name="actionExport_All_Private_Keys"/>
-    <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -746,7 +752,15 @@
     <addaction name="actionTurnstile_Migration"/>
     <addaction name="actionz_board_net"/>
    </widget>
+   <widget class="QMenu" name="menu_Edit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="action_Address_Book"/>
+    <addaction name="actionSettings"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menu_Edit"/>
    <addaction name="menuApps"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -803,6 +817,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+A, Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="action_Address_Book">
+   <property name="text">
+    <string>Address &amp;Book</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
    </property>
   </action>
  </widget>
