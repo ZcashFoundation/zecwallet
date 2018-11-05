@@ -461,6 +461,24 @@ void MainWindow::postToZBoard() {
     }
 
     zb.feeAmount->setText(Settings::getInstance()->getZECUSDDisplayFormat(Utils::getZboardAmount() + Utils::getMinerFee()));
+
+    QObject::connect(zb.memoTxt, &QPlainTextEdit::textChanged, [=] () {
+        QString txt = zb.memoTxt->toPlainText();
+        zb.memoSize->setText(QString::number(txt.toUtf8().size()) + "/512");
+
+        if (txt.toUtf8().size() <= 512) {
+            // Everything is fine
+            zb.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+            zb.memoSize->setStyleSheet("");
+        }
+        else {
+           // Overweight
+            zb.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+            zb.memoSize->setStyleSheet("color: red;");
+        }
+        
+    });
+
     zb.memoTxt->setFocus();
 
     if (d.exec() == QDialog::Accepted) {
