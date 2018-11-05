@@ -43,7 +43,7 @@ void ConnectionLoader::loadConnection() {
             QString explanation = QString()
                     % "A zcash.conf was not found on this machine.\n\n"
                     % "If you are connecting to a remote/non-standard node " 
-                    % "please set the host/port and user/password in the File->Settings menu.";
+                    % "please set the host/port and user/password in the Edit->Settings menu.";
 
             showError(explanation);
             doRPCSetConnection(nullptr);
@@ -105,13 +105,13 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
                         % (isZcashConfFound ? "A zcash.conf file was found, but a" : "A") 
                         % " connection to zcashd could not be established.\n\n"
                         % "If you are connecting to a remote/non-standard node " 
-                        % "please set the host/port and user/password in the File->Settings menu";
+                        % "please set the host/port and user/password in the Edit->Settings menu";
 
                 this->showError(explanation);
             } else if (err == QNetworkReply::NetworkError::AuthenticationRequiredError) {
                 QString explanation = QString() 
                         % "Authentication failed. The username / password you specified was "
-                        % "not accepted by zcashd. Try changing it in the File->Settings menu";
+                        % "not accepted by zcashd. Try changing it in the Edit->Settings menu";
 
                 this->showError(explanation);
             } else if (err == QNetworkReply::NetworkError::InternalServerError && !res.is_discarded()) {
