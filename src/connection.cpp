@@ -21,7 +21,7 @@ ConnectionLoader::ConnectionLoader(MainWindow* main, RPC* rpc) {
     int x = (screenGeometry.width() - d->width()) / 2;
     int y = (screenGeometry.height() - d->height()) / 2;
     d->move(x, y);
-    connD->buttonBox->setEnabled(false);    
+
 }
 
 ConnectionLoader::~ConnectionLoader() {
@@ -169,7 +169,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     });
 
     QObject::connect(ezcashd, &QProcess::errorOccurred, [&] (auto error) mutable {
-        qDebug() << "Couldn't start zcashd: " << error << ezcashd->errorString();
+        qDebug() << "Couldn't start zcashd: " << error;
     });
 
     ezcashd->start(zcashdProgram);
@@ -252,18 +252,9 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
                     QTimer::singleShot(1000, [=]() { this->refreshZcashdState(connection); });
                 } else {
                     // Errored out, show error and exit
-                    QString explanation = "Couldn't start zcashd";
+                    QString explanation = "Couldn't start the embedded zcashd. The process returned:\n\n" % ezcashd->errorString();
                     this->showError(explanation);
                 }
-
-                // auto isZcashConfFound = connection->config.get()->usingZcashConf;
-                // QString explanation = QString()
-                //         % (isZcashConfFound ? "A zcash.conf file was found, but a" : "A") 
-                //         % " connection to zcashd could not be established.\n\n"
-                //         % "If you are connecting to a remote/non-standard node " 
-                //         % "please set the host/port and user/password in the File->Settings menu";
-
-                // this->showError(explanation);
             } else if (err == QNetworkReply::NetworkError::AuthenticationRequiredError) {
                 QString explanation = QString() 
                         % "Authentication failed. The username / password you specified was "
@@ -273,7 +264,7 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
             } else if (err == QNetworkReply::NetworkError::InternalServerError && !res.is_discarded()) {
                 // The server is loading, so just poll until it succeeds
                 QString status    = QString::fromStdString(res["error"]["message"]);
-                showInformation("Your zcashd is starting up. Please wait.\n\n" % status);
+                showInformation("Your zcashd is starting up. Please wait.", status);
 
                 // Refresh after one second
                 QTimer::singleShot(1000, [=]() { this->refreshZcashdState(connection); });
@@ -282,18 +273,18 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
     );
 }
 
-void ConnectionLoader::showInformation(QString info) {
-    QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
-    connD->icon->setPixmap(icon.pixmap(128, 128));
+void ConnectionLoader::showInformation(QString info, QString detail) {
     connD->status->setText(info);
+    connD->statusDetail->setText(detail);
 }
 
+/**
+ * Show error will close the loading dialog and show an error. 
+*/
 void ConnectionLoader::showError(QString explanation) {
-    QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical);
-    connD->icon->setPixmap(icon.pixmap(128, 128));
-    connD->status->setText(explanation);
+    d->close();
 
-    connD->buttonBox->setEnabled(true);
+    QMessageBox::critical(main, "Error", explanation, QMessageBox::Ok);
 }
 
 QString ConnectionLoader::locateZcashConfFile() {

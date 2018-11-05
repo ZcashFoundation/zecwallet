@@ -54,7 +54,7 @@ private:
     int  getProgressFromStatus(QString status);
 
     void showError(QString explanation);
-    void showInformation(QString info);
+    void showInformation(QString info, QString detail = "");
 
     void doRPCSetConnection(Connection* conn);
 

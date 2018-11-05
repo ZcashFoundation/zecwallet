@@ -53,7 +53,8 @@ SOURCES += \
 	src/turnstile.cpp \
     src/utils.cpp \
     src/qrcodelabel.cpp \
-    src/connection.cpp
+    src/connection.cpp \
+    src/fillediconlabel.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -71,7 +72,8 @@ HEADERS += \
 	src/turnstile.h \
     src/utils.h \
     src/qrcodelabel.h \
-    src/connection.h
+    src/connection.h \
+    src/fillediconlabel.h
 
 FORMS += \
     src/mainwindow.ui \
