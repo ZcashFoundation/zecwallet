@@ -316,8 +316,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>363</height>
+                <width>841</width>
+                <height>321</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -718,7 +718,7 @@
      <x>0</x>
      <y>0</y>
      <width>889</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -741,7 +741,7 @@
    </widget>
    <widget class="QMenu" name="menuApps">
     <property name="title">
-     <string>Apps</string>
+     <string>&amp;Apps</string>
     </property>
     <addaction name="actionTurnstile_Migration"/>
     <addaction name="actionz_board_net"/>
@@ -783,6 +783,9 @@
    <property name="text">
     <string>Sapling &amp;Turnstile</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+A, Ctrl+T</string>
+   </property>
   </action>
   <action name="actionImport_Private_Key">
    <property name="text">
@@ -796,7 +799,10 @@
   </action>
   <action name="actionz_board_net">
    <property name="text">
-    <string>z-board.net</string>
+    <string>&amp;z-board.net</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A, Ctrl+Z</string>
    </property>
   </action>
  </widget>

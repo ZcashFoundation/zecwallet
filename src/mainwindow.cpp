@@ -442,6 +442,8 @@ void MainWindow::postToZBoard() {
     }
 
     zb.feeAmount->setText(Settings::getInstance()->getZECUSDDisplayFormat(Utils::getZboardAmount() + Utils::getMinerFee()));
+    zb.memoTxt->setFocus();
+
     if (d.exec() == QDialog::Accepted) {
         // Create a transaction.
         Tx tx;
@@ -454,7 +456,7 @@ void MainWindow::postToZBoard() {
 
         auto memo = zb.memoTxt->toPlainText().trimmed();
         if (!zb.postAs->text().trimmed().isEmpty())
-            memo = "Name::" + zb.postAs->text().trimmed() + " " + memo;
+            memo = zb.postAs->text().trimmed() + "::" + memo;
 
         tx.toAddrs.push_back(ToFields{ Utils::getZboardAddr(), Utils::getZboardAmount(), memo, memo.toUtf8().toHex() });
         tx.fee = Utils::getMinerFee();

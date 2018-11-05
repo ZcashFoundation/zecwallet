@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>520</width>
-    <height>376</height>
+    <width>588</width>
+    <height>431</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -117,6 +117,11 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>fromAddr</tabstop>
+  <tabstop>postAs</tabstop>
+  <tabstop>memoTxt</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
