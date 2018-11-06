@@ -492,6 +492,14 @@ void MainWindow::postToZBoard() {
             zb.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
             zb.memoSize->setStyleSheet("color: red;");
         }
+
+        // Disallow blank memos
+        if (zb.memoTxt->toPlainText().trimmed().isEmpty()) {
+            zb.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+        }
+        else {
+            zb.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+        }
     };
 
     // Memo text changed
@@ -499,6 +507,7 @@ void MainWindow::postToZBoard() {
     QObject::connect(zb.postAs, &QLineEdit::textChanged, fnUpdateMemoSize);
 
     zb.memoTxt->setFocus();
+    fnUpdateMemoSize();
 
     if (d.exec() == QDialog::Accepted) {
         // Create a transaction.
