@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
         qApp->setFont(QFont("Ubuntu", 11, QFont::Normal, false));
     #endif
 
-    std::srand(std::time(nullptr));
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
     Settings::init();
 
     QCoreApplication::setOrganizationName("zec-qt-wallet-org");

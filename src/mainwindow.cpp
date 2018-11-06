@@ -445,6 +445,9 @@ void MainWindow::postToZBoard() {
     Ui_zboard zb;
     zb.setupUi(&d);
 
+    if (rpc->getConnection() == nullptr)
+        return;
+
     // Fill the from field with sapling addresses.
     for (auto i = rpc->getAllBalances()->keyBegin(); i != rpc->getAllBalances()->keyEnd(); i++) {
         if (Settings::getInstance()->isSaplingAddress(*i) && rpc->getAllBalances()->value(*i) > 0) {
@@ -460,10 +463,20 @@ void MainWindow::postToZBoard() {
         zb.testnetWarning->setText("");
     }
 
+    QRegExpValidator v(QRegExp("^[a-zA-Z0-9_]{3,20}$"), zb.postAs);
+    zb.postAs->setValidator(&v);
+
     zb.feeAmount->setText(Settings::getInstance()->getZECUSDDisplayFormat(Utils::getZboardAmount() + Utils::getMinerFee()));
 
-    QObject::connect(zb.memoTxt, &QPlainTextEdit::textChanged, [=] () {
-        QString txt = zb.memoTxt->toPlainText();
+    auto fnBuildNameMemo = [=]() -> QString {
+        auto memo = zb.memoTxt->toPlainText().trimmed();
+        if (!zb.postAs->text().trimmed().isEmpty())
+            memo = zb.postAs->text().trimmed() + ":: " + memo;
+        return memo;
+    };
+
+    auto fnUpdateMemoSize = [=]() {
+        QString txt = fnBuildNameMemo();
         zb.memoSize->setText(QString::number(txt.toUtf8().size()) + "/512");
 
         if (txt.toUtf8().size() <= 512) {
@@ -472,12 +485,15 @@ void MainWindow::postToZBoard() {
             zb.memoSize->setStyleSheet("");
         }
         else {
-           // Overweight
+            // Overweight
             zb.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
             zb.memoSize->setStyleSheet("color: red;");
         }
-        
-    });
+    };
+
+    // Memo text changed
+    QObject::connect(zb.memoTxt, &QPlainTextEdit::textChanged, fnUpdateMemoSize);
+    QObject::connect(zb.postAs, &QLineEdit::textChanged, fnUpdateMemoSize);
 
     zb.memoTxt->setFocus();
 
