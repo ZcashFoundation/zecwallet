@@ -477,6 +477,28 @@ void RPC::getInfoThenRefresh(bool force) {
             refreshTransactions();
         }
 
+        // Get network sol/s
+        if (ezcashd != nullptr) {
+            int conns = reply["connections"].get<json::number_integer_t>();
+
+            json payload = {
+                {"jsonrpc", "1.0"},
+                {"id", "someid"},
+                {"method", "getnetworksolps"}
+            };
+
+            conn->doRPCIgnoreError(payload, [=](const json& reply) {
+                qint64 solrate = reply.get<json::number_unsigned_t>();
+
+                ui->blockheight->setText(QString::number(curBlock));
+                ui->numconnections->setText(QString::number(conns));
+                ui->solrate->setText(QString::number(solrate) % " Sol/s");
+            });
+        } else {
+            ui->tabWidget->removeTab(4);
+        }
+        
+
         // Call to see if the blockchain is syncing. 
         json payload = {
             {"jsonrpc", "1.0"},

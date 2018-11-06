@@ -6,17 +6,20 @@ FilledIconLabel::FilledIconLabel(QWidget* parent) :
     setScaledContents(false);
 }
 
+void FilledIconLabel::setBasePixmap(QPixmap pm) {
+    basePm = pm;
+}
 
 void FilledIconLabel::resizeEvent(QResizeEvent*) {
-    // Top pixmap
-    QIcon icon(":/icons/res/icon.ico");
-    QSize sz = size();
-    qDebug() << sz;
+    // Top pixmap    
+    QSize sz = size();  
+    
+    QPixmap scaled = basePm.scaled(sz, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
     QPixmap p(sz);
     p.fill(Qt::white);
     QPainter painter(&p);
-    painter.drawPixmap((sz.width() - sz.height()) / 2, 0, 
-                        icon.pixmap(sz.height(), sz.height()));
+    painter.drawPixmap((sz.width() - scaled.width()) / 2, (sz.height() - scaled.height()) / 2, scaled);
     
     QLabel::setPixmap(p);
 }

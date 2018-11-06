@@ -49,6 +49,7 @@ private:
     void setupTransactionsTab();
     void setupRecieveTab();
     void setupBalancesTab();
+    void setupZcashdTab();
 
     void setupTurnstileDialog();
     void setupSettingsModal();

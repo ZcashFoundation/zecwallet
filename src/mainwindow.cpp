@@ -75,6 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setupRecieveTab();
     setupBalancesTab();
     setupTurnstileDialog();
+    setupZcashdTab();
 
     rpc = new RPC(this);
 
@@ -698,6 +699,10 @@ void MainWindow::setupBalancesTab() {
 
         menu.exec(ui->balancesTable->viewport()->mapToGlobal(pos));            
     });
+}
+
+void MainWindow::setupZcashdTab() {    
+    ui->zcashdlogo->setBasePixmap(QPixmap(":/img/res/zcashdlogo.gif"));
 }
 
 void MainWindow::setupTransactionsTab() {

@@ -15,6 +15,7 @@ ConnectionLoader::ConnectionLoader(MainWindow* main, RPC* rpc) {
     d = new QDialog(main);
     connD = new Ui_ConnectionDialog();
     connD->setupUi(d);
+    connD->topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));
 
     // Center on screen
     QRect screenGeometry = QApplication::desktop()->screenGeometry(d);
