@@ -64,7 +64,7 @@ From the VS Tools command prompt
 ```
 git clone https://github.com/adityapk00/zec-qt-wallet.git
 cd zec-qt-wallet
-c:\Qt5\bin\qmake.exe zec-qt-wallet.pro CONFIG+=debug
+c:\Qt5\bin\qmake.exe zec-qt-wallet.pro -spec win32-msvc CONFIG+=debug
 nmake
 
 debug\zec-qt-wallet.exe
