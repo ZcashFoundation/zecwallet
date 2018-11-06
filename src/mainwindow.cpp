@@ -104,6 +104,7 @@ void MainWindow::turnstileProgress() {
     Ui_TurnstileProgress progress;
     QDialog d(this);
     progress.setupUi(&d);
+    Settings::saveRestore(&d);
 
     QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning);
     progress.msgIcon->setPixmap(icon.pixmap(64, 64));
@@ -184,6 +185,7 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
     Ui_Turnstile turnstile;
     QDialog d(this);
     turnstile.setupUi(&d);
+    Settings::saveRestore(&d);
 
     QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
     turnstile.msgIcon->setPixmap(icon.pixmap(64, 64));
@@ -235,8 +237,7 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
     if (!fromAddr.isEmpty())
         turnstile.migrateZaddList->setCurrentText(fromAddr);
 
-    fnUpdateSproutBalance(turnstile.migrateZaddList->currentText());
-    
+    fnUpdateSproutBalance(turnstile.migrateZaddList->currentText());    
 
     // Combo box selection event
     QObject::connect(turnstile.migrateZaddList, &QComboBox::currentTextChanged, fnUpdateSproutBalance);
@@ -344,6 +345,7 @@ void MainWindow::setupSettingsModal() {
         QDialog settingsDialog(this);
         Ui_Settings settings;
         settings.setupUi(&settingsDialog);
+        Settings::saveRestore(&settingsDialog);
 
         // Setup save sent check box
         QObject::connect(settings.chkSaveTxs, &QCheckBox::stateChanged, [=](auto checked) {
@@ -407,7 +409,7 @@ void MainWindow::setupSettingsModal() {
                 auto cl = new ConnectionLoader(this, rpc);
                 cl->loadConnection();
             }
-        };
+        }
     });
 }
 
@@ -444,6 +446,7 @@ void MainWindow::postToZBoard() {
     QDialog d(this);
     Ui_zboard zb;
     zb.setupUi(&d);
+    Settings::saveRestore(&d);
 
     if (rpc->getConnection() == nullptr)
         return;
@@ -556,6 +559,7 @@ void MainWindow::importPrivKey() {
     QDialog d(this);
     Ui_PrivKey pui;
     pui.setupUi(&d);
+    Settings::saveRestore(&d);
 
     pui.buttonBox->button(QDialogButtonBox::Save)->setVisible(false);
     pui.helpLbl->setText(QString() %
@@ -588,10 +592,13 @@ void MainWindow::exportAllKeys() {
     QDialog d(this);
     Ui_PrivKey pui;
     pui.setupUi(&d);
-
+    
+    // Make the window big by default
     auto ps = this->geometry();
     QMargins margin = QMargins() + 50;
     d.setGeometry(ps.marginsRemoved(margin));
+
+    Settings::saveRestore(&d);
 
     pui.privKeyTxt->setPlainText("Loading...");
     pui.privKeyTxt->setReadOnly(true);

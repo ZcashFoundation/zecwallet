@@ -117,6 +117,7 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
     QDialog d(parent);
     Ui_addressBook ab;
     ab.setupUi(&d);
+    Settings::saveRestore(&d);
 
     AddressBookModel model(ab.addresses);
     ab.addresses->setModel(&model);
