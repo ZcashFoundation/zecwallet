@@ -774,7 +774,7 @@
              <item row="1" column="0">
               <widget class="QLabel" name="label_10">
                <property name="text">
-                <string>Block Height</string>
+                <string>Block height</string>
                </property>
               </widget>
              </item>
@@ -788,7 +788,7 @@
              <item row="3" column="0">
               <widget class="QLabel" name="label_12">
                <property name="text">
-                <string>Network Solution Rate</string>
+                <string>Network solution rate</string>
                </property>
               </widget>
              </item>

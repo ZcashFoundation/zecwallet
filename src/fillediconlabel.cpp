@@ -10,8 +10,10 @@ void FilledIconLabel::setBasePixmap(QPixmap pm) {
     basePm = pm;
 }
 
-void FilledIconLabel::resizeEvent(QResizeEvent*) {
-    // Top pixmap    
+/**
+ * When resized, we re-draw the whole pixmap, resizing it as needed. 
+ */ 
+void FilledIconLabel::resizeEvent(QResizeEvent*) {    
     QSize sz = size();  
     
     QPixmap scaled = basePm.scaled(sz, Qt::KeepAspectRatio, Qt::SmoothTransformation);
