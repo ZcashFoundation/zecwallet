@@ -729,9 +729,19 @@ void MainWindow::setupBalancesTab() {
 }
 
 void MainWindow::setupTransactionsTab() {
+    // Double click opens up memo if one exists
+    QObject::connect(ui->transactionsTable, &QTableView::doubleClicked, [=] (auto index) {
+        auto txModel = dynamic_cast<TxTableModel *>(ui->transactionsTable->model());
+        QString memo = txModel->getMemo(index.row());
+
+        if (!memo.isEmpty()) {
+            QMessageBox::information(this, "Memo", memo, QMessageBox::Ok);
+        }
+    });
+
     // Set up context menu on transactions tab
     ui->transactionsTable->setContextMenuPolicy(Qt::CustomContextMenu);
-
+    // Table right click
     QObject::connect(ui->transactionsTable, &QTableView::customContextMenuRequested, [=] (QPoint pos) {
         QModelIndex index = ui->transactionsTable->indexAt(pos);
         if (index.row() < 0) return;
