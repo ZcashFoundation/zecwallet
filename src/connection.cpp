@@ -81,56 +81,111 @@ void ConnectionLoader::createZcashConf() {
 
     // Fetch params. 
     {
-        QFileInfo fi(Settings::getInstance()->getExecName());
-        auto fetchParamsProgram = fi.dir().filePath("zcash-fetch-params");
+        downloadParams([=] () {
+            startEmbeddedZcashd();
 
-        QProcess* p = new QProcess(main);
-        QObject::connect(p, &QProcess::readyReadStandardOutput, [=] () {
-            qDebug() << "stdout:" << p->readAllStandardOutput();
-        });
-        QObject::connect(p, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-                         [=](int exitCode, QProcess::ExitStatus exitStatus) {
-            qDebug() << "finished with code " << exitCode;
-            p->deleteLater();
-        });
-        p->start(fetchParamsProgram);
+            auto config = autoDetectZcashConf();
+            if (config.get() != nullptr) {
+                auto connection = makeConnection(config);
+                refreshZcashdState(connection);
 
-        // stdout: "Zcash - fetch-params.sh\n\nThis script will fetch the Zcash zkSNARK parameters and verify their\nintegrity with sha256sum.\n\nIf they already exist locally, it will exit now and do nothing else.\nThe parameters are currently just under 911MB in size, so plan accordingly\nfor your bandwidth constraints. If the files are already present and\nhave the correct sha256sum, no networking is used.\n\nCreating params directory. For details about this directory, see:\n/home/adityapk/.zcash-params/README\n\n\nRetrieving (wget): https://z.cash/downloads/sprout-proving.key\n"
-        // stdout: "Download successful!\n"
-        // stdout: "/home/adityapk/.zcash-params/sprout-proving.key.dl: OK\n"
-        // stdout: "renamed '/home/adityapk/.zcash-params/sprout-proving.key.dl' -> '/home/adityapk/.zcash-params/sprout-proving.key'\n"
-        // stdout: "\nRetrieving (wget): https://z.cash/downloads/sprout-verifying.key\n"
-        // stdout: "Download successful!\n"
-        // stdout: "/home/adityapk/.zcash-params/sprout-verifying.key.dl: OK\n"
-        // stdout: "renamed '/home/adityapk/.zcash-params/sprout-verifying.key.dl' -> '/home/adityapk/.zcash-params/sprout-verifying.key'\n"
-        // stdout: "\nRetrieving (wget): https://z.cash/downloads/sapling-spend.params\n"
-        // stdout: "Download successful!\n"
-        // stdout: "/home/adityapk/.zcash-params/sapling-spend.params.dl: OK\n"
-        // stdout: "renamed '/home/adityapk/.zcash-params/sapling-spend.params.dl' -> '/home/adityapk/.zcash-params/sapling-spend.params'\n"
-        // stdout: "\nRetrieving (wget): https://z.cash/downloads/sapling-output.params\n"
-        // stdout: "Download successful!\n"
-        // stdout: "/home/adityapk/.zcash-params/sapling-output.params.dl: OK\n"
-        // stdout: "renamed '/home/adityapk/.zcash-params/sapling-output.params.dl' -> '/home/adityapk/.zcash-params/sapling-output.params'\n"
-        // stdout: "\nRetrieving (wget): https://z.cash/downloads/sprout-groth16.params\n"
-        // stdout: "Download successful!\n"
-        // stdout: "/home/adityapk/.zcash-params/sprout-groth16.params.dl: OK\n"
-        // stdout: "renamed '/home/adityapk/.zcash-params/sprout-groth16.params.dl' -> '/home/adityapk/.zcash-params/sprout-groth16.params'\n"
-        // finished with code  0
+                return;
+            } else {
+                qDebug() << "Coulnd't get embedded startup zcashd";
+            }
+        });        
+    }
+}
+
+void ConnectionLoader::downloadParams(std::function<void(void)> cb) {    
+    // Add all the files to the download queue
+    downloadQueue = new QQueue<QUrl>();
+    client = new QNetworkAccessManager(main);   
+    
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sapling-output.params"));
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sapling-spend.params"));    
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-proving.key"));
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-verifying.key"));
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-groth16.params"));
+
+    doNextDownload(cb);
+
+    d->show();
+}
+
+void ConnectionLoader::doNextDownload(std::function<void(void)> cb) {
+    qDebug() << "Attempting download";
+
+    auto fnSaveFileName = [&] (QUrl url) {
+        QString path = url.path();
+        QString basename = QFileInfo(path).fileName();
+
+        return basename;
+    };
+
+    if (downloadQueue->isEmpty()) {
+        delete downloadQueue;
+        client->deleteLater();
+
+        this->showInformation("All Downloads Finished Successfully!");
+        cb();
+        return;
     }
 
-    {
-        startEmbeddedZcashd();
+    QUrl url = downloadQueue->dequeue();
+    int filesRemaining = downloadQueue->size();
 
-        auto config = autoDetectZcashConf();
-        if (config.get() != nullptr) {
-            auto connection = makeConnection(config);
-            refreshZcashdState(connection);
+    QString filename = fnSaveFileName(url);
+    QString paramsDir = zcashParamsDir();
+    currentOutput = new QFile(QDir(paramsDir).filePath(filename));
 
-            return;
+    if (!currentOutput->open(QIODevice::WriteOnly)) {
+        this->showError("Couldn't download params. Please check the help site for more info.");
+    }
+    qDebug() << "Downloading " << url << " to " << filename;
+    
+    QNetworkRequest request(url);
+    request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+    currentDownload = client->get(request);
+    downloadTime.start();
+    
+    // Download Progress
+    QObject::connect(currentDownload, &QNetworkReply::downloadProgress, [=] (auto done, auto total) {
+        // calculate the download speed
+        double speed = done * 1000.0 / downloadTime.elapsed();
+        QString unit;
+        if (speed < 1024) {
+            unit = "bytes/sec";
+        } else if (speed < 1024*1024) {
+            speed /= 1024;
+            unit = "kB/s";
         } else {
-            qDebug() << "Coulnd't get embedded startup zcashd";
+            speed /= 1024*1024;
+            unit = "MB/s";
         }
-    }
+
+        this->showInformation(
+            "Downloading " % filename % (filesRemaining > 1 ? " ( +" % QString::number(filesRemaining)  % " more remaining )" : QString("")),
+            QString::number(done/1024/1024, 'f', 0) % "MB of " % QString::number(total/1024/1024, 'f', 0) + "MB at " % QString::number(speed, 'f', 2) % unit);
+    });
+    
+    // Download Finished
+    QObject::connect(currentDownload, &QNetworkReply::finished, [=] () {
+        currentOutput->close();
+        currentDownload->deleteLater();
+        currentOutput->deleteLater();
+
+        if (currentDownload->error()) {
+            this->showError("Downloading " + filename + " failed/ Please check the help site for more info");                
+        } else {
+            doNextDownload(cb);
+        }
+    });
+
+    // Download new data available. 
+    QObject::connect(currentDownload, &QNetworkReply::readyRead, [=] () {
+        currentOutput->write(currentDownload->readAll());
+    });    
 }
 
 bool ConnectionLoader::startEmbeddedZcashd() {
@@ -308,6 +363,22 @@ QString ConnectionLoader::zcashConfWritableLocation() {
 #endif
 
     return confLocation;
+}
+
+QString ConnectionLoader::zcashParamsDir() {
+    #ifdef Q_OS_LINUX
+    auto paramsLocation = QDir(QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath(".zcash-params"));
+#elif defined(Q_OS_DARWIN)
+    //auto paramsLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath("/Library/Application Support/Zcash/zcash.conf");
+#else
+    auto paramsLocation = QDir(QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("../../ZcashParams"));
+#endif
+
+    if (!paramsLocation.exists()) {
+        QDir().mkpath(paramsLocation.absolutePath());
+    }
+
+    return paramsLocation.absolutePath();
 }
 
 /**

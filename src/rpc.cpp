@@ -836,8 +836,7 @@ void RPC::shutdownZcashd() {
     d.setWindowTitle("Waiting for zcashd to exit");
     d.setText("Please wait for zcashd to exit. Don't click OK!");
     d.setStandardButtons(QMessageBox::NoButton);
-    //d.setWindowFlags(Qt::SplashScreen);
-
+    
     QTimer waiter(main);
 
     // We capture by reference all the local variables because of the d.exec() 

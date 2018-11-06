@@ -38,6 +38,7 @@
 #include <QFileDialog>
 #include <QDebug>
 #include <QUrl>
+#include <QQueue>
 #include <QProcess>
 #include <QDesktopServices>
 #include <QtNetwork/QNetworkRequest>

@@ -47,7 +47,10 @@ private:
     void createZcashConf();
     QString locateZcashConfFile();
     QString zcashConfWritableLocation();
+    QString zcashParamsDir();
 
+    void downloadParams(std::function<void(void)> cb);
+    void doNextDownload(std::function<void(void)> cb);
     bool startEmbeddedZcashd();
 
     void refreshZcashdState(Connection* connection);
@@ -65,6 +68,13 @@ private:
 
     MainWindow*             main;
     RPC*                    rpc;
+
+    QNetworkReply* currentDownload = nullptr;
+    QFile*         currentOutput   = nullptr;
+    QQueue<QUrl>*  downloadQueue   = nullptr;
+
+    QNetworkAccessManager* client  = nullptr; 
+    QTime downloadTime;
 };
 
 /**
