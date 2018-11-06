@@ -13,7 +13,7 @@ PRECOMPILED_HEADER = src/precompiled.h
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = zec-qt-wallet
-APP_VERSION=\\\"0.2.7\\\"
+APP_VERSION=\\\"0.2.8\\\"
 
 
 TEMPLATE = app
@@ -54,7 +54,8 @@ SOURCES += \
     src/utils.cpp \
     src/qrcodelabel.cpp \
     src/connection.cpp \
-    src/fillediconlabel.cpp
+    src/fillediconlabel.cpp \
+    src/addressbook.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -73,7 +74,8 @@ HEADERS += \
     src/utils.h \
     src/qrcodelabel.h \
     src/connection.h \
-    src/fillediconlabel.h
+    src/fillediconlabel.h \
+    src/addressbook.h
 
 FORMS += \
     src/mainwindow.ui \
@@ -84,7 +86,9 @@ FORMS += \
     src/turnstileprogress.ui \
     src/privkey.ui \
     src/memodialog.ui \ 
-    src/connection.ui
+    src/connection.ui \
+    src/zboard.ui \
+    src/addressbook.ui
 
 win32: RC_ICONS = res/icon.ico
 

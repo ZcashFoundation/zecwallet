@@ -27,7 +27,7 @@ echo "Linux"
 
 echo -n "Configuring..."
 $QT_STATIC/bin/qmake zec-qt-wallet.pro -spec linux-clang CONFIG+=release > /dev/null
-#Mingw seems to have trouble with precompiled heades, so strip that option from the .pro file
+#Mingw seems to have trouble with precompiled headers, so strip that option from the .pro file
 echo "[OK]"
 
 

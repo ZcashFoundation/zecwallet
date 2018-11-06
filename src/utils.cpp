@@ -47,7 +47,7 @@ const QString Utils::getDevAddr(Tx tx) {
             return devAddr;
         }
 
-        // t-Addr, find if it is going to a sprout or sapling address
+        // t-Addr, find if it is going to a Sprout or Sapling address
         for (const ToFields& to : tx.toAddrs) {
             devAddr = testnetAddrLookup(to.addr);
             if (!devAddr.isEmpty()) {
@@ -55,7 +55,7 @@ const QString Utils::getDevAddr(Tx tx) {
             }
         }
         
-        // If this is a t-Addr -> t-Addr transaction, use the sapling address by default
+        // If this is a t-Addr -> t-Addr transaction, use the Sapling address by default
         return testnetAddrLookup("ztestsapling");
     } else {
         // Mainnet doesn't have a fee yet!
@@ -67,6 +67,19 @@ const QString Utils::getDevAddr(Tx tx) {
 double Utils::getMinerFee() {
     return 0.0001;
 }
+
+double Utils::getZboardAmount() {
+    return 0.0001;
+}
+
+QString Utils::getZboardAddr() {
+    if (Settings::getInstance()->isTestnet()) {
+        return getDonationAddr(true);
+    }
+    else {
+        return "zs10m00rvkhfm4f7n23e4sxsx275r7ptnggx39ygl0vy46j9mdll5c97gl6dxgpk0njuptg2mn9w5s";
+    }
+}
 double Utils::getDevFee() {
     if (Settings::getInstance()->isTestnet()) {
         return 0.0001;
@@ -74,4 +87,15 @@ double Utils::getDevFee() {
         return 0;
     }
 }
+
 double Utils::getTotalFee() { return getMinerFee() + getDevFee(); }
+
+bool Utils::isValidAddress(QString addr) {
+    QRegExp zcexp("^z[a-z0-9]{94}$",  Qt::CaseInsensitive);
+    QRegExp zsexp("^z[a-z0-9]{77}$",  Qt::CaseInsensitive);
+    QRegExp ztsexp("^ztestsapling[a-z0-9]{76}", Qt::CaseInsensitive);
+    QRegExp texp("^t[a-z0-9]{34}$", Qt::CaseInsensitive);
+
+    return  zcexp.exactMatch(addr)  || texp.exactMatch(addr) || 
+            ztsexp.exactMatch(addr) || zsexp.exactMatch(addr);
+}

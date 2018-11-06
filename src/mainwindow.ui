@@ -22,7 +22,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -340,6 +340,13 @@
                      <widget class="QLineEdit" name="Address1">
                       <property name="placeholderText">
                        <string>Address</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="AddressBook1">
+                      <property name="text">
+                       <string>Address Book</string>
                       </property>
                      </widget>
                     </item>
@@ -727,8 +734,6 @@
     </property>
     <addaction name="actionImport_Private_Key"/>
     <addaction name="actionExport_All_Private_Keys"/>
-    <addaction name="actionTurnstile_Migration"/>
-    <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -740,7 +745,23 @@
     <addaction name="actionCheck_for_Updates"/>
     <addaction name="actionAbout"/>
    </widget>
+   <widget class="QMenu" name="menuApps">
+    <property name="title">
+     <string>&amp;Apps</string>
+    </property>
+    <addaction name="actionTurnstile_Migration"/>
+    <addaction name="actionz_board_net"/>
+   </widget>
+   <widget class="QMenu" name="menu_Edit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="action_Address_Book"/>
+    <addaction name="actionSettings"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menu_Edit"/>
+   <addaction name="menuApps"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -776,6 +797,9 @@
    <property name="text">
     <string>Sapling &amp;Turnstile</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+A, Ctrl+T</string>
+   </property>
   </action>
   <action name="actionImport_Private_Key">
    <property name="text">
@@ -785,6 +809,22 @@
   <action name="actionExport_All_Private_Keys">
    <property name="text">
     <string>Export All Private Keys</string>
+   </property>
+  </action>
+  <action name="actionz_board_net">
+   <property name="text">
+    <string>&amp;z-board.net</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A, Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="action_Address_Book">
+   <property name="text">
+    <string>Address &amp;Book</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
    </property>
   </action>
  </widget>

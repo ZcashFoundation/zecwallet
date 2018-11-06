@@ -258,7 +258,7 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
             } else if (err == QNetworkReply::NetworkError::AuthenticationRequiredError) {
                 QString explanation = QString() 
                         % "Authentication failed. The username / password you specified was "
-                        % "not accepted by zcashd. Try changing it in the File->Settings menu";
+                        % "not accepted by zcashd. Try changing it in the Edit->Settings menu";
 
                 this->showError(explanation);
             } else if (err == QNetworkReply::NetworkError::InternalServerError && !res.is_discarded()) {

@@ -1,5 +1,8 @@
 #include "mainwindow.h"
+#include "addressbook.h"
 #include "ui_mainwindow.h"
+#include "ui_addressbook.h"
+#include "ui_zboard.h"
 #include "ui_privkey.h"
 #include "ui_about.h"
 #include "ui_settings.h"
@@ -45,6 +48,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Export All Private Keys
     QObject::connect(ui->actionExport_All_Private_Keys, &QAction::triggered, this, &MainWindow::exportAllKeys);
+
+    // z-Board.net
+    QObject::connect(ui->actionz_board_net, &QAction::triggered, this, &MainWindow::postToZBoard);
+
+    // Address Book
+    QObject::connect(ui->action_Address_Book, &QAction::triggered, this, &MainWindow::addressBook);
 
     // Set up about action
     QObject::connect(ui->actionAbout, &QAction::triggered, [=] () {
@@ -348,7 +357,7 @@ void MainWindow::setupSettingsModal() {
         // Setup clear button
         QObject::connect(settings.btnClearSaved, &QCheckBox::clicked, [=]() {
             if (QMessageBox::warning(this, "Clear saved history?",
-                "Shielded z-Address transactions are stored locally in your wallet, outside zcashd. You may delete this saved information safely any time for your privacy.\nDo you want to delete the saved shielded transactions now ?",
+                "Shielded z-Address transactions are stored locally in your wallet, outside zcashd. You may delete this saved information safely any time for your privacy.\nDo you want to delete the saved shielded transactions now?",
                 QMessageBox::Yes, QMessageBox::Cancel)) {
                     SentTxStore::deleteHistory();
                     // Reload after the clear button so existing txs disappear
@@ -404,8 +413,22 @@ void MainWindow::setupSettingsModal() {
             }
         };
     });
-
 }
+
+void MainWindow::addressBook() {
+    // Check to see if there is a target.
+    QRegExp re("Address[0-9]+", Qt::CaseInsensitive);
+    for (auto target: ui->sendToWidgets->findChildren<QLineEdit *>(re)) {
+        if (target->hasFocus()) {
+            AddressBook::open(this, target);
+            return;
+        }
+    };
+
+    // If there was no target, then just run with no target.
+    AddressBook::open(this);
+}
+
 
 void MainWindow::donate() {
     // Set up a donation to me :)
@@ -419,6 +442,80 @@ void MainWindow::donate() {
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);
+}
+
+void MainWindow::postToZBoard() {
+    QDialog d(this);
+    Ui_zboard zb;
+    zb.setupUi(&d);
+
+    // Fill the from field with sapling addresses.
+    for (auto i = rpc->getAllBalances()->keyBegin(); i != rpc->getAllBalances()->keyEnd(); i++) {
+        if (Settings::getInstance()->isSaplingAddress(*i) && rpc->getAllBalances()->value(*i) > 0) {
+            zb.fromAddr->addItem(*i);
+        }
+    }
+
+    // Testnet warning
+    if (Settings::getInstance()->isTestnet()) {
+        zb.testnetWarning->setText("You are on testnet, your post won't actually appear on z-board.net");
+    }
+    else {
+        zb.testnetWarning->setText("");
+    }
+
+    zb.feeAmount->setText(Settings::getInstance()->getZECUSDDisplayFormat(Utils::getZboardAmount() + Utils::getMinerFee()));
+
+    QObject::connect(zb.memoTxt, &QPlainTextEdit::textChanged, [=] () {
+        QString txt = zb.memoTxt->toPlainText();
+        zb.memoSize->setText(QString::number(txt.toUtf8().size()) + "/512");
+
+        if (txt.toUtf8().size() <= 512) {
+            // Everything is fine
+            zb.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+            zb.memoSize->setStyleSheet("");
+        }
+        else {
+           // Overweight
+            zb.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+            zb.memoSize->setStyleSheet("color: red;");
+        }
+        
+    });
+
+    zb.memoTxt->setFocus();
+
+    if (d.exec() == QDialog::Accepted) {
+        // Create a transaction.
+        Tx tx;
+        
+        // Send from your first sapling address that has a balance.
+        tx.fromAddr = zb.fromAddr->currentText();
+        if (tx.fromAddr.isEmpty()) {
+            QMessageBox::critical(this, "Error Posting Message", "You need a sapling address with available balance to post", QMessageBox::Ok);
+            return;
+        }
+
+        auto memo = zb.memoTxt->toPlainText().trimmed();
+        if (!zb.postAs->text().trimmed().isEmpty())
+            memo = zb.postAs->text().trimmed() + ":: " + memo;
+
+        tx.toAddrs.push_back(ToFields{ Utils::getZboardAddr(), Utils::getZboardAmount(), memo, memo.toUtf8().toHex() });
+        tx.fee = Utils::getMinerFee();
+
+        json params = json::array();
+        rpc->fillTxJsonParams(params, tx);
+        std::cout << std::setw(2) << params << std::endl;
+
+        // And send the Tx
+        rpc->sendZTransaction(params, [=](const json& reply) {
+            QString opid = QString::fromStdString(reply.get<json::string_t>());
+            ui->statusBar->showMessage("Computing Tx: " % opid);
+
+            // And then start monitoring the transaction
+            rpc->addNewTxToWatch(tx, opid);
+        });
+    }
 }
 
 void MainWindow::doImport(QList<QString>* keys) {
@@ -644,10 +741,10 @@ void MainWindow::setupTransactionsTab() {
 void MainWindow::addNewZaddr(bool sapling) {
     rpc->newZaddr(sapling, [=] (json reply) {
         QString addr = QString::fromStdString(reply.get<json::string_t>());
-        // Make sure the RPC class reloads the Z-addrs for future use
+        // Make sure the RPC class reloads the z-addrs for future use
         rpc->refreshAddresses();
 
-        // Just double make sure the Z-address is still checked
+        // Just double make sure the z-address is still checked
         if (( sapling && ui->rdioZSAddr->isChecked()) ||
             (!sapling && ui->rdioZAddr->isChecked())) {
             ui->listRecieveAddresses->insertItem(0, addr);
@@ -688,7 +785,7 @@ void MainWindow::setupRecieveTab() {
         rpc->newTaddr([=] (json reply) {
                 QString addr = QString::fromStdString(reply.get<json::string_t>());
 
-                // Just double make sure the T-address is still checked
+                // Just double make sure the t-address is still checked
                 if (ui->rdioTAddr->isChecked()) {
                     ui->listRecieveAddresses->insertItem(0, addr);
                     ui->listRecieveAddresses->setCurrentIndex(0);
@@ -700,8 +797,8 @@ void MainWindow::setupRecieveTab() {
 
     // Connect t-addr radio button
     QObject::connect(ui->rdioTAddr, &QRadioButton::toggled, [=] (bool checked) { 
-        // Whenever the T-address is selected, we generate a new address, because we don't
-        // want to reuse T-addrs
+        // Whenever the t-address is selected, we generate a new address, because we don't
+        // want to reuse t-addrs
         if (checked && this->rpc->getUTXOs() != nullptr) { 
             auto utxos = this->rpc->getUTXOs();
             ui->listRecieveAddresses->clear();
@@ -733,12 +830,12 @@ void MainWindow::setupRecieveTab() {
         }
     });
 
-    // Focus enter for the Recieve Tab
+    // Focus enter for the Receive Tab
     QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int tab) {
         if (tab == 2) {
-            // Switched to recieve tab, so update everything. 
+            // Switched to receive tab, so update everything. 
 
-            // Hide Sapling radio button if sapling is not active
+            // Hide Sapling radio button if Sapling is not active
             if (Settings::getInstance()->isSaplingActive()) {
                 ui->rdioZSAddr->setVisible(true);    
                 ui->rdioZSAddr->setChecked(true);
@@ -746,7 +843,7 @@ void MainWindow::setupRecieveTab() {
             } else {
                 ui->rdioZSAddr->setVisible(false);    
                 ui->rdioZAddr->setChecked(true);
-                ui->rdioZAddr->setText("z-Addr");   // Don't use the "Sprout" label if there's no sapling
+                ui->rdioZAddr->setText("z-Addr");   // Don't use the "Sprout" label if there's no Sapling
             }
             
             // And then select the first one

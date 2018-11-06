@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "addressbook.h"
 #include "ui_confirm.h"
 #include "ui_memodialog.h"
 #include "settings.h"
@@ -44,6 +45,12 @@ void MainWindow::setupSendTab() {
     QObject::connect(ui->Address1, &QLineEdit::textChanged, [=] (auto text) {
         this->addressChanged(1, text);
     });
+
+    // The first address book button
+    QObject::connect(ui->AddressBook1, &QPushButton::clicked, [=] () {
+        AddressBook::open(this, ui->Address1);
+    });
+
 
     // The first Amount button
     QObject::connect(ui->Amount1, &QLineEdit::textChanged, [=] (auto text) {
@@ -143,6 +150,16 @@ void MainWindow::addAddressSection() {
     });
 
     horizontalLayout_12->addWidget(Address1);
+
+    auto addressBook1 = new QPushButton(verticalGroupBox);
+    addressBook1->setObjectName(QStringLiteral("AddressBook") % QString::number(itemNumber));
+    addressBook1->setText("Address Book");
+    QObject::connect(addressBook1, &QPushButton::clicked, [=] () {
+        AddressBook::open(this, Address1);
+    });
+
+    horizontalLayout_12->addWidget(addressBook1);
+
     sendAddressLayout->addLayout(horizontalLayout_12);
 
     auto horizontalLayout_13 = new QHBoxLayout();
@@ -217,7 +234,7 @@ void MainWindow::setMemoEnabled(int number, bool enabled) {
         memoBtn->setToolTip("");
     } else {
         memoBtn->setEnabled(false);
-        memoBtn->setToolTip("Only Z addresses can have memos");
+        memoBtn->setToolTip("Only z-addresses can have memos");
     }
 }
 
@@ -225,8 +242,8 @@ void MainWindow::memoButtonClicked(int number) {
     // Memos can only be used with zAddrs. So check that first
     auto addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") + QString::number(number));
     if (!addr->text().trimmed().startsWith("z")) {
-        QMessageBox msg(QMessageBox::Critical, "Memos can only be used with z Addresses",
-        "The Memo field can only be used with a z Address.\n" + addr->text() + "\ndoesn't look like a z Address",
+        QMessageBox msg(QMessageBox::Critical, "Memos can only be used with z-addresses",
+        "The memo field can only be used with a z-address.\n" + addr->text() + "\ndoesn't look like a z-address",
         QMessageBox::Ok, this);
 
         msg.exec();
@@ -245,7 +262,17 @@ void MainWindow::memoButtonClicked(int number) {
         QString txt = memoDialog.memoTxt->toPlainText();
         memoDialog.memoSize->setText(QString::number(txt.toUtf8().size()) + "/512");
 
-        memoDialog.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(txt.toUtf8().size() <= 512);
+        if (txt.toUtf8().size() <= 512) {
+            // Everything is fine
+            memoDialog.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+            memoDialog.memoSize->setStyleSheet("");
+        }
+        else {
+           // Overweight
+            memoDialog.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+            memoDialog.memoSize->setStyleSheet("color: red;");
+        }
+        
     });
 
     memoDialog.memoTxt->setPlainText(currentMemo);
@@ -261,7 +288,7 @@ void MainWindow::removeExtraAddresses() {
     // The last one is a spacer, so ignore that
     int totalItems = ui->sendToWidgets->children().size() - 2; 
 
-    // Clear the first recepient fields
+    // Clear the first recipient fields
     auto addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address1"));
     addr->clear();
     auto amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount1"));
@@ -511,7 +538,7 @@ void MainWindow::sendButton() {
 }
 
 QString MainWindow::doSendTxValidations(Tx tx) {
-    // 1. Addresses are valid format. 
+    // 1. Addresses have valid format. 
     QRegExp zcexp("^z[a-z0-9]{94}$",  Qt::CaseInsensitive);
     QRegExp zsexp("^z[a-z0-9]{77}$",  Qt::CaseInsensitive);
     QRegExp ztsexp("^ztestsapling[a-z0-9]{76}", Qt::CaseInsensitive);
@@ -536,7 +563,5 @@ QString MainWindow::doSendTxValidations(Tx tx) {
 
 void MainWindow::cancelButton() {
     removeExtraAddresses();
-    // Back to the balances tab
-    ui->tabWidget->setCurrentIndex(0);   
 }
 

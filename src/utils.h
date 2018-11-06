@@ -17,8 +17,12 @@ public:
     static const QString getDonationAddr(bool sapling);
 
     static double  getMinerFee();
+    static double  getZboardAmount();
+    static QString getZboardAddr();
     static double  getDevFee();
     static double  getTotalFee();
+
+    static bool    isValidAddress(QString addr);
 
     static const int     updateSpeed         = 20 * 1000;        // 20 sec
     static const int     quickUpdateSpeed    = 5  * 1000;        // 5 sec
