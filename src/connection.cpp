@@ -139,6 +139,11 @@ void ConnectionLoader::doNextDownload(std::function<void(void)> cb) {
     QString paramsDir = zcashParamsDir();
     currentOutput = new QFile(QDir(paramsDir).filePath(filename));
 
+    if (currentOutput->exists()) {
+        qDebug() << filename << " already exists, skipping ";
+        doNextDownload(cb);
+    }
+
     if (!currentOutput->open(QIODevice::WriteOnly)) {
         this->showError("Couldn't download params. Please check the help site for more info.");
     }
