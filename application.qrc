@@ -3,7 +3,7 @@
         <file>res/Ubuntu-R.ttf</file>
     </qresource>
     <qresource prefix="/icons">
-        <file>res/connected.png</file>
+        <file>res/connected.gif</file>
         <file>res/loading.gif</file>
         <file>res/icon.ico</file>
     </qresource>    

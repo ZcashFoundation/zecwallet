@@ -454,7 +454,7 @@ void RPC::getInfoThenRefresh(bool force) {
         };
 
         // Connected, so display checkmark.
-        QIcon i(":/icons/res/connected.png");
+        QIcon i(":/icons/res/connected.gif");
         main->statusIcon->setPixmap(i.pixmap(16, 16));
 
         static int    lastBlock = 0;
