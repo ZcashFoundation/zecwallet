@@ -458,6 +458,18 @@ void MainWindow::postToZBoard() {
         }
     }
 
+    QMap<QString, QString> topics;
+    // Insert the main topic automatically
+    topics.insert("#Main_Area", Utils::getZboardAddr());
+    zb.topicsList->addItem(topics.firstKey());
+    // Then call the API to get topics, and if it returns successfully, then add the rest of the topics
+    rpc->getZboardTopics([&](QMap<QString, QString> topicsMap) {
+        for (auto t : topicsMap.keys()) {
+            topics.insert(t, topicsMap[t]);
+            zb.topicsList->addItem(t);
+        }
+    });
+
     // Testnet warning
     if (Settings::getInstance()->isTestnet()) {
         zb.testnetWarning->setText("You are on testnet, your post won't actually appear on z-board.net");
@@ -524,7 +536,8 @@ void MainWindow::postToZBoard() {
         if (!zb.postAs->text().trimmed().isEmpty())
             memo = zb.postAs->text().trimmed() + ":: " + memo;
 
-        tx.toAddrs.push_back(ToFields{ Utils::getZboardAddr(), Utils::getZboardAmount(), memo, memo.toUtf8().toHex() });
+        auto toAddr = topics[zb.topicsList->currentText()];
+        tx.toAddrs.push_back(ToFields{ toAddr, Utils::getZboardAmount(), memo, memo.toUtf8().toHex() });
         tx.fee = Utils::getMinerFee();
 
         json params = json::array();
@@ -543,7 +556,6 @@ void MainWindow::postToZBoard() {
 }
 
 void MainWindow::doImport(QList<QString>* keys) {
-    qDebug() << keys->size();
     if (keys->isEmpty()) {
         delete keys;
         ui->statusBar->showMessage("Private key import rescan finished");

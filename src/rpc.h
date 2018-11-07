@@ -36,7 +36,9 @@ public:
     void refresh(bool force = false);
 
     void refreshAddresses();    
+    
     void refreshZECPrice();
+    void getZboardTopics(std::function<void(QMap<QString, QString>)> cb);
 
     void fillTxJsonParams(json& params, Tx tx);
     void sendZTransaction   (json params, const std::function<void(json)>& cb);
