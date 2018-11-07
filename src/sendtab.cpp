@@ -45,6 +45,11 @@ void MainWindow::setupSendTab() {
     QObject::connect(ui->Address1, &QLineEdit::textChanged, [=] (auto text) {
         this->addressChanged(1, text);
     });
+    
+    // This is the damnest thing ever. If we do AddressBook::readFromStorage() directly, the whole file
+    // doesn't get read. It needs to run in a timer after everything has finished to be able to read
+    // the file properly. 
+    QTimer::singleShot(100, [=]() { updateLabelsAutoComplete(); });
 
     // The first address book button
     QObject::connect(ui->AddressBook1, &QPushButton::clicked, [=] () {
@@ -85,6 +90,25 @@ void MainWindow::setupSendTab() {
             ui->Address1->setFocus();
         }
     });
+}
+
+void MainWindow::updateLabelsAutoComplete() {
+    QList<QString> list;
+    auto labels = AddressBook::readFromStorage();
+    
+    std::transform(labels.begin(), labels.end(), std::back_inserter(list), [=] (auto la) -> QString {
+        return la.first % "/" % la.second;
+    });
+    
+    delete labelCompleter;
+    labelCompleter = new QCompleter(list, this);
+    labelCompleter->setCaseSensitivity(Qt::CaseInsensitive);
+
+    // Then, find all the address fields and update the completer.
+    QRegExp re("Address[0-9]+", Qt::CaseInsensitive);
+    for (auto target: ui->sendToWidgets->findChildren<QLineEdit *>(re)) {
+        target->setCompleter(labelCompleter);
+    }
 }
 
 void MainWindow::setDefaultPayFrom() {
@@ -148,6 +172,7 @@ void MainWindow::addAddressSection() {
     QObject::connect(Address1, &QLineEdit::textChanged, [=] (auto text) {
         this->addressChanged(itemNumber, text);
     });
+    Address1->setCompleter(labelCompleter);
 
     horizontalLayout_12->addWidget(Address1);
 
@@ -350,6 +375,9 @@ Tx MainWindow::createTxFromSendPage() {
     int totalItems = ui->sendToWidgets->children().size() - 2;   // The last one is a spacer, so ignore that        
     for (int i=0; i < totalItems; i++) {
         QString addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") % QString::number(i+1))->text().trimmed();
+        // Remove label if it exists
+        addr = addr.split("/").last();
+
         double  amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1))->text().trimmed().toDouble();        
         QString memo = ui->sendToWidgets->findChild<QLabel*>(QString("MemoTxt")  % QString::number(i+1))->text().trimmed();
         

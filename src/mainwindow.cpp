@@ -910,6 +910,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete rpc;
+    delete labelCompleter;
 
     delete loadingMovie;
 }
