@@ -20,6 +20,7 @@ echo "[OK]"
 echo -n "Cleaning......"
 rm -f bin/linux-zec-qt-wallet*
 rm -rf release/
+rm -rf artifacts/*
 make distclean > /dev/null
 echo "[OK]"
 
@@ -47,6 +48,7 @@ echo "[OK]"
 
 
 echo -n "Packaging....."
+strip zec-qt-wallet
 mkdir bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp zec-qt-wallet bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp README.md bin/zec-qt-wallet-v$APP_VERSION > /dev/null
