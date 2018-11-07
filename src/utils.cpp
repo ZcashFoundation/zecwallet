@@ -30,38 +30,8 @@ const QString Utils::getDevSproutAddr() {
 }
 
 // Get the dev fee address based on the transaction
-const QString Utils::getDevAddr(Tx tx) {
+const QString Utils::getDevAddr(Tx) {
     return QString();
-    // auto testnetAddrLookup = [=] (const QString& addr) -> QString {
-    //     if (addr.startsWith("ztestsapling")) {
-    //         return "ztestsapling1kdp74adyfsmm9838jaupgfyx3npgw8ut63stjjx757pc248cuc0ymzphqeux60c64qe5qt68ygh";
-    //     } else if (addr.startsWith("zt")) {
-    //         return getDevSproutAddr();
-    //     } else {
-    //         return QString();
-    //     }
-    // };
-
-    // if (Settings::getInstance()->isTestnet()) {
-    //     auto devAddr = testnetAddrLookup(tx.fromAddr);
-    //     if (!devAddr.isEmpty()) {
-    //         return devAddr;
-    //     }
-
-    //     // t-Addr, find if it is going to a Sprout or Sapling address
-    //     for (const ToFields& to : tx.toAddrs) {
-    //         devAddr = testnetAddrLookup(to.addr);
-    //         if (!devAddr.isEmpty()) {
-    //             return devAddr;
-    //         }
-    //     }
-        
-    //     // If this is a t-Addr -> t-Addr transaction, use the Sapling address by default
-    //     return testnetAddrLookup("ztestsapling");
-    // } else {
-    //     // Mainnet doesn't have a fee yet!
-    //     return QString();
-    // }
 }
 
 
