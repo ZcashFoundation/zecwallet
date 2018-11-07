@@ -29,14 +29,11 @@ public:
     bool isSyncing();
     void setSyncing(bool syncing);
 
-    bool getIsManualConnection() { return _manualConn; }
-    void setManualConnection(bool manual) {_manualConn = manual;}
-
     QString getExecName() { return _executable; }
     void    setExecName(QString name) { _executable = name; }
 
-    void setEmbeddedZcashdRunning(bool r) { _isEmbeddedZcashd = r; }
-    bool isEmbeddedZcashdRunning() { return _isEmbeddedZcashd; }
+    void setUseEmbedded(bool r) { _useEmbedded = r; }
+    bool useEmbedded() { return _useEmbedded; }
 
     int  getBlockNumber();
     void setBlockNumber(int number);
@@ -69,8 +66,7 @@ private:
     bool    _isTestnet        = false;
     bool    _isSyncing        = false;
     int     _blockNumber      = 0;
-    bool    _manualConn       = false;
-    bool    _isEmbeddedZcashd = false;
+    bool    _useEmbedded      = false;
 
     double zecPrice = 0.0;
 };

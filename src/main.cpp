@@ -23,7 +23,9 @@ int main(int argc, char *argv[])
     Settings::getInstance()->setExecName(argv[0]);
 
     if (argc >= 2 && QString::fromStdString(argv[1]) == "--no-embedded") {
-        Settings::getInstance()->setManualConnection(true);
+        Settings::getInstance()->setUseEmbedded(false);
+    } else {
+        Settings::getInstance()->setUseEmbedded(true);
     }
 
     QCoreApplication::setOrganizationName("zec-qt-wallet-org");

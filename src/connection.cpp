@@ -37,15 +37,37 @@ void ConnectionLoader::loadConnection() {
 
     if (config.get() != nullptr) {
         auto connection = makeConnection(config);
-        refreshZcashdState(connection);
 
-        return;
-    } else if (!Settings::getInstance()->getIsManualConnection()){
-        // zcash.conf was not found, so create one
-        createZcashConf();
+        refreshZcashdState(connection, [=] () {
+            // Refused connection. So try and start embedded zcashd
+            if (Settings::getInstance()->useEmbedded()) {
+                this->showInformation("Starting Embedded zcashd");
+                if (this->startEmbeddedZcashd()) {
+                    // Embedded zcashd started up. Wait a second and then refresh the connection
+                    QTimer::singleShot(1000, [=]() { loadConnection(); } );
+                } else {
+                    // Errored out, show error and exit
+                    QString explanation = QString() % "Couldn't start the embedded zcashd.\n\n" %
+                                        "This is most likely because of corrupt zcash-params. Please delete your zcash-params directory and restart.\n\n" %
+                                        (ezcashd ? "The process returned:\n\n" % ezcashd->errorString() : QString(""));
+                    this->showError(explanation);
+                }
+            } else {
+                // zcash.conf exists, there's no connection, and the user asked us not to start zcashd. Error!
+                QString explanation = QString() % "Couldn't connect to zcashd configured in zcash.conf.\n\n" %
+                                      "Not starting embedded zcashd because --no-embedded was passed";
+                this->showError(explanation);
+            }
+        });
     } else {
-        doManualConnect();
-    }
+        if (Settings::getInstance()->useEmbedded()) {
+            // zcash.conf was not found, so create one
+            createZcashConf();
+        } else {
+            // Fall back to manual connect
+            doManualConnect();
+        }
+    } 
 }
 
 /**
@@ -74,22 +96,8 @@ void ConnectionLoader::createZcashConf() {
         file.close();
     }
 
-    // Fetch params. 
-    {
-        downloadParams([=] () {
-            startEmbeddedZcashd();
-
-            auto config = autoDetectZcashConf();
-            if (config.get() != nullptr) {
-                auto connection = makeConnection(config);
-                refreshZcashdState(connection);
-
-                return;
-            } else {
-                qDebug() << "Coulnd't get embedded startup zcashd";
-            }
-        });        
-    }
+    // Fetch params. After params are fetched, try loading the connection again
+    downloadParams([=] () { this->loadConnection(); });
 }
 
 void ConnectionLoader::downloadParams(std::function<void(void)> cb) {    
@@ -135,6 +143,8 @@ void ConnectionLoader::doNextDownload(std::function<void(void)> cb) {
     if (currentOutput->exists()) {
         qDebug() << filename << " already exists, skipping ";
         doNextDownload(cb);
+
+        return;
     }
 
     if (!currentOutput->open(QIODevice::WriteOnly)) {
@@ -187,6 +197,9 @@ void ConnectionLoader::doNextDownload(std::function<void(void)> cb) {
 }
 
 bool ConnectionLoader::startEmbeddedZcashd() {
+    if (!Settings::getInstance()->useEmbedded()) 
+        return false;
+
     if (ezcashd != nullptr) {
         if (ezcashd->state() == QProcess::NotRunning) {
             qDebug() << "Process started and then crashed";
@@ -213,7 +226,6 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     ezcashd->setWorkingDirectory(fi.dir().absolutePath());
     QObject::connect(ezcashd, &QProcess::started, [=] () {
         qDebug() << "zcashd started";
-        Settings::getInstance()->setEmbeddedZcashdRunning(true);
     });
 
     QObject::connect(ezcashd, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
@@ -237,7 +249,7 @@ void ConnectionLoader::doManualConnect() {
         // Nothing configured, show an error
         QString explanation = QString()
                 % "A manual connection was requested, but the settings are not configured.\n\n" 
-                % "Please set the host/port and user/password in the File->Settings menu.";
+                % "Please set the host/port and user/password in the Edit->Settings menu.";
 
         showError(explanation);
         doRPCSetConnection(nullptr);
@@ -246,7 +258,16 @@ void ConnectionLoader::doManualConnect() {
     }
 
     auto connection = makeConnection(config);
-    refreshZcashdState(connection);
+    refreshZcashdState(connection, [=] () {
+        QString explanation = QString()
+                % "Could not connect to zcashd configured in settings.\n\n" 
+                % "Please set the host/port and user/password in the Edit->Settings menu.";
+
+        showError(explanation);
+        doRPCSetConnection(nullptr);
+
+        return;
+    });
 }
 
 void ConnectionLoader::doRPCSetConnection(Connection* conn) {
@@ -277,7 +298,7 @@ Connection* ConnectionLoader::makeConnection(std::shared_ptr<ConnectionConfig> c
     return new Connection(main, client, request, config);
 }
 
-void ConnectionLoader::refreshZcashdState(Connection* connection) {
+void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<void(void)> refused) {
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -289,37 +310,27 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
             d->hide();
             this->doRPCSetConnection(connection);
         },
-        [=] (auto reply, auto res) {
-            auto err = reply->error();
+        [=] (auto reply, auto res) {            
             // Failed, see what it is. 
+            auto err = reply->error();
             //qDebug() << err << ":" << QString::fromStdString(res.dump());
 
             if (err == QNetworkReply::NetworkError::ConnectionRefusedError) {   
-                // Start embedded zcasd
-                this->showInformation("Starting Embedded zcashd");
-                if (this->startEmbeddedZcashd()) {                
-                    // Refresh after one second
-                    QTimer::singleShot(1000, [=]() { this->refreshZcashdState(connection); });
-                } else {
-                    // Errored out, show error and exit
-                    QString explanation = "Couldn't start the embedded zcashd. The process returned:\n\n" % ezcashd->errorString();
-                    this->showError(explanation);
-                }
+                refused();
             } else if (err == QNetworkReply::NetworkError::AuthenticationRequiredError) {
                 QString explanation = QString() 
                         % "Authentication failed. The username / password you specified was "
                         % "not accepted by zcashd. Try changing it in the Edit->Settings menu";
 
                 this->showError(explanation);
-            } else if (err == QNetworkReply::NetworkError::InternalServerError && !res.is_discarded()) {
-                d->show();
-
+            } else if (err == QNetworkReply::NetworkError::InternalServerError && 
+                    !res.is_discarded()) {
                 // The server is loading, so just poll until it succeeds
                 QString status    = QString::fromStdString(res["error"]["message"]);
                 showInformation("Your zcashd is starting up. Please wait.", status);
 
                 // Refresh after one second
-                QTimer::singleShot(1000, [=]() { this->refreshZcashdState(connection); });
+                QTimer::singleShot(1000, [=]() { this->refreshZcashdState(connection, refused); });
             }
         }
     );
@@ -335,6 +346,7 @@ void ConnectionLoader::showInformation(QString info, QString detail) {
 */
 void ConnectionLoader::showError(QString explanation) {
     d->hide();
+    main->ui->statusBar->showMessage("Connection Error");
     QMessageBox::critical(main, "Connection Error", explanation, QMessageBox::Ok);
 }
 

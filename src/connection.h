@@ -52,7 +52,7 @@ private:
     void doNextDownload(std::function<void(void)> cb);
     bool startEmbeddedZcashd();
 
-    void refreshZcashdState(Connection* connection);
+    void refreshZcashdState(Connection* connection, std::function<void(void)> refused);
     int  getProgressFromStatus(QString status);
 
     void showError(QString explanation);

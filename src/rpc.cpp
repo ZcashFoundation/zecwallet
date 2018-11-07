@@ -8,6 +8,8 @@ using json = nlohmann::json;
 
 RPC::RPC(MainWindow* main) {
     auto cl = new ConnectionLoader(main, this);
+
+    // Show a default no connection message until we can connect.
     cl->loadConnection();
 
     this->main = main;
@@ -71,6 +73,8 @@ void RPC::setConnection(Connection* c) {
 
     delete conn;
     this->conn = c;
+
+    ui->statusBar->showMessage("Ready!");
 
     refreshZECPrice();
     refresh();
@@ -495,6 +499,7 @@ void RPC::getInfoThenRefresh(bool force) {
                 ui->solrate->setText(QString::number(solrate) % " Sol/s");
             });
         } else {
+            qDebug() << "removing tab!";
             ui->tabWidget->removeTab(4);
         }
         
