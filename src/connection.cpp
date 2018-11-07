@@ -93,8 +93,6 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
             this->doRPCSetConnection(connection);
         },
         [=] (auto reply, auto res) {
-            d->show();
-
             auto err = reply->error();
             // Failed, see what it is. 
             //qDebug() << err << ":" << QString::fromStdString(res.dump());
@@ -115,6 +113,8 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
 
                 this->showError(explanation);
             } else if (err == QNetworkReply::NetworkError::InternalServerError && !res.is_discarded()) {
+                d->show();
+
                 // The server is loading, so just poll until it succeeds
                 QString status = QString::fromStdString(res["error"]["message"]);
 
@@ -130,11 +130,7 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
 }
 
 void ConnectionLoader::showError(QString explanation) {
-    QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical);
-    connD->icon->setPixmap(icon.pixmap(128, 128));
-    connD->status->setText(explanation);
-
-    connD->buttonBox->setEnabled(true);
+    QMessageBox::critical(main, "Connection Error", explanation, QMessageBox::Ok);    
 }
 
 
