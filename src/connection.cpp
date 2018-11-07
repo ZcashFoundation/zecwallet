@@ -38,7 +38,6 @@ void ConnectionLoader::loadConnection() {
         config = loadFromSettings();
 
         if (config.get() == nullptr) {
-            d->show();
             // Nothing configured, show an error
             QString explanation = QString()
                     % "A zcash.conf was not found on this machine.\n\n"
