@@ -41,7 +41,6 @@ private:
 
     Connection* makeConnection(std::shared_ptr<ConnectionConfig> config);
 
-    void doAutoConnect();
     void doManualConnect();
 
     void createZcashConf();

@@ -25,21 +25,13 @@ ConnectionLoader::ConnectionLoader(MainWindow* main, RPC* rpc) {
 
 }
 
-ConnectionLoader::~ConnectionLoader() {
+ConnectionLoader::~ConnectionLoader() {    
     delete d;
     delete connD;
 }
 
-void ConnectionLoader::loadConnection() {    
-    // Load from settings if it is a manual connection.
-    if (Settings::getInstance()->getIsManualConnection()) {
-        doManualConnect();
-    } else {
-        doAutoConnect();
-    }
-}
-
-void ConnectionLoader::doAutoConnect() {
+void ConnectionLoader::loadConnection() {
+    d->show();
     // Priority 1: Try to connect to detect zcash.conf and connect to it.
     auto config = autoDetectZcashConf();
 
@@ -48,9 +40,11 @@ void ConnectionLoader::doAutoConnect() {
         refreshZcashdState(connection);
 
         return;
-    } else {
+    } else if (!Settings::getInstance()->getIsManualConnection()){
         // zcash.conf was not found, so create one
         createZcashConf();
+    } else {
+        doManualConnect();
     }
 }
 
@@ -109,9 +103,7 @@ void ConnectionLoader::downloadParams(std::function<void(void)> cb) {
     downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-verifying.key"));
     downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-groth16.params"));
 
-    doNextDownload(cb);
-
-    d->show();
+    doNextDownload(cb);    
 }
 
 void ConnectionLoader::doNextDownload(std::function<void(void)> cb) {
@@ -242,7 +234,6 @@ void ConnectionLoader::doManualConnect() {
     auto config = loadFromSettings();
 
     if (config.get() == nullptr) {
-        d->show();
         // Nothing configured, show an error
         QString explanation = QString()
                 % "A manual connection was requested, but the settings are not configured.\n\n" 
@@ -299,8 +290,6 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
             this->doRPCSetConnection(connection);
         },
         [=] (auto reply, auto res) {
-            d->show();
-
             auto err = reply->error();
             // Failed, see what it is. 
             //qDebug() << err << ":" << QString::fromStdString(res.dump());
@@ -323,6 +312,8 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
 
                 this->showError(explanation);
             } else if (err == QNetworkReply::NetworkError::InternalServerError && !res.is_discarded()) {
+                d->show();
+
                 // The server is loading, so just poll until it succeeds
                 QString status    = QString::fromStdString(res["error"]["message"]);
                 showInformation("Your zcashd is starting up. Please wait.", status);
@@ -343,9 +334,8 @@ void ConnectionLoader::showInformation(QString info, QString detail) {
  * Show error will close the loading dialog and show an error. 
 */
 void ConnectionLoader::showError(QString explanation) {
-    d->close();
-
-    QMessageBox::critical(main, "Error", explanation, QMessageBox::Ok);
+    d->hide();
+    QMessageBox::critical(main, "Connection Error", explanation, QMessageBox::Ok);
 }
 
 QString ConnectionLoader::locateZcashConfFile() {
