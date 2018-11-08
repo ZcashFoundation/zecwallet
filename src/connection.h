@@ -90,6 +90,8 @@ public:
     std::shared_ptr<ConnectionConfig>   config;
     MainWindow*                         main;
 
+    void shutdown();
+
     void doRPC(const json& payload, const std::function<void(json)>& cb, 
                const std::function<void(QNetworkReply*, const json&)>& ne);
     void doRPCWithDefaultErrorHandling(const json& payload, const std::function<void(json)>& cb);
@@ -143,6 +145,9 @@ public:
         });
         waitTimer->start(100);    
     }
+
+private:
+    bool shutdownInProgress = false;    
 };
 
 #endif

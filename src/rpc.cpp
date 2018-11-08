@@ -857,6 +857,8 @@ void RPC::shutdownZcashd() {
     };
     
     conn->doRPCWithDefaultErrorHandling(payload, [=](auto) {});
+    conn->shutdown();
+
 
     QMessageBox d(main);
     d.setIcon(QMessageBox::Icon::Information);
@@ -869,11 +871,12 @@ void RPC::shutdownZcashd() {
     // We capture by reference all the local variables because of the d.exec() 
     // below, which blocks this function until we exit. 
     QObject::connect(&waiter, &QTimer::timeout, [&] () {
-        if (ezcashd->atEnd()) {
+        if (ezcashd->atEnd() && ezcashd->processId() == 0) {
             qDebug() << "Ended";
-            d.accept();
+            waiter.stop();
+            QTimer::singleShot(1000, [&]() { d.accept(); });
         } else {
-            qDebug() << "Not ended";
+            qDebug() << "Not ended, continuing to wait...";
         }
     });
     waiter.start(1000);

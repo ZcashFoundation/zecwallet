@@ -487,10 +487,19 @@ Connection::~Connection() {
 
 void Connection::doRPC(const json& payload, const std::function<void(json)>& cb, 
                        const std::function<void(QNetworkReply*, const json&)>& ne) {
+    if (shutdownInProgress) {
+        qDebug() << "Ignoring RPC because shutdown in progress";
+        return;
+    }
+
     QNetworkReply *reply = restclient->post(*request, QByteArray::fromStdString(payload.dump()));
 
     QObject::connect(reply, &QNetworkReply::finished, [=] {
         reply->deleteLater();
+        if (shutdownInProgress) {
+            qDebug() << "Ignoring callback because shutdown in progress";
+            return;
+        }
         
         if (reply->error() != QNetworkReply::NoError) {
             auto parsed = json::parse(reply->readAll(), nullptr, false);
@@ -529,4 +538,11 @@ void Connection::showTxError(const QString& error) {
 
     QMessageBox::critical(main, "Transaction Error", "There was an error sending the transaction. The error was: \n\n"
         + error, QMessageBox::StandardButton::Ok);
+}
+
+/**
+ * Prevent all future calls from going through
+ */ 
+void Connection::shutdown() {
+    shutdownInProgress = true;
 }
