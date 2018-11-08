@@ -70,6 +70,23 @@ void ConnectionLoader::loadConnection() {
     } 
 }
 
+QString randomPassword() {
+    static const char alphanum[] =
+        "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+
+    const int passwordLength = 10;
+    char* s = new char[passwordLength + 1];
+
+    for (int i = 0; i < passwordLength; ++i) {
+        s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+    }
+
+    s[passwordLength] = 0;
+    return QString::fromStdString(s);
+}
+
 /**
  * This will create a new zcash.conf, download zcash parameters.
  */ 
@@ -93,12 +110,13 @@ void ConnectionLoader::createZcashConf() {
         
         out << "server=1\n";
         out << "rpcuser=zec-qt-wallet\n";
-        out << "rpcpassword=" % QString::number(std::rand()) << "\n";
+        out << "rpcpassword=" % randomPassword() << "\n";
         file.close();
 
         this->loadConnection(); 
     });    
 }
+
 
 void ConnectionLoader::downloadParams(std::function<void(void)> cb) {    
     // Add all the files to the download queue
@@ -216,20 +234,19 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     qDebug() << "Starting zcashd";
     QFileInfo fi(Settings::getInstance()->getExecName());
 #ifdef Q_OS_LINUX
-    auto zcashdProgram = "zcashd";
+    auto zcashdProgram = fi.dir().absoluteFilePath("zcashd");
 #elif defined(Q_OS_DARWIN)
-    auto zcashdProgram = "zcashd";
+    auto zcashdProgram = fi.dir().absoluteFilePath("zcashd");
 #else
-    auto zcashdProgram = "zcashd.exe";
+    auto zcashdProgram = fi.dir().absoluteFilePath("zcashd.exe");
 #endif
     
     if (!QFile(zcashdProgram).exists()) {
-        qDebug() << "Can't find zcashd";
+        qDebug() << "Can't find zcashd at " << zcashdProgram;
         return false;
     }
 
     ezcashd = new QProcess(main);    
-    ezcashd->setWorkingDirectory(fi.dir().absolutePath());
     QObject::connect(ezcashd, &QProcess::started, [=] () {
         qDebug() << "zcashd started";
     });
