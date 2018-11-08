@@ -74,8 +74,9 @@ void ConnectionLoader::loadConnection() {
  * This will create a new zcash.conf, download zcash parameters.
  */ 
 void ConnectionLoader::createZcashConf() {
-    // Create zcash.conf
-    {
+    // Fetch params. After params are fetched, create the zcash.conf file and 
+    // try loading the connection again
+    downloadParams([=] () { 
         auto confLocation = zcashConfWritableLocation();
         qDebug() << "Creating file " << confLocation;
 
@@ -94,10 +95,9 @@ void ConnectionLoader::createZcashConf() {
         out << "rpcuser=zec-qt-wallet\n";
         out << "rpcpassword=" % QString::number(std::rand()) << "\n";
         file.close();
-    }
 
-    // Fetch params. After params are fetched, try loading the connection again
-    downloadParams([=] () { this->loadConnection(); });
+        this->loadConnection(); 
+    });    
 }
 
 void ConnectionLoader::downloadParams(std::function<void(void)> cb) {    
