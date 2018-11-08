@@ -871,12 +871,13 @@ void RPC::shutdownZcashd() {
     conn->doRPCWithDefaultErrorHandling(payload, [=](auto) {});
     conn->shutdown();
 
-    QMessageBox d(main);
-    d.setIcon(QMessageBox::Icon::Information);
-    d.setWindowTitle("Waiting for zcashd to exit");
-    d.setText("Please wait for zcashd to exit.");
-    d.setStandardButtons(QMessageBox::NoButton);
-    
+    QDialog d(main);
+    Ui_ConnectionDialog connD;
+    connD.setupUi(&d);
+    connD.topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));
+    connD.status->setText("Please wait for zec-qt-wallet to exit");
+    connD.statusDetail->setText("Waiting for zcashd to exit");
+
     QTimer waiter(main);
 
     // We capture by reference all the local variables because of the d.exec() 
