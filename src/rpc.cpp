@@ -519,6 +519,18 @@ void RPC::getInfoThenRefresh(bool force) {
             Settings::getInstance()->setSyncing(isSyncing);
             Settings::getInstance()->setBlockNumber(blockNumber);
 
+            // Update zcashd tab if it exists
+            if (ezcashd && isSyncing) {
+                // 895 / ~426530 (0 % )
+                const qint64 genisisTimeMSec = 1477638000000;
+                qint64 estBlocks = (QDateTime::currentMSecsSinceEpoch() - genisisTimeMSec) / 2.5 / 60 / 1000;
+                // Round to nearest 10
+                estBlocks = ((estBlocks + 5) / 10) * 10;
+                ui->blockheight->setText(ui->blockheight->text() % " / ~" % QString::number(estBlocks) % 
+                                         " ( " % QString::number(progress * 100, 'f', 0) % "% )");
+            }
+
+            // Update the status bar
             QString statusText = QString() %
                 (isSyncing ? "Syncing" : "Connected") %
                 " (" %
