@@ -41,7 +41,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Privacy Level</string>
+           <string>Number of Transactions</string>
           </property>
          </widget>
         </item>

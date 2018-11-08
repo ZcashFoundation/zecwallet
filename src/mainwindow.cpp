@@ -244,22 +244,21 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
         
     // Privacy level combobox
     // Num tx over num blocks
-    QList<std::tuple<QString, int, int>> privOptions; 
-    privOptions.push_back(std::make_tuple<QString, int, int>("Good", 3, 576));
-    privOptions.push_back(std::make_tuple<QString, int, int>("Excellent", 5, 1152));
-    privOptions.push_back(std::make_tuple<QString, int, int>("Paranoid", 10, 2304));
+    QList<std::tuple<int, int>> privOptions; 
+    privOptions.push_back(std::make_tuple<int, int>(3, 576));
+    privOptions.push_back(std::make_tuple<int, int>(5, 1152));
+    privOptions.push_back(std::make_tuple<int, int>(10, 2304));
 
     QObject::connect(turnstile.privLevel, QOverload<int>::of(&QComboBox::currentIndexChanged), [=] (auto idx) {
         // Update the fees
         turnstile.minerFee->setText(
-            Settings::getInstance()->getZECUSDDisplayFormat(std::get<1>(privOptions[idx]) * Utils::getMinerFee()));
+            Settings::getInstance()->getZECUSDDisplayFormat(std::get<0>(privOptions[idx]) * Utils::getMinerFee()));
     });
 
     for (auto i : privOptions) {
-        turnstile.privLevel->addItem(std::get<0>(i) % " - " 
-                % QString::number(std::get<1>(i)) % " tx over " 
-                % QString::number(std::get<2>(i)) % " blocks ("
-                % QString::number((int)(std::get<2>(i) / 24 / 24)) % " days)" // 24 blks/hr * 24 hrs per day
+        turnstile.privLevel->addItem(QString::number(std::get<0>(i)) % " tx over " %
+                                     QString::number(std::get<1>(i)) % " blocks (" %
+                                     QString::number((int)(std::get<1>(i) / 24 / 24)) % " days)" // 24 blks/hr * 24 hrs per day
         );
     }
     
@@ -270,7 +269,7 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
         rpc->getTurnstile()->planMigration(
             turnstile.migrateZaddList->currentText(), 
             turnstile.migrateTo->currentText(),
-            std::get<1>(privLevel), std::get<2>(privLevel));
+            std::get<0>(privLevel), std::get<1>(privLevel));
 
         QMessageBox::information(this, "Backup your wallet.dat", 
                                     "The migration will now start. You can check progress in the File -> Sapling Turnstile menu.\n\nYOU MUST BACKUP YOUR wallet.dat NOW!\n\nNew Addresses have been added to your wallet which will be used for the migration.", 
