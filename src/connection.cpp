@@ -48,7 +48,7 @@ void ConnectionLoader::loadConnection() {
                 } else {
                     // Errored out, show error and exit
                     QString explanation = QString() % "Couldn't start the embedded zcashd.\n\n" %
-                                        "This is most likely because of corrupt zcash-params. Please delete your zcash-params directory and restart.\n\n" %
+                                        "Maybe the zcash-params are corrupt? Please delete your zcash-params directory and restart.\n\n" %
                                         (ezcashd ? "The process returned:\n\n" % ezcashd->errorString() : QString(""));
                     this->showError(explanation);
                 }
@@ -115,8 +115,6 @@ void ConnectionLoader::downloadParams(std::function<void(void)> cb) {
 }
 
 void ConnectionLoader::doNextDownload(std::function<void(void)> cb) {
-    qDebug() << "Attempting download";
-
     auto fnSaveFileName = [&] (QUrl url) {
         QString path = url.path();
         QString basename = QFileInfo(path).fileName();
@@ -138,14 +136,16 @@ void ConnectionLoader::doNextDownload(std::function<void(void)> cb) {
 
     QString filename = fnSaveFileName(url);
     QString paramsDir = zcashParamsDir();
-    currentOutput = new QFile(QDir(paramsDir).filePath(filename));
 
-    if (currentOutput->exists()) {
+    if (QFile(QDir(paramsDir).filePath(filename)).exists()) {
         qDebug() << filename << " already exists, skipping ";
         doNextDownload(cb);
 
         return;
     }
+
+    // The downloaded file is written to a new name, and then renamed when the operation completes.
+    currentOutput = new QFile(QDir(paramsDir).filePath(filename + ".part"));   
 
     if (!currentOutput->open(QIODevice::WriteOnly)) {
         this->showError("Couldn't download params. Please check the help site for more info.");
@@ -179,6 +179,9 @@ void ConnectionLoader::doNextDownload(std::function<void(void)> cb) {
     
     // Download Finished
     QObject::connect(currentDownload, &QNetworkReply::finished, [=] () {
+        // Rename file
+        currentOutput->rename(QDir(paramsDir).filePath(filename));
+
         currentOutput->close();
         currentDownload->deleteLater();
         currentOutput->deleteLater();
@@ -220,7 +223,10 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     auto zcashdProgram = "zcashd.exe";
 #endif
     
-    qDebug() << zcashdProgram << QFile(zcashdProgram).exists();
+    if (!QFile(zcashdProgram).exists()) {
+        qDebug() << "Can't find zcashd";
+        return false;
+    }
 
     ezcashd = new QProcess(main);    
     ezcashd->setWorkingDirectory(fi.dir().absolutePath());
