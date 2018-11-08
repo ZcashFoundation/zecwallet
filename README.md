@@ -1,4 +1,5 @@
 zec-qt-wallet is a z-Addr first, Sapling compatible wallet for zcashd that runs on Windows and Linux
+
 ![Screenshot](docs/screenshot-main.png?raw=true)
 
 # Installation
@@ -23,7 +24,7 @@ There is currently no official zcashd build for Windows so Windows users may eit
 
 Alternatively run zcashd inside [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
-For all installations zcashd needs to run with RPC enabled (`server=1`, which is the default) and with a RPC username/password set. Add the following entries into `~/.zcash/zcash.conf` for Linux or` C:\Users\your-username\AppData\Roaming\Zcash\zcash.conf` on Windows replacing the default values with a strong password. zec-qt-wallet should detect these settings but if that fails you may edit the connection settings manually via the `File->Settings` menu.
+For all installations zcashd needs to run with RPC enabled (`server=1`, which is the default) and with a RPC username/password set. Add the following entries into `~/.zcash/zcash.conf` for Linux or` C:\Users\your-username\AppData\Roaming\Zcash\zcash.conf` on Windows replacing the default values with a strong password. zec-qt-wallet should detect these settings but if that fails you may edit the connection settings manually via the `Edit->Settings` menu.
 
 ```
 rpcuser=username
@@ -40,7 +41,7 @@ https://z.cash/downloads/sprout-proving.key
 https://z.cash/downloads/sprout-verifying.key
 ```
 
-If you are running zcashd on WSL, then please set the connection parameters in the `File->Settings` menu. 
+If you are running zcashd on WSL, then please set the connection parameters in the `Edit->Settings` menu. 
 
 ## Compiling from source
 zec-qt-wallet is written in C++ 14, and can be compiled with g++/clang++/visual c++. It also depends on Qt5, which you can get from here: https://www.qt.io/download
