@@ -1,5 +1,4 @@
 zec-qt-wallet is a z-Addr first, Sapling compatible wallet for zcashd that runs on Windows and Linux
-
 ![Screenshot](docs/screenshot-main.png?raw=true)
 
 # Installation
