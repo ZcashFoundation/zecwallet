@@ -837,7 +837,7 @@ void RPC::refreshZECPrice() {
             }
 
             for (const json& item : parsed.get<json::array_t>()) {
-                if (item["symbol"].get<json::string_t>().compare("ZEC") == 0) {
+                if (item["symbol"].get<json::string_t>() == "ZEC") {
                     QString price = QString::fromStdString(item["price_usd"].get<json::string_t>());
                     qDebug() << "ZEC Price=" << price;
                     Settings::getInstance()->setZECPrice(price.toDouble());
@@ -881,8 +881,11 @@ void RPC::shutdownZcashd() {
 
     // We capture by reference all the local variables because of the d.exec() 
     // below, which blocks this function until we exit. 
+    int waitCount = 0;
     QObject::connect(&waiter, &QTimer::timeout, [&] () {
-        if (ezcashd->atEnd() && ezcashd->processId() == 0) {
+        waitCount++;
+        if ((ezcashd->atEnd() && ezcashd->processId() == 0) ||
+            waitCount > 30) {
             qDebug() << "Ended";
             waiter.stop();
             QTimer::singleShot(1000, [&]() { d.accept(); });

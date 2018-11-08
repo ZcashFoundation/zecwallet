@@ -265,7 +265,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
 void ConnectionLoader::doManualConnect() {
     auto config = loadFromSettings();
 
-    if (config.get() == nullptr) {
+    if (!config) {
         // Nothing configured, show an error
         QString explanation = QString()
                 % "A manual connection was requested, but the settings are not configured.\n\n" 
