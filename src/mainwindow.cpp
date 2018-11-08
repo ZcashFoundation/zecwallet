@@ -373,13 +373,6 @@ void MainWindow::setupSettingsModal() {
         QIntValidator validator(0, 65535);
         settings.port->setValidator(&validator);
 
-        // Load current values into the dialog        
-        auto conf = Settings::getInstance()->getSettings();
-        settings.hostname->setText(conf.host);
-        settings.port->setText(conf.port);
-        settings.rpcuser->setText(conf.rpcuser);
-        settings.rpcpassword->setText(conf.rpcpassword);
-
         // If values are coming from zcash.conf, then disable all the fields
         auto zcashConfLocation = Settings::getInstance()->getZcashdConfLocation();
         if (!zcashConfLocation.isEmpty()) {
@@ -390,6 +383,13 @@ void MainWindow::setupSettingsModal() {
             settings.rpcpassword->setEnabled(false);
         }
         else {
+            // Load current values into the dialog        
+            auto conf = Settings::getInstance()->getSettings();
+            settings.hostname->setText(conf.host);
+            settings.port->setText(conf.port);
+            settings.rpcuser->setText(conf.rpcuser);
+            settings.rpcpassword->setText(conf.rpcpassword);
+
             settings.confMsg->setText("No local zcash.conf found. Please configure connection manually.");
             settings.hostname->setEnabled(true);
             settings.port->setEnabled(true);

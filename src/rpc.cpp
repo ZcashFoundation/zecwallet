@@ -9,8 +9,8 @@ using json = nlohmann::json;
 RPC::RPC(MainWindow* main) {
     auto cl = new ConnectionLoader(main, this);
 
-    // Show a default no connection message until we can connect.
-    cl->loadConnection();
+    // Execute the load connection async, so we can set up the rest of RPC properly. 
+    QTimer::singleShot(1, [=]() {cl->loadConnection(); });
 
     this->main = main;
     this->ui = main->ui;
@@ -66,6 +66,9 @@ RPC::~RPC() {
 
 void RPC::setEZcashd(QProcess* p) {
     ezcashd = p;
+
+    if (ezcashd == nullptr)
+        ui->tabWidget->removeTab(4);
 }
 
 void RPC::setConnection(Connection* c) {
@@ -326,8 +329,10 @@ void RPC::fillTxJsonParams(json& params, Tx tx) {
 }
 
 
-void RPC::noConnection() {
-    ui->statusBar->showMessage("No Connection to zcashd");
+void RPC::noConnection() {    
+    QIcon i = QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical);
+    main->statusIcon->setPixmap(i.pixmap(16, 16));
+    main->statusLabel->setText("No Connection");
 }
 
 // Refresh received z txs by calling z_listreceivedbyaddress/gettransaction
@@ -439,7 +444,6 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
     );
 } 
 
-
 /// This will refresh all the balance data from zcashd
 void RPC::refresh(bool force) {
     if  (conn == nullptr) 
@@ -482,7 +486,7 @@ void RPC::getInfoThenRefresh(bool force) {
         }
 
         // Get network sol/s
-        if (ezcashd != nullptr) {
+        if (ezcashd) {
             int conns = reply["connections"].get<json::number_integer_t>();
 
             json payload = {
@@ -498,11 +502,7 @@ void RPC::getInfoThenRefresh(bool force) {
                 ui->numconnections->setText(QString::number(conns));
                 ui->solrate->setText(QString::number(solrate) % " Sol/s");
             });
-        } else {
-            qDebug() << "removing tab!";
-            ui->tabWidget->removeTab(4);
-        }
-        
+        } 
 
         // Call to see if the blockchain is syncing. 
         json payload = {
@@ -526,7 +526,7 @@ void RPC::getInfoThenRefresh(bool force) {
                 qint64 estBlocks = (QDateTime::currentMSecsSinceEpoch() - genisisTimeMSec) / 2.5 / 60 / 1000;
                 // Round to nearest 10
                 estBlocks = ((estBlocks + 5) / 10) * 10;
-                ui->blockheight->setText(ui->blockheight->text() % " / ~" % QString::number(estBlocks) % 
+                ui->blockheight->setText(ui->blockheight->text() % /*" / ~" % QString::number(estBlocks) % */
                                          " ( " % QString::number(progress * 100, 'f', 0) % "% )");
             }
 
@@ -871,11 +871,10 @@ void RPC::shutdownZcashd() {
     conn->doRPCWithDefaultErrorHandling(payload, [=](auto) {});
     conn->shutdown();
 
-
     QMessageBox d(main);
     d.setIcon(QMessageBox::Icon::Information);
     d.setWindowTitle("Waiting for zcashd to exit");
-    d.setText("Please wait for zcashd to exit. Don't click OK!");
+    d.setText("Please wait for zcashd to exit.");
     d.setStandardButtons(QMessageBox::NoButton);
     
     QTimer waiter(main);

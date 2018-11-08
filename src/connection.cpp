@@ -16,13 +16,6 @@ ConnectionLoader::ConnectionLoader(MainWindow* main, RPC* rpc) {
     connD = new Ui_ConnectionDialog();
     connD->setupUi(d);
     connD->topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));
-
-    // Center on screen
-    QRect screenGeometry = QApplication::desktop()->screenGeometry(d);
-    int x = (screenGeometry.width() - d->width()) / 2;
-    int y = (screenGeometry.height() - d->height()) / 2;
-    d->move(x, y);
-
 }
 
 ConnectionLoader::~ConnectionLoader() {    
@@ -31,7 +24,11 @@ ConnectionLoader::~ConnectionLoader() {
 }
 
 void ConnectionLoader::loadConnection() {
-    d->show();
+    QTimer::singleShot(1, [=]() { this->doAutoConnect(); });
+    d->exec();
+}
+
+void ConnectionLoader::doAutoConnect() {
     // Priority 1: Try to connect to detect zcash.conf and connect to it.
     auto config = autoDetectZcashConf();
 
@@ -44,7 +41,7 @@ void ConnectionLoader::loadConnection() {
                 this->showInformation("Starting Embedded zcashd");
                 if (this->startEmbeddedZcashd()) {
                     // Embedded zcashd started up. Wait a second and then refresh the connection
-                    QTimer::singleShot(1000, [=]() { loadConnection(); } );
+                    QTimer::singleShot(1000, [=]() { doAutoConnect(); } );
                 } else {
                     // Errored out, show error and exit
                     QString explanation = QString() % "Couldn't start the embedded zcashd.\n\n" %
@@ -113,7 +110,7 @@ void ConnectionLoader::createZcashConf() {
         out << "rpcpassword=" % randomPassword() << "\n";
         file.close();
 
-        this->loadConnection(); 
+        this->doAutoConnect();
     });    
 }
 
@@ -294,11 +291,13 @@ void ConnectionLoader::doManualConnect() {
 }
 
 void ConnectionLoader::doRPCSetConnection(Connection* conn) {
-    if (ezcashd != nullptr) {
+    if (ezcashd) {
         rpc->setEZcashd(ezcashd);
     }
 
     rpc->setConnection(conn);
+    d->accept();
+
     delete this;
 }
 
@@ -367,10 +366,12 @@ void ConnectionLoader::showInformation(QString info, QString detail) {
 /**
  * Show error will close the loading dialog and show an error. 
 */
-void ConnectionLoader::showError(QString explanation) {
-    d->hide();
-    main->ui->statusBar->showMessage("Connection Error");
+void ConnectionLoader::showError(QString explanation) {    
+    rpc->setEZcashd(nullptr);
+    rpc->noConnection();
+
     QMessageBox::critical(main, "Connection Error", explanation, QMessageBox::Ok);
+    d->close();
 }
 
 QString ConnectionLoader::locateZcashConfFile() {

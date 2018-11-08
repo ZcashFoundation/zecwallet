@@ -316,8 +316,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>920</width>
-                <height>334</height>
+                <width>922</width>
+                <height>376</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -767,7 +767,7 @@
              <item row="2" column="2">
               <widget class="QLabel" name="numconnections">
                <property name="text">
-                <string>TextLabel</string>
+                <string>Loading...</string>
                </property>
               </widget>
              </item>
@@ -781,7 +781,7 @@
              <item row="3" column="2">
               <widget class="QLabel" name="solrate">
                <property name="text">
-                <string>TextLabel</string>
+                <string>Loading...</string>
                </property>
               </widget>
              </item>
@@ -802,7 +802,7 @@
              <item row="1" column="2">
               <widget class="QLabel" name="blockheight">
                <property name="text">
-                <string>TextLabel</string>
+                <string>Loading...</string>
                </property>
               </widget>
              </item>
@@ -864,7 +864,7 @@
      <x>0</x>
      <y>0</y>
      <width>968</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

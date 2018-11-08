@@ -41,6 +41,7 @@ private:
 
     Connection* makeConnection(std::shared_ptr<ConnectionConfig> config);
 
+    void doAutoConnect();
     void doManualConnect();
 
     void createZcashConf();
@@ -53,7 +54,6 @@ private:
     bool startEmbeddedZcashd();
 
     void refreshZcashdState(Connection* connection, std::function<void(void)> refused);
-    int  getProgressFromStatus(QString status);
 
     void showError(QString explanation);
     void showInformation(QString info, QString detail = "");
