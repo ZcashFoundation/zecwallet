@@ -9,8 +9,8 @@ using json = nlohmann::json;
 RPC::RPC(MainWindow* main) {
     auto cl = new ConnectionLoader(main, this);
 
-    // Show a default no connection message until we can connect.
-    cl->loadConnection();
+    // Execute the load connection async, so we can set up the rest of RPC properly. 
+    QTimer::singleShot(1, [=]() {cl->loadConnection(); });
 
     this->main = main;
     this->ui = main->ui;
@@ -66,6 +66,9 @@ RPC::~RPC() {
 
 void RPC::setEZcashd(QProcess* p) {
     ezcashd = p;
+
+    if (ezcashd == nullptr)
+        ui->tabWidget->removeTab(4);
 }
 
 void RPC::setConnection(Connection* c) {
@@ -326,8 +329,10 @@ void RPC::fillTxJsonParams(json& params, Tx tx) {
 }
 
 
-void RPC::noConnection() {
-    ui->statusBar->showMessage("No Connection to zcashd");
+void RPC::noConnection() {    
+    QIcon i = QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical);
+    main->statusIcon->setPixmap(i.pixmap(16, 16));
+    main->statusLabel->setText("No Connection");
 }
 
 // Refresh received z txs by calling z_listreceivedbyaddress/gettransaction
@@ -439,7 +444,6 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
     );
 } 
 
-
 /// This will refresh all the balance data from zcashd
 void RPC::refresh(bool force) {
     if  (conn == nullptr) 
@@ -482,7 +486,7 @@ void RPC::getInfoThenRefresh(bool force) {
         }
 
         // Get network sol/s
-        if (ezcashd != nullptr) {
+        if (ezcashd) {
             int conns = reply["connections"].get<json::number_integer_t>();
 
             json payload = {
@@ -498,11 +502,7 @@ void RPC::getInfoThenRefresh(bool force) {
                 ui->numconnections->setText(QString::number(conns));
                 ui->solrate->setText(QString::number(solrate) % " Sol/s");
             });
-        } else {
-            qDebug() << "removing tab!";
-            ui->tabWidget->removeTab(4);
-        }
-        
+        } 
 
         // Call to see if the blockchain is syncing. 
         json payload = {
@@ -519,6 +519,18 @@ void RPC::getInfoThenRefresh(bool force) {
             Settings::getInstance()->setSyncing(isSyncing);
             Settings::getInstance()->setBlockNumber(blockNumber);
 
+            // Update zcashd tab if it exists
+            if (ezcashd && isSyncing) {
+                // 895 / ~426530 (0 % )
+                const qint64 genisisTimeMSec = 1477638000000;
+                qint64 estBlocks = (QDateTime::currentMSecsSinceEpoch() - genisisTimeMSec) / 2.5 / 60 / 1000;
+                // Round to nearest 10
+                estBlocks = ((estBlocks + 5) / 10) * 10;
+                ui->blockheight->setText(ui->blockheight->text() % /*" / ~" % QString::number(estBlocks) % */
+                                         " ( " % QString::number(progress * 100, 'f', 0) % "% )");
+            }
+
+            // Update the status bar
             QString statusText = QString() %
                 (isSyncing ? "Syncing" : "Connected") %
                 " (" %
@@ -825,7 +837,7 @@ void RPC::refreshZECPrice() {
             }
 
             for (const json& item : parsed.get<json::array_t>()) {
-                if (item["symbol"].get<json::string_t>().compare("ZEC") == 0) {
+                if (item["symbol"].get<json::string_t>() == "ZEC") {
                     QString price = QString::fromStdString(item["price_usd"].get<json::string_t>());
                     qDebug() << "ZEC Price=" << price;
                     Settings::getInstance()->setZECPrice(price.toDouble());
@@ -859,19 +871,22 @@ void RPC::shutdownZcashd() {
     conn->doRPCWithDefaultErrorHandling(payload, [=](auto) {});
     conn->shutdown();
 
+    QDialog d(main);
+    Ui_ConnectionDialog connD;
+    connD.setupUi(&d);
+    connD.topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));
+    connD.status->setText("Please wait for zec-qt-wallet to exit");
+    connD.statusDetail->setText("Waiting for zcashd to exit");
 
-    QMessageBox d(main);
-    d.setIcon(QMessageBox::Icon::Information);
-    d.setWindowTitle("Waiting for zcashd to exit");
-    d.setText("Please wait for zcashd to exit. Don't click OK!");
-    d.setStandardButtons(QMessageBox::NoButton);
-    
     QTimer waiter(main);
 
     // We capture by reference all the local variables because of the d.exec() 
     // below, which blocks this function until we exit. 
+    int waitCount = 0;
     QObject::connect(&waiter, &QTimer::timeout, [&] () {
-        if (ezcashd->atEnd() && ezcashd->processId() == 0) {
+        waitCount++;
+        if ((ezcashd->atEnd() && ezcashd->processId() == 0) ||
+            waitCount > 30) {
             qDebug() << "Ended";
             waiter.stop();
             QTimer::singleShot(1000, [&]() { d.accept(); });

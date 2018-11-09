@@ -16,13 +16,6 @@ ConnectionLoader::ConnectionLoader(MainWindow* main, RPC* rpc) {
     connD = new Ui_ConnectionDialog();
     connD->setupUi(d);
     connD->topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));
-
-    // Center on screen
-    QRect screenGeometry = QApplication::desktop()->screenGeometry(d);
-    int x = (screenGeometry.width() - d->width()) / 2;
-    int y = (screenGeometry.height() - d->height()) / 2;
-    d->move(x, y);
-
 }
 
 ConnectionLoader::~ConnectionLoader() {    
@@ -31,7 +24,11 @@ ConnectionLoader::~ConnectionLoader() {
 }
 
 void ConnectionLoader::loadConnection() {
-    d->show();
+    QTimer::singleShot(1, [=]() { this->doAutoConnect(); });
+    d->exec();
+}
+
+void ConnectionLoader::doAutoConnect() {
     // Priority 1: Try to connect to detect zcash.conf and connect to it.
     auto config = autoDetectZcashConf();
 
@@ -44,7 +41,7 @@ void ConnectionLoader::loadConnection() {
                 this->showInformation("Starting Embedded zcashd");
                 if (this->startEmbeddedZcashd()) {
                     // Embedded zcashd started up. Wait a second and then refresh the connection
-                    QTimer::singleShot(1000, [=]() { loadConnection(); } );
+                    QTimer::singleShot(1000, [=]() { doAutoConnect(); } );
                 } else {
                     // Errored out, show error and exit
                     QString explanation = QString() % "Couldn't start the embedded zcashd.\n\n" %
@@ -70,6 +67,23 @@ void ConnectionLoader::loadConnection() {
     } 
 }
 
+QString randomPassword() {
+    static const char alphanum[] =
+        "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+
+    const int passwordLength = 10;
+    char* s = new char[passwordLength + 1];
+
+    for (int i = 0; i < passwordLength; ++i) {
+        s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+    }
+
+    s[passwordLength] = 0;
+    return QString::fromStdString(s);
+}
+
 /**
  * This will create a new zcash.conf, download zcash parameters.
  */ 
@@ -93,12 +107,13 @@ void ConnectionLoader::createZcashConf() {
         
         out << "server=1\n";
         out << "rpcuser=zec-qt-wallet\n";
-        out << "rpcpassword=" % QString::number(std::rand()) << "\n";
+        out << "rpcpassword=" % randomPassword() << "\n";
         file.close();
 
-        this->loadConnection(); 
+        this->doAutoConnect();
     });    
 }
+
 
 void ConnectionLoader::downloadParams(std::function<void(void)> cb) {    
     // Add all the files to the download queue
@@ -216,20 +231,19 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     qDebug() << "Starting zcashd";
     QFileInfo fi(Settings::getInstance()->getExecName());
 #ifdef Q_OS_LINUX
-    auto zcashdProgram = "zcashd";
+    auto zcashdProgram = fi.dir().absoluteFilePath("zcashd");
 #elif defined(Q_OS_DARWIN)
-    auto zcashdProgram = "zcashd";
+    auto zcashdProgram = fi.dir().absoluteFilePath("zcashd");
 #else
-    auto zcashdProgram = "zcashd.exe";
+    auto zcashdProgram = fi.dir().absoluteFilePath("zcashd.exe");
 #endif
     
     if (!QFile(zcashdProgram).exists()) {
-        qDebug() << "Can't find zcashd";
+        qDebug() << "Can't find zcashd at " << zcashdProgram;
         return false;
     }
 
     ezcashd = new QProcess(main);    
-    ezcashd->setWorkingDirectory(fi.dir().absolutePath());
     QObject::connect(ezcashd, &QProcess::started, [=] () {
         qDebug() << "zcashd started";
     });
@@ -251,7 +265,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
 void ConnectionLoader::doManualConnect() {
     auto config = loadFromSettings();
 
-    if (config.get() == nullptr) {
+    if (!config) {
         // Nothing configured, show an error
         QString explanation = QString()
                 % "A manual connection was requested, but the settings are not configured.\n\n" 
@@ -277,11 +291,13 @@ void ConnectionLoader::doManualConnect() {
 }
 
 void ConnectionLoader::doRPCSetConnection(Connection* conn) {
-    if (ezcashd != nullptr) {
+    if (ezcashd) {
         rpc->setEZcashd(ezcashd);
     }
 
     rpc->setConnection(conn);
+    d->accept();
+
     delete this;
 }
 
@@ -350,10 +366,12 @@ void ConnectionLoader::showInformation(QString info, QString detail) {
 /**
  * Show error will close the loading dialog and show an error. 
 */
-void ConnectionLoader::showError(QString explanation) {
-    d->hide();
-    main->ui->statusBar->showMessage("Connection Error");
+void ConnectionLoader::showError(QString explanation) {    
+    rpc->setEZcashd(nullptr);
+    rpc->noConnection();
+
     QMessageBox::critical(main, "Connection Error", explanation, QMessageBox::Ok);
+    d->close();
 }
 
 QString ConnectionLoader::locateZcashConfFile() {

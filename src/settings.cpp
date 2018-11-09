@@ -5,9 +5,6 @@
 
 Settings* Settings::instance = nullptr;
 
-Settings::~Settings() {
-}
-
 bool Settings::getSaveZtxs() {
     // Load from the QT Settings. 
     return QSettings().value("options/savesenttx", true).toBool();

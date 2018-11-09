@@ -39,7 +39,6 @@ class Turnstile
 {
 public:
     Turnstile(RPC* _rpc, MainWindow* mainwindow);
-    ~Turnstile();
 
     void               planMigration(QString zaddr, QString destAddr, int splits, int numBlocks);
     QList<double>      splitAmount(double amount, int parts);

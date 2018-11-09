@@ -14,8 +14,6 @@ Turnstile::Turnstile(RPC* _rpc, MainWindow* mainwindow) {
     this->mainwindow = mainwindow;
 }
 
-Turnstile::~Turnstile() {
-}
 
 void printPlan(QList<TurnstileMigrationItem> plan) {
     for (auto item : plan) {
@@ -118,7 +116,7 @@ void Turnstile::planMigration(QString zaddr, QString destAddr, int numsplits, in
 
             // The first migration is shifted to the current block, so the user sees something 
             // happening immediately
-            if (migItems.size() == 0) {
+            if (migItems.empty()) {
                 // Show error and abort
                 QMessageBox::warning(mainwindow, 
                     "Locked funds", 
@@ -220,9 +218,7 @@ Turnstile::getNextStep(QList<TurnstileMigrationItem>& plan) {
 
 bool Turnstile::isMigrationPresent() {
     auto plan = readMigrationPlan();
-    if (plan.isEmpty()) return false;
-
-    return true;
+    return !plan.isEmpty();
 }
 
 ProgressReport Turnstile::getPlanProgress() {

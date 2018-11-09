@@ -52,7 +52,7 @@
    <item>
     <widget class="QLabel" name="status">
      <property name="text">
-      <string>Connection Status</string>
+      <string>Starting Up</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
