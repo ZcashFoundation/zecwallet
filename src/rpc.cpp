@@ -802,7 +802,6 @@ void RPC::watchTxStatus() {
 
 // Get the ZEC->USD price from coinmarketcap using their API
 void RPC::refreshZECPrice() {
-    qDebug() << QString::fromStdString("Getting ZEC price");
     if  (conn == nullptr) 
         return noConnection();
 

@@ -9,5 +9,6 @@
     </qresource>
     <qresource prefix="/img">
         <file>res/zcashdlogo.gif</file>
+        <file>res/logobig.gif</file>
     </qresource>
 </RCC>

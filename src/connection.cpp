@@ -15,7 +15,8 @@ ConnectionLoader::ConnectionLoader(MainWindow* main, RPC* rpc) {
     d = new QDialog(main);
     connD = new Ui_ConnectionDialog();
     connD->setupUi(d);
-    connD->topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));
+    QPixmap logo(":/img/res/logobig.gif");
+    connD->topIcon->setBasePixmap(logo.scaled(256, 256, Qt::KeepAspectRatio, Qt::SmoothTransformation));
 }
 
 ConnectionLoader::~ConnectionLoader() {    
