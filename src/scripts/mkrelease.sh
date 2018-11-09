@@ -29,6 +29,7 @@ echo "[OK]"
 
 echo -n "Cleaning.........."
 rm -rf bin/*
+rm -rf artifacts/*
 make distclean > /dev/null
 echo "[OK]"
 
@@ -58,6 +59,7 @@ echo "[OK]"
 
 echo -n "Packaging........."
 mkdir bin/zec-qt-wallet-v$APP_VERSION > /dev/null
+strip zec-qt-wallet
 cp zec-qt-wallet bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp ../zcash/artifacts/zcashd bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp README.md bin/zec-qt-wallet-v$APP_VERSION > /dev/null

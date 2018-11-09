@@ -22,6 +22,7 @@
 #include <QPair>
 #include <QDir>
 #include <QMenu>
+#include <QCompleter>
 #include <QDateTime>
 #include <QTimer>
 #include <QSettings>

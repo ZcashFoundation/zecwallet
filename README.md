@@ -9,8 +9,8 @@ Head over to the releases page and grab the latest binary. https://github.com/ad
 ### Linux
 Extract and run the binary
 ```
-tar -xvf zec-qt-wallet-v0.2.8.tar.gz
-./zec-qt-wallet-v0.2.8/zec-qt-wallet
+tar -xvf zec-qt-wallet-v0.2.9.tar.gz
+./zec-qt-wallet-v0.2.9/zec-qt-wallet
 ```
 
 ### Windows
@@ -24,7 +24,7 @@ There is currently no official zcashd build for Windows so Windows users may eit
 
 Alternatively run zcashd inside [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
-For all installations zcashd needs to run with RPC enabled (`server=1`, which is the default) and with a RPC username/password set. Add the following entries into `~/.zcash/zcash.conf` for Linux or` C:\Users\your-username\AppData\Roaming\Zcash\zcash.conf` on Windows replacing the default values with a strong password. zec-qt-wallet should detect these settings but if that fails you may edit the connection settings manually via the `File->Settings` menu.
+For all installations zcashd needs to run with RPC enabled (`server=1`, which is the default) and with a RPC username/password set. Add the following entries into `~/.zcash/zcash.conf` for Linux or` C:\Users\your-username\AppData\Roaming\Zcash\zcash.conf` on Windows replacing the default values with a strong password. zec-qt-wallet should detect these settings but if that fails you may edit the connection settings manually via the `Edit->Settings` menu.
 
 ```
 rpcuser=username
@@ -41,7 +41,7 @@ https://z.cash/downloads/sprout-proving.key
 https://z.cash/downloads/sprout-verifying.key
 ```
 
-If you are running zcashd on WSL, then please set the connection parameters in the `File->Settings` menu. 
+If you are running zcashd on WSL, then please set the connection parameters in the `Edit->Settings` menu. 
 
 ## Compiling from source
 zec-qt-wallet is written in C++ 14, and can be compiled with g++/clang++/visual c++. It also depends on Qt5, which you can get from here: https://www.qt.io/download
@@ -49,6 +49,8 @@ zec-qt-wallet is written in C++ 14, and can be compiled with g++/clang++/visual 
 ### Compiling on Linux
 
 ```
+sudo apt install libgl1-mesa-dev
+
 git clone https://github.com/adityapk00/zec-qt-wallet.git
 cd zec-qt-wallet
 /path/to/qt5/bin/qmake zec-qt-wallet.pro CONFIG+=debug
@@ -64,7 +66,7 @@ From the VS Tools command prompt
 ```
 git clone https://github.com/adityapk00/zec-qt-wallet.git
 cd zec-qt-wallet
-c:\Qt5\bin\qmake.exe zec-qt-wallet.pro CONFIG+=debug
+c:\Qt5\bin\qmake.exe zec-qt-wallet.pro -spec win32-msvc CONFIG+=debug
 nmake
 
 debug\zec-qt-wallet.exe

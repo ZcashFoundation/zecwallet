@@ -21,19 +21,22 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
 private:
-    void loadDataFromStorage();
-    void saveDataToStorage();
-
-    QString writeableFile();
+    void loadData();
+    void saveData();
 
     QTableView* parent;
-    QList<QPair<QString, QString>>* labels   = nullptr;
+    QList<QPair<QString, QString>> labels;
     QStringList headers;    
 };
 
 class AddressBook {
 public:    
     static void open(MainWindow* parent, QLineEdit* target = nullptr);
+
+    static QList<QPair<QString, QString>> readFromStorage();
+    static void writeToStorage(QList<QPair<QString, QString>> labels);
+
+    static QString writeableFile();
 };
 
 #endif // ADDRESSBOOK_H

@@ -16,6 +16,8 @@ public:
     static Settings* init();
     static Settings* getInstance();
 
+    static void saveRestore(QDialog* d);
+
     Config getSettings();
     void   saveSettings(const QString& host, const QString& port, const QString& username, const QString& password);
 
@@ -48,8 +50,7 @@ public:
 
     void    setZECPrice(double p) { zecPrice = p; }
     double  getZECPrice();
-
-    
+        
     QString getUSDFormat          (double bal);
     QString getZECDisplayFormat   (double bal);
     QString getZECUSDDisplayFormat(double bal);

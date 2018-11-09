@@ -109,6 +109,7 @@ void MainWindow::turnstileProgress() {
     Ui_TurnstileProgress progress;
     QDialog d(this);
     progress.setupUi(&d);
+    Settings::saveRestore(&d);
 
     QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning);
     progress.msgIcon->setPixmap(icon.pixmap(64, 64));
@@ -189,6 +190,7 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
     Ui_Turnstile turnstile;
     QDialog d(this);
     turnstile.setupUi(&d);
+    Settings::saveRestore(&d);
 
     QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
     turnstile.msgIcon->setPixmap(icon.pixmap(64, 64));
@@ -240,8 +242,7 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
     if (!fromAddr.isEmpty())
         turnstile.migrateZaddList->setCurrentText(fromAddr);
 
-    fnUpdateSproutBalance(turnstile.migrateZaddList->currentText());
-    
+    fnUpdateSproutBalance(turnstile.migrateZaddList->currentText());    
 
     // Combo box selection event
     QObject::connect(turnstile.migrateZaddList, &QComboBox::currentTextChanged, fnUpdateSproutBalance);
@@ -349,6 +350,7 @@ void MainWindow::setupSettingsModal() {
         QDialog settingsDialog(this);
         Ui_Settings settings;
         settings.setupUi(&settingsDialog);
+        Settings::saveRestore(&settingsDialog);
 
         // Setup save sent check box
         QObject::connect(settings.chkSaveTxs, &QCheckBox::stateChanged, [=](auto checked) {
@@ -412,7 +414,7 @@ void MainWindow::setupSettingsModal() {
                 auto cl = new ConnectionLoader(this, rpc);
                 cl->loadConnection();
             }
-        };
+        }
     });
 }
 
@@ -449,6 +451,10 @@ void MainWindow::postToZBoard() {
     QDialog d(this);
     Ui_zboard zb;
     zb.setupUi(&d);
+    Settings::saveRestore(&d);
+
+    if (rpc->getConnection() == nullptr)
+        return;
 
     // Fill the from field with sapling addresses.
     for (auto i = rpc->getAllBalances()->keyBegin(); i != rpc->getAllBalances()->keyEnd(); i++) {
@@ -456,6 +462,18 @@ void MainWindow::postToZBoard() {
             zb.fromAddr->addItem(*i);
         }
     }
+
+    QMap<QString, QString> topics;
+    // Insert the main topic automatically
+    topics.insert("#Main_Area", Utils::getZboardAddr());
+    zb.topicsList->addItem(topics.firstKey());
+    // Then call the API to get topics, and if it returns successfully, then add the rest of the topics
+    rpc->getZboardTopics([&](QMap<QString, QString> topicsMap) {
+        for (auto t : topicsMap.keys()) {
+            topics.insert(t, topicsMap[t]);
+            zb.topicsList->addItem(t);
+        }
+    });
 
     // Testnet warning
     if (Settings::getInstance()->isTestnet()) {
@@ -465,10 +483,20 @@ void MainWindow::postToZBoard() {
         zb.testnetWarning->setText("");
     }
 
+    QRegExpValidator v(QRegExp("^[a-zA-Z0-9_]{3,20}$"), zb.postAs);
+    zb.postAs->setValidator(&v);
+
     zb.feeAmount->setText(Settings::getInstance()->getZECUSDDisplayFormat(Utils::getZboardAmount() + Utils::getMinerFee()));
 
-    QObject::connect(zb.memoTxt, &QPlainTextEdit::textChanged, [=] () {
-        QString txt = zb.memoTxt->toPlainText();
+    auto fnBuildNameMemo = [=]() -> QString {
+        auto memo = zb.memoTxt->toPlainText().trimmed();
+        if (!zb.postAs->text().trimmed().isEmpty())
+            memo = zb.postAs->text().trimmed() + ":: " + memo;
+        return memo;
+    };
+
+    auto fnUpdateMemoSize = [=]() {
+        QString txt = fnBuildNameMemo();
         zb.memoSize->setText(QString::number(txt.toUtf8().size()) + "/512");
 
         if (txt.toUtf8().size() <= 512) {
@@ -477,14 +505,26 @@ void MainWindow::postToZBoard() {
             zb.memoSize->setStyleSheet("");
         }
         else {
-           // Overweight
+            // Overweight
             zb.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
             zb.memoSize->setStyleSheet("color: red;");
         }
-        
-    });
+
+        // Disallow blank memos
+        if (zb.memoTxt->toPlainText().trimmed().isEmpty()) {
+            zb.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+        }
+        else {
+            zb.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+        }
+    };
+
+    // Memo text changed
+    QObject::connect(zb.memoTxt, &QPlainTextEdit::textChanged, fnUpdateMemoSize);
+    QObject::connect(zb.postAs, &QLineEdit::textChanged, fnUpdateMemoSize);
 
     zb.memoTxt->setFocus();
+    fnUpdateMemoSize();
 
     if (d.exec() == QDialog::Accepted) {
         // Create a transaction.
@@ -501,7 +541,8 @@ void MainWindow::postToZBoard() {
         if (!zb.postAs->text().trimmed().isEmpty())
             memo = zb.postAs->text().trimmed() + ":: " + memo;
 
-        tx.toAddrs.push_back(ToFields{ Utils::getZboardAddr(), Utils::getZboardAmount(), memo, memo.toUtf8().toHex() });
+        auto toAddr = topics[zb.topicsList->currentText()];
+        tx.toAddrs.push_back(ToFields{ toAddr, Utils::getZboardAmount(), memo, memo.toUtf8().toHex() });
         tx.fee = Utils::getMinerFee();
 
         json params = json::array();
@@ -520,7 +561,6 @@ void MainWindow::postToZBoard() {
 }
 
 void MainWindow::doImport(QList<QString>* keys) {
-    qDebug() << keys->size();
     if (keys->isEmpty()) {
         delete keys;
         ui->statusBar->showMessage("Private key import rescan finished");
@@ -545,6 +585,7 @@ void MainWindow::importPrivKey() {
     QDialog d(this);
     Ui_PrivKey pui;
     pui.setupUi(&d);
+    Settings::saveRestore(&d);
 
     pui.buttonBox->button(QDialogButtonBox::Save)->setVisible(false);
     pui.helpLbl->setText(QString() %
@@ -577,10 +618,13 @@ void MainWindow::exportAllKeys() {
     QDialog d(this);
     Ui_PrivKey pui;
     pui.setupUi(&d);
-
+    
+    // Make the window big by default
     auto ps = this->geometry();
     QMargins margin = QMargins() + 50;
     d.setGeometry(ps.marginsRemoved(margin));
+
+    Settings::saveRestore(&d);
 
     pui.privKeyTxt->setPlainText("Loading...");
     pui.privKeyTxt->setReadOnly(true);
@@ -706,9 +750,19 @@ void MainWindow::setupZcashdTab() {
 }
 
 void MainWindow::setupTransactionsTab() {
+    // Double click opens up memo if one exists
+    QObject::connect(ui->transactionsTable, &QTableView::doubleClicked, [=] (auto index) {
+        auto txModel = dynamic_cast<TxTableModel *>(ui->transactionsTable->model());
+        QString memo = txModel->getMemo(index.row());
+
+        if (!memo.isEmpty()) {
+            QMessageBox::information(this, "Memo", memo, QMessageBox::Ok);
+        }
+    });
+
     // Set up context menu on transactions tab
     ui->transactionsTable->setContextMenuPolicy(Qt::CustomContextMenu);
-
+    // Table right click
     QObject::connect(ui->transactionsTable, &QTableView::customContextMenuRequested, [=] (QPoint pos) {
         QModelIndex index = ui->transactionsTable->indexAt(pos);
         if (index.row() < 0) return;
@@ -877,6 +931,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete rpc;
+    delete labelCompleter;
 
     delete loadingMovie;
 }

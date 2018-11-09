@@ -36,6 +36,8 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void updateLabelsAutoComplete();
+
     Ui::MainWindow*     ui;
 
     QLabel*             statusLabel;
@@ -90,9 +92,10 @@ private:
 
     void restoreSavedStates();
 
-    RPC*       rpc  = nullptr;
+    RPC*         rpc  = nullptr;
+    QCompleter*  labelCompleter = nullptr;
 
-    QMovie*    loadingMovie;
+    QMovie*      loadingMovie;
 };
 
 #endif // MAINWINDOW_H

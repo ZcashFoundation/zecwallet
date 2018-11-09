@@ -120,3 +120,11 @@ QString Settings::getZECUSDDisplayFormat(double bal) {
     else
         return getZECDisplayFormat(bal);
 }
+
+void Settings::saveRestore(QDialog* d) {
+    d->restoreGeometry(QSettings().value(d->objectName() % "geometry").toByteArray());
+
+    QObject::connect(d, &QDialog::finished, [=](auto) {
+        QSettings().setValue(d->objectName() % "geometry", d->saveGeometry());
+    });
+}
