@@ -1,6 +1,6 @@
 #include "balancestablemodel.h"
 #include "settings.h"
-#include "utils.h"
+
 
 BalancesTableModel::BalancesTableModel(QObject *parent)
     : QAbstractTableModel(parent) {    

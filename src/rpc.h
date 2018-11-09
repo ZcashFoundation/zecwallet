@@ -3,7 +3,6 @@
 
 #include "precompiled.h"
 
-#include "unspentoutput.h"
 #include "balancestablemodel.h"
 #include "txtablemodel.h"
 #include "ui_mainwindow.h"

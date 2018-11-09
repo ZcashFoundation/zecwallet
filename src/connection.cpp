@@ -228,7 +228,6 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     }
 
     // Finally, start zcashd    
-    qDebug() << "Starting zcashd";
     QFileInfo fi(Settings::getInstance()->getExecName());
 #ifdef Q_OS_LINUX
     auto zcashdProgram = fi.dir().absoluteFilePath("zcashd");
@@ -245,16 +244,16 @@ bool ConnectionLoader::startEmbeddedZcashd() {
 
     ezcashd = new QProcess(main);    
     QObject::connect(ezcashd, &QProcess::started, [=] () {
-        qDebug() << "zcashd started";
+        //qDebug() << "zcashd started";
     });
 
     QObject::connect(ezcashd, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-                        [=](int exitCode, QProcess::ExitStatus exitStatus) {
-        qDebug() << "zcashd finished with code " << exitCode << "," << exitStatus;
+                        [=](int, QProcess::ExitStatus) {
+        //qDebug() << "zcashd finished with code " << exitCode << "," << exitStatus;
     });
 
-    QObject::connect(ezcashd, &QProcess::errorOccurred, [&] (auto error) mutable {
-        qDebug() << "Couldn't start zcashd: " << error;
+    QObject::connect(ezcashd, &QProcess::errorOccurred, [&] (auto) {
+        //qDebug() << "Couldn't start zcashd: " << error;
     });
 
     ezcashd->start(zcashdProgram);
@@ -510,7 +509,7 @@ Connection::~Connection() {
 void Connection::doRPC(const json& payload, const std::function<void(json)>& cb, 
                        const std::function<void(QNetworkReply*, const json&)>& ne) {
     if (shutdownInProgress) {
-        qDebug() << "Ignoring RPC because shutdown in progress";
+        // Ignoring RPC because shutdown in progress
         return;
     }
 
@@ -519,7 +518,7 @@ void Connection::doRPC(const json& payload, const std::function<void(json)>& cb,
     QObject::connect(reply, &QNetworkReply::finished, [=] {
         reply->deleteLater();
         if (shutdownInProgress) {
-            qDebug() << "Ignoring callback because shutdown in progress";
+            // Ignoring callback because shutdown in progress
             return;
         }
         

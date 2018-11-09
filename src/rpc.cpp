@@ -1,5 +1,5 @@
 #include "rpc.h"
-#include "utils.h"
+
 #include "settings.h"
 #include "senttxstore.h"
 #include "turnstile.h"
@@ -31,14 +31,14 @@ RPC::RPC(MainWindow* main) {
     QObject::connect(priceTimer, &QTimer::timeout, [=]() {
         refreshZECPrice();
     });
-    priceTimer->start(Utils::priceRefreshSpeed);  // Every hour
+    priceTimer->start(Settings::priceRefreshSpeed);  // Every hour
 
     // Set up a timer to refresh the UI every few seconds
     timer = new QTimer(main);
     QObject::connect(timer, &QTimer::timeout, [=]() {
         refresh();
     });
-    timer->start(Utils::updateSpeed);    
+    timer->start(Settings::updateSpeed);    
 
     // Set up the timer to watch for tx status
     txTimer = new QTimer(main);
@@ -46,7 +46,7 @@ RPC::RPC(MainWindow* main) {
         watchTxStatus();
     });
     // Start at every 10s. When an operation is pending, this will change to every second
-    txTimer->start(Utils::updateSpeed);  
+    txTimer->start(Settings::updateSpeed);  
 }
 
 RPC::~RPC() {
@@ -584,7 +584,7 @@ void RPC::updateUI(bool anyUnconfirmed) {
     ui->inputsCombo->clear();
     auto i = allBalances->constBegin();
     while (i != allBalances->constEnd()) {
-        QString item = i.key() % "(" % QString::number(i.value(), 'g', 8) % " " % Utils::getTokenName() % ")";
+        QString item = i.key() % "(" % QString::number(i.value(), 'g', 8) % " " % Settings::getTokenName() % ")";
         ui->inputsCombo->addItem(item);
         if (item.startsWith(lastFromAddr)) ui->inputsCombo->setCurrentText(item);
 
@@ -756,7 +756,7 @@ void RPC::watchTxStatus() {
                     
                     SentTxStore::addToSentTx(watchingOps.value(id), txid);
 
-                    main->ui->statusBar->showMessage(Utils::txidStatusMessage + " " + txid);
+                    main->ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
                     main->loadingLabel->setVisible(false);
 
                     watchingOps.remove(id);
@@ -784,9 +784,9 @@ void RPC::watchTxStatus() {
             }
 
             if (watchingOps.isEmpty()) {
-                txTimer->start(Utils::updateSpeed);
+                txTimer->start(Settings::updateSpeed);
             } else {
-                txTimer->start(Utils::quickUpdateSpeed);
+                txTimer->start(Settings::quickUpdateSpeed);
             }
         }
 

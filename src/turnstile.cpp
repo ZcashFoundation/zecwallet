@@ -1,8 +1,8 @@
 #include "turnstile.h"
 #include "mainwindow.h"
-#include "unspentoutput.h"
+#include "balancestablemodel.h"
 #include "rpc.h"
-#include "utils.h"
+
 #include "settings.h"
 
 #include "precompiled.h"
@@ -167,7 +167,7 @@ QList<double> Turnstile::splitAmount(double amount, int parts) {
     }
     
     // Add the Tx fees
-    sumofparts += amounts.size() * Utils::getMinerFee();
+    sumofparts += amounts.size() * Settings::getMinerFee();
 
     //qDebug() << QString::number(sumofparts, 'f', 8) << QString::number(amount, 'f', 8);
     //Q_ASSERT(QString::number(sumofparts, 'f', 8) == QString::number(amount, 'f', 8));
@@ -177,7 +177,7 @@ QList<double> Turnstile::splitAmount(double amount, int parts) {
 void Turnstile::fillAmounts(QList<double>& amounts, double amount, int count) {
     if (count == 1 || amount < 0.01) {
         // Also account for the fees needed to send all these transactions
-        auto actual = amount - (Utils::getMinerFee() * (amounts.size() + 1));
+        auto actual = amount - (Settings::getMinerFee() * (amounts.size() + 1));
 
         amounts.push_back(actual);
         return;
@@ -297,14 +297,14 @@ void Turnstile::executeMigrationStep() {
 
         // If this is the last step, then send the remaining amount instead of the actual amount.
         if (lastStep) {
-            auto remainingAmount = balance - Utils::getMinerFee();
+            auto remainingAmount = balance - Settings::getMinerFee();
             if (remainingAmount > 0) {
                 to.amount = remainingAmount;
             }
         }
 
         // Create the Tx
-        auto tx = Tx{ nextStep->fromAddr, { to }, Utils::getMinerFee() };
+        auto tx = Tx{ nextStep->fromAddr, { to }, Settings::getMinerFee() };
 
         // And send it
         doSendTx(tx, [=] () {
@@ -328,7 +328,7 @@ void Turnstile::executeMigrationStep() {
 
         // Send it to the final destination address.
         auto bal = rpc->getAllBalances()->value(nextStep->intTAddr);
-        auto sendAmt = bal - Utils::getMinerFee();
+        auto sendAmt = bal - Settings::getMinerFee();
 
         if (sendAmt < 0) {
             qDebug() << "Not enough balance!." << bal << ":" << sendAmt;
@@ -340,7 +340,7 @@ void Turnstile::executeMigrationStep() {
         QList<ToFields> to = { ToFields{ nextStep->destAddr, sendAmt, "", "" } };
 
         // Create the Tx
-        auto tx = Tx{ nextStep->intTAddr, to, Utils::getMinerFee() };
+        auto tx = Tx{ nextStep->intTAddr, to, Settings::getMinerFee() };
 
         // And send it
         doSendTx(tx, [=] () {

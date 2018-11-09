@@ -10,6 +10,9 @@ struct Config {
     QString rpcpassword;
 };
 
+struct ToFields;
+struct Tx;
+
 class Settings
 {
 public:
@@ -54,6 +57,26 @@ public:
     QString getUSDFormat          (double bal);
     QString getZECDisplayFormat   (double bal);
     QString getZECUSDDisplayFormat(double bal);
+
+    // Static stuff
+    static const QString txidStatusMessage;
+
+    static const QString getTokenName();
+    static const QString getDevSproutAddr();
+    static const QString getDevAddr(Tx tx);
+    static const QString getDonationAddr(bool sapling);
+
+    static double  getMinerFee();
+    static double  getZboardAmount();
+    static QString getZboardAddr();
+    static double  getDevFee();
+    static double  getTotalFee();
+
+    static bool    isValidAddress(QString addr);
+
+    static const int     updateSpeed         = 20 * 1000;        // 20 sec
+    static const int     quickUpdateSpeed    = 5  * 1000;        // 5 sec
+    static const int     priceRefreshSpeed   = 60 * 60 * 1000;    // 1 hr
 
 private:
     // This class can only be accessed through Settings::getInstance()

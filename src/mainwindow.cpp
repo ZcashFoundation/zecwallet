@@ -11,7 +11,7 @@
 #include "rpc.h"
 #include "balancestablemodel.h"
 #include "settings.h"
-#include "utils.h"
+
 #include "turnstile.h"
 #include "senttxstore.h"
 #include "connection.h"
@@ -151,7 +151,7 @@ void MainWindow::turnstileProgress() {
 
     QTimer progressTimer(this);        
     QObject::connect(&progressTimer, &QTimer::timeout, fnUpdateProgressUI);
-    progressTimer.start(Utils::updateSpeed);
+    progressTimer.start(Settings::updateSpeed);
     fnUpdateProgressUI();
     
     auto curProgress = rpc->getTurnstile()->getPlanProgress();
@@ -257,7 +257,7 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
     QObject::connect(turnstile.privLevel, QOverload<int>::of(&QComboBox::currentIndexChanged), [=] (auto idx) {
         // Update the fees
         turnstile.minerFee->setText(
-            Settings::getInstance()->getZECUSDDisplayFormat(std::get<0>(privOptions[idx]) * Utils::getMinerFee()));
+            Settings::getInstance()->getZECUSDDisplayFormat(std::get<0>(privOptions[idx]) * Settings::getMinerFee()));
     });
 
     for (auto i : privOptions) {
@@ -312,7 +312,7 @@ void MainWindow::setupStatusBar() {
         auto msg = ui->statusBar->currentMessage();
         QMenu menu(this);
 
-        if (!msg.isEmpty() && msg.startsWith(Utils::txidStatusMessage)) {
+        if (!msg.isEmpty() && msg.startsWith(Settings::txidStatusMessage)) {
             auto txid = msg.split(":")[1].trimmed();
             menu.addAction("Copy txid", [=]() {
                 QGuiApplication::clipboard()->setText(txid);
@@ -434,13 +434,13 @@ void MainWindow::addressBook() {
 
 void MainWindow::donate() {
     // Set up a donation to me :)
-    ui->Address1->setText(Utils::getDonationAddr(
+    ui->Address1->setText(Settings::getDonationAddr(
                                 Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText("0.01");
     ui->MemoTxt1->setText("Thanks for supporting zec-qt-wallet!");
 
-    ui->statusBar->showMessage("Donate 0.01 " % Utils::getTokenName() % " to support zec-qt-wallet");
+    ui->statusBar->showMessage("Donate 0.01 " % Settings::getTokenName() % " to support zec-qt-wallet");
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);
@@ -464,7 +464,7 @@ void MainWindow::postToZBoard() {
 
     QMap<QString, QString> topics;
     // Insert the main topic automatically
-    topics.insert("#Main_Area", Utils::getZboardAddr());
+    topics.insert("#Main_Area", Settings::getZboardAddr());
     zb.topicsList->addItem(topics.firstKey());
     // Then call the API to get topics, and if it returns successfully, then add the rest of the topics
     rpc->getZboardTopics([&](QMap<QString, QString> topicsMap) {
@@ -485,7 +485,7 @@ void MainWindow::postToZBoard() {
     QRegExpValidator v(QRegExp("^[a-zA-Z0-9_]{3,20}$"), zb.postAs);
     zb.postAs->setValidator(&v);
 
-    zb.feeAmount->setText(Settings::getInstance()->getZECUSDDisplayFormat(Utils::getZboardAmount() + Utils::getMinerFee()));
+    zb.feeAmount->setText(Settings::getInstance()->getZECUSDDisplayFormat(Settings::getZboardAmount() + Settings::getMinerFee()));
 
     auto fnBuildNameMemo = [=]() -> QString {
         auto memo = zb.memoTxt->toPlainText().trimmed();
@@ -541,8 +541,8 @@ void MainWindow::postToZBoard() {
             memo = zb.postAs->text().trimmed() + ":: " + memo;
 
         auto toAddr = topics[zb.topicsList->currentText()];
-        tx.toAddrs.push_back(ToFields{ toAddr, Utils::getZboardAmount(), memo, memo.toUtf8().toHex() });
-        tx.fee = Utils::getMinerFee();
+        tx.toAddrs.push_back(ToFields{ toAddr, Settings::getZboardAmount(), memo, memo.toUtf8().toHex() });
+        tx.fee = Settings::getMinerFee();
 
         json params = json::array();
         rpc->fillTxJsonParams(params, tx);

@@ -5,7 +5,7 @@
 #include "ui_memodialog.h"
 #include "settings.h"
 #include "rpc.h"
-#include "utils.h"
+
 
 #include "precompiled.h"
 
@@ -71,19 +71,19 @@ void MainWindow::setupSendTab() {
     QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int pos) {
         if (pos == 1) {
             // Set the fees
-            ui->lblMinerFee->setText(QString::number(Utils::getMinerFee(), 'g', 8) %
-                                    " " % Utils::getTokenName());
-            ui->lblMinerFeeUSD->setText(Settings::getInstance()->getUSDFormat(Utils::getMinerFee()));
+            ui->lblMinerFee->setText(QString::number(Settings::getMinerFee(), 'g', 8) %
+                                    " " % Settings::getTokenName());
+            ui->lblMinerFeeUSD->setText(Settings::getInstance()->getUSDFormat(Settings::getMinerFee()));
 
             // Dev Fee.
-            if (Utils::getDevFee() < 0.0001) {
+            if (Settings::getDevFee() < 0.0001) {
                 ui->lblDevFee->setText("");
                 ui->lblDevFeeUSD->setText("");
                 ui->lblDevFeeTxt->setText("");
             } else {
-                ui->lblDevFee->setText(QString::number(Utils::getDevFee(), 'g', 8) %
-                                    " " % Utils::getTokenName());
-                ui->lblDevFeeUSD->setText(Settings::getInstance()->getUSDFormat(Utils::getDevFee()));
+                ui->lblDevFee->setText(QString::number(Settings::getDevFee(), 'g', 8) %
+                                    " " % Settings::getTokenName());
+                ui->lblDevFeeUSD->setText(Settings::getInstance()->getUSDFormat(Settings::getDevFee()));
             }
 
             // Set focus to the first address box
@@ -143,7 +143,7 @@ void MainWindow::setDefaultPayFrom() {
 
 void MainWindow::inputComboTextChanged(const QString& text) {
     auto bal    = rpc->getAllBalances()->value(text.split("(")[0].trimmed());
-    auto balFmt = QString::number(bal, 'g', 8) + " " % Utils::getTokenName();
+    auto balFmt = QString::number(bal, 'g', 8) + " " % Settings::getTokenName();
 
     ui->sendAddressBalance->setText(balFmt);
     ui->sendAddressBalanceUSD->setText(Settings::getInstance()->getUSDFormat(bal));
@@ -351,7 +351,7 @@ void MainWindow::maxAmountChecked(int checked) {
             auto amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1));
             sumAllAmounts += amt->text().toDouble();
         }
-        sumAllAmounts += Utils::getTotalFee();
+        sumAllAmounts += Settings::getTotalFee();
 
         auto addr = ui->inputsCombo->currentText().split("(")[0];
 
@@ -384,7 +384,7 @@ Tx MainWindow::createTxFromSendPage() {
         tx.toAddrs.push_back( ToFields{addr, amt, memo, memo.toUtf8().toHex()} );
     }
 
-    tx.fee = Utils::getMinerFee();
+    tx.fee = Settings::getMinerFee();
     return tx;
 }
 
@@ -503,14 +503,14 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
             fee->setObjectName(QStringLiteral("devFee"));
             fee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
             confirm.gridLayout->addWidget(fee, i+1, 1, 1, 1);
-            fee         ->setText(Settings::getInstance()->getZECDisplayFormat(Utils::getDevFee()));
+            fee         ->setText(Settings::getInstance()->getZECDisplayFormat(Settings::getDevFee()));
 
             auto devFeeUSD = new QLabel(confirm.sendToAddrs);
             devFeeUSD->setSizePolicy(sizePolicy1);
             devFeeUSD->setObjectName(QStringLiteral("devFeeUSD"));
             devFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
             confirm.gridLayout->addWidget(devFeeUSD, i+1, 2, 1, 1);
-            devFeeUSD   ->setText(Settings::getInstance()->getUSDFormat(Utils::getDevFee()));
+            devFeeUSD   ->setText(Settings::getInstance()->getUSDFormat(Settings::getDevFee()));
         } 
     }
 
@@ -543,7 +543,7 @@ void MainWindow::sendButton() {
         return;
     }
 
-    ToFields devFee{ Utils::getDevAddr(tx), Utils::getDevFee(), "", "" };
+    ToFields devFee{ Settings::getDevAddr(tx), Settings::getDevFee(), "", "" };
     
     // Show a dialog to confirm the Tx
     if (confirmTx(tx, devFee)) {

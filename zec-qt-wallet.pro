@@ -42,7 +42,6 @@ SOURCES += \
     src/mainwindow.cpp \
     src/rpc.cpp \
     src/balancestablemodel.cpp \
-    src/unspentoutput.cpp \
     src/3rdparty/qrcode/BitBuffer.cpp \
     src/3rdparty/qrcode/QrCode.cpp \
     src/3rdparty/qrcode/QrSegment.cpp \
@@ -51,7 +50,6 @@ SOURCES += \
     src/senttxstore.cpp \
     src/txtablemodel.cpp \
 	src/turnstile.cpp \
-    src/utils.cpp \
     src/qrcodelabel.cpp \
     src/connection.cpp \
     src/fillediconlabel.cpp \
@@ -62,7 +60,6 @@ HEADERS += \
     src/precompiled.h \
     src/rpc.h \
     src/balancestablemodel.h \
-    src/unspentoutput.h \
     src/3rdparty/qrcode/BitBuffer.hpp \
     src/3rdparty/qrcode/QrCode.hpp \
     src/3rdparty/qrcode/QrSegment.hpp \
@@ -71,7 +68,6 @@ HEADERS += \
     src/txtablemodel.h \
     src/senttxstore.h \
 	src/turnstile.h \
-    src/utils.h \
     src/qrcodelabel.h \
     src/connection.h \
     src/fillediconlabel.h \

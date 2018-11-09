@@ -1,9 +1,15 @@
 #ifndef BALANCESTABLEMODEL_H
 #define BALANCESTABLEMODEL_H
 
-#include "unspentoutput.h"
-
 #include "precompiled.h"
+
+struct UnspentOutput {
+    QString address;
+    QString txid;
+    QString amount;    
+    int     confirmations;
+    bool    spendable;
+};
 
 class BalancesTableModel : public QAbstractTableModel
 {

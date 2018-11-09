@@ -1,6 +1,6 @@
 #include "txtablemodel.h"
 #include "settings.h"
-#include "utils.h"
+
 #include "rpc.h"
 
 TxTableModel::TxTableModel(QObject *parent)

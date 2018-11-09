@@ -1,6 +1,6 @@
 #include "precompiled.h"
 
-#include "utils.h"
+#include "mainwindow.h"
 #include "settings.h"
 
 Settings* Settings::instance = nullptr;
@@ -110,7 +110,7 @@ QString Settings::getUSDFormat(double bal) {
 }
 
 QString Settings::getZECDisplayFormat(double bal) {
-    return QString::number(bal, 'g', 8) % " " % Utils::getTokenName();
+    return QString::number(bal, 'g', 8) % " " % Settings::getTokenName();
 }
 
 QString Settings::getZECUSDDisplayFormat(double bal) {
@@ -127,4 +127,77 @@ void Settings::saveRestore(QDialog* d) {
     QObject::connect(d, &QDialog::finished, [=](auto) {
         QSettings().setValue(d->objectName() % "geometry", d->saveGeometry());
     });
+}
+
+//=================================
+// Static Stuff
+//=================================
+
+const QString Settings::txidStatusMessage = QString("Tx submitted (right click to copy) txid:");
+
+const QString Settings::getTokenName() {
+    if (Settings::getInstance()->isTestnet()) {
+        return "TAZ";
+    } else {
+        return "ZEC";
+    }
+}
+
+const QString Settings::getDonationAddr(bool sapling) {
+    if (Settings::getInstance()->isTestnet()) 
+        if (sapling)
+            return "ztestsapling1wn6889vznyu42wzmkakl2effhllhpe4azhu696edg2x6me4kfsnmqwpglaxzs7tmqsq7kudemp5";
+        else
+            return "ztn6fYKBii4Fp4vbGhkPgrtLU4XjXp4ZBMZgShtopmDGbn1L2JLTYbBp2b7SSkNr9F3rQeNZ9idmoR7s4JCVUZ7iiM5byhF";
+    else 
+        if (sapling)
+            return "zs1gv64eu0v2wx7raxqxlmj354y9ycznwaau9kduljzczxztvs4qcl00kn2sjxtejvrxnkucw5xx9u";
+        else
+            return "zcEgrceTwvoiFdEvPWcsJHAMrpLsprMF6aRJiQa3fan5ZphyXLPuHghnEPrEPRoEVzUy65GnMVyCTRdkT6BYBepnXh6NBYs";    
+}
+
+const QString Settings::getDevSproutAddr() {
+    return "ztbGDqgkmXQjheivgeirwEvJLD4SUNqsWCGwxwVg4YpGz1ARR8P2rXaptkT14z3NDKamcxNmQuvmvktyokMs7HkutRNSx1D";
+}
+
+// Get the dev fee address based on the transaction
+const QString Settings::getDevAddr(Tx) {
+    return QString();
+}
+
+
+double Settings::getMinerFee() {
+    return 0.0001;
+}
+
+double Settings::getZboardAmount() {
+    return 0.0001;
+}
+
+QString Settings::getZboardAddr() {
+    if (Settings::getInstance()->isTestnet()) {
+        return getDonationAddr(true);
+    }
+    else {
+        return "zs10m00rvkhfm4f7n23e4sxsx275r7ptnggx39ygl0vy46j9mdll5c97gl6dxgpk0njuptg2mn9w5s";
+    }
+}
+double Settings::getDevFee() {
+    if (Settings::getInstance()->isTestnet()) {
+        return 0;
+    } else {
+        return 0;
+    }
+}
+
+double Settings::getTotalFee() { return getMinerFee() + getDevFee(); }
+
+bool Settings::isValidAddress(QString addr) {
+    QRegExp zcexp("^z[a-z0-9]{94}$",  Qt::CaseInsensitive);
+    QRegExp zsexp("^z[a-z0-9]{77}$",  Qt::CaseInsensitive);
+    QRegExp ztsexp("^ztestsapling[a-z0-9]{76}", Qt::CaseInsensitive);
+    QRegExp texp("^t[a-z0-9]{34}$", Qt::CaseInsensitive);
+
+    return  zcexp.exactMatch(addr)  || texp.exactMatch(addr) || 
+            ztsexp.exactMatch(addr) || zsexp.exactMatch(addr);
 }

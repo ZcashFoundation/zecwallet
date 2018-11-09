@@ -3,7 +3,7 @@
 #include "ui_mainwindow.h"
 #include "settings.h"
 #include "mainwindow.h"
-#include "utils.h"
+
 
 AddressBookModel::AddressBookModel(QTableView *parent)
      : QAbstractTableModel(parent) {
@@ -104,7 +104,7 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
     QObject::connect(&d, &QDialog::finished, [=] (auto) { parent->updateLabelsAutoComplete(); });
 
     // If there is a target then make it the addr for the "Add to" button
-    if (target != nullptr && Utils::isValidAddress(target->text())) {
+    if (target != nullptr && Settings::isValidAddress(target->text())) {
         ab.addr->setText(target->text());
         ab.label->setFocus();
     }
@@ -114,7 +114,7 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
         auto addr = ab.addr->text().trimmed();
         if (!addr.isEmpty() && !ab.label->text().isEmpty()) {
             // Test if address is valid.
-            if (!Utils::isValidAddress(addr)) {
+            if (!Settings::isValidAddress(addr)) {
                 QMessageBox::critical(parent, "Address Format Error", addr + " doesn't seem to be a valid Zcash address.", QMessageBox::Ok);
             } else {
                 model.addNewLabel(ab.label->text(), ab.addr->text());
