@@ -8,7 +8,9 @@ using json = nlohmann::json;
 
 RPC::RPC(MainWindow* main) {
     auto cl = new ConnectionLoader(main, this);
-    cl->loadConnection();
+
+    // Execute the load connection async, so we can set up the rest of RPC properly. 
+    QTimer::singleShot(1, [=]() {cl->loadConnection(); });
 
     this->main = main;
     this->ui = main->ui;
@@ -62,11 +64,20 @@ RPC::~RPC() {
     delete conn;
 }
 
+void RPC::setEZcashd(QProcess* p) {
+    ezcashd = p;
+
+    if (ezcashd == nullptr)
+        ui->tabWidget->removeTab(4);
+}
+
 void RPC::setConnection(Connection* c) {
     if (c == nullptr) return;
 
     delete conn;
     this->conn = c;
+
+    ui->statusBar->showMessage("Ready!");
 
     refreshZECPrice();
     refresh();
@@ -209,6 +220,10 @@ void RPC::sendZTransaction(json params, const std::function<void(json)>& cb) {
  * private keys
  */ 
 void RPC::getAllPrivKeys(const std::function<void(QList<QPair<QString, QString>>)> cb) {
+    if (conn == nullptr) {
+        // No connection, just return
+        return;
+    }
 
     // A special function that will call the callback when two lists have been added
     auto holder = new QPair<int, QList<QPair<QString, QString>>>();
@@ -314,8 +329,10 @@ void RPC::fillTxJsonParams(json& params, Tx tx) {
 }
 
 
-void RPC::noConnection() {
-    ui->statusBar->showMessage("No Connection to zcashd");
+void RPC::noConnection() {    
+    QIcon i = QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical);
+    main->statusIcon->setPixmap(i.pixmap(16, 16));
+    main->statusLabel->setText("No Connection");
 }
 
 // Refresh received z txs by calling z_listreceivedbyaddress/gettransaction
@@ -427,7 +444,6 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
     );
 } 
 
-
 /// This will refresh all the balance data from zcashd
 void RPC::refresh(bool force) {
     if  (conn == nullptr) 
@@ -469,6 +485,25 @@ void RPC::getInfoThenRefresh(bool force) {
             refreshTransactions();
         }
 
+        // Get network sol/s
+        if (ezcashd) {
+            int conns = reply["connections"].get<json::number_integer_t>();
+
+            json payload = {
+                {"jsonrpc", "1.0"},
+                {"id", "someid"},
+                {"method", "getnetworksolps"}
+            };
+
+            conn->doRPCIgnoreError(payload, [=](const json& reply) {
+                qint64 solrate = reply.get<json::number_unsigned_t>();
+
+                ui->blockheight->setText(QString::number(curBlock));
+                ui->numconnections->setText(QString::number(conns));
+                ui->solrate->setText(QString::number(solrate) % " Sol/s");
+            });
+        } 
+
         // Call to see if the blockchain is syncing. 
         json payload = {
             {"jsonrpc", "1.0"},
@@ -478,12 +513,24 @@ void RPC::getInfoThenRefresh(bool force) {
 
         conn->doRPCIgnoreError(payload, [=](const json& reply) {
             auto progress    = reply["verificationprogress"].get<double>();
-            bool isSyncing   = progress < 0.999; // 99.9%
+            bool isSyncing   = progress < 0.995; // 99.59%
             int  blockNumber = reply["blocks"].get<json::number_unsigned_t>();
 
             Settings::getInstance()->setSyncing(isSyncing);
             Settings::getInstance()->setBlockNumber(blockNumber);
 
+            // Update zcashd tab if it exists
+            if (ezcashd && isSyncing) {
+                // 895 / ~426530 (0 % )
+                const qint64 genisisTimeMSec = 1477638000000;
+                qint64 estBlocks = (QDateTime::currentMSecsSinceEpoch() - genisisTimeMSec) / 2.5 / 60 / 1000;
+                // Round to nearest 10
+                estBlocks = ((estBlocks + 5) / 10) * 10;
+                ui->blockheight->setText(ui->blockheight->text() % /*" / ~" % QString::number(estBlocks) % */
+                                         " ( " % QString::number(progress * 100, 'f', 0) % "% )");
+            }
+
+            // Update the status bar
             QString statusText = QString() %
                 (isSyncing ? "Syncing" : "Connected") %
                 " (" %
@@ -790,7 +837,7 @@ void RPC::refreshZECPrice() {
             }
 
             for (const json& item : parsed.get<json::array_t>()) {
-                if (item["symbol"].get<json::string_t>().compare("ZEC") == 0) {
+                if (item["symbol"].get<json::string_t>() == "ZEC") {
                     QString price = QString::fromStdString(item["price_usd"].get<json::string_t>());
                     qDebug() << "ZEC Price=" << price;
                     Settings::getInstance()->setZECPrice(price.toDouble());
@@ -807,6 +854,52 @@ void RPC::refreshZECPrice() {
         Settings::getInstance()->setZECPrice(0);
     });
 }
+
+void RPC::shutdownZcashd() {
+    // Shutdown embedded zcashd if it was started
+    if (ezcashd == nullptr || conn == nullptr) {
+        // No zcashd running internally, just return
+        return;
+    }
+
+    json payload = {
+        {"jsonrpc", "1.0"},
+        {"id", "someid"},
+        {"method", "stop"}
+    };
+    
+    conn->doRPCWithDefaultErrorHandling(payload, [=](auto) {});
+    conn->shutdown();
+
+    QDialog d(main);
+    Ui_ConnectionDialog connD;
+    connD.setupUi(&d);
+    connD.topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));
+    connD.status->setText("Please wait for zec-qt-wallet to exit");
+    connD.statusDetail->setText("Waiting for zcashd to exit");
+
+    QTimer waiter(main);
+
+    // We capture by reference all the local variables because of the d.exec() 
+    // below, which blocks this function until we exit. 
+    int waitCount = 0;
+    QObject::connect(&waiter, &QTimer::timeout, [&] () {
+        waitCount++;
+        if ((ezcashd->atEnd() && ezcashd->processId() == 0) ||
+            waitCount > 30) {
+            qDebug() << "Ended";
+            waiter.stop();
+            QTimer::singleShot(1000, [&]() { d.accept(); });
+        } else {
+            qDebug() << "Not ended, continuing to wait...";
+        }
+    });
+    waiter.start(1000);
+
+    // Wait for the zcash process to exit.     
+    d.exec(); 
+}
+
 
 // Fetch the Z-board topics list
 void RPC::getZboardTopics(std::function<void(QMap<QString, QString>)> cb) {

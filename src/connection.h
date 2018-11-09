@@ -41,18 +41,39 @@ private:
 
     Connection* makeConnection(std::shared_ptr<ConnectionConfig> config);
 
-    void refreshZcashdState(Connection* connection);
-    int  getProgressFromStatus(QString status);
+    void doAutoConnect();
+    void doManualConnect();
+
+    void createZcashConf();
+    QString locateZcashConfFile();
+    QString zcashConfWritableLocation();
+    QString zcashParamsDir();
+
+    void downloadParams(std::function<void(void)> cb);
+    void doNextDownload(std::function<void(void)> cb);
+    bool startEmbeddedZcashd();
+
+    void refreshZcashdState(Connection* connection, std::function<void(void)> refused);
 
     void showError(QString explanation);
+    void showInformation(QString info, QString detail = "");
 
     void doRPCSetConnection(Connection* conn);
+
+    QProcess*               ezcashd  = nullptr;
 
     QDialog*                d;
     Ui_ConnectionDialog*    connD;
 
     MainWindow*             main;
     RPC*                    rpc;
+
+    QNetworkReply* currentDownload = nullptr;
+    QFile*         currentOutput   = nullptr;
+    QQueue<QUrl>*  downloadQueue   = nullptr;
+
+    QNetworkAccessManager* client  = nullptr; 
+    QTime downloadTime;
 };
 
 /**
@@ -68,6 +89,8 @@ public:
     QNetworkRequest*                    request;
     std::shared_ptr<ConnectionConfig>   config;
     MainWindow*                         main;
+
+    void shutdown();
 
     void doRPC(const json& payload, const std::function<void(json)>& cb, 
                const std::function<void(QNetworkReply*, const json&)>& ne);
@@ -122,6 +145,9 @@ public:
         });
         waitTimer->start(100);    
     }
+
+private:
+    bool shutdownInProgress = false;    
 };
 
 #endif

@@ -6,5 +6,8 @@
         <file>res/connected.gif</file>
         <file>res/loading.gif</file>
         <file>res/icon.ico</file>
-    </qresource>    
+    </qresource>
+    <qresource prefix="/img">
+        <file>res/zcashdlogo.gif</file>
+    </qresource>
 </RCC>

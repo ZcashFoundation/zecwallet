@@ -15,48 +15,287 @@ ConnectionLoader::ConnectionLoader(MainWindow* main, RPC* rpc) {
     d = new QDialog(main);
     connD = new Ui_ConnectionDialog();
     connD->setupUi(d);
-
-    // Center on screen
-    QRect screenGeometry = QApplication::desktop()->screenGeometry(d);
-    int x = (screenGeometry.width() - d->width()) / 2;
-    int y = (screenGeometry.height() - d->height()) / 2;
-    d->move(x, y);
-    connD->buttonBox->setEnabled(false);    
+    connD->topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));
 }
 
-ConnectionLoader::~ConnectionLoader() {
+ConnectionLoader::~ConnectionLoader() {    
     delete d;
     delete connD;
 }
 
-void ConnectionLoader::loadConnection() {    
+void ConnectionLoader::loadConnection() {
+    QTimer::singleShot(1, [=]() { this->doAutoConnect(); });
+    d->exec();
+}
+
+void ConnectionLoader::doAutoConnect() {
     // Priority 1: Try to connect to detect zcash.conf and connect to it.
     auto config = autoDetectZcashConf();
 
-    // If not autodetected, go and read the UI Settings
-    if (config.get() == nullptr)  {
-        config = loadFromSettings();
+    if (config.get() != nullptr) {
+        auto connection = makeConnection(config);
 
-        if (config.get() == nullptr) {
-            // Nothing configured, show an error
-            QString explanation = QString()
-                    % "A zcash.conf was not found on this machine.\n\n"
-                    % "If you are connecting to a remote/non-standard node " 
-                    % "please set the host/port and user/password in the Edit->Settings menu.";
+        refreshZcashdState(connection, [=] () {
+            // Refused connection. So try and start embedded zcashd
+            if (Settings::getInstance()->useEmbedded()) {
+                this->showInformation("Starting Embedded zcashd");
+                if (this->startEmbeddedZcashd()) {
+                    // Embedded zcashd started up. Wait a second and then refresh the connection
+                    QTimer::singleShot(1000, [=]() { doAutoConnect(); } );
+                } else {
+                    // Errored out, show error and exit
+                    QString explanation = QString() % "Couldn't start the embedded zcashd.\n\n" %
+                                        "Maybe the zcash-params are corrupt? Please delete your zcash-params directory and restart.\n\n" %
+                                        (ezcashd ? "The process returned:\n\n" % ezcashd->errorString() : QString(""));
+                    this->showError(explanation);
+                }
+            } else {
+                // zcash.conf exists, there's no connection, and the user asked us not to start zcashd. Error!
+                QString explanation = QString() % "Couldn't connect to zcashd configured in zcash.conf.\n\n" %
+                                      "Not starting embedded zcashd because --no-embedded was passed";
+                this->showError(explanation);
+            }
+        });
+    } else {
+        if (Settings::getInstance()->useEmbedded()) {
+            // zcash.conf was not found, so create one
+            createZcashConf();
+        } else {
+            // Fall back to manual connect
+            doManualConnect();
+        }
+    } 
+}
 
-            showError(explanation);
-            doRPCSetConnection(nullptr);
+QString randomPassword() {
+    static const char alphanum[] =
+        "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
 
+    const int passwordLength = 10;
+    char* s = new char[passwordLength + 1];
+
+    for (int i = 0; i < passwordLength; ++i) {
+        s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+    }
+
+    s[passwordLength] = 0;
+    return QString::fromStdString(s);
+}
+
+/**
+ * This will create a new zcash.conf, download zcash parameters.
+ */ 
+void ConnectionLoader::createZcashConf() {
+    // Fetch params. After params are fetched, create the zcash.conf file and 
+    // try loading the connection again
+    downloadParams([=] () { 
+        auto confLocation = zcashConfWritableLocation();
+        qDebug() << "Creating file " << confLocation;
+
+        QFileInfo fi(confLocation);
+        QDir().mkdir(fi.dir().absolutePath());
+
+        QFile file(confLocation);
+        if (!file.open(QIODevice::ReadWrite | QIODevice::Truncate)) {
+            qDebug() << "Could not create zcash.conf, returning";
             return;
         }
+            
+        QTextStream out(&file); 
+        
+        out << "server=1\n";
+        out << "rpcuser=zec-qt-wallet\n";
+        out << "rpcpassword=" % randomPassword() << "\n";
+        file.close();
+
+        this->doAutoConnect();
+    });    
+}
+
+
+void ConnectionLoader::downloadParams(std::function<void(void)> cb) {    
+    // Add all the files to the download queue
+    downloadQueue = new QQueue<QUrl>();
+    client = new QNetworkAccessManager(main);   
+    
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sapling-output.params"));
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sapling-spend.params"));    
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-proving.key"));
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-verifying.key"));
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-groth16.params"));
+
+    doNextDownload(cb);    
+}
+
+void ConnectionLoader::doNextDownload(std::function<void(void)> cb) {
+    auto fnSaveFileName = [&] (QUrl url) {
+        QString path = url.path();
+        QString basename = QFileInfo(path).fileName();
+
+        return basename;
+    };
+
+    if (downloadQueue->isEmpty()) {
+        delete downloadQueue;
+        client->deleteLater();
+
+        this->showInformation("All Downloads Finished Successfully!");
+        cb();
+        return;
+    }
+
+    QUrl url = downloadQueue->dequeue();
+    int filesRemaining = downloadQueue->size();
+
+    QString filename = fnSaveFileName(url);
+    QString paramsDir = zcashParamsDir();
+
+    if (QFile(QDir(paramsDir).filePath(filename)).exists()) {
+        qDebug() << filename << " already exists, skipping ";
+        doNextDownload(cb);
+
+        return;
+    }
+
+    // The downloaded file is written to a new name, and then renamed when the operation completes.
+    currentOutput = new QFile(QDir(paramsDir).filePath(filename + ".part"));   
+
+    if (!currentOutput->open(QIODevice::WriteOnly)) {
+        this->showError("Couldn't download params. Please check the help site for more info.");
+    }
+    qDebug() << "Downloading " << url << " to " << filename;
+    
+    QNetworkRequest request(url);
+    request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+    currentDownload = client->get(request);
+    downloadTime.start();
+    
+    // Download Progress
+    QObject::connect(currentDownload, &QNetworkReply::downloadProgress, [=] (auto done, auto total) {
+        // calculate the download speed
+        double speed = done * 1000.0 / downloadTime.elapsed();
+        QString unit;
+        if (speed < 1024) {
+            unit = "bytes/sec";
+        } else if (speed < 1024*1024) {
+            speed /= 1024;
+            unit = "kB/s";
+        } else {
+            speed /= 1024*1024;
+            unit = "MB/s";
+        }
+
+        this->showInformation(
+            "Downloading " % filename % (filesRemaining > 1 ? " ( +" % QString::number(filesRemaining)  % " more remaining )" : QString("")),
+            QString::number(done/1024/1024, 'f', 0) % "MB of " % QString::number(total/1024/1024, 'f', 0) + "MB at " % QString::number(speed, 'f', 2) % unit);
+    });
+    
+    // Download Finished
+    QObject::connect(currentDownload, &QNetworkReply::finished, [=] () {
+        // Rename file
+        currentOutput->rename(QDir(paramsDir).filePath(filename));
+
+        currentOutput->close();
+        currentDownload->deleteLater();
+        currentOutput->deleteLater();
+
+        if (currentDownload->error()) {
+            this->showError("Downloading " + filename + " failed/ Please check the help site for more info");                
+        } else {
+            doNextDownload(cb);
+        }
+    });
+
+    // Download new data available. 
+    QObject::connect(currentDownload, &QNetworkReply::readyRead, [=] () {
+        currentOutput->write(currentDownload->readAll());
+    });    
+}
+
+bool ConnectionLoader::startEmbeddedZcashd() {
+    if (!Settings::getInstance()->useEmbedded()) 
+        return false;
+
+    if (ezcashd != nullptr) {
+        if (ezcashd->state() == QProcess::NotRunning) {
+            qDebug() << "Process started and then crashed";
+            return false;
+        } else {
+            return true;
+        }        
+    }
+
+    // Finally, start zcashd    
+    qDebug() << "Starting zcashd";
+    QFileInfo fi(Settings::getInstance()->getExecName());
+#ifdef Q_OS_LINUX
+    auto zcashdProgram = fi.dir().absoluteFilePath("zcashd");
+#elif defined(Q_OS_DARWIN)
+    auto zcashdProgram = fi.dir().absoluteFilePath("zcashd");
+#else
+    auto zcashdProgram = fi.dir().absoluteFilePath("zcashd.exe");
+#endif
+    
+    if (!QFile(zcashdProgram).exists()) {
+        qDebug() << "Can't find zcashd at " << zcashdProgram;
+        return false;
+    }
+
+    ezcashd = new QProcess(main);    
+    QObject::connect(ezcashd, &QProcess::started, [=] () {
+        qDebug() << "zcashd started";
+    });
+
+    QObject::connect(ezcashd, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+                        [=](int exitCode, QProcess::ExitStatus exitStatus) {
+        qDebug() << "zcashd finished with code " << exitCode << "," << exitStatus;
+    });
+
+    QObject::connect(ezcashd, &QProcess::errorOccurred, [&] (auto error) mutable {
+        qDebug() << "Couldn't start zcashd: " << error;
+    });
+
+    ezcashd->start(zcashdProgram);
+
+    return true;
+}
+
+void ConnectionLoader::doManualConnect() {
+    auto config = loadFromSettings();
+
+    if (!config) {
+        // Nothing configured, show an error
+        QString explanation = QString()
+                % "A manual connection was requested, but the settings are not configured.\n\n" 
+                % "Please set the host/port and user/password in the Edit->Settings menu.";
+
+        showError(explanation);
+        doRPCSetConnection(nullptr);
+
+        return;
     }
 
     auto connection = makeConnection(config);
-    refreshZcashdState(connection);
+    refreshZcashdState(connection, [=] () {
+        QString explanation = QString()
+                % "Could not connect to zcashd configured in settings.\n\n" 
+                % "Please set the host/port and user/password in the Edit->Settings menu.";
+
+        showError(explanation);
+        doRPCSetConnection(nullptr);
+
+        return;
+    });
 }
 
 void ConnectionLoader::doRPCSetConnection(Connection* conn) {
+    rpc->setEZcashd(ezcashd);
     rpc->setConnection(conn);
+    
+    d->accept();
+
     delete this;
 }
 
@@ -79,7 +318,7 @@ Connection* ConnectionLoader::makeConnection(std::shared_ptr<ConnectionConfig> c
     return new Connection(main, client, request, config);
 }
 
-void ConnectionLoader::refreshZcashdState(Connection* connection) {
+void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<void(void)> refused) {
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -91,53 +330,49 @@ void ConnectionLoader::refreshZcashdState(Connection* connection) {
             d->hide();
             this->doRPCSetConnection(connection);
         },
-        [=] (auto reply, auto res) {
-            auto err = reply->error();
+        [=] (auto reply, auto res) {            
             // Failed, see what it is. 
+            auto err = reply->error();
             //qDebug() << err << ":" << QString::fromStdString(res.dump());
 
-            if (err == QNetworkReply::NetworkError::ConnectionRefusedError) {    
-                auto isZcashConfFound = connection->config.get()->usingZcashConf;
-                QString explanation = QString()
-                        % (isZcashConfFound ? "A zcash.conf file was found, but a" : "A") 
-                        % " connection to zcashd could not be established.\n\n"
-                        % "If you are connecting to a remote/non-standard node " 
-                        % "please set the host/port and user/password in the Edit->Settings menu";
-
-                this->showError(explanation);
+            if (err == QNetworkReply::NetworkError::ConnectionRefusedError) {   
+                refused();
             } else if (err == QNetworkReply::NetworkError::AuthenticationRequiredError) {
                 QString explanation = QString() 
                         % "Authentication failed. The username / password you specified was "
                         % "not accepted by zcashd. Try changing it in the Edit->Settings menu";
 
                 this->showError(explanation);
-            } else if (err == QNetworkReply::NetworkError::InternalServerError && !res.is_discarded()) {
-                d->show();
-
+            } else if (err == QNetworkReply::NetworkError::InternalServerError && 
+                    !res.is_discarded()) {
                 // The server is loading, so just poll until it succeeds
-                QString status = QString::fromStdString(res["error"]["message"]);
-
-                QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
-                connD->icon->setPixmap(icon.pixmap(128, 128));
-                connD->status->setText("Your zcashd is starting up. Please wait.\n\n" % status);
+                QString status    = QString::fromStdString(res["error"]["message"]);
+                this->showInformation("Your zcashd is starting up. Please wait.", status);
 
                 // Refresh after one second
-                QTimer::singleShot(1000, [=]() { this->refreshZcashdState(connection); });
+                QTimer::singleShot(1000, [=]() { this->refreshZcashdState(connection, refused); });
             }
         }
     );
 }
 
-void ConnectionLoader::showError(QString explanation) {
-    QMessageBox::critical(main, "Connection Error", explanation, QMessageBox::Ok);    
+void ConnectionLoader::showInformation(QString info, QString detail) {
+    connD->status->setText(info);
+    connD->statusDetail->setText(detail);
 }
 
-
 /**
- * Try to automatically detect a zcash.conf file in the correct location and load parameters
- */ 
-std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {    
+ * Show error will close the loading dialog and show an error. 
+*/
+void ConnectionLoader::showError(QString explanation) {    
+    rpc->setEZcashd(nullptr);
+    rpc->noConnection();
 
+    QMessageBox::critical(main, "Connection Error", explanation, QMessageBox::Ok);
+    d->close();
+}
+
+QString ConnectionLoader::locateZcashConfFile() {
 #ifdef Q_OS_LINUX
     auto confLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, ".zcash/zcash.conf");
 #elif defined(Q_OS_DARWIN)
@@ -145,8 +380,42 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {
 #else
     auto confLocation = QStandardPaths::locate(QStandardPaths::AppDataLocation, "../../Zcash/zcash.conf");
 #endif
+    return QDir::cleanPath(confLocation);
+}
 
-    confLocation = QDir::cleanPath(confLocation);
+QString ConnectionLoader::zcashConfWritableLocation() {
+#ifdef Q_OS_LINUX
+    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath(".zcash/zcash.conf");
+#elif defined(Q_OS_DARWIN)
+    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath("/Library/Application Support/Zcash/zcash.conf");
+#else
+    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("../../Zcash/zcash.conf");
+#endif
+
+    return confLocation;
+}
+
+QString ConnectionLoader::zcashParamsDir() {
+    #ifdef Q_OS_LINUX
+    auto paramsLocation = QDir(QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath(".zcash-params"));
+#elif defined(Q_OS_DARWIN)
+    //auto paramsLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath("/Library/Application Support/Zcash/zcash.conf");
+#else
+    auto paramsLocation = QDir(QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("../../ZcashParams"));
+#endif
+
+    if (!paramsLocation.exists()) {
+        QDir().mkpath(paramsLocation.absolutePath());
+    }
+
+    return paramsLocation.absolutePath();
+}
+
+/**
+ * Try to automatically detect a zcash.conf file in the correct location and load parameters
+ */ 
+std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {    
+    auto confLocation = locateZcashConfFile();
 
     if (confLocation.isNull()) {
         // No zcash file, just return with nothing
@@ -240,10 +509,19 @@ Connection::~Connection() {
 
 void Connection::doRPC(const json& payload, const std::function<void(json)>& cb, 
                        const std::function<void(QNetworkReply*, const json&)>& ne) {
+    if (shutdownInProgress) {
+        qDebug() << "Ignoring RPC because shutdown in progress";
+        return;
+    }
+
     QNetworkReply *reply = restclient->post(*request, QByteArray::fromStdString(payload.dump()));
 
     QObject::connect(reply, &QNetworkReply::finished, [=] {
         reply->deleteLater();
+        if (shutdownInProgress) {
+            qDebug() << "Ignoring callback because shutdown in progress";
+            return;
+        }
         
         if (reply->error() != QNetworkReply::NoError) {
             auto parsed = json::parse(reply->readAll(), nullptr, false);
@@ -282,4 +560,11 @@ void Connection::showTxError(const QString& error) {
 
     QMessageBox::critical(main, "Transaction Error", "There was an error sending the transaction. The error was: \n\n"
         + error, QMessageBox::StandardButton::Ok);
+}
+
+/**
+ * Prevent all future calls from going through
+ */ 
+void Connection::shutdown() {
+    shutdownInProgress = true;
 }

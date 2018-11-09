@@ -5,9 +5,6 @@
 
 Settings* Settings::instance = nullptr;
 
-Settings::~Settings() {
-}
-
 bool Settings::getSaveZtxs() {
     // Load from the QT Settings. 
     return QSettings().value("options/savesenttx", true).toBool();
@@ -123,7 +120,6 @@ QString Settings::getZECUSDDisplayFormat(double bal) {
     else
         return getZECDisplayFormat(bal);
 }
-
 
 void Settings::saveRestore(QDialog* d) {
     d->restoreGeometry(QSettings().value(d->objectName() % "geometry").toByteArray());

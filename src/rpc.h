@@ -32,6 +32,8 @@ public:
     ~RPC();
 
     void setConnection(Connection* c);
+    void setEZcashd(QProcess* p);
+    const QProcess* getEZcashD() { return ezcashd; }
 
     void refresh(bool force = false);
 
@@ -58,14 +60,15 @@ public:
     void importZPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb);
     void importTPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb);
 
+    void shutdownZcashd();
+    void noConnection();
+
     void getAllPrivKeys(const std::function<void(QList<QPair<QString, QString>>)>);
 
     Turnstile*  getTurnstile()  { return turnstile; }
     Connection* getConnection() { return conn; }
 
 private:
-    void noConnection();
-
     void refreshBalances();
 
     void refreshTransactions();    
@@ -88,6 +91,7 @@ private:
     void handleTxError          (const QString& error);
 
     Connection*                 conn                        = nullptr;
+    QProcess*                   ezcashd                     = nullptr;
 
     QList<UnspentOutput>*       utxos                       = nullptr;
     QMap<QString, double>*      allBalances                 = nullptr;
@@ -108,6 +112,7 @@ private:
 
     // Current balance in the UI. If this number updates, then refresh the UI
     QString                     currentBalance;
+
     // First time warning flag for no connection
     bool                        firstTime = true;
 };

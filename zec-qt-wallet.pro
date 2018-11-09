@@ -54,6 +54,7 @@ SOURCES += \
     src/utils.cpp \
     src/qrcodelabel.cpp \
     src/connection.cpp \
+    src/fillediconlabel.cpp \
     src/addressbook.cpp
 
 HEADERS += \
@@ -73,6 +74,7 @@ HEADERS += \
     src/utils.h \
     src/qrcodelabel.h \
     src/connection.h \
+    src/fillediconlabel.h \
     src/addressbook.h
 
 FORMS += \

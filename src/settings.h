@@ -31,6 +31,12 @@ public:
     bool isSyncing();
     void setSyncing(bool syncing);
 
+    QString getExecName() { return _executable; }
+    void    setExecName(QString name) { _executable = name; }
+
+    void setUseEmbedded(bool r) { _useEmbedded = r; }
+    bool useEmbedded() { return _useEmbedded; }
+
     int  getBlockNumber();
     void setBlockNumber(int number);
 
@@ -57,9 +63,11 @@ private:
     static Settings* instance;
 
     QString _confLocation;
-    bool    _isTestnet      = false;
-    bool    _isSyncing      = false;
-    int     _blockNumber    = 0;
+    QString _executable;
+    bool    _isTestnet        = false;
+    bool    _isSyncing        = false;
+    int     _blockNumber      = 0;
+    bool    _useEmbedded      = false;
 
     double zecPrice = 0.0;
 };

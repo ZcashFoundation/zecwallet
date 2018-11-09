@@ -31,7 +31,7 @@ QList<TransactionItem> SentTxStore::readSentTxFile() {
     QJsonDocument jsonDoc;
     
     data.open(QFile::ReadOnly);    
-    jsonDoc = QJsonDocument().fromJson(data.readAll());
+    jsonDoc = QJsonDocument::fromJson(data.readAll());
     data.close();
 
     QList<TransactionItem> items;
@@ -87,7 +87,7 @@ void SentTxStore::addToSentTx(Tx tx, QString txid) {
     QJsonObject txItem;
     txItem["type"]      = "sent";
     txItem["from"]      = tx.fromAddr;
-    txItem["datetime"]  = QDateTime().currentMSecsSinceEpoch() / (qint64)1000;
+    txItem["datetime"]  = QDateTime::currentMSecsSinceEpoch() / (qint64)1000;
     txItem["address"]   = QString();    // The sent address is blank, to be consistent with t-Addr sent behaviour
     txItem["txid"]      = txid;
     txItem["amount"]    = -totalAmount;
