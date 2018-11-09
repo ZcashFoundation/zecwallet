@@ -291,11 +291,9 @@ void ConnectionLoader::doManualConnect() {
 }
 
 void ConnectionLoader::doRPCSetConnection(Connection* conn) {
-    if (ezcashd) {
-        rpc->setEZcashd(ezcashd);
-    }
-
+    rpc->setEZcashd(ezcashd);
     rpc->setConnection(conn);
+    
     d->accept();
 
     delete this;
