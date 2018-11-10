@@ -333,6 +333,29 @@ void RPC::noConnection() {
     QIcon i = QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical);
     main->statusIcon->setPixmap(i.pixmap(16, 16));
     main->statusLabel->setText("No Connection");
+
+    // Clear balances table.
+    QMap<QString, double> emptyBalances;
+    QList<UnspentOutput>  emptyOutputs;
+    balancesTableModel->setNewData(&emptyBalances, &emptyOutputs);
+
+    // Clear Transactions table.
+    QList<TransactionItem> emptyTxs;
+    transactionsTableModel->addTData(emptyTxs);
+    transactionsTableModel->addZRecvData(emptyTxs);
+    transactionsTableModel->addZSentData(emptyTxs);
+
+    // Clear balances
+    ui->balSheilded->setText("");
+    ui->balTransparent->setText("");
+    ui->balTotal->setText("");
+
+    ui->balSheilded->setToolTip("");
+    ui->balTransparent->setToolTip("");
+    ui->balTotal->setToolTip("");
+
+    // Clear send tab from address
+    ui->inputsCombo->clear();
 }
 
 // Refresh received z txs by calling z_listreceivedbyaddress/gettransaction
@@ -540,7 +563,7 @@ void RPC::getInfoThenRefresh(bool force) {
                 ")";
             main->statusLabel->setText(statusText);   
 
-            auto zecPrice = Settings::getInstance()->getUSDFormat(1);
+            auto zecPrice = Settings::getUSDFormat(1);
             QString tooltip = "Connected to zcashd";;
             if (!zecPrice.isEmpty()) {
                 tooltip = "1 ZEC = " % zecPrice % "\n" % tooltip;
@@ -592,7 +615,7 @@ void RPC::updateUI(bool anyUnconfirmed) {
     ui->inputsCombo->clear();
     auto i = allBalances->constBegin();
     while (i != allBalances->constEnd()) {
-        QString item = i.key() % "(" % QString::number(i.value(), 'g', 8) % " " % Settings::getTokenName() % ")";
+        QString item = i.key() % "(" % Settings::getZECDisplayFormat(i.value()) % ")";
         ui->inputsCombo->addItem(item);
         if (item.startsWith(lastFromAddr)) ui->inputsCombo->setCurrentText(item);
 
@@ -630,13 +653,13 @@ void RPC::refreshBalances() {
         auto balZ = QString::fromStdString(reply["private"]).toDouble();
         auto tot  = QString::fromStdString(reply["total"]).toDouble();
 
-        ui->balSheilded   ->setText(Settings::getInstance()->getZECDisplayFormat(balZ));
-        ui->balTransparent->setText(Settings::getInstance()->getZECDisplayFormat(balT));
-        ui->balTotal      ->setText(Settings::getInstance()->getZECDisplayFormat(tot));
+        ui->balSheilded   ->setText(Settings::getZECDisplayFormat(balZ));
+        ui->balTransparent->setText(Settings::getZECDisplayFormat(balT));
+        ui->balTotal      ->setText(Settings::getZECDisplayFormat(tot));
 
-        ui->balSheilded   ->setToolTip(Settings::getInstance()->getUSDFormat(balZ));
-        ui->balTransparent->setToolTip(Settings::getInstance()->getUSDFormat(balT));
-        ui->balTotal      ->setToolTip(Settings::getInstance()->getUSDFormat(tot));
+        ui->balSheilded   ->setToolTip(Settings::getUSDFormat(balZ));
+        ui->balTransparent->setToolTip(Settings::getUSDFormat(balT));
+        ui->balTotal      ->setToolTip(Settings::getUSDFormat(tot));
     });
 
     // 2. Get the UTXOs

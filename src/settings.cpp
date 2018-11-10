@@ -103,8 +103,8 @@ double Settings::getZECPrice() {
 }
 
 QString Settings::getUSDFormat(double bal) {
-    if (!isTestnet() && getZECPrice() > 0) 
-        return "$" + QLocale(QLocale::English).toString(bal * getZECPrice(), 'f', 2); 
+    if (!Settings::getInstance()->isTestnet() && Settings::getInstance()->getZECPrice() > 0) 
+        return "$" + QLocale(QLocale::English).toString(bal * Settings::getInstance()->getZECPrice(), 'f', 2);
     else 
         return QString();
 }

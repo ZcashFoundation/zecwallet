@@ -85,7 +85,7 @@ QVariant BalancesTableModel::data(const QModelIndex &index, int role) const
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
         case 0: return std::get<0>(modeldata->at(index.row()));
-        case 1: return Settings::getInstance()->getZECDisplayFormat(std::get<1>(modeldata->at(index.row())).toDouble());
+        case 1: return Settings::getZECDisplayFormat(std::get<1>(modeldata->at(index.row())).toDouble());
         }
     }
 
@@ -94,7 +94,7 @@ QVariant BalancesTableModel::data(const QModelIndex &index, int role) const
         case 0: return std::get<0>(modeldata->at(index.row()));
         case 1: {
                 auto bal = std::get<1>(modeldata->at(index.row())).toDouble();
-                return Settings::getInstance()->getUSDFormat(bal);
+                return Settings::getUSDFormat(bal);
             }
         }
     }

@@ -53,13 +53,13 @@ public:
 
     void    setZECPrice(double p) { zecPrice = p; }
     double  getZECPrice();
-        
-    QString getUSDFormat          (double bal);
-    QString getZECDisplayFormat   (double bal);
-    QString getZECUSDDisplayFormat(double bal);
-
+       
     // Static stuff
     static const QString txidStatusMessage;
+
+    static QString getUSDFormat(double bal);
+    static QString getZECDisplayFormat(double bal);
+    static QString getZECUSDDisplayFormat(double bal);
 
     static const QString getTokenName();
     static const QString getDevSproutAddr();

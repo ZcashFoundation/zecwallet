@@ -73,7 +73,7 @@ void MainWindow::setupSendTab() {
             // Set the fees
             ui->lblMinerFee->setText(QString::number(Settings::getMinerFee(), 'g', 8) %
                                     " " % Settings::getTokenName());
-            ui->lblMinerFeeUSD->setText(Settings::getInstance()->getUSDFormat(Settings::getMinerFee()));
+            ui->lblMinerFeeUSD->setText(Settings::getUSDFormat(Settings::getMinerFee()));
 
             // Dev Fee.
             if (Settings::getDevFee() < 0.0001) {
@@ -83,7 +83,7 @@ void MainWindow::setupSendTab() {
             } else {
                 ui->lblDevFee->setText(QString::number(Settings::getDevFee(), 'g', 8) %
                                     " " % Settings::getTokenName());
-                ui->lblDevFeeUSD->setText(Settings::getInstance()->getUSDFormat(Settings::getDevFee()));
+                ui->lblDevFeeUSD->setText(Settings::getUSDFormat(Settings::getDevFee()));
             }
 
             // Set focus to the first address box
@@ -146,7 +146,7 @@ void MainWindow::inputComboTextChanged(const QString& text) {
     auto balFmt = QString::number(bal, 'g', 8) + " " % Settings::getTokenName();
 
     ui->sendAddressBalance->setText(balFmt);
-    ui->sendAddressBalanceUSD->setText(Settings::getInstance()->getUSDFormat(bal));
+    ui->sendAddressBalanceUSD->setText(Settings::getUSDFormat(bal));
 }
 
     
@@ -250,7 +250,7 @@ void MainWindow::addressChanged(int itemNumber, const QString& text) {
 
 void MainWindow::amountChanged(int item, const QString& text) {
     auto usd = ui->sendToWidgets->findChild<QLabel*>(QString("AmtUSD") % QString::number(item));
-    usd->setText(Settings::getInstance()->getUSDFormat(text.toDouble()));
+    usd->setText(Settings::getUSDFormat(text.toDouble()));
 }
 
 void MainWindow::setMemoEnabled(int number, bool enabled) {
@@ -443,14 +443,14 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
             // Amount (ZEC)
             auto Amt = new QLabel(confirm.sendToAddrs);
             Amt->setObjectName(QString("Amt") % QString::number(i + 1));
-            Amt->setText(Settings::getInstance()->getZECDisplayFormat(toAddr.amount));
+            Amt->setText(Settings::getZECDisplayFormat(toAddr.amount));
             Amt->setAlignment(Qt::AlignRight | Qt::AlignTrailing | Qt::AlignVCenter);
             confirm.gridLayout->addWidget(Amt, i*2, 1, 1, 1);
 
             // Amount (USD)
             auto AmtUSD = new QLabel(confirm.sendToAddrs);
             AmtUSD->setObjectName(QString("AmtUSD") % QString::number(i + 1));
-            AmtUSD->setText(Settings::getInstance()->getUSDFormat(toAddr.amount));
+            AmtUSD->setText(Settings::getUSDFormat(toAddr.amount));
             AmtUSD->setAlignment(Qt::AlignRight | Qt::AlignTrailing | Qt::AlignVCenter);
             confirm.gridLayout->addWidget(AmtUSD, i*2, 2, 1, 1);            
 
@@ -484,7 +484,7 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
         minerFee->setObjectName(QStringLiteral("minerFee"));
         minerFee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         confirm.gridLayout->addWidget(minerFee, i, 1, 1, 1);
-        minerFee->setText(Settings::getInstance()->getZECDisplayFormat(tx.fee));
+        minerFee->setText(Settings::getZECDisplayFormat(tx.fee));
 
         auto minerFeeUSD = new QLabel(confirm.sendToAddrs);
         QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Preferred);
@@ -492,7 +492,7 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
         minerFeeUSD->setObjectName(QStringLiteral("minerFeeUSD"));
         minerFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         confirm.gridLayout->addWidget(minerFeeUSD, i, 2, 1, 1);
-        minerFeeUSD->setText(Settings::getInstance()->getUSDFormat(tx.fee));
+        minerFeeUSD->setText(Settings::getUSDFormat(tx.fee));
 
         if (!devFee.addr.isEmpty()) {
             auto labelDevFee = new QLabel(confirm.sendToAddrs);
@@ -504,14 +504,14 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
             fee->setObjectName(QStringLiteral("devFee"));
             fee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
             confirm.gridLayout->addWidget(fee, i+1, 1, 1, 1);
-            fee         ->setText(Settings::getInstance()->getZECDisplayFormat(Settings::getDevFee()));
+            fee         ->setText(Settings::getZECDisplayFormat(Settings::getDevFee()));
 
             auto devFeeUSD = new QLabel(confirm.sendToAddrs);
             devFeeUSD->setSizePolicy(sizePolicy1);
             devFeeUSD->setObjectName(QStringLiteral("devFeeUSD"));
             devFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
             confirm.gridLayout->addWidget(devFeeUSD, i+1, 2, 1, 1);
-            devFeeUSD   ->setText(Settings::getInstance()->getUSDFormat(Settings::getDevFee()));
+            devFeeUSD   ->setText(Settings::getUSDFormat(Settings::getDevFee()));
         } 
     }
 
