@@ -257,7 +257,13 @@ bool ConnectionLoader::startEmbeddedZcashd() {
         //qDebug() << "Couldn't start zcashd: " << error;
     });
 
+#ifdef Q_OS_LINUX
     ezcashd->start(zcashdProgram);
+#else
+    ezcashd->setWorkingDirectory(fi.dir().absolutePath());
+    ezcashd->start("zcashd.exe");
+#endif // Q_OS_LINUX
+
 
     return true;
 }
