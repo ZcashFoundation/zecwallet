@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
         QDialog aboutDialog(this);
         Ui_about about;
         about.setupUi(&aboutDialog);
+        Settings::saveRestore(&aboutDialog);
 
         QString version    = QString("Version ") % QString(APP_VERSION) % " (" % QString(__DATE__) % ")";
         about.versionLabel->setText(version);

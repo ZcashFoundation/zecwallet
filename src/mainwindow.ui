@@ -22,7 +22,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>4</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -316,8 +316,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>922</width>
-                <height>376</height>
+                <width>928</width>
+                <height>382</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -461,7 +461,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string>Add Address</string>
+                    <string>Add Recipient</string>
                    </property>
                   </widget>
                  </item>
@@ -864,7 +864,7 @@
      <x>0</x>
      <y>0</y>
      <width>968</width>
-     <height>21</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
