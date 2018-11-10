@@ -71,7 +71,7 @@ public:
     static QString getZboardAddr();
     static double  getDevFee();
     static double  getTotalFee();
-
+    
     static bool    isValidAddress(QString addr);
 
     static const int     updateSpeed         = 20 * 1000;        // 20 sec
@@ -81,7 +81,7 @@ public:
 private:
     // This class can only be accessed through Settings::getInstance()
     Settings() = default;
-    ~Settings();
+    ~Settings() = default;
 
     static Settings* instance;
 

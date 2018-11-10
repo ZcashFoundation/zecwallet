@@ -110,7 +110,13 @@ QString Settings::getUSDFormat(double bal) {
 }
 
 QString Settings::getZECDisplayFormat(double bal) {
-    return QString::number(bal, 'g', 8) % " " % Settings::getTokenName();
+    // This is idiotic. Why doesn't QString have a way to do this?
+    QString f = QString::number(bal, 'f', 8);
+    while (f.contains(".") && (f.right(1) == "0" || f.right(1) == ".")) {
+        f = f.left(f.length() - 1);
+    }
+
+    return f % " " % Settings::getTokenName();
 }
 
 QString Settings::getZECUSDDisplayFormat(double bal) {

@@ -567,24 +567,13 @@ void MainWindow::sendButton() {
 }
 
 QString MainWindow::doSendTxValidations(Tx tx) {
-    // 1. Addresses have valid format. 
-    QRegExp zcexp("^z[a-z0-9]{94}$",  Qt::CaseInsensitive);
-    QRegExp zsexp("^z[a-z0-9]{77}$",  Qt::CaseInsensitive);
-    QRegExp ztsexp("^ztestsapling[a-z0-9]{76}", Qt::CaseInsensitive);
-    QRegExp texp("^t[a-z0-9]{34}$", Qt::CaseInsensitive);
-
-    auto matchesAnyAddr = [&] (QString addr) {
-        return  zcexp.exactMatch(addr) ||
-                texp.exactMatch(addr) || 
-                ztsexp.exactMatch(addr) || 
-                zsexp.exactMatch(addr);
-    };
-
-    if (!matchesAnyAddr(tx.fromAddr)) return QString("From Address is Invalid");    
+    if (!Settings::isValidAddress(tx.fromAddr)) return QString("From Address is Invalid");    
 
     for (auto toAddr : tx.toAddrs) {
-        if (!matchesAnyAddr(toAddr.addr))
-            return QString("Recipient Address ") % toAddr.addr.left(100) % " is Invalid";
+        if (!Settings::isValidAddress(toAddr.addr)) {
+            QString addr = (toAddr.addr.length() > 100 ? toAddr.addr.left(100) + "..." : toAddr.addr);
+            return QString("Recipient Address ") % addr % " is Invalid";
+        }
     }
 
     return QString();
