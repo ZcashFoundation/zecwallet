@@ -561,6 +561,11 @@ void MainWindow::postToZBoard() {
 }
 
 void MainWindow::doImport(QList<QString>* keys) {
+    if (rpc->getConnection() == nullptr) {
+        // No connection, just return
+        return;
+    }
+
     if (keys->isEmpty()) {
         delete keys;
 
