@@ -671,6 +671,28 @@ void MainWindow::exportAllKeys() {
 void MainWindow::setupBalancesTab() {
     ui->unconfirmedWarning->setVisible(false);
 
+    // Double click on balances table
+    auto fnDoSendFrom = [=](const QString& addr) {
+        // Find the inputs combo
+        for (int i = 0; i < ui->inputsCombo->count(); i++) {
+            if (ui->inputsCombo->itemText(i).startsWith(addr)) {
+                ui->inputsCombo->setCurrentIndex(i);
+                break;
+            }
+        }
+
+        // And switch to the send tab.
+        ui->tabWidget->setCurrentIndex(1);
+    };
+
+    // Double click opens up memo if one exists
+    QObject::connect(ui->balancesTable, &QTableView::doubleClicked, [=](auto index) {
+        index = index.sibling(index.row(), 0);
+        auto addr = ui->balancesTable->model()->data(index).toString();
+        
+        fnDoSendFrom(addr);
+    });
+
     // Setup context menu on balances tab
     ui->balancesTable->setContextMenuPolicy(Qt::CustomContextMenu);
     QObject::connect(ui->balancesTable, &QTableView::customContextMenuRequested, [=] (QPoint pos) {
@@ -712,16 +734,7 @@ void MainWindow::setupBalancesTab() {
         });
 
         menu.addAction("Send from " % addr.left(40) % (addr.size() > 40 ? "..." : ""), [=]() {
-            // Find the inputs combo
-            for (int i = 0; i < ui->inputsCombo->count(); i++) {
-                if (ui->inputsCombo->itemText(i).startsWith(addr)) {
-                    ui->inputsCombo->setCurrentIndex(i);
-                    break;
-                }
-            }
-            
-            // And switch to the send tab.
-            ui->tabWidget->setCurrentIndex(1);
+            fnDoSendFrom(addr);
         });
 
         if (addr.startsWith("t")) {

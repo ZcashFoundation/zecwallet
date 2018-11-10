@@ -10,7 +10,7 @@ RPC::RPC(MainWindow* main) {
     auto cl = new ConnectionLoader(main, this);
 
     // Execute the load connection async, so we can set up the rest of RPC properly. 
-    QTimer::singleShot(1, [=]() {cl->loadConnection(); });
+    QTimer::singleShot(1, [=]() { cl->loadConnection(); });
 
     this->main = main;
     this->ui = main->ui;
@@ -463,7 +463,7 @@ void RPC::getInfoThenRefresh(bool force) {
         {"method", "getinfo"}
     };
 
-    conn->doRPCIgnoreError(payload, [=] (const json& reply) {   
+    conn->doRPC(payload, [=] (const json& reply) {   
         // Testnet?
         if (!reply["testnet"].is_null()) {
             Settings::getInstance()->setTestnet(reply["testnet"].get<json::boolean_t>());
@@ -549,7 +549,12 @@ void RPC::getInfoThenRefresh(bool force) {
             main->statusIcon->setToolTip(tooltip);
         });
 
-    });        
+    }, [=](QNetworkReply* reply, const json& replyJson) {
+        // zcashd has probably disappeared.
+        this->noConnection();
+        QMessageBox::critical(main, "Connection Error", "There was an error connecting to zcashd. The error was: \n\n"
+            + reply->errorString(), QMessageBox::StandardButton::Ok);
+    });
 }
 
 void RPC::refreshAddresses() {
