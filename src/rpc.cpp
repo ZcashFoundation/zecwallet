@@ -486,7 +486,9 @@ void RPC::getInfoThenRefresh(bool force) {
         {"method", "getinfo"}
     };
 
+    static bool prevCallSucceeded = false;
     conn->doRPC(payload, [=] (const json& reply) {   
+        prevCallSucceeded = true;
         // Testnet?
         if (!reply["testnet"].is_null()) {
             Settings::getInstance()->setTestnet(reply["testnet"].get<json::boolean_t>());
@@ -575,8 +577,12 @@ void RPC::getInfoThenRefresh(bool force) {
     }, [=](QNetworkReply* reply, const json& replyJson) {
         // zcashd has probably disappeared.
         this->noConnection();
-        QMessageBox::critical(main, "Connection Error", "There was an error connecting to zcashd. The error was: \n\n"
-            + reply->errorString(), QMessageBox::StandardButton::Ok);
+        if (prevCallSucceeded) { // show error only first time
+            QMessageBox::critical(main, "Connection Error", "There was an error connecting to zcashd. The error was: \n\n"
+                + reply->errorString(), QMessageBox::StandardButton::Ok);
+        }
+
+        prevCallSucceeded = false;
     });
 }
 
@@ -774,7 +780,7 @@ void RPC::watchTxStatus() {
         {"method", "z_getoperationstatus"},
     };
 
-    conn->doRPCWithDefaultErrorHandling(payload, [=] (const json& reply) {
+    conn->doRPCIgnoreError(payload, [=] (const json& reply) {
         // There's an array for each item in the status
         for (auto& it : reply.get<json::array_t>()) {  
             // If we were watching this Tx and its status became "success", then we'll show a status bar alert
