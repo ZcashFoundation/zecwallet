@@ -243,8 +243,9 @@ void MainWindow::addAddressSection() {
     QTimer::singleShot(10, [=] () {ui->sendToScrollArea->ensureWidgetVisible(ui->addAddressButton);});                
 }
 
-void MainWindow::addressChanged(int itemNumber, const QString& text) {    
-    setMemoEnabled(itemNumber, text.startsWith("z"));
+void MainWindow::addressChanged(int itemNumber, const QString& text) {   
+    auto addr = addressFromAddressField(text);
+    setMemoEnabled(itemNumber, addr.startsWith("z"));
 }
 
 void MainWindow::amountChanged(int item, const QString& text) {
@@ -376,7 +377,7 @@ Tx MainWindow::createTxFromSendPage() {
     for (int i=0; i < totalItems; i++) {
         QString addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") % QString::number(i+1))->text().trimmed();
         // Remove label if it exists
-        addr = addr.split("/").last();
+        addr = addressFromAddressField(addr);
 
         double  amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1))->text().trimmed().toDouble();        
         QString memo = ui->sendToWidgets->findChild<QLabel*>(QString("MemoTxt")  % QString::number(i+1))->text().trimmed();

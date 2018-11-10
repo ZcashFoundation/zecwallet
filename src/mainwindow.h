@@ -92,6 +92,8 @@ private:
 
     void restoreSavedStates();
 
+    QString addressFromAddressField(const QString& lblAddr) { return lblAddr.split("/").last(); }
+
     RPC*         rpc  = nullptr;
     QCompleter*  labelCompleter = nullptr;
 
