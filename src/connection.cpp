@@ -259,6 +259,8 @@ bool ConnectionLoader::startEmbeddedZcashd() {
 
 #ifdef Q_OS_LINUX
     ezcashd->start(zcashdProgram);
+#elif defined(Q_OS_DARWIN)
+    ezcashd->start(zcashdProgram);
 #else
     ezcashd->setWorkingDirectory(fi.dir().absolutePath());
     ezcashd->start("zcashd.exe");
