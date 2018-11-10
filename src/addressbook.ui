@@ -38,7 +38,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="label"/>
+       <widget class="QLineEdit" name="label">
+        <property name="maxLength">
+         <number>25</number>
+        </property>
+       </widget>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
