@@ -267,7 +267,7 @@ void MainWindow::setMemoEnabled(int number, bool enabled) {
 void MainWindow::memoButtonClicked(int number) {
     // Memos can only be used with zAddrs. So check that first
     auto addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") + QString::number(number));
-    if (!addr->text().trimmed().startsWith("z")) {
+    if (!addressFromAddressField(addr->text()).startsWith("z")) {
         QMessageBox msg(QMessageBox::Critical, "Memos can only be used with z-addresses",
         "The memo field can only be used with a z-address.\n" + addr->text() + "\ndoesn't look like a z-address",
         QMessageBox::Ok, this);
