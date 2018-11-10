@@ -40,7 +40,7 @@
       <item>
        <widget class="QLineEdit" name="label">
         <property name="maxLength">
-         <number>25</number>
+         <number>40</number>
         </property>
        </widget>
       </item>
