@@ -538,12 +538,15 @@ void RPC::getInfoThenRefresh(bool force) {
                 QString::number(blockNumber) %
                 (isSyncing ? ("/" % QString::number(progress*100, 'f', 0) % "%") : QString()) %
                 ")";
-            main->statusLabel->setText(statusText);    
+            main->statusLabel->setText(statusText);   
+
             auto zecPrice = Settings::getInstance()->getUSDFormat(1);
+            QString tooltip = "Connected to zcashd";;
             if (!zecPrice.isEmpty()) {
-                main->statusLabel->setToolTip("1 ZEC = " + zecPrice);
-                main->statusIcon->setToolTip("1 ZEC = " + zecPrice);
+                tooltip = "1 ZEC = " % zecPrice % "\n" % tooltip;
             }
+            main->statusLabel->setToolTip(tooltip);
+            main->statusIcon->setToolTip(tooltip);
         });
 
     });        
