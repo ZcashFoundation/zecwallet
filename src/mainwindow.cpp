@@ -262,9 +262,9 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
     });
 
     for (auto i : privOptions) {
-        turnstile.privLevel->addItem(QString::number(std::get<0>(i)) % " tx over " %
-                                     QString::number(std::get<1>(i)) % " blocks (" %
-                                     QString::number((int)(std::get<1>(i) / 24 / 24)) % " days)" // 24 blks/hr * 24 hrs per day
+        turnstile.privLevel->addItem(QString::number((int)(std::get<1>(i) / 24 / 24)) % " days (" % // 24 blks/hr * 24 hrs per day
+                                     QString::number(std::get<1>(i)) % " blocks, ~" %
+                                     QString::number(std::get<0>(i)) % " txns)"
         );
     }
     

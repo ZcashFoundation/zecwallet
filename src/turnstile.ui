@@ -41,7 +41,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Number of Transactions</string>
+           <string>Migrate over</string>
           </property>
          </widget>
         </item>
