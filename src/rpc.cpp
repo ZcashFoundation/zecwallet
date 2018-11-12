@@ -526,7 +526,6 @@ void RPC::getInfoThenRefresh(bool force) {
             conn->doRPCIgnoreError(payload, [=](const json& reply) {
                 qint64 solrate = reply.get<json::number_unsigned_t>();
 
-                ui->blockheight->setText(QString::number(curBlock));
                 ui->numconnections->setText(QString::number(conns));
                 ui->solrate->setText(QString::number(solrate) % " Sol/s");
             });
@@ -548,14 +547,19 @@ void RPC::getInfoThenRefresh(bool force) {
             Settings::getInstance()->setBlockNumber(blockNumber);
 
             // Update zcashd tab if it exists
-            if (ezcashd && isSyncing) {
-                // 895 / ~426530 (0 % )
-                const qint64 genisisTimeMSec = 1477638000000;
-                qint64 estBlocks = (QDateTime::currentMSecsSinceEpoch() - genisisTimeMSec) / 2.5 / 60 / 1000;
-                // Round to nearest 10
-                estBlocks = ((estBlocks + 5) / 10) * 10;
-                ui->blockheight->setText(ui->blockheight->text() % /*" / ~" % QString::number(estBlocks) % */
-                                         " ( " % QString::number(progress * 100, 'f', 0) % "% )");
+            if (ezcashd) {
+                if (isSyncing) {
+                    const qint64 genisisTimeMSec = 1477638000000;
+                    qint64 estBlocks = (QDateTime::currentMSecsSinceEpoch() - genisisTimeMSec) / 2.5 / 60 / 1000;
+                    // Round to nearest 10
+                    estBlocks = ((estBlocks + 5) / 10) * 10;                
+                    ui->blockheight->setText(QString::number(blockNumber) % /*" / ~" % QString::number(estBlocks) % */
+                                            " ( " % QString::number(progress * 100, 'f', 0) % "% )");
+                    ui->heightLabel->setText("Downloading blocks");
+                } else {
+                    ui->blockheight->setText(QString::number(blockNumber));
+                    ui->heightLabel->setText("Block height");
+                }
             }
 
             // Update the status bar
