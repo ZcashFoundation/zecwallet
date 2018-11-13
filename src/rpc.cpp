@@ -554,7 +554,6 @@ void RPC::getInfoThenRefresh(bool force) {
             // Update zcashd tab if it exists
             if (ezcashd) {
                 if (isSyncing) {
-                    const qint64 genisisTimeMSec = 1477638000000;
                     QString txt = QString::number(blockNumber);
                     if (estimatedheight > 0) {
                         txt = txt % " / ~" % QString::number(estimatedheight);

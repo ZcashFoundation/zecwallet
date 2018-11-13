@@ -5,7 +5,6 @@ if [ -z $QT_STATIC ]; then
     exit 1; 
 fi
 
-if [ -z $MXE_PATH ]; then echo "MXE_PATH is not set. Set it to ~/github/mxe/usr/bin"; exit 1; fi
 if [ -z $APP_VERSION ]; then echo "APP_VERSION is not set"; exit 1; fi
 if [ -z $PREV_VERSION ]; then echo "PREV_VERSION is not set"; exit 1; fi
 
@@ -17,18 +16,6 @@ fi
 
 if [ ! -f ../zcash/artifacts/zcash-cli ]; then
     echo "Couldn't find zcash-cli in ../zcash/artifacts/. Please build zcashd."
-    exit 1;
-fi
-
-
-if [ ! -f ../zcash/artifacts/zcashd.exe ]; then
-    echo "Couldn't find zcashd.exe in ../zcash/artifacts/. Please build zcashd.exe"
-    exit 1;
-fi
-
-
-if [ ! -f ../zcash/artifacts/zcash-cli.exe ]; then
-    echo "Couldn't find zcash-cli.exe in ../zcash/artifacts/. Please build zcashd.exe"
     exit 1;
 fi
 
@@ -99,8 +86,28 @@ else
     exit 1
 fi
 
+
+
 echo ""
 echo "[Windows]"
+
+if [ -z $MXE_PATH ]; then 
+    echo "MXE_PATH is not set. Set it to ~/github/mxe/usr/bin if you want to build Windows"
+    echo "Not building Windows"
+    exit 1; 
+fi
+
+if [ ! -f ../zcash/artifacts/zcashd.exe ]; then
+    echo "Couldn't find zcashd.exe in ../zcash/artifacts/. Please build zcashd.exe"
+    exit 1;
+fi
+
+
+if [ ! -f ../zcash/artifacts/zcash-cli.exe ]; then
+    echo "Couldn't find zcash-cli.exe in ../zcash/artifacts/. Please build zcashd.exe"
+    exit 1;
+fi
+
 export PATH=$MXE_PATH:$PATH
 
 echo -n "Configuring......."
