@@ -181,6 +181,10 @@ QList<QPair<QString, QString>> AddressBook::readFromStorage() {
     
     QList<QPair<QString, QString>> labels;    
 
+    if (!file.exists()) {
+        return labels;
+    }
+
     file.open(QIODevice::ReadOnly);
     QDataStream in(&file);    // read the data serialized from the file
     QString version;
