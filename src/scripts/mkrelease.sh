@@ -86,6 +86,27 @@ else
     exit 1
 fi
 
+echo -n "Building deb......"
+debdir=bin/deb/zec-qt-wallet-v$APP_VERSION
+mkdir -p $debdir > /dev/null
+mkdir $debdir/DEBIAN
+mkdir -p $debdir/usr/local/bin
+
+cat src/scripts/control | sed "s/RELEASE_VERSION/$APP_VERSION/g" > $debdir/DEBIAN/control
+
+cp zec-qt-wallet $debdir/usr/local/bin/
+cp ../zcash/artifacts/zcashd $debdir/usr/local/bin/zqw-zcashd
+
+mkdir -p $debdir/usr/share/pixmaps/
+cp res/zec-qt-wallet.xpm $debdir/usr/share/pixmaps/
+
+mkdir -p $debdir/usr/share/applications
+cp src/scripts/desktopentry $debdir/usr/share/applications/zec-qt-wallet.desktop
+
+dpkg-deb --build $debdir >/dev/null
+cp $debdir.deb artifacts/
+echo "[DONE]"
+
 
 
 echo ""

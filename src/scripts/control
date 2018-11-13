@@ -1,0 +1,10 @@
+Package: zec-qt-wallet
+Version: RELEASE_VERSION
+Section: base
+Priority: optional
+Architecture: all
+Depends: openssl (>= 1.0.0)
+Maintainer: Aditya Kulkarni <zcash@adityapk.com>
+Description: zec-qt-wallet is a full node and UI wallet for zcash.
+ zec-qt-wallet is a full node and UI wallet for zcash. It comes with 
+ full support for shielded addresses and many apps for zcash.

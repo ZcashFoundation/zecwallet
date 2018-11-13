@@ -232,7 +232,10 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     // Finally, start zcashd    
     QFileInfo fi(Settings::getInstance()->getExecName());
 #ifdef Q_OS_LINUX
-    auto zcashdProgram = fi.dir().absoluteFilePath("zcashd");
+    auto zcashdProgram = fi.dir().absoluteFilePath("zqw-zcashd");
+    if (!QFile(zcashdProgram).exists()) {
+        zcashdProgram = fi.dir().absoluteFilePath("zcashd");
+    }
 #elif defined(Q_OS_DARWIN)
     auto zcashdProgram = fi.dir().absoluteFilePath("zcashd");
 #else
