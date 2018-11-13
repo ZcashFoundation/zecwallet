@@ -106,7 +106,6 @@ void ConnectionLoader::createZcashConf() {
             
         QTextStream out(&file); 
         
-        out << "addnode=mainnet.z.cash\n";
         out << "server=1\n";
         out << "addnode=mainnet.z.cash\n";
         out << "rpcuser=zec-qt-wallet\n";
