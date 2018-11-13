@@ -9,6 +9,7 @@ src/ui_*.h
 src/precompiled.h.cpp
 .qmake.stash
 zec-qt-wallet
+zec-qt-wallet.app
 zec-qt-wallet-mingw*
 zec-qt-wallet.vcxproj*
 zec-qt-wallet.sln
