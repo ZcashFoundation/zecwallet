@@ -87,6 +87,7 @@ FORMS += \
     src/addressbook.ui
 
 win32: RC_ICONS = res/icon.ico
+ICON = res/logo.icns
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
