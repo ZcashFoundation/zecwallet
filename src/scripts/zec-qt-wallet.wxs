@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="zec-qt-wallet v1.0.0.0" Language="1033" Version="1.0.0.0" Manufacturer="zec-qt-wallet-org" UpgradeCode="fb9bf166-b55f-46b5-a990-9189bdf64533">
+	<Product Id="*" Name="zec-qt-wallet vRELEASE_VERSION" Language="1033" Version="RELEASE_VERSION" Manufacturer="zec-qt-wallet-org" UpgradeCode="fb9bf166-b55f-46b5-a990-9189bdf64533">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<MediaTemplate EmbedCab="yes"/>
+
+        <Icon Id="icon.ico" SourceFile="res/icon.ico"/>
+        <Property Id="ARPPRODUCTICON" Value="icon.ico" />
 
 		<Feature Id="ProductFeature" Title="zec-qt-wallet" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
@@ -12,6 +15,10 @@
 		</Feature>
 
         <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+        
+        <WixVariable Id="WixUIBannerBmp" Value="res/wxsbanner.bmp" />
+        <WixVariable Id="WixUIDialogBmp" Value="res/wxsdialog.bmp" />
+
         <UI>
             <UIRef Id="WixUI_InstallDir" />
             <Publish Dialog="WelcomeDlg"
@@ -49,13 +56,16 @@
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
 			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
-			<Component Id="ProductComponent">
+			<Component Id="ProductComponent" Guid="0D210F5A-53E0-4E7E-CAAD-15A26995505E">
                 <File Source="zec-qt-wallet.exe">
                     <Shortcut Id="startMenuShotcut" Advertise="yes" Directory="ApplicationProgramsFolder"
-                        Name="zec-qt-wallet" WorkingDirectory="INSTALLFOLDER" >
+                        Name="zec-qt-wallet" WorkingDirectory="INSTALLFOLDER" Icon="icon.ico" >
                     </Shortcut>
                 </File>
                 <File Source="LICENSE" />
+                <File Source="zcashd.exe" />
+                <File Source="zcash-cli.exe" />
+                <File Source="README.md" />
 			</Component>
 		</ComponentGroup>
 	</Fragment>
