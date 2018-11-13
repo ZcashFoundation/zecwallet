@@ -21,6 +21,7 @@ make -j4 >/dev/null
 mkdir artifacts
 rm -f artifcats/zec-qt-wallet.dmg
 rm -f artifacts/rw*
+cp ../zcash/src/zcashd zec-qt-wallet.app/Contents/MacOS/
 $QT_PATH/bin/macdeployqt zec-qt-wallet.app 
 
 create-dmg --volname "zec-qt-wallet-v0.3.0" --volicon "res/logo.icns" --window-pos 200 120 --icon "zec-qt-wallet.app" 200 190 --app-drop-link 600 185 --hide-extension "zec-qt-wallet.app"  --window-size 800 400 artifacts/zec-qt-wallet.dmg zec-qt-wallet.app
