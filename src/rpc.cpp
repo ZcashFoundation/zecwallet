@@ -543,6 +543,11 @@ void RPC::getInfoThenRefresh(bool force) {
             bool isSyncing   = progress < 0.995; // 99.59%
             int  blockNumber = reply["blocks"].get<json::number_unsigned_t>();
 
+            int estimatedheight = 0;
+            if (reply.find("estimatedheight") != reply.end()) {
+                estimatedheight = reply["estimatedheight"].get<json::number_unsigned_t>();
+            }
+
             Settings::getInstance()->setSyncing(isSyncing);
             Settings::getInstance()->setBlockNumber(blockNumber);
 
@@ -550,11 +555,12 @@ void RPC::getInfoThenRefresh(bool force) {
             if (ezcashd) {
                 if (isSyncing) {
                     const qint64 genisisTimeMSec = 1477638000000;
-                    qint64 estBlocks = (QDateTime::currentMSecsSinceEpoch() - genisisTimeMSec) / 2.5 / 60 / 1000;
-                    // Round to nearest 10
-                    estBlocks = ((estBlocks + 5) / 10) * 10;                
-                    ui->blockheight->setText(QString::number(blockNumber) % /*" / ~" % QString::number(estBlocks) % */
-                                            " ( " % QString::number(progress * 100, 'f', 0) % "% )");
+                    QString txt = QString::number(blockNumber);
+                    if (estimatedheight > 0) {
+                        txt = txt % " / ~" % QString::number(estimatedheight);
+                    }
+                    txt = txt %  " ( " % QString::number(progress * 100, 'f', 0) % "% )";
+                    ui->blockheight->setText(txt);
                     ui->heightLabel->setText("Downloading blocks");
                 } else {
                     ui->blockheight->setText(QString::number(blockNumber));

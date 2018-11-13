@@ -39,7 +39,7 @@ void ConnectionLoader::doAutoConnect() {
         refreshZcashdState(connection, [=] () {
             // Refused connection. So try and start embedded zcashd
             if (Settings::getInstance()->useEmbedded()) {
-                this->showInformation("Starting Embedded zcashd");
+                this->showInformation("Starting embedded zcashd");
                 if (this->startEmbeddedZcashd()) {
                     // Embedded zcashd started up. Wait a second and then refresh the connection
                     QTimer::singleShot(1000, [=]() { doAutoConnect(); } );
