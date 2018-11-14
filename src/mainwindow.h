@@ -61,7 +61,7 @@ private:
     void setDefaultPayFrom();
 
     Tx   createTxFromSendPage();
-    bool confirmTx(Tx tx, ToFields devFee);
+    bool confirmTx(Tx tx);
 
     void turnstileDoMigration(QString fromAddr = "");
     void turnstileProgress();

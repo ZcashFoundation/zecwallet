@@ -188,15 +188,8 @@ QString Settings::getZboardAddr() {
         return "zs10m00rvkhfm4f7n23e4sxsx275r7ptnggx39ygl0vy46j9mdll5c97gl6dxgpk0njuptg2mn9w5s";
     }
 }
-double Settings::getDevFee() {
-    if (Settings::getInstance()->isTestnet()) {
-        return 0;
-    } else {
-        return 0;
-    }
-}
 
-double Settings::getTotalFee() { return getMinerFee() + getDevFee(); }
+double Settings::getTotalFee() { return getMinerFee(); }
 
 bool Settings::isValidAddress(QString addr) {
     QRegExp zcexp("^z[a-z0-9]{94}$",  Qt::CaseInsensitive);

@@ -75,17 +75,6 @@ void MainWindow::setupSendTab() {
                                     " " % Settings::getTokenName());
             ui->lblMinerFeeUSD->setText(Settings::getUSDFormat(Settings::getMinerFee()));
 
-            // Dev Fee.
-            if (Settings::getDevFee() < 0.0001) {
-                ui->lblDevFee->setText("");
-                ui->lblDevFeeUSD->setText("");
-                ui->lblDevFeeTxt->setText("");
-            } else {
-                ui->lblDevFee->setText(QString::number(Settings::getDevFee(), 'g', 8) %
-                                    " " % Settings::getTokenName());
-                ui->lblDevFeeUSD->setText(Settings::getUSDFormat(Settings::getDevFee()));
-            }
-
             // Set focus to the first address box
             ui->Address1->setFocus();
         }
@@ -389,7 +378,7 @@ Tx MainWindow::createTxFromSendPage() {
     return tx;
 }
 
-bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
+bool MainWindow::confirmTx(Tx tx) {
     auto fnSplitAddressForWrap = [=] (const QString& a) -> QString {
         if (!a.startsWith("z")) return a;
 
@@ -469,7 +458,7 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
         }
     }
 
-    // Add two rows for fees
+    // Add fees
     {
         auto i = tx.toAddrs.size() * 2;
 
@@ -493,26 +482,6 @@ bool MainWindow::confirmTx(Tx tx, ToFields devFee) {
         minerFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         confirm.gridLayout->addWidget(minerFeeUSD, i, 2, 1, 1);
         minerFeeUSD->setText(Settings::getUSDFormat(tx.fee));
-
-        if (!devFee.addr.isEmpty()) {
-            auto labelDevFee = new QLabel(confirm.sendToAddrs);
-            labelDevFee->setObjectName(QStringLiteral("labelDevFee"));
-            confirm.gridLayout->addWidget(labelDevFee, i+1, 0, 1, 1);
-            labelDevFee ->setText("Dev Fee");
- 
-            auto fee = new QLabel(confirm.sendToAddrs);
-            fee->setObjectName(QStringLiteral("devFee"));
-            fee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-            confirm.gridLayout->addWidget(fee, i+1, 1, 1, 1);
-            fee         ->setText(Settings::getZECDisplayFormat(Settings::getDevFee()));
-
-            auto devFeeUSD = new QLabel(confirm.sendToAddrs);
-            devFeeUSD->setSizePolicy(sizePolicy1);
-            devFeeUSD->setObjectName(QStringLiteral("devFeeUSD"));
-            devFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-            confirm.gridLayout->addWidget(devFeeUSD, i+1, 2, 1, 1);
-            devFeeUSD   ->setText(Settings::getUSDFormat(Settings::getDevFee()));
-        } 
     }
 
     // And FromAddress in the confirm dialog 
@@ -543,14 +512,9 @@ void MainWindow::sendButton() {
         // abort the Tx
         return;
     }
-
-    ToFields devFee{ Settings::getDevAddr(tx), Settings::getDevFee(), "", "" };
     
     // Show a dialog to confirm the Tx
-    if (confirmTx(tx, devFee)) {
-        if (!devFee.addr.isEmpty())
-            tx.toAddrs.push_back(devFee);
-
+    if (confirmTx(tx)) {
         json params = json::array();
         rpc->fillTxJsonParams(params, tx);
         std::cout << std::setw(2) << params << std::endl;

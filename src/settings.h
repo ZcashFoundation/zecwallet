@@ -69,7 +69,7 @@ public:
     static double  getMinerFee();
     static double  getZboardAmount();
     static QString getZboardAddr();
-    static double  getDevFee();
+
     static double  getTotalFee();
     
     static bool    isValidAddress(QString addr);
