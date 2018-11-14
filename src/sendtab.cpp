@@ -74,6 +74,10 @@ void MainWindow::setupSendTab() {
             ui->lblMinerFeeUSD->setText(Settings::getUSDFormat(txt.toDouble()));
         }
     });
+    //Fees validator
+    auto feesValidator = new QDoubleValidator(0, 1, 8, ui->Amount1);
+    feesValidator->setNotation(QDoubleValidator::StandardNotation);
+    ui->minerFeeAmt->setValidator(feesValidator);
 
     // Font for the first Memo label
     QFont f = ui->Address1->font();
