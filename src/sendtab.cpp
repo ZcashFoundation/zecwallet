@@ -490,6 +490,13 @@ bool MainWindow::confirmTx(Tx tx) {
         minerFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         confirm.gridLayout->addWidget(minerFeeUSD, i, 2, 1, 1);
         minerFeeUSD->setText(Settings::getUSDFormat(tx.fee));
+
+        if (tx.fee == Settings::getMinerFee()) {
+            // Default fee
+            confirm.warningLabel->setVisible(false);
+        } else {
+            confirm.warningLabel->setVisible(true);
+        }
     }
 
     // And FromAddress in the confirm dialog 
