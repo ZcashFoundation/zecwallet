@@ -56,10 +56,23 @@ void MainWindow::setupSendTab() {
         AddressBook::open(this, ui->Address1);
     });
 
-
     // The first Amount button
     QObject::connect(ui->Amount1, &QLineEdit::textChanged, [=] (auto text) {
         this->amountChanged(1, text);
+    });
+
+    // Fee amount changed
+    QObject::connect(ui->minerFeeAmt, &QLineEdit::textChanged, [=](auto txt) {
+        ui->lblMinerFeeUSD->setText(Settings::getUSDFormat(txt.toDouble()));
+    });
+    ui->minerFeeAmt->setText(Settings::getDecimalString(Settings::getMinerFee()));    
+
+     // Set up focus enter to set fees
+    QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int pos) {
+        if (pos == 1) {
+            QString txt = ui->minerFeeAmt->text();
+            ui->lblMinerFeeUSD->setText(Settings::getUSDFormat(txt.toDouble()));
+        }
     });
 
     // Font for the first Memo label
@@ -67,18 +80,6 @@ void MainWindow::setupSendTab() {
     f.setPointSize(f.pointSize() - 1);
     ui->MemoTxt1->setFont(f);
 
-    // Set up focus enter to set fees
-    QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int pos) {
-        if (pos == 1) {
-            // Set the fees
-            ui->lblMinerFee->setText(QString::number(Settings::getMinerFee(), 'g', 8) %
-                                    " " % Settings::getTokenName());
-            ui->lblMinerFeeUSD->setText(Settings::getUSDFormat(Settings::getMinerFee()));
-
-            // Set focus to the first address box
-            ui->Address1->setFocus();
-        }
-    });
 }
 
 void MainWindow::updateLabelsAutoComplete() {
@@ -318,6 +319,9 @@ void MainWindow::removeExtraAddresses() {
     // Disable first memo btn
     setMemoEnabled(1, false);
 
+    // Reset the fee
+    ui->minerFeeAmt->setText(Settings::getDecimalString(Settings::getMinerFee()));
+
     // Start the deletion after the first item, since we want to keep 1 send field there all there
     for (int i=1; i < totalItems; i++) {
         auto addressGroupBox = ui->sendToWidgets->findChild<QGroupBox*>(QString("AddressGroupBox") % QString::number(i+1));
@@ -374,7 +378,7 @@ Tx MainWindow::createTxFromSendPage() {
         tx.toAddrs.push_back( ToFields{addr, amt, memo, memo.toUtf8().toHex()} );
     }
 
-    tx.fee = Settings::getMinerFee();
+    tx.fee = ui->minerFeeAmt->text().toDouble();
     return tx;
 }
 

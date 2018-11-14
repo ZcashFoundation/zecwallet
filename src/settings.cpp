@@ -109,14 +109,18 @@ QString Settings::getUSDFormat(double bal) {
         return QString();
 }
 
-QString Settings::getZECDisplayFormat(double bal) {
-    // This is idiotic. Why doesn't QString have a way to do this?
-    QString f = QString::number(bal, 'f', 8);
+QString Settings::getDecimalString(double amt) {
+    QString f = QString::number(amt, 'f', 8);
     while (f.contains(".") && (f.right(1) == "0" || f.right(1) == ".")) {
         f = f.left(f.length() - 1);
     }
 
-    return f % " " % Settings::getTokenName();
+    return f;
+}
+
+QString Settings::getZECDisplayFormat(double bal) {
+    // This is idiotic. Why doesn't QString have a way to do this?
+    return getDecimalString(bal) % " " % Settings::getTokenName();
 }
 
 QString Settings::getZECUSDDisplayFormat(double bal) {

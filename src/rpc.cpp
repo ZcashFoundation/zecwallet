@@ -326,6 +326,8 @@ void RPC::fillTxJsonParams(json& params, Tx tx) {
     // Add sender    
     params.push_back(tx.fromAddr.toStdString());
     params.push_back(allRecepients);
+    params.push_back(1); // minconf
+    params.push_back(QString::number(tx.fee, 'f', 8).toDouble());
 }
 
 

@@ -57,6 +57,7 @@ public:
     // Static stuff
     static const QString txidStatusMessage;
 
+    static QString getDecimalString(double amt);
     static QString getUSDFormat(double bal);
     static QString getZECDisplayFormat(double bal);
     static QString getZECUSDDisplayFormat(double bal);
