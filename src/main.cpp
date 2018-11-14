@@ -28,11 +28,6 @@ int main(int argc, char *argv[])
         Settings::getInstance()->setUseEmbedded(true);
     }
 
-    // No embedded support on Mac yet. 
-#if defined(Q_OS_DARWIN)    
-    Settings::getInstance()->setUseEmbedded(false);
-#endif
-
     QCoreApplication::setOrganizationName("zec-qt-wallet-org");
     QCoreApplication::setApplicationName("zec-qt-wallet");
 
