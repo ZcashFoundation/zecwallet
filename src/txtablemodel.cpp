@@ -163,3 +163,7 @@ QString TxTableModel::getTxId(int row) {
 QString TxTableModel::getMemo(int row) {
     return modeldata->at(row).memo;
 }
+
+QString TxTableModel::getAddr(int row) {
+    return modeldata->at(row).address.trimmed();
+}

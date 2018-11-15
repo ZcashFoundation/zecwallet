@@ -796,11 +796,20 @@ void MainWindow::setupTransactionsTab() {
 
         QString txid = txModel->getTxId(index.row());
         QString memo = txModel->getMemo(index.row());
+        QString addr = txModel->getAddr(index.row());
 
         menu.addAction("Copy txid", [=] () {            
             QGuiApplication::clipboard()->setText(txid);
             ui->statusBar->showMessage("Copied to clipboard", 3 * 1000);
         });
+
+        if (!addr.isEmpty()) {
+            menu.addAction("Copy Address", [=] () {
+                QGuiApplication::clipboard()->setText(addr);
+                ui->statusBar->showMessage("Copied to clipboard", 3 * 1000);
+            });
+        }
+
         menu.addAction("View on block explorer", [=] () {
             QString url;
             if (Settings::getInstance()->isTestnet()) {
@@ -810,6 +819,7 @@ void MainWindow::setupTransactionsTab() {
             }
             QDesktopServices::openUrl(QUrl(url));
         });
+
         if (!memo.isEmpty()) {
             menu.addAction("View Memo", [=] () {
                 QMessageBox::information(this, "Memo", memo, QMessageBox::Ok);

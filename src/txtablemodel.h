@@ -17,6 +17,7 @@ public:
 
     QString  getTxId(int row);
     QString  getMemo(int row);
+    QString  getAddr(int row);
 
     int      rowCount(const QModelIndex &parent) const;
     int      columnCount(const QModelIndex &parent) const;
