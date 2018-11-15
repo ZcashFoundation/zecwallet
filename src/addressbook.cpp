@@ -159,12 +159,12 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
             });
         }
 
-        menu.addAction("Copy Address", [&] () {
+        menu.addAction("Copy address", [&] () {
             QGuiApplication::clipboard()->setText(addr);            
             parent->ui->statusBar->showMessage("Copied to clipboard", 3 * 1000);
         });
 
-        menu.addAction("Delete Label", [&] () {
+        menu.addAction("Delete label", [&] () {
             model.removeItemAt(index.row());
         });
 
