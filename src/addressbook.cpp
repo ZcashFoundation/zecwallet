@@ -128,6 +128,10 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
 
     // Double-Click picks the item
     QObject::connect(ab.addresses, &QTableView::doubleClicked, [&] (auto index) {
+        // If there's no target, then double-clicking does nothing.
+        if (!target)
+            return;
+
         if (index.row() < 0) return;
 
         QString lbl  = model.itemAt(index.row()).first;

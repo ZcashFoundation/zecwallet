@@ -83,7 +83,6 @@ void MainWindow::setupSendTab() {
     QFont f = ui->Address1->font();
     f.setPointSize(f.pointSize() - 1);
     ui->MemoTxt1->setFont(f);
-
 }
 
 void MainWindow::updateLabelsAutoComplete() {

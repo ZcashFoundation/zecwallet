@@ -105,7 +105,7 @@ cp src/scripts/desktopentry $debdir/usr/share/applications/zec-qt-wallet.desktop
 
 dpkg-deb --build $debdir >/dev/null
 cp $debdir.deb artifacts/
-echo "[DONE]"
+echo "[OK]"
 
 
 
