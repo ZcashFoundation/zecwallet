@@ -43,6 +43,7 @@ public:
     QLabel*             statusLabel;
     QLabel*             statusIcon;
     QLabel*             loadingLabel;
+    QWidget*            zcashdtab;
 
 private:    
     void closeEvent(QCloseEvent* event);
