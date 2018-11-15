@@ -136,7 +136,7 @@ void MainWindow::setDefaultPayFrom() {
 
 void MainWindow::inputComboTextChanged(const QString& text) {
     auto bal    = rpc->getAllBalances()->value(text.split("(")[0].trimmed());
-    auto balFmt = QString::number(bal, 'g', 8) + " " % Settings::getTokenName();
+    auto balFmt = Settings::getZECDisplayFormat(bal);
 
     ui->sendAddressBalance->setText(balFmt);
     ui->sendAddressBalanceUSD->setText(Settings::getUSDFormat(bal));
