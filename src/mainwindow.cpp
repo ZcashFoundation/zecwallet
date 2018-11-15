@@ -804,7 +804,7 @@ void MainWindow::setupTransactionsTab() {
         });
 
         if (!addr.isEmpty()) {
-            menu.addAction("Copy Address", [=] () {
+            menu.addAction("Copy address", [=] () {
                 QGuiApplication::clipboard()->setText(addr);
                 ui->statusBar->showMessage("Copied to clipboard", 3 * 1000);
             });
