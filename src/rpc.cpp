@@ -67,10 +67,9 @@ RPC::~RPC() {
 void RPC::setEZcashd(QProcess* p) {
     ezcashd = p;
 
-    if (ezcashd) {
+    if (ezcashd && ui->tabWidget->widget(4) == nullptr) {
         ui->tabWidget->addTab(main->zcashdtab, "zcashd");
     }
-        
 }
 
 void RPC::setConnection(Connection* c) {
