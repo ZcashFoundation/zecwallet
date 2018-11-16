@@ -20,7 +20,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -172,11 +172,11 @@
        <item row="0" column="0" colspan="2">
         <widget class="QCheckBox" name="chkSaveTxs">
          <property name="text">
-          <string>Remember Shielded Transactions</string>
+          <string>Remember shielded transactions</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="0" colspan="2">
+       <item row="6" column="0" colspan="2">
         <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -189,10 +189,27 @@
          </property>
         </spacer>
        </item>
-       <item row="3" column="0" colspan="2">
+       <item row="5" column="0" colspan="2">
         <widget class="Line" name="line_2">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QCheckBox" name="chkCustomFees">
+         <property name="text">
+          <string>Allow custom fees</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="2">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Allow overriding the default fees when sending transactions. Enabling this option may comprimise your privacy since fees are transparent. </string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
          </property>
         </widget>
        </item>

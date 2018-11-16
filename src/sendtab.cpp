@@ -62,6 +62,8 @@ void MainWindow::setupSendTab() {
     });
 
     // Fee amount changed
+    // Disable custom fees if settings say no
+    ui->minerFeeAmt->setReadOnly(!Settings::getInstance()->getAllowCustomFees());
     QObject::connect(ui->minerFeeAmt, &QLineEdit::textChanged, [=](auto txt) {
         ui->lblMinerFeeUSD->setText(Settings::getUSDFormat(txt.toDouble()));
     });
@@ -381,7 +383,12 @@ Tx MainWindow::createTxFromSendPage() {
         tx.toAddrs.push_back( ToFields{addr, amt, memo, memo.toUtf8().toHex()} );
     }
 
-    tx.fee = ui->minerFeeAmt->text().toDouble();
+    if (Settings::getInstance()->getAllowCustomFees()) {
+        tx.fee = ui->minerFeeAmt->text().toDouble();
+    } else {
+        tx.fee = Settings::getMinerFee();
+    }
+
     return tx;
 }
 
@@ -490,11 +497,11 @@ bool MainWindow::confirmTx(Tx tx) {
         confirm.gridLayout->addWidget(minerFeeUSD, i, 2, 1, 1);
         minerFeeUSD->setText(Settings::getUSDFormat(tx.fee));
 
-        if (tx.fee == Settings::getMinerFee()) {
+        if (Settings::getInstance()->getAllowCustomFees() && tx.fee != Settings::getMinerFee()) {
+            confirm.warningLabel->setVisible(true);            
+        } else {
             // Default fee
             confirm.warningLabel->setVisible(false);
-        } else {
-            confirm.warningLabel->setVisible(true);
         }
     }
 

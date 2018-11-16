@@ -5,15 +5,6 @@
 
 Settings* Settings::instance = nullptr;
 
-bool Settings::getSaveZtxs() {
-    // Load from the QT Settings. 
-    return QSettings().value("options/savesenttx", true).toBool();
-}
-
-void Settings::setSaveZtxs(bool save) {
-    QSettings().setValue("options/savesenttx", save);
-}
-
 Settings* Settings::init() {    
     if (instance == nullptr) 
         instance = new Settings();
@@ -102,6 +93,37 @@ double Settings::getZECPrice() {
     return zecPrice; 
 }
 
+
+bool Settings::getAllowCustomFees() {
+    // Load from the QT Settings. 
+    return QSettings().value("options/customfees", false).toBool();
+}
+
+void Settings::setAllowCustomFees(bool allow) {
+    QSettings().setValue("options/customfees", allow);
+}
+
+bool Settings::getSaveZtxs() {
+    // Load from the QT Settings. 
+    return QSettings().value("options/savesenttx", true).toBool();
+}
+
+void Settings::setSaveZtxs(bool save) {
+    QSettings().setValue("options/savesenttx", save);
+}
+
+
+//=================================
+// Static Stuff
+//=================================
+void Settings::saveRestore(QDialog* d) {
+    d->restoreGeometry(QSettings().value(d->objectName() % "geometry").toByteArray());
+
+    QObject::connect(d, &QDialog::finished, [=](auto) {
+        QSettings().setValue(d->objectName() % "geometry", d->saveGeometry());
+    });
+}
+
 QString Settings::getUSDFormat(double bal) {
     if (!Settings::getInstance()->isTestnet() && Settings::getInstance()->getZECPrice() > 0) 
         return "$" + QLocale(QLocale::English).toString(bal * Settings::getInstance()->getZECPrice(), 'f', 2);
@@ -130,18 +152,6 @@ QString Settings::getZECUSDDisplayFormat(double bal) {
     else
         return getZECDisplayFormat(bal);
 }
-
-void Settings::saveRestore(QDialog* d) {
-    d->restoreGeometry(QSettings().value(d->objectName() % "geometry").toByteArray());
-
-    QObject::connect(d, &QDialog::finished, [=](auto) {
-        QSettings().setValue(d->objectName() % "geometry", d->saveGeometry());
-    });
-}
-
-//=================================
-// Static Stuff
-//=================================
 
 const QString Settings::txidStatusMessage = QString("Tx submitted (right click to copy) txid:");
 

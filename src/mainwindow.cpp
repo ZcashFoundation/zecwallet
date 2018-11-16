@@ -375,6 +375,9 @@ void MainWindow::setupSettingsModal() {
         // Save sent transactions
         settings.chkSaveTxs->setChecked(Settings::getInstance()->getSaveZtxs());
 
+        // Custom fees
+        settings.chkCustomFees->setChecked(Settings::getInstance()->getAllowCustomFees());
+
         // Connection Settings
         QIntValidator validator(0, 65535);
         settings.port->setValidator(&validator);
@@ -407,6 +410,13 @@ void MainWindow::setupSettingsModal() {
         settings.tabWidget->setCurrentIndex(0);
 
         if (settingsDialog.exec() == QDialog::Accepted) {
+            // Custom fees
+            bool customFees = settings.chkCustomFees->isChecked();
+            Settings::getInstance()->setAllowCustomFees(customFees);
+            ui->minerFeeAmt->setReadOnly(!customFees);
+            if (!customFees)
+                ui->minerFeeAmt->setText(Settings::getDecimalString(Settings::getMinerFee()));
+
             if (zcashConfLocation.isEmpty()) {
                 // Save settings
                 Settings::getInstance()->saveSettings(

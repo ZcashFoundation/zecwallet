@@ -19,8 +19,6 @@ public:
     static Settings* init();
     static Settings* getInstance();
 
-    static void saveRestore(QDialog* d);
-
     Config getSettings();
     void   saveSettings(const QString& host, const QString& port, const QString& username, const QString& password);
 
@@ -46,6 +44,9 @@ public:
     bool getSaveZtxs();
     void setSaveZtxs(bool save);
 
+    bool getAllowCustomFees();
+    void setAllowCustomFees(bool allow);
+
     bool isSaplingActive();
 
     void  setUsingZcashConf(QString confLocation);
@@ -56,6 +57,8 @@ public:
        
     // Static stuff
     static const QString txidStatusMessage;
+    
+    static void saveRestore(QDialog* d);
 
     static QString getDecimalString(double amt);
     static QString getUSDFormat(double bal);
