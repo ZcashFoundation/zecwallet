@@ -505,6 +505,9 @@ bool MainWindow::confirmTx(Tx tx) {
         }
     }
 
+    // Syncing warning
+    confirm.syncingWarning->setVisible(Settings::getInstance()->isSyncing());
+
     // And FromAddress in the confirm dialog 
     confirm.sendFrom->setText(fnSplitAddressForWrap(tx.fromAddr));
 
