@@ -221,9 +221,16 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     if (!Settings::getInstance()->useEmbedded()) 
         return false;
 
+    // Static because it needs to survice even after this method returns.
+    static QString processStdErrOutput;
+
     if (ezcashd != nullptr) {
         if (ezcashd->state() == QProcess::NotRunning) {
             qDebug() << "Process started and then crashed";
+            if (!processStdErrOutput.isEmpty()) {
+                QMessageBox::critical(main, "zcashd error", "zcashd said: " + processStdErrOutput, 
+                                      QMessageBox::Ok);
+            }
             return false;
         } else {
             return true;
@@ -255,11 +262,17 @@ bool ConnectionLoader::startEmbeddedZcashd() {
 
     QObject::connect(ezcashd, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                         [=](int, QProcess::ExitStatus) {
-        //qDebug() << "zcashd finished with code " << exitCode << "," << exitStatus;
+        //qDebug() << "zcashd finished with code " << exitCode << "," << exitStatus;    
     });
 
     QObject::connect(ezcashd, &QProcess::errorOccurred, [&] (auto) {
         //qDebug() << "Couldn't start zcashd: " << error;
+    });
+
+    QObject::connect(ezcashd, &QProcess::readyReadStandardError, [=]() {
+        auto output = ezcashd->readAllStandardError();
+        qDebug() << "zcashd stderr:" << output;
+        processStdErrOutput.append(output);
     });
 
 #ifdef Q_OS_LINUX
