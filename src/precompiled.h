@@ -19,6 +19,7 @@
 #include <QScrollBar>
 #include <QPainter>
 #include <QMovie>
+#include <QRandomGenerator>
 #include <QPair>
 #include <QDir>
 #include <QMenu>

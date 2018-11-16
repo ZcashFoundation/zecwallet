@@ -18,7 +18,10 @@ int main(int argc, char *argv[])
         qApp->setFont(QFont("Ubuntu", 11, QFont::Normal, false));
     #endif
 
-    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    // QRandomGenerator generates a secure random number, which we use to seed.
+    unsigned int seed = QRandomGenerator::securelySeeded().generate();
+    std::srand(seed);
+
     Settings::init();
     Settings::getInstance()->setExecName(argv[0]);
 

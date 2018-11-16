@@ -183,8 +183,9 @@ void Turnstile::fillAmounts(QList<double>& amounts, double amount, int count) {
         return;
     }
 
-    // Get a random amount off the amount (between half and full) and call recursively.
-    // Multiply by hundred, because we'll operate on 0.01 ZEC minimum. We'll divide by 100 later
+    // Get a random amount off the total amount and call recursively.
+    // Multiply by hundred, because we'll operate on 0.01 ZEC minimum. We'll divide by 100 later on 
+    // in this function.
     double curAmount = std::rand() % (int)std::floor(amount * 100);
 
     // Try to round it off
