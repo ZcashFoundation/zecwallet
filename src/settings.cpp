@@ -176,15 +176,6 @@ const QString Settings::getDonationAddr(bool sapling) {
             return "zcEgrceTwvoiFdEvPWcsJHAMrpLsprMF6aRJiQa3fan5ZphyXLPuHghnEPrEPRoEVzUy65GnMVyCTRdkT6BYBepnXh6NBYs";    
 }
 
-const QString Settings::getDevSproutAddr() {
-    return "ztbGDqgkmXQjheivgeirwEvJLD4SUNqsWCGwxwVg4YpGz1ARR8P2rXaptkT14z3NDKamcxNmQuvmvktyokMs7HkutRNSx1D";
-}
-
-// Get the dev fee address based on the transaction
-const QString Settings::getDevAddr(Tx) {
-    return QString();
-}
-
 
 double Settings::getMinerFee() {
     return 0.0001;

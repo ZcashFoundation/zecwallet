@@ -425,11 +425,7 @@ bool MainWindow::confirmTx(Tx tx) {
     delete confirm.sendToAddrs->findChild<QLabel*>("labelMinerFee");
     delete confirm.sendToAddrs->findChild<QLabel*>("minerFee");
     delete confirm.sendToAddrs->findChild<QLabel*>("minerFeeUSD");
-
-    delete confirm.sendToAddrs->findChild<QLabel*>("labelDevFee");
-    delete confirm.sendToAddrs->findChild<QLabel*>("devFee");
-    delete confirm.sendToAddrs->findChild<QLabel*>("devFeeUSD");
-
+    
     // For each addr/amt/memo, construct the JSON and also build the confirm dialog box    
     for (int i=0; i < tx.toAddrs.size(); i++) {
         auto toAddr = tx.toAddrs[i];

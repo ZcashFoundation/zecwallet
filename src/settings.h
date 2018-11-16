@@ -66,8 +66,6 @@ public:
     static QString getZECUSDDisplayFormat(double bal);
 
     static const QString getTokenName();
-    static const QString getDevSproutAddr();
-    static const QString getDevAddr(Tx tx);
     static const QString getDonationAddr(bool sapling);
 
     static double  getMinerFee();

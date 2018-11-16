@@ -304,7 +304,7 @@ void RPC::getAllPrivKeys(const std::function<void(QList<QPair<QString, QString>>
 }
 
 
-// Build the RPC JSON Parameters for this tx (with the dev fee included if applicable)
+// Build the RPC JSON Parameters for this tx
 void RPC::fillTxJsonParams(json& params, Tx tx) {   
     Q_ASSERT(params.is_array());
     // Get all the addresses and amounts
