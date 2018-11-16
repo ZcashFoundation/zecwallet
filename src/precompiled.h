@@ -9,7 +9,7 @@
 
 #include <QtGlobal>
 
-#if QT_VERSION >= 0x051000
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
 #include <QRandomGenerator>
 #endif
 

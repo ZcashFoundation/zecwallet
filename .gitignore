@@ -22,3 +22,7 @@ zec-qt-wallet_resource*
 workspace.code-workspace
 *.zip
 *.tar.gz
+*.xcsettings
+.DS_Store
+*.mak
+*.plist

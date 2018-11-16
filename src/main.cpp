@@ -19,13 +19,16 @@ int main(int argc, char *argv[])
     #endif
 
     // QRandomGenerator generates a secure random number, which we use to seed.
-#if QT_VERSION >= 0x051000    
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
     unsigned int seed = QRandomGenerator::securelySeeded().generate();
+    qDebug() << "yes" << QT_VERSION;
 #else
     // This will be used only during debugging for compatibility reasons 
     unsigned int seed = std::time(0);
+    qDebug() << "no" << QT_VERSION;
 #endif
     std::srand(seed);
+
 
     Settings::init();
     Settings::getInstance()->setExecName(argv[0]);
