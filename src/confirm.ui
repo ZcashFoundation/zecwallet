@@ -165,7 +165,7 @@
       <string notr="true">color: red;</string>
      </property>
      <property name="text">
-      <string>You are using a custom fee. Since fees are publically visible, you are giving up some privacy. Please use this only if you know what you are doing!</string>
+      <string>You are using a custom fee. Since fees are transparent, you are giving up some privacy. Please use this only if you know what you are doing!</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
