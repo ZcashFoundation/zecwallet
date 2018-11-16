@@ -7,6 +7,12 @@
 #include <ctime>
 #include <cmath>
 
+#include <QtGlobal>
+
+#if QT_VERSION >= 0x051000
+#include <QRandomGenerator>
+#endif
+
 #include <QFontDatabase>
 #include <QAbstractTableModel>
 #include <QClipboard>
@@ -19,7 +25,6 @@
 #include <QScrollBar>
 #include <QPainter>
 #include <QMovie>
-#include <QRandomGenerator>
 #include <QPair>
 #include <QDir>
 #include <QMenu>
