@@ -46,7 +46,8 @@ void ConnectionLoader::doAutoConnect() {
                 } else {
                     // Errored out, show error and exit
                     QString explanation = QString() % "Couldn't start the embedded zcashd.\n\n" %
-                                        "Maybe the zcash-params are corrupt? Please delete your zcash-params directory and restart.\n\n" %
+                                        "Did you previously start zcashd with custom arguments not in zcash.conf? Or maybe the zcash-params are corrupt?\n" %
+                                        "Please delete your zcash-params directory and restart.\n\n" %
                                         (ezcashd ? "The process returned:\n\n" % ezcashd->errorString() : QString(""));
                     this->showError(explanation);
                 }
