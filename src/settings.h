@@ -19,38 +19,38 @@ public:
     static Settings* init();
     static Settings* getInstance();
 
-    Config getSettings();
-    void   saveSettings(const QString& host, const QString& port, const QString& username, const QString& password);
+    Config  getSettings();
+    void    saveSettings(const QString& host, const QString& port, const QString& username, const QString& password);
 
-    bool isTestnet();
-    void setTestnet(bool isTestnet);
-
-    bool isSaplingAddress(QString addr);
-    bool isSproutAddress(QString addr);
-    bool isZAddress(QString addr);
-
-    bool isSyncing();
-    void setSyncing(bool syncing);
+    bool    isTestnet();
+    void    setTestnet(bool isTestnet);
+            
+    bool    isSaplingAddress(QString addr);
+    bool    isSproutAddress(QString addr);
+    bool    isZAddress(QString addr);
+            
+    bool    isSyncing();
+    void    setSyncing(bool syncing);
 
     QString getExecName() { return _executable; }
     void    setExecName(QString name) { _executable = name; }
 
-    void setUseEmbedded(bool r) { _useEmbedded = r; }
-    bool useEmbedded() { return _useEmbedded; }
+    void    setUseEmbedded(bool r) { _useEmbedded = r; }
+    bool    useEmbedded() { return _useEmbedded; }
 
-    int  getBlockNumber();
-    void setBlockNumber(int number);
+    int     getBlockNumber();
+    void    setBlockNumber(int number);
+            
+    bool    getSaveZtxs();
+    void    setSaveZtxs(bool save);
+            
+    bool    getAllowCustomFees();
+    void    setAllowCustomFees(bool allow);
+            
+    bool    isSaplingActive();
 
-    bool getSaveZtxs();
-    void setSaveZtxs(bool save);
-
-    bool getAllowCustomFees();
-    void setAllowCustomFees(bool allow);
-
-    bool isSaplingActive();
-
-    void  setUsingZcashConf(QString confLocation);
-    const QString& getZcashdConfLocation() { return _confLocation; }
+    void    setUsingZcashConf(QString confLocation);
+    const   QString& getZcashdConfLocation() { return _confLocation; }
 
     void    setZECPrice(double p) { zecPrice = p; }
     double  getZECPrice();
@@ -65,8 +65,8 @@ public:
     static QString getZECDisplayFormat(double bal);
     static QString getZECUSDDisplayFormat(double bal);
 
-    static const QString getTokenName();
-    static const QString getDonationAddr(bool sapling);
+    static QString getTokenName();
+    static QString getDonationAddr(bool sapling);
 
     static double  getMinerFee();
     static double  getZboardAmount();

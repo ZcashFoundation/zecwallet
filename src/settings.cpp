@@ -155,7 +155,7 @@ QString Settings::getZECUSDDisplayFormat(double bal) {
 
 const QString Settings::txidStatusMessage = QString("Tx submitted (right click to copy) txid:");
 
-const QString Settings::getTokenName() {
+QString Settings::getTokenName() {
     if (Settings::getInstance()->isTestnet()) {
         return "TAZ";
     } else {
@@ -163,7 +163,7 @@ const QString Settings::getTokenName() {
     }
 }
 
-const QString Settings::getDonationAddr(bool sapling) {
+QString Settings::getDonationAddr(bool sapling) {
     if (Settings::getInstance()->isTestnet()) 
         if (sapling)
             return "ztestsapling1wn6889vznyu42wzmkakl2effhllhpe4azhu696edg2x6me4kfsnmqwpglaxzs7tmqsq7kudemp5";
