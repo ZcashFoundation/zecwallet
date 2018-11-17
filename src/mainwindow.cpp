@@ -841,6 +841,14 @@ void MainWindow::setupTransactionsTab() {
 }
 
 void MainWindow::addNewZaddr(bool sapling) {
+    if (!sapling) {
+        auto confirm = QMessageBox::question(this, "Sprout Address", 
+        "Sprout addresses are inefficient, and will be deprecated in the future in favour of Sapling addresses.\n\n"
+        "Are you sure you want to create a new Sprout address?", QMessageBox::Yes, QMessageBox::No);
+        if (confirm != QMessageBox::Yes)
+            return;
+    }    
+
     rpc->newZaddr(sapling, [=] (json reply) {
         QString addr = QString::fromStdString(reply.get<json::string_t>());
         // Make sure the RPC class reloads the z-addrs for future use

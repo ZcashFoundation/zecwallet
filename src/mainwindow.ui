@@ -22,7 +22,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -604,13 +604,6 @@
                 </widget>
                </item>
                <item>
-                <widget class="QRadioButton" name="rdioZAddr">
-                 <property name="text">
-                  <string>z-Addr(Sprout)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
                 <widget class="QRadioButton" name="rdioTAddr">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -620,6 +613,13 @@
                  </property>
                  <property name="text">
                   <string>t-Addr</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="rdioZAddr">
+                 <property name="text">
+                  <string>z-Addr(Sprout)</string>
                  </property>
                 </widget>
                </item>
@@ -977,7 +977,6 @@
   <tabstop>sendTransactionButton</tabstop>
   <tabstop>cancelSendButton</tabstop>
   <tabstop>balancesTable</tabstop>
-  <tabstop>rdioZAddr</tabstop>
   <tabstop>rdioTAddr</tabstop>
   <tabstop>listRecieveAddresses</tabstop>
   <tabstop>btnRecieveNewAddr</tabstop>
