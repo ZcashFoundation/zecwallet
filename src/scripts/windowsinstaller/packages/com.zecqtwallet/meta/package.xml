@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Package>
-    <DisplayName>zec-qt-wallet</DisplayName>
-    <Description>Install this example.</Description>
-    <Version>0.1.0-1</Version>
-    <ReleaseDate>2010-09-21</ReleaseDate>
-    <Default>true</Default>
-    <Script>installscript.qs</Script>
-</Package>
