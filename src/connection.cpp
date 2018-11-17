@@ -384,6 +384,13 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
                     !res.is_discarded()) {
                 // The server is loading, so just poll until it succeeds
                 QString status    = QString::fromStdString(res["error"]["message"]);
+                {
+                    static int dots = 0;
+                    status = status.left(status.length() - 3) + QString(".").repeated(dots);
+                    dots++;
+                    if (dots > 3)
+                        dots = 0;
+                }
                 this->showInformation("Your zcashd is starting up. Please wait.", status);
 
                 // Refresh after one second
