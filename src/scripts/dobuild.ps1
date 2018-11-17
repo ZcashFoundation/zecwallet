@@ -5,18 +5,48 @@ param (
     [Parameter(Mandatory=$true)][string]$server
 )
 
-Write-Host -NoNewline "Copying files....."
+Write-Host "[Initializing]"
+Remove-Item -Force -ErrorAction Ignore ./artifacts/linux-zec-qt-wallet-v$version.tar.gz
+Remove-Item -Force -ErrorAction Ignore ./artifacts/Windows-zec-qt-wallet-v$version.zip
+Remove-Item -Force -ErrorAction Ignore ./artifacts/zec-qt-wallet-v$version.deb
+Remove-Item -Force -ErrorAction Ignore ./artifacts/zec-qt-wallet-v$version.msi
+
+Remove-Item -Recurse -Force -ErrorAction Ignore ./bin
+Remove-Item -Recurse -Force -ErrorAction Ignore ./debug
+Remove-Item -Recurse -Force -ErrorAction Ignore ./release
+
+Write-Host -NoNewline "Copying files.........."
 ssh $server "rm -rf /tmp/zqwbuild"
 ssh $server "mkdir /tmp/zqwbuild"
 scp -r * ${server}:/tmp/zqwbuild | Out-Null
 ssh $server "dos2unix -q /tmp/zqwbuild/src/scripts/mkrelease.sh" | Out-Null
 Write-Host "[OK]"
 
-ssh $server "cd /tmp/zqwbuild && QT_STATIC=~/Qt/5.11.2/static/ ZCASH_DIR=~/github/zcash APP_VERSION=$version PREV_VERSION=$prev bash src/scripts/mkrelease.sh"
+ssh $server "cd /tmp/zqwbuild && APP_VERSION=$version PREV_VERSION=$prev bash src/scripts/mkrelease.sh"
 if (!$?) {
-    Write-Output "Build failed"
+    Write-Output "[Error]"
     exit 1;
 }
 
 New-Item artifacts -itemtype directory -Force | Out-Null
-scp ${server}:/tmp/zqwbuild/artifacts/* artifacts/ 
+scp ${server}:/tmp/zqwbuild/artifacts/* artifacts/ | Out-Null
+scp -r ${server}:/tmp/zqwbuild/release . | Out-Null
+
+Write-Host -NoNewline "Building Installer....."
+src/scripts/mkwininstaller.ps1 -version $version 2>&1 | Out-Null
+if (!$?) {
+    Write-Output "[Error]"
+    exit 1;
+}
+Write-Host "[OK]"
+
+# Finally, test to make sure all files exist
+Write-Host -NoNewline "Checking Build........."
+if (! (Test-Path ./artifacts/linux-zec-qt-wallet-v$version.tar.gz) -or
+    ! (Test-Path ./artifacts/Windows-zec-qt-wallet-v$version.zip) -or
+    ! (Test-Path ./artifacts/zec-qt-wallet-v$version.deb) -or
+    ! (Test-Path ./artifacts/zec-qt-wallet-v$version.msi)) {
+        Write-Host "[Error]"
+        exit 1;
+    }
+Write-Host "[OK]"

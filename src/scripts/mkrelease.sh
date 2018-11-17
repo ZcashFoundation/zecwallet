@@ -1,5 +1,4 @@
 #!/bin/bash
-
 if [ -z $QT_STATIC ]; then 
     echo "QT_STATIC is not set. Please set it to the base directory of a statically compiled Qt"; 
     exit 1; 
@@ -23,7 +22,26 @@ if [ ! -f $ZCASH_DIR/artifacts/zcash-cli ]; then
     exit 1;
 fi
 
-echo -n "Version files....."
+# Ensure that zcashd is the right build
+echo -n "zcashd version........."
+if grep -q "zqwMagicBean" $ZCASH_DIR/artifacts/zcashd && ! readelf -s $ZCASH_DIR/artifacts/zcashd | grep -q "GLIBC_2\.25"; then 
+    echo "[OK]"
+else
+    echo "[ERROR]"
+    echo "zcashd doesn't seem to be a zqwMagicBean build or zcashd is built with libc 2.25"
+    exit 1
+fi
+
+echo -n "zcashd.exe version....."
+if grep -q "zqwMagicBean" $ZCASH_DIR/artifacts/zcashd.exe; then 
+    echo "[OK]"
+else
+    echo "[ERROR]"
+    echo "zcashd doesn't seem to be a zqwMagicBean build"
+    exit 1
+fi
+
+echo -n "Version files.........."
 # Replace the version number in the .pro file so it gets picked up everywhere
 sed -i "s/${PREV_VERSION}/${APP_VERSION}/g" zec-qt-wallet.pro > /dev/null
 
@@ -31,29 +49,29 @@ sed -i "s/${PREV_VERSION}/${APP_VERSION}/g" zec-qt-wallet.pro > /dev/null
 sed -i "s/${PREV_VERSION}/${APP_VERSION}/g" README.md > /dev/null
 echo "[OK]"
 
-echo -n "Cleaning.........."
+echo -n "Cleaning..............."
 rm -rf bin/*
 rm -rf artifacts/*
 make distclean >/dev/null 2>&1
 echo "[OK]"
 
 echo ""
-echo "[Linux]"
+echo "[Linux " `lsb_release -r` "]"
 
-echo -n "Configuring......."
+echo -n "Configuring............"
 $QT_STATIC/bin/qmake zec-qt-wallet.pro -spec linux-clang CONFIG+=release > /dev/null
 #Mingw seems to have trouble with precompiled headers, so strip that option from the .pro file
 echo "[OK]"
 
 
-echo -n "Building.........."
+echo -n "Building..............."
 rm -rf bin/zec-qt-wallet* > /dev/null
 make -j$(nproc) > /dev/null
 echo "[OK]"
 
 
 # Test for Qt
-echo -n "Static link......."
+echo -n "Static link............"
 if [[ $(ldd zec-qt-wallet | grep -i "Qt") ]]; then
     echo "FOUND QT; ABORT"; 
     exit 1
@@ -61,7 +79,7 @@ fi
 echo "[OK]"
 
 
-echo -n "Packaging........."
+echo -n "Packaging.............."
 mkdir bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 strip zec-qt-wallet
 cp zec-qt-wallet bin/zec-qt-wallet-v$APP_VERSION > /dev/null
@@ -77,7 +95,7 @@ echo "[OK]"
 
 
 if [ -f artifacts/linux-zec-qt-wallet-v$APP_VERSION.tar.gz ] ; then
-    echo -n "Package contents.."
+    echo -n "Package contents......."
     # Test if the package is built OK
     if tar tf "artifacts/linux-zec-qt-wallet-v$APP_VERSION.tar.gz" | wc -l | grep -q "6"; then 
         echo "[OK]"
@@ -90,7 +108,7 @@ else
     exit 1
 fi
 
-echo -n "Building deb......"
+echo -n "Building deb..........."
 debdir=bin/deb/zec-qt-wallet-v$APP_VERSION
 mkdir -p $debdir > /dev/null
 mkdir $debdir/DEBIAN
@@ -135,7 +153,7 @@ fi
 
 export PATH=$MXE_PATH:$PATH
 
-echo -n "Configuring......."
+echo -n "Configuring............"
 make clean  > /dev/null
 rm -f zec-qt-wallet-mingw.pro
 rm -rf release/
@@ -144,16 +162,16 @@ cat zec-qt-wallet.pro | sed "s/precompile_header/release/g" | sed "s/PRECOMPILED
 echo "[OK]"
 
 
-echo -n "Building.........."
+echo -n "Building..............."
 x86_64-w64-mingw32.static-qmake-qt5 zec-qt-wallet-mingw.pro CONFIG+=release > /dev/null
 make -j32 > /dev/null
 echo "[OK]"
 
 
-echo -n "Packaging........."
+echo -n "Packaging.............."
 mkdir release/zec-qt-wallet-v$APP_VERSION  
 cp release/zec-qt-wallet.exe release/zec-qt-wallet-v$APP_VERSION 
-cp $ZCASH_DIR/zcashd.exe release/zec-qt-wallet-v$APP_VERSION > /dev/null
+cp $ZCASH_DIR/artifacts/zcashd.exe release/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp $ZCASH_DIR/artifacts/zcash-cli.exe release/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp README.md release/zec-qt-wallet-v$APP_VERSION 
 cp LICENSE release/zec-qt-wallet-v$APP_VERSION 
@@ -164,7 +182,7 @@ cp release/Windows-zec-qt-wallet-v$APP_VERSION.zip ./artifacts/
 echo "[OK]"
 
 if [ -f artifacts/Windows-zec-qt-wallet-v$APP_VERSION.zip ] ; then
-    echo -n "Package contents.."
+    echo -n "Package contents......."
     if unzip -l "artifacts/Windows-zec-qt-wallet-v$APP_VERSION.zip" | wc -l | grep -q "11"; then 
         echo "[OK]"
     else
@@ -176,7 +194,3 @@ else
     echo "[ERROR]"
     exit 1
 fi
-
-echo ""
-echo "Build is artifacts/Windows-zec-qt-wallet-v$APP_VERSION.zip"
-echo "Build is artifacts/linux-zec-qt-wallet-v$APP_VERSION.tar.gz"
