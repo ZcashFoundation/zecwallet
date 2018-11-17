@@ -8,14 +8,18 @@ fi
 if [ -z $APP_VERSION ]; then echo "APP_VERSION is not set"; exit 1; fi
 if [ -z $PREV_VERSION ]; then echo "PREV_VERSION is not set"; exit 1; fi
 
-if [ ! -f ../zcash/artifacts/zcashd ]; then
-    echo "Couldn't find zcashd in ../zcash/artifacts/. Please build zcashd."
+if [ -z $ZCASH_DIR ]; then
+    echo "ZCASH_DIR is not set. Please set it to the base directory of a zcash project with built zcash binaries."
     exit 1;
 fi
 
+if [ ! -f $ZCASH_DIR/artifacts/zcashd ]; then
+    echo "Couldn't find zcashd in $ZCASH_DIR/artifacts/. Please build zcashd."
+    exit 1;
+fi
 
-if [ ! -f ../zcash/artifacts/zcash-cli ]; then
-    echo "Couldn't find zcash-cli in ../zcash/artifacts/. Please build zcashd."
+if [ ! -f $ZCASH_DIR/artifacts/zcash-cli ]; then
+    echo "Couldn't find zcash-cli in $ZCASH_DIR/artifacts/. Please build zcashd."
     exit 1;
 fi
 
@@ -30,7 +34,7 @@ echo "[OK]"
 echo -n "Cleaning.........."
 rm -rf bin/*
 rm -rf artifacts/*
-make distclean > /dev/null
+make distclean >/dev/null 2>&1
 echo "[OK]"
 
 echo ""
@@ -61,8 +65,8 @@ echo -n "Packaging........."
 mkdir bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 strip zec-qt-wallet
 cp zec-qt-wallet bin/zec-qt-wallet-v$APP_VERSION > /dev/null
-cp ../zcash/artifacts/zcashd bin/zec-qt-wallet-v$APP_VERSION > /dev/null
-cp ../zcash/artifacts/zcash-cli bin/zec-qt-wallet-v$APP_VERSION > /dev/null
+cp $ZCASH_DIR/artifacts/zcashd bin/zec-qt-wallet-v$APP_VERSION > /dev/null
+cp $ZCASH_DIR/artifacts/zcash-cli bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp README.md bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp LICENSE bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cd bin && tar cvf linux-zec-qt-wallet-v$APP_VERSION.tar.gz zec-qt-wallet-v$APP_VERSION/ > /dev/null
@@ -95,7 +99,7 @@ mkdir -p $debdir/usr/local/bin
 cat src/scripts/control | sed "s/RELEASE_VERSION/$APP_VERSION/g" > $debdir/DEBIAN/control
 
 cp zec-qt-wallet $debdir/usr/local/bin/
-cp ../zcash/artifacts/zcashd $debdir/usr/local/bin/zqw-zcashd
+cp $ZCASH_DIR/artifacts/zcashd $debdir/usr/local/bin/zqw-zcashd
 
 mkdir -p $debdir/usr/share/pixmaps/
 cp res/zec-qt-wallet.xpm $debdir/usr/share/pixmaps/
@@ -118,14 +122,14 @@ if [ -z $MXE_PATH ]; then
     exit 1; 
 fi
 
-if [ ! -f ../zcash/artifacts/zcashd.exe ]; then
-    echo "Couldn't find zcashd.exe in ../zcash/artifacts/. Please build zcashd.exe"
+if [ ! -f $ZCASH_DIR/artifacts/zcashd.exe ]; then
+    echo "Couldn't find zcashd.exe in $ZCASH_DIR/artifacts/. Please build zcashd.exe"
     exit 1;
 fi
 
 
-if [ ! -f ../zcash/artifacts/zcash-cli.exe ]; then
-    echo "Couldn't find zcash-cli.exe in ../zcash/artifacts/. Please build zcashd.exe"
+if [ ! -f $ZCASH_DIR/artifacts/zcash-cli.exe ]; then
+    echo "Couldn't find zcash-cli.exe in $ZCASH_DIR/artifacts/. Please build zcashd.exe"
     exit 1;
 fi
 
@@ -149,8 +153,8 @@ echo "[OK]"
 echo -n "Packaging........."
 mkdir release/zec-qt-wallet-v$APP_VERSION  
 cp release/zec-qt-wallet.exe release/zec-qt-wallet-v$APP_VERSION 
-cp ../zcash/artifacts/zcashd.exe release/zec-qt-wallet-v$APP_VERSION > /dev/null
-cp ../zcash/artifacts/zcash-cli.exe release/zec-qt-wallet-v$APP_VERSION > /dev/null
+cp $ZCASH_DIR/zcashd.exe release/zec-qt-wallet-v$APP_VERSION > /dev/null
+cp $ZCASH_DIR/artifacts/zcash-cli.exe release/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp README.md release/zec-qt-wallet-v$APP_VERSION 
 cp LICENSE release/zec-qt-wallet-v$APP_VERSION 
 cd release && zip -r Windows-zec-qt-wallet-v$APP_VERSION.zip zec-qt-wallet-v$APP_VERSION/ > /dev/null
