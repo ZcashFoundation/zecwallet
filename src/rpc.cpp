@@ -1009,3 +1009,15 @@ void RPC::getZboardTopics(std::function<void(QMap<QString, QString>)> cb) {
         }
     });
 }
+
+/** 
+ * Get a Sapling address from the user's wallet
+ */ 
+QString RPC::getDefaultSaplingAddress() {
+    for (QString addr: *zaddresses) {
+        if (Settings::getInstance()->isSaplingAddress(addr))
+            return addr;
+    }
+
+    return QString();
+}

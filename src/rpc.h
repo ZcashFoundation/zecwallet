@@ -62,6 +62,8 @@ public:
     void shutdownZcashd();
     void noConnection();
 
+    QString getDefaultSaplingAddress();
+
     void getAllPrivKeys(const std::function<void(QList<QPair<QString, QString>>)>);
 
     Turnstile*  getTurnstile()  { return turnstile; }

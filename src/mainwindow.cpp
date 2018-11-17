@@ -691,13 +691,25 @@ void MainWindow::setupBalancesTab() {
     ui->unconfirmedWarning->setVisible(false);
 
     // Double click on balances table
-    auto fnDoSendFrom = [=](const QString& addr) {
+    auto fnDoSendFrom = [=](const QString& addr, const QString& to = QString(), bool sendMax = false) {
         // Find the inputs combo
         for (int i = 0; i < ui->inputsCombo->count(); i++) {
             if (ui->inputsCombo->itemText(i).startsWith(addr)) {
                 ui->inputsCombo->setCurrentIndex(i);
                 break;
             }
+        }
+
+        // If there's a to address, add that as well
+        if (!to.isEmpty()) {
+            // Remember to clear any existing address fields, because we are creating a new transaction.
+            this->removeExtraAddresses();
+            ui->Address1->setText(to);
+        }
+
+        // See if max button has to be checked
+        if (sendMax) {
+            ui->Max1->setChecked(true);
         }
 
         // And switch to the send tab.
@@ -757,6 +769,13 @@ void MainWindow::setupBalancesTab() {
         });
 
         if (addr.startsWith("t")) {
+            auto defaultSapling = rpc->getDefaultSaplingAddress();
+            if (!defaultSapling.isEmpty()) {
+                menu.addAction("Shield balance to Sapling", [=] () {
+                    fnDoSendFrom(addr, defaultSapling, true);
+                });
+            }
+
             menu.addAction("View on block explorer", [=] () {
                 QString url;
                 if (Settings::getInstance()->isTestnet()) {
