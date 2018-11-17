@@ -860,13 +860,6 @@ void MainWindow::setupTransactionsTab() {
 }
 
 void MainWindow::addNewZaddr(bool sapling) {
-    if (!sapling) {
-        auto confirm = QMessageBox::question(this, "Sprout Address", 
-        "Sprout addresses are inefficient, and will be deprecated in the future in favour of Sapling addresses.\n\n"
-        "Are you sure you want to create a new Sprout address?", QMessageBox::Yes, QMessageBox::No);
-        if (confirm != QMessageBox::Yes)
-            return;
-    }    
 
     rpc->newZaddr(sapling, [=] (json reply) {
         QString addr = QString::fromStdString(reply.get<json::string_t>());
@@ -951,6 +944,12 @@ void MainWindow::setupRecieveTab() {
     // Explicitly get new address button.
     QObject::connect(ui->btnRecieveNewAddr, &QPushButton::clicked, [=] () {
         if (ui->rdioZAddr->isChecked()) {
+            auto confirm = QMessageBox::question(this, "Sprout Address",
+                "Sprout addresses are inefficient, and will be deprecated in the future in favour of Sapling addresses.\n\n"
+                "Are you sure you want to create a new Sprout address?", QMessageBox::Yes, QMessageBox::No);
+            if (confirm != QMessageBox::Yes)
+                return;
+            
             addNewZaddr(false); 
         } else if (ui->rdioZSAddr->isChecked()) {
             addNewZaddr(true);
