@@ -119,7 +119,7 @@ echo "[Windows]"
 if [ -z $MXE_PATH ]; then 
     echo "MXE_PATH is not set. Set it to ~/github/mxe/usr/bin if you want to build Windows"
     echo "Not building Windows"
-    exit 1; 
+    exit 0; 
 fi
 
 if [ ! -f $ZCASH_DIR/artifacts/zcashd.exe ]; then
@@ -160,7 +160,7 @@ cp LICENSE release/zec-qt-wallet-v$APP_VERSION
 cd release && zip -r Windows-zec-qt-wallet-v$APP_VERSION.zip zec-qt-wallet-v$APP_VERSION/ > /dev/null
 cd ..
 mkdir artifacts >/dev/null 2>&1
-cp release/Windows-zec-qt-wallet-v$APP_VERSION.zip ./artifacts
+cp release/Windows-zec-qt-wallet-v$APP_VERSION.zip ./artifacts/
 echo "[OK]"
 
 if [ -f artifacts/Windows-zec-qt-wallet-v$APP_VERSION.zip ] ; then
