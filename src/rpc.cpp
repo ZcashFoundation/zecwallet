@@ -618,7 +618,7 @@ void RPC::refreshAddresses() {
             zaddresses->push_back(addr);
         }
 
-        // Refresh the sent and received txs from all these zaddresses
+        // Refresh the sent and received txs from all these z-addresses
         refreshSentZTrans();
         refreshReceivedZTrans(*zaddresses);
     });

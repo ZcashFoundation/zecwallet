@@ -98,7 +98,7 @@ QString randomPassword() {
 }
 
 /**
- * This will create a new zcash.conf, download zcash parameters.
+ * This will create a new zcash.conf, download Zcash parameters.
  */ 
 void ConnectionLoader::createZcashConf() {
     // Fetch params. After params are fetched, create the zcash.conf file and 
@@ -232,7 +232,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     if (!Settings::getInstance()->useEmbedded()) 
         return false;
 
-    // Static because it needs to survice even after this method returns.
+    // Static because it needs to survive even after this method returns.
     static QString processStdErrOutput;
 
     if (ezcashd != nullptr) {
@@ -455,7 +455,7 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {
     auto confLocation = locateZcashConfFile();
 
     if (confLocation.isNull()) {
-        // No zcash file, just return with nothing
+        // No Zcash file, just return with nothing
         return nullptr;
     }
 
