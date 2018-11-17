@@ -41,7 +41,7 @@ private:
 
     Connection* makeConnection(std::shared_ptr<ConnectionConfig> config);
 
-    void doAutoConnect();
+    void doAutoConnect(bool tryEzcashdStart = true);
     void doManualConnect();
 
     void createZcashConf();
@@ -114,6 +114,10 @@ public:
 
             QObject::connect(reply, &QNetworkReply::finished, [=] {
                 reply->deleteLater();
+                if (shutdownInProgress) {
+                    // Ignoring callback because shutdown in progress
+                    return;
+                }
                 
                 auto all = reply->readAll();            
                 auto parsed = json::parse(all.toStdString(), nullptr, false);
@@ -135,11 +139,16 @@ public:
 
         auto waitTimer = new QTimer(main);
         QObject::connect(waitTimer, &QTimer::timeout, [=]() {
+            if (shutdownInProgress) {
+                waitTimer->stop();
+                waitTimer->deleteLater();  
+                return;
+            }
+
+            // If all responses have arrived, return
             if (responses->size() == totalSize) {
                 waitTimer->stop();
-
                 cb(responses);
-
                 waitTimer->deleteLater();            
             }
         });

@@ -29,7 +29,7 @@ void ConnectionLoader::loadConnection() {
     d->exec();
 }
 
-void ConnectionLoader::doAutoConnect() {
+void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
     // Priority 1: Try to connect to detect zcash.conf and connect to it.
     auto config = autoDetectZcashConf();
 
@@ -39,18 +39,29 @@ void ConnectionLoader::doAutoConnect() {
         refreshZcashdState(connection, [=] () {
             // Refused connection. So try and start embedded zcashd
             if (Settings::getInstance()->useEmbedded()) {
-                this->showInformation("Starting embedded zcashd");
-                if (this->startEmbeddedZcashd()) {
-                    // Embedded zcashd started up. Wait a second and then refresh the connection
-                    QTimer::singleShot(1000, [=]() { doAutoConnect(); } );
+                if (tryEzcashdStart) {
+                    this->showInformation("Starting embedded zcashd");
+                    if (this->startEmbeddedZcashd()) {
+                        // Embedded zcashd started up. Wait a second and then refresh the connection
+                        QTimer::singleShot(1000, [=]() { doAutoConnect(); } );
+                    } else {
+                        // Something is wrong. This is happenening intermittently on Mac platforms. 
+                        //  - We tried to start zcashd
+                        //  - QProcess started
+                        //  - QProcess ended, but the embedded zcashd is still in the background. 
+                        // We're going to attempt to connect to the one in the background one last time
+                        // and see if that works, else throw an error
+                        doAutoConnect(/* don't attempt to start ezcashd */ false); 
+                    }
                 } else {
-                    // Errored out, show error and exit
+                    // We tried to start ezcashd previously, and it didn't work. So, show the error. 
                     QString explanation = QString() % "Couldn't start the embedded zcashd.\n\n" %
                                         "Did you previously start zcashd with custom arguments not in zcash.conf? Or maybe the zcash-params are corrupt?\n" %
                                         "Please delete your zcash-params directory and restart.\n\n" %
                                         (ezcashd ? "The process returned:\n\n" % ezcashd->errorString() : QString(""));
                     this->showError(explanation);
                 }
+                
             } else {
                 // zcash.conf exists, there's no connection, and the user asked us not to start zcashd. Error!
                 QString explanation = QString() % "Couldn't connect to zcashd configured in zcash.conf.\n\n" %
