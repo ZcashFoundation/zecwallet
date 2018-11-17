@@ -8,7 +8,7 @@ if [ -z $APP_VERSION ]; then echo "APP_VERSION is not set"; exit 1; fi
 if [ -z $PREV_VERSION ]; then echo "PREV_VERSION is not set"; exit 1; fi
 
 if [ -z $ZCASH_DIR ]; then
-    echo "ZCASH_DIR is not set. Please set it to the base directory of a zcash project with built zcash binaries."
+    echo "ZCASH_DIR is not set. Please set it to the base directory of a Zcash project with built Zcash binaries."
     exit 1;
 fi
 
@@ -157,7 +157,7 @@ echo -n "Configuring............"
 make clean  > /dev/null
 rm -f zec-qt-wallet-mingw.pro
 rm -rf release/
-#Mingw seems to have trouble with precompiled heades, so strip that option from the .pro file
+#Mingw seems to have trouble with precompiled headers, so strip that option from the .pro file
 cat zec-qt-wallet.pro | sed "s/precompile_header/release/g" | sed "s/PRECOMPILED_HEADER.*//g" > zec-qt-wallet-mingw.pro
 echo "[OK]"
 

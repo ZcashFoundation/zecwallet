@@ -1,4 +1,4 @@
-# Unified build script for windows, linux and mac builder. Run on a windows machine inside powershell.
+# Unified build script for Windows, Linux and Mac builder. Run on a Windows machine inside powershell.
 param (
     [Parameter(Mandatory=$true)][string]$version,
     [Parameter(Mandatory=$true)][string]$prev,
