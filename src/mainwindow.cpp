@@ -16,7 +16,6 @@
 #include "senttxstore.h"
 #include "connection.h"
 
-#include "precompiled.h"
 
 using json = nlohmann::json;
 

@@ -88,9 +88,6 @@ private:
     void getTransactions        (const std::function<void(json)>& cb);
     void getZAddresses          (const std::function<void(json)>& cb);
 
-    void handleConnectionError  (const QString& error);
-    void handleTxError          (const QString& error);
-
     Connection*                 conn                        = nullptr;
     QProcess*                   ezcashd                     = nullptr;
 

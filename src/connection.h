@@ -106,9 +106,22 @@ public:
                      std::function<void(QMap<T, json>*)> cb) {    
         auto responses = new QMap<T, json>(); // zAddr -> list of responses for each call. 
         int totalSize = payloads.size();
+        if (totalSize == 0)
+            return;
+
+        // Keep track of all pending method calls, so as to prevent 
+        // any overlapping calls
+        static QMap<QString, bool> inProgress;
+
+        QString method = QString::fromStdString(payloadGenerator(payloads[0])["method"]);
+        if (inProgress.value(method, false)) {
+            qDebug() << "In progress batch, skipping";
+            return;
+        }
 
         for (auto item: payloads) {
             json payload = payloadGenerator(item);
+            inProgress[method] = true;
             
             QNetworkReply *reply = restclient->post(*request, QByteArray::fromStdString(payload.dump()));
 
@@ -148,7 +161,10 @@ public:
             // If all responses have arrived, return
             if (responses->size() == totalSize) {
                 waitTimer->stop();
+                
                 cb(responses);
+                inProgress[method] = false;
+
                 waitTimer->deleteLater();            
             }
         });
