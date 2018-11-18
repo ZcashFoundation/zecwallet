@@ -71,9 +71,8 @@ make
 ./zec-qt-wallet.app/Contents/MacOS/zec-qt-wallet
 ```
 
-### [Troubleshooting & FAQ](https://github.com/ZcashFoundation/zec-qt-wallet/wiki/Troubleshooting-&-FAQ)
+### [Troubleshooting Guide & FAQ](https://github.com/ZcashFoundation/zec-qt-wallet/wiki/Troubleshooting-&-FAQ)
 
-### Support or other questions
-Tweet at [@zecqtwallet](https://twitter.com/zecqtwallet) for help.
+For support or other questions, tweet at [@zecqtwallet](https://twitter.com/zecqtwallet).
 
 _PS: zec-qt-wallet is NOT an official wallet, and is not affiliated with the Zerocoin Electric Coin Company in any way._
