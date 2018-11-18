@@ -26,13 +26,13 @@ Additionally, if this is the first time you're running zec-qt-wallet or a zcashd
 Pass `--no-embedded` to disable the embedded zcashd and force zec-qt-wallet to connect to an external node.
 
 ## Compiling from source
-zec-qt-wallet is written in C++ 14, and can be compiled with g++/clang++/visual c++. It also depends on Qt5, which you can get from here: https://www.qt.io/download
+zec-qt-wallet is written in C++ 14, and can be compiled with g++/clang++/visual c++. It also depends on Qt5, which you can get from [here](https://www.qt.io/download)
+
+See detailed build instructions [on the wiki](wiki/Compiling-from-source-code)
 
 ### Compiling on Linux
 
 ```
-sudo apt install libgl1-mesa-dev
-
 git clone https://github.com/adityapk00/zec-qt-wallet.git
 cd zec-qt-wallet
 /path/to/qt5/bin/qmake zec-qt-wallet.pro CONFIG+=debug
@@ -57,6 +57,18 @@ debug\zec-qt-wallet.exe
 To create the Visual Studio project files so you can compile and run from Visual Studio:
 ```
 c:\Qt5\bin\qmake.exe zec-qt-wallet.pro -tp vc CONFIG+=debug
+```
+
+## Building on Mac
+You need to install the XCode app or the XCode command line tools first, and then install Qt. 
+
+```
+git clone https://github.com/adityapk00/zec-qt-wallet.git
+cd zec-qt-wallet
+/path/to/qt5/bin/qmake zec-qt-wallet.pro CONFIG+=debug
+make
+
+./zec-qt-wallet.app/Contents/MacOS/zec-qt-wallet
 ```
 
 ## Troubleshooting FAQ
