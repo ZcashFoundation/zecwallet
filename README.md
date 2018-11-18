@@ -28,7 +28,7 @@ Pass `--no-embedded` to disable the embedded zcashd and force zec-qt-wallet to c
 ## Compiling from source
 zec-qt-wallet is written in C++ 14, and can be compiled with g++/clang++/visual c++. It also depends on Qt5, which you can get from [here](https://www.qt.io/download)
 
-See detailed build instructions [on the wiki](wiki/Compiling-from-source-code)
+See detailed build instructions [on the wiki](https://github.com/ZcashFoundation/zec-qt-wallet/wiki/Compiling-from-source-code)
 
 ### Compiling on Linux
 
