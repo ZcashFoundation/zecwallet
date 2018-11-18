@@ -72,7 +72,7 @@ make
 ```
 
 ### [Troubleshooting Guide & FAQ](https://github.com/ZcashFoundation/zec-qt-wallet/wiki/Troubleshooting-&-FAQ)
-
-For support or other questions, tweet at [@zecqtwallet](https://twitter.com/zecqtwallet).
+Read the [troubleshooting guide](https://github.com/ZcashFoundation/zec-qt-wallet/wiki/Troubleshooting-&-FAQ).
+For support or other questions, tweet at [@zecqtwallet](https://twitter.com/zecqtwallet) or [file an issue](https://github.com/ZcashFoundation/zec-qt-wallet/issues).
 
 _PS: zec-qt-wallet is NOT an official wallet, and is not affiliated with the Zerocoin Electric Coin Company in any way._
