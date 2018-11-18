@@ -30,7 +30,7 @@ zec-qt-wallet is written in C++ 14, and can be compiled with g++/clang++/visual 
 
 See detailed build instructions [on the wiki](https://github.com/ZcashFoundation/zec-qt-wallet/wiki/Compiling-from-source-code)
 
-### Compiling on Linux
+### Building on Linux
 
 ```
 git clone https://github.com/adityapk00/zec-qt-wallet.git
@@ -41,7 +41,7 @@ make -j$(nproc)
 ./zec-qt-wallet
 ```
 
-### Compiling on Windows
+### Building on Windows
 You need Visual Studio 2017 (The free C++ Community Edition works just fine). 
 
 From the VS Tools command prompt
@@ -59,7 +59,7 @@ To create the Visual Studio project files so you can compile and run from Visual
 c:\Qt5\bin\qmake.exe zec-qt-wallet.pro -tp vc CONFIG+=debug
 ```
 
-## Building on Mac
+## Building on MacOS
 You need to install the XCode app or the XCode command line tools first, and then install Qt. 
 
 ```
