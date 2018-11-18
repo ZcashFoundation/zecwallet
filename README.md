@@ -71,20 +71,7 @@ make
 ./zec-qt-wallet.app/Contents/MacOS/zec-qt-wallet
 ```
 
-## Troubleshooting FAQ
-### 1. "Connection Error"
-
-Normally, zec-qt-wallet can pick up the rpcuser/rpcpassword from zcash.conf. If it doesn't for some reason, you can set the username/password in the File->Settings menu. 
-If you are connecting to a remote node, make sure that zcashd on the remote machine is accepting connections from your machine. The target machine's firewall needs to allow connections
-from your host and also zcashd is set to be configured to accept connections from this host. 
-
-The easiest way to connect to a remote node is probably to ssh to it with port forwarding like this:
-```
-ssh -L8232:127.0.0.1:8232 user@remotehost
-```
-### 2. "Not enough balance" when sending transactions
-The most likely cause for this is that you are trying to spend unconfirmed funds. Unlike Bitcoin, the Zcash protocol doesn't let you spent unconfirmed funds yet. Please wait for 
-1-2 blocks for the funds to confirm and retry the transaction. 
+### [Troubleshooting & FAQ](https://github.com/ZcashFoundation/zec-qt-wallet/wiki/Troubleshooting-&-FAQ)
 
 ### Support or other questions
 Tweet at [@zecqtwallet](https://twitter.com/zecqtwallet) for help.
