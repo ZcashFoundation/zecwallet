@@ -1,4 +1,4 @@
-zec-qt-wallet is a z-Addr first, Sapling compatible wallet and full node for zcashd that runs on Windows and Linux
+zec-qt-wallet is a z-Addr first, Sapling compatible wallet and full node for zcashd that runs on Linux, Windows and macOS.
 
 ![Screenshot](docs/screenshot-main.png?raw=true)
 ![Screenshots](docs/screenshot-sub.png?raw=true)
@@ -7,7 +7,7 @@ zec-qt-wallet is a z-Addr first, Sapling compatible wallet and full node for zca
 Head over to the releases page and grab the latest binary. https://github.com/adityapk00/zec-qt-wallet/releases
 
 ### Linux
-Extract and run the binary
+Extract and run the binary.
 ```
 tar -xvf zec-qt-wallet-v0.3.2.tar.gz
 ./zec-qt-wallet-v0.3.2/zec-qt-wallet
@@ -59,8 +59,8 @@ To create the Visual Studio project files so you can compile and run from Visual
 c:\Qt5\bin\qmake.exe zec-qt-wallet.pro -tp vc CONFIG+=debug
 ```
 
-## Building on MacOS
-You need to install the XCode app or the XCode command line tools first, and then install Qt. 
+## Building on macOS
+You need to install the Xcode app or the Xcode command line tools first, and then install Qt. 
 
 ```
 git clone https://github.com/adityapk00/zec-qt-wallet.git
