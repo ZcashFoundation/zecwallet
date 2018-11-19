@@ -51,13 +51,13 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
                         //  - QProcess ended, but the embedded zcashd is still in the background. 
                         // We're going to attempt to connect to the one in the background one last time
                         // and see if that works, else throw an error
-                        doAutoConnect(/* don't attempt to start ezcashd */ false); 
+                        QTimer::singleShot(2000, [=]() { doAutoConnect(/* don't attempt to start ezcashd */ false); });
                     }
                 } else {
                     // We tried to start ezcashd previously, and it didn't work. So, show the error. 
                     QString explanation = QString() % "Couldn't start the embedded zcashd.\n\n" %
-                                        "Did you previously start zcashd with custom arguments not in zcash.conf? Or maybe the zcash-params are corrupt?\n" %
-                                        "Please delete your zcash-params directory and restart.\n\n" %
+                                        "Please try restarting.\n\nIfIf you previously started zcashd with custom arguments, you might need to reset zcash.conf.\n\n"
+                                        "If all else fails, please run zcashd manually."
                                         (ezcashd ? "The process returned:\n\n" % ezcashd->errorString() : QString(""));
                     this->showError(explanation);
                 }
