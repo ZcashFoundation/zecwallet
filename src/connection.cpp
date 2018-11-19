@@ -56,8 +56,8 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
                 } else {
                     // We tried to start ezcashd previously, and it didn't work. So, show the error. 
                     QString explanation = QString() % "Couldn't start the embedded zcashd.\n\n" %
-                                        "Please try restarting.\n\nIfIf you previously started zcashd with custom arguments, you might need to reset zcash.conf.\n\n"
-                                        "If all else fails, please run zcashd manually."
+                                        "Please try restarting.\n\nIfIf you previously started zcashd with custom arguments, you might need to reset zcash.conf.\n\n" %
+                                        "If all else fails, please run zcashd manually." %
                                         (ezcashd ? "The process returned:\n\n" % ezcashd->errorString() : QString(""));
                     this->showError(explanation);
                 }

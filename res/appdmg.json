@@ -1,0 +1,10 @@
+{
+  "title": "zec-qt-wallet",
+  "icon": "logo.icns",
+  "background": "dmgbg.png",
+  "window" : { "size" : { "width" : 600, "height" : 100}},
+  "contents": [
+    { "x": 448, "y": 60, "type": "link", "path": "/Applications" },
+    { "x": 192, "y": 60, "type": "file", "path": "../zec-qt-wallet.app" }
+  ]
+}

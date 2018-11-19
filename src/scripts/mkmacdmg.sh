@@ -17,6 +17,7 @@ fi
 
 #Clean
 make distclean >/dev/null 2>&1
+rm artifacts/zec-qt-wallet-v$APP_VERSION.dmg
 
 # Build
 $QT_PATH/bin/qmake zec-qt-wallet.pro CONFIG+=release
@@ -29,7 +30,6 @@ rm -f artifacts/rw* >/dev/null 2>&1
 cp ../zcash/src/zcashd zec-qt-wallet.app/Contents/MacOS/
 $QT_PATH/bin/macdeployqt zec-qt-wallet.app 
 
-create-dmg --volname "zec-qt-wallet-v$APP_VERSION" --volicon "res/logo.icns" --window-pos 200 120 --icon "zec-qt-wallet.app" 200 190  --app-drop-link 600 185 --hide-extension "zec-qt-wallet.app"  --window-size 800 400 --hdiutil-quiet --background res/dmgbg.png  artifacts/zec-qt-wallet.dmg zec-qt-wallet.app >/dev/null
+# create-dmg --volname "zec-qt-wallet-v$APP_VERSION" --volicon "res/logo.icns" --window-pos 200 120 --icon "zec-qt-wallet.app" 200 190  --app-drop-link 600 185 --hide-extension "zec-qt-wallet.app"  --window-size 800 400 --hdiutil-quiet --background res/dmgbg.png  artifacts/zec-qt-wallet.dmg zec-qt-wallet.app >/dev/null
 
-mv artifacts/zec-qt-wallet.dmg artifacts/MacOS-zec-qt-wallet-v$APP_VERSION.dmg
-
+appdmg res/appdmg.json artifacts/zec-qt-wallet-v$APP_VERSION.dmg
