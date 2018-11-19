@@ -59,7 +59,7 @@ To create the Visual Studio project files so you can compile and run from Visual
 c:\Qt5\bin\qmake.exe zec-qt-wallet.pro -tp vc CONFIG+=debug
 ```
 
-## Building on macOS
+### Building on macOS
 You need to install the Xcode app or the Xcode command line tools first, and then install Qt. 
 
 ```
@@ -72,7 +72,7 @@ make
 ```
 
 ### [Troubleshooting Guide & FAQ](https://github.com/ZcashFoundation/zec-qt-wallet/wiki/Troubleshooting-&-FAQ)
-Read the [troubleshooting guide](https://github.com/ZcashFoundation/zec-qt-wallet/wiki/Troubleshooting-&-FAQ).
+Please read the [troubleshooting guide](https://github.com/ZcashFoundation/zec-qt-wallet/wiki/Troubleshooting-&-FAQ) for common problems and solutions.
 For support or other questions, tweet at [@zecqtwallet](https://twitter.com/zecqtwallet) or [file an issue](https://github.com/ZcashFoundation/zec-qt-wallet/issues).
 
 _PS: zec-qt-wallet is NOT an official wallet, and is not affiliated with the Zerocoin Electric Coin Company in any way._
