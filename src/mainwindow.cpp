@@ -194,6 +194,12 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
     if (rpc->getAllZAddresses() == nullptr)
         return;
 
+    // If a migration is already in progress, show the progress dialog instead
+    if (rpc->getTurnstile()->isMigrationPresent()) {
+        turnstileProgress();
+        return;
+    }
+
     Ui_Turnstile turnstile;
     QDialog d(this);
     turnstile.setupUi(&d);
@@ -481,12 +487,12 @@ void MainWindow::postToZBoard() {
 
     QMap<QString, QString> topics;
     // Insert the main topic automatically
-    topics.insert("#Main_Area", Settings::getZboardAddr());
+    topics.insert("#Main_Area", Settings::getInstance()->isTestnet() ? Settings::getDonationAddr(true) : Settings::getZboardAddr());
     zb.topicsList->addItem(topics.firstKey());
     // Then call the API to get topics, and if it returns successfully, then add the rest of the topics
     rpc->getZboardTopics([&](QMap<QString, QString> topicsMap) {
         for (auto t : topicsMap.keys()) {
-            topics.insert(t, topicsMap[t]);
+            topics.insert(t, Settings::getInstance()->isTestnet() ? Settings::getDonationAddr(true) : topicsMap[t]);
             zb.topicsList->addItem(t);
         }
     });
