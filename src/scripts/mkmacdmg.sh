@@ -25,7 +25,7 @@ export PATH=$PATH:/usr/local/bin
 #Clean
 echo -n "Cleaning..............."
 make distclean >/dev/null 2>&1
-rm -f artifacts/zec-qt-wallet-v$APP_VERSION.dmg
+rm -f artifacts/macOS-zec-qt-wallet-v$APP_VERSION.dmg
 echo "[OK]"
 
 
@@ -55,7 +55,7 @@ cp res/dmgbg.png bin/dmgbuild/
 
 cp -r zec-qt-wallet.app bin/dmgbuild/
 
-appdmg --quiet bin/dmgbuild/appdmg.json artifacts/zec-qt-wallet-v$APP_VERSION.dmg >/dev/null
+appdmg --quiet bin/dmgbuild/appdmg.json artifacts/macOS-zec-qt-wallet-v$APP_VERSION.dmg >/dev/null
 if [ ! -f artifacts/zec-qt-wallet-v$APP_VERSION.dmg ]; then
     echo "[ERROR]"
     exit 1
