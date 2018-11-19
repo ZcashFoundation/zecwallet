@@ -9,12 +9,15 @@ Head over to the releases page and grab the latest binary. https://github.com/ad
 ### Linux
 Extract and run the binary.
 ```
-tar -xvf zec-qt-wallet-v0.3.2.tar.gz
-./zec-qt-wallet-v0.3.2/zec-qt-wallet
+tar -xvf zec-qt-wallet-v0.4.0.tar.gz
+./zec-qt-wallet-v0.4.0/zec-qt-wallet
 ```
 
 ### Windows
 Unzip the release binary and double click on zec-qt-wallet to start.
+
+### macOS
+Double-click on the .dmg file to open it, and drag zec-qt-wallet on to the Applications link to install.
 
 ## zcashd
 zec-qt-wallet needs a Zcash node running zcashd. If you already have a zcashd node running, zec-qt-wallet will connect to it. 
