@@ -11,11 +11,10 @@
 #include "rpc.h"
 #include "balancestablemodel.h"
 #include "settings.h"
-
+#include "version.h"
 #include "turnstile.h"
 #include "senttxstore.h"
 #include "connection.h"
-
 
 using json = nlohmann::json;
 

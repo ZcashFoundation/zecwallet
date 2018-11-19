@@ -13,8 +13,6 @@ PRECOMPILED_HEADER = src/precompiled.h
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = zec-qt-wallet
-APP_VERSION=\\\"0.3.2\\\"
-
 
 TEMPLATE = app
 
@@ -23,9 +21,7 @@ TEMPLATE = app
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += \
-    QT_DEPRECATED_WARNINGS \
-    APP_VERSION=$$APP_VERSION
-
+    QT_DEPRECATED_WARNINGS
 
 INCLUDEPATH  += src/3rdparty/
 

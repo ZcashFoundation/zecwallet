@@ -2,6 +2,8 @@
 #include "settings.h"
 #include "turnstile.h"
 
+#include "version.h"
+
 #include "precompiled.h"
 
 int main(int argc, char *argv[])

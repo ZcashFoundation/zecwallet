@@ -2,7 +2,8 @@
 param (
     [Parameter(Mandatory=$true)][string]$version,
     [Parameter(Mandatory=$true)][string]$prev,
-    [Parameter(Mandatory=$true)][string]$server
+    [Parameter(Mandatory=$true)][string]$server,
+    [Parameter(Mandatory=$true)][string]$macserver
 )
 
 Write-Host "[Initializing]"
@@ -15,6 +16,28 @@ Remove-Item -Recurse -Force -ErrorAction Ignore ./bin
 Remove-Item -Recurse -Force -ErrorAction Ignore ./debug
 Remove-Item -Recurse -Force -ErrorAction Ignore ./release
 
+# Create the version.h file
+echo "#define APP_VERSION `"$version`"" > src/version.h
+echo ""
+
+
+echo "[Building on Mac]"
+Write-Host -NoNewline "Copying files.........."
+ssh $macserver "rm -rf /tmp/zqwbuild"
+ssh $macserver "mkdir /tmp/zqwbuild"
+scp -r * ${macserver}:/tmp/zqwbuild | Out-Null
+Write-Host "[OK]"
+ssh $macserver "cd /tmp/zqwbuild && APP_VERSION=$version QT_PATH=~/Qt/5.11.2/clang_64/ ZCASH_DIR=~/github/zcash bash src/scripts/mkmacdmg.sh"
+if (!$?) {
+    Write-Output "[Error]"
+    exit 1;
+}
+New-Item artifacts -itemtype directory -Force | Out-Null
+scp ${macserver}:/tmp/zqwbuild/artifacts/* artifacts/ | Out-Null
+Write-Host ""
+
+
+echo "[Building Linux/Windows]"
 Write-Host -NoNewline "Copying files.........."
 ssh $server "rm -rf /tmp/zqwbuild"
 ssh $server "mkdir /tmp/zqwbuild"
@@ -45,7 +68,8 @@ Write-Host -NoNewline "Checking Build........."
 if (! (Test-Path ./artifacts/linux-zec-qt-wallet-v$version.tar.gz) -or
     ! (Test-Path ./artifacts/Windows-zec-qt-wallet-v$version.zip) -or
     ! (Test-Path ./artifacts/zec-qt-wallet-v$version.deb) -or
-    ! (Test-Path ./artifacts/zec-qt-wallet-v$version.msi)) {
+    ! (Test-Path ./artifacts/zec-qt-wallet-v$version.msi) -or 
+    ! (Test-Path ./artifacts/zec-qt-wallet-v$version.dmg) ) {
         Write-Host "[Error]"
         exit 1;
     }
