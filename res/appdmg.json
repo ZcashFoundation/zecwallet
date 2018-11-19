@@ -2,9 +2,12 @@
   "title": "zec-qt-wallet",
   "icon": "logo.icns",
   "background": "dmgbg.png",
-  "window" : { "size" : { "width" : 600, "height" : 100}},
+  "window" : { 
+    "size" : { "width" : 600, "height" : 100},
+    "position" : { "x" : 200, "y" : 200}
+  },
   "contents": [
-    { "x": 448, "y": 60, "type": "link", "path": "/Applications" },
-    { "x": 192, "y": 60, "type": "file", "path": "../zec-qt-wallet.app" }
+    { "x": 448, "y": 80, "type": "link", "path": "/Applications" },
+    { "x": 152, "y": 80, "type": "file", "path": "../zec-qt-wallet.app" }
   ]
 }

@@ -110,9 +110,6 @@ private:
 
     // Current balance in the UI. If this number updates, then refresh the UI
     QString                     currentBalance;
-
-    // First time warning flag for no connection
-    bool                        firstTime = true;
 };
 
 #endif // RPCCLIENT_H
