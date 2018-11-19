@@ -1,5 +1,5 @@
 {
-  "title": "zec-qt-wallet",
+  "title": "zec-qt-wallet-vRELEASE_VERSION",
   "icon": "logo.icns",
   "background": "dmgbg.png",
   "window" : { 
@@ -8,6 +8,6 @@
   },
   "contents": [
     { "x": 448, "y": 80, "type": "link", "path": "/Applications" },
-    { "x": 152, "y": 80, "type": "file", "path": "../zec-qt-wallet.app" }
+    { "x": 152, "y": 80, "type": "file", "path": "zec-qt-wallet.app" }
   ]
 }
