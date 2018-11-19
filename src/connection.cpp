@@ -478,6 +478,7 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {
     zcashconf->host     = "127.0.0.1";
     zcashconf->connType = ConnectionType::DetectedConfExternalZcashD;
     zcashconf->usingZcashConf = true;
+    zcashconf->zcashDir = QFileInfo(confLocation).absoluteDir().absolutePath();
 
     Settings::getInstance()->setUsingZcashConf(confLocation);
 
@@ -526,7 +527,7 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::loadFromSettings() {
     if (username.isEmpty() || password.isEmpty())
         return nullptr;
 
-    auto uiConfig = new ConnectionConfig{ host, port, username, password, false, ConnectionType::UISettingsZCashD };
+    auto uiConfig = new ConnectionConfig{ host, port, username, password, false, "",  ConnectionType::UISettingsZCashD};
 
     return std::shared_ptr<ConnectionConfig>(uiConfig);
 }

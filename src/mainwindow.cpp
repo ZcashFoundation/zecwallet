@@ -48,6 +48,9 @@ MainWindow::MainWindow(QWidget *parent) :
     // Export All Private Keys
     QObject::connect(ui->actionExport_All_Private_Keys, &QAction::triggered, this, &MainWindow::exportAllKeys);
 
+    // Backup wallet.dat
+    QObject::connect(ui->actionBackup_wallet_dat, &QAction::triggered, this, &MainWindow::backupWalletDat);
+
     // z-Board.net
     QObject::connect(ui->actionz_board_net, &QAction::triggered, this, &MainWindow::postToZBoard);
 
@@ -630,6 +633,26 @@ void MainWindow::importPrivKey() {
 
         // Start the import. The function takes ownership of keys
         doImport(keys);
+    }
+}
+
+void MainWindow::backupWalletDat() {
+    QFile wallet(QDir(rpc->getConnection()->config->zcashDir).filePath("wallet.dat"));
+    if (!wallet.exists()) {
+        QMessageBox::critical(this, "No wallet.dat", "Couldn't find the wallet.dat on this computer."
+            "You need to backup it up from the machine zcashd is running on", QMessageBox::Ok);
+        return;
+    }
+    
+    QUrl backupName = QFileDialog::getSaveFileUrl(this, "Backup wallet.dat", 
+        "zcash-wallet-backup-" + QDateTime::currentDateTime().toString("yyyyMMdd") + ".dat",
+        "Data file (*.dat)");
+    if (backupName.isEmpty())
+        return;
+
+    if (!wallet.copy(backupName.toLocalFile())) {
+        QMessageBox::critical(this, "Couldn't backup", "Couldn't backup the wallet.dat file."
+            "You need to backup it up manually.", QMessageBox::Ok);
     }
 }
 

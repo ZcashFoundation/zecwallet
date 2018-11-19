@@ -16,8 +16,8 @@ struct Tx;
 class Settings
 {
 public:
-    static Settings* init();
-    static Settings* getInstance();
+    static  Settings* init();
+    static  Settings* getInstance();
 
     Config  getSettings();
     void    saveSettings(const QString& host, const QString& port, const QString& username, const QString& password);
@@ -78,7 +78,7 @@ public:
 
     static const int     updateSpeed         = 20 * 1000;        // 20 sec
     static const int     quickUpdateSpeed    = 5  * 1000;        // 5 sec
-    static const int     priceRefreshSpeed   = 60 * 60 * 1000;    // 1 hr
+    static const int     priceRefreshSpeed   = 60 * 60 * 1000;   // 1 hr
 
 private:
     // This class can only be accessed through Settings::getInstance()

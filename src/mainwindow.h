@@ -89,6 +89,8 @@ private:
     void postToZBoard();
     void importPrivKey();
     void exportAllKeys();
+    void backupWalletDat();
+
     void doImport(QList<QString>* keys);
 
     void restoreSavedStates();

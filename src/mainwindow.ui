@@ -316,8 +316,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>920</width>
-                <height>334</height>
+                <width>928</width>
+                <height>380</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -849,7 +849,7 @@
      <x>0</x>
      <y>0</y>
      <width>968</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -858,6 +858,7 @@
     </property>
     <addaction name="actionImport_Private_Key"/>
     <addaction name="actionExport_All_Private_Keys"/>
+    <addaction name="actionBackup_wallet_dat"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -932,7 +933,7 @@
   </action>
   <action name="actionExport_All_Private_Keys">
    <property name="text">
-    <string>Export all private keys</string>
+    <string>&amp;Export all private keys</string>
    </property>
   </action>
   <action name="actionz_board_net">
@@ -949,6 +950,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="actionBackup_wallet_dat">
+   <property name="text">
+    <string>&amp;Backup wallet.dat</string>
    </property>
   </action>
  </widget>
