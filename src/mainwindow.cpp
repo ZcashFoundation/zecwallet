@@ -642,16 +642,22 @@ void MainWindow::importPrivKey() {
 }
 
 void MainWindow::backupWalletDat() {
-    QFile wallet(QDir(rpc->getConnection()->config->zcashDir).filePath("wallet.dat"));
+    QDir zcashdir(rpc->getConnection()->config->zcashDir);
+    QString backupDefaultName = "zcash-wallet-backup-" + QDateTime::currentDateTime().toString("yyyyMMdd") + ".dat";
+
+    if (Settings::getInstance()->isTestnet()) {
+        zcashdir.cd("testnet3");
+        backupDefaultName = "tesetnet-" + backupDefaultName;
+    }
+    
+    QFile wallet(zcashdir.filePath("wallet.dat"));
     if (!wallet.exists()) {
         QMessageBox::critical(this, "No wallet.dat", "Couldn't find the wallet.dat on this computer."
             "You need to back it up from the machine zcashd is running on", QMessageBox::Ok);
         return;
     }
     
-    QUrl backupName = QFileDialog::getSaveFileUrl(this, "Backup wallet.dat", 
-        "zcash-wallet-backup-" + QDateTime::currentDateTime().toString("yyyyMMdd") + ".dat",
-        "Data file (*.dat)");
+    QUrl backupName = QFileDialog::getSaveFileUrl(this, "Backup wallet.dat", backupDefaultName, "Data file (*.dat)");
     if (backupName.isEmpty())
         return;
 
