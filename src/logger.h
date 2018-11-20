@@ -11,7 +11,7 @@ public:
   ~Logger();
 
 private:
-  QFile *file;
+  QFile *file      = nullptr;
   bool m_showDate;
 
 signals:

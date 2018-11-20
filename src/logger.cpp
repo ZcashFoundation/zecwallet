@@ -11,6 +11,9 @@ Logger::Logger(QObject *parent, QString fileName) : QObject(parent) {
 }
 
 void Logger::write(const QString &value) {
+    if (!file)
+        return;
+        
     QString text = value;// + "";
     text = QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss ") + text;
     QTextStream out(file);
