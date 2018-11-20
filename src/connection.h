@@ -50,6 +50,7 @@ private:
     QString zcashConfWritableLocation();
     QString zcashParamsDir();
 
+    bool verifyParams();
     void downloadParams(std::function<void(void)> cb);
     void doNextDownload(std::function<void(void)> cb);
     bool startEmbeddedZcashd();

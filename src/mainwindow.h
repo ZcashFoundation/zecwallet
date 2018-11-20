@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "precompiled.h"
+#include "logger.h"
 
 // Forward declare to break circular dependency.
 class RPC;
@@ -45,6 +46,7 @@ public:
     QLabel*             loadingLabel;
     QWidget*            zcashdtab;
 
+    Logger*      logger;
 private:    
     void closeEvent(QCloseEvent* event);
 

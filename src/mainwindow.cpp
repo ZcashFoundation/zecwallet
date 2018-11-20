@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    logger = new Logger(this, QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("zec-qt-wallet.log"));
 
     // Status Bar
     setupStatusBar();
@@ -1040,4 +1041,5 @@ MainWindow::~MainWindow()
     delete labelCompleter;
 
     delete loadingMovie;
+    delete logger;
 }
