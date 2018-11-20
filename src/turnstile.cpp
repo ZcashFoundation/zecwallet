@@ -247,6 +247,10 @@ ProgressReport Turnstile::getPlanProgress() {
 }
 
 void Turnstile::executeMigrationStep() {
+    // Do a step only if not syncing, else wait for the blockchain to catch up
+    if (Settings::getInstance()->isSyncing())
+        return;
+
     auto plan = readMigrationPlan();
 
     //qDebug() << QString("Executing step");
@@ -254,7 +258,7 @@ void Turnstile::executeMigrationStep() {
 
     // Get to the next unexecuted step
     auto fnIsEligibleItem = [&] (auto item) {
-        return     item.status == TurnstileMigrationItemStatus::NotStarted || 
+        return  item.status == TurnstileMigrationItemStatus::NotStarted || 
                 item.status == TurnstileMigrationItemStatus::SentToT;
     };
 
