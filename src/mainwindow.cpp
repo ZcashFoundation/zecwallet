@@ -641,6 +641,10 @@ void MainWindow::importPrivKey() {
     }
 }
 
+/**
+ * Backup the wallet.dat file. This is kind of a hack, since it has to read from the filesystem rather than an RPC call
+ * This might fail for various reasons - Remote zcashd, non-standard locations, custom params passed to zcashd, many others
+*/
 void MainWindow::backupWalletDat() {
     QDir zcashdir(rpc->getConnection()->config->zcashDir);
     QString backupDefaultName = "zcash-wallet-backup-" + QDateTime::currentDateTime().toString("yyyyMMdd") + ".dat";

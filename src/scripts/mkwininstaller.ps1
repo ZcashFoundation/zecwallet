@@ -13,7 +13,7 @@ Copy-Item release/$target/README.md release/wininstaller/
 Copy-Item release/$target/zcashd.exe release/wininstaller/
 Copy-Item release/$target/zcash-cli.exe release/wininstaller/
 
-cat src/scripts/zec-qt-wallet.wxs | % { $_ -replace "RELEASE_VERSION", "$version" } > release/wininstaller/zec-qt-wallet.wxs
+Get-Content src/scripts/zec-qt-wallet.wxs | ForEach-Object { $_ -replace "RELEASE_VERSION", "$version" } | Out-File -Encoding utf8 release/wininstaller/zec-qt-wallet.wxs
 
 candle.exe release/wininstaller/zec-qt-wallet.wxs -o release/wininstaller/zec-qt-wallet.wixobj 
 if (!$?) {

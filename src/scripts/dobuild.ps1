@@ -11,24 +11,27 @@ Remove-Item -Force -ErrorAction Ignore ./artifacts/linux-zec-qt-wallet-v$version
 Remove-Item -Force -ErrorAction Ignore ./artifacts/Windows-zec-qt-wallet-v$version.zip
 Remove-Item -Force -ErrorAction Ignore ./artifacts/zec-qt-wallet-v$version.deb
 Remove-Item -Force -ErrorAction Ignore ./artifacts/zec-qt-wallet-v$version.msi
+Remove-Item -Force -ErrorAction Ignore ./artifacts/macOS-zec-qt-wallet-v$version.dmg
 
 Remove-Item -Recurse -Force -ErrorAction Ignore ./bin
 Remove-Item -Recurse -Force -ErrorAction Ignore ./debug
 Remove-Item -Recurse -Force -ErrorAction Ignore ./release
 
 # Create the version.h file
-echo "#define APP_VERSION `"$version`"" > src/version.h
-echo ""
+Write-Output "#define APP_VERSION `"$version`"" > src/version.h
+Write-Host ""
 
 
-echo "[Building on Mac]"
+Write-Host "[Building on Mac]"
 Write-Host -NoNewline "Copying files.........."
 ssh $macserver "rm -rf /tmp/zqwbuild"
 ssh $macserver "mkdir /tmp/zqwbuild"
-scp -r * ${macserver}:/tmp/zqwbuild | Out-Null
+scp -r src/ res/ ./zec-qt-wallet.pro ./application.qrc ./LICENSE ./README.md ${macserver}:/tmp/zqwbuild/ | Out-Null
 Write-Host "[OK]"
+ssh $macserver "cd /tmp/zqwbuild && /usr/local/bin/dos2unix -q src/scripts/mkmacdmg.sh"
+ssh $macserver "cd /tmp/zqwbuild && /usr/local/bin/dos2unix -q src/version.h"
 ssh $macserver "cd /tmp/zqwbuild && APP_VERSION=$version QT_PATH=~/Qt/5.11.2/clang_64/ ZCASH_DIR=~/github/zcash bash src/scripts/mkmacdmg.sh"
-if (!$?) {
+if (! $?) {
     Write-Output "[Error]"
     exit 1;
 }
@@ -37,12 +40,13 @@ scp ${macserver}:/tmp/zqwbuild/artifacts/* artifacts/ | Out-Null
 Write-Host ""
 
 
-echo "[Building Linux/Windows]"
+Write-Host "[Building Linux + Windows]"
 Write-Host -NoNewline "Copying files.........."
 ssh $server "rm -rf /tmp/zqwbuild"
 ssh $server "mkdir /tmp/zqwbuild"
-scp -r * ${server}:/tmp/zqwbuild | Out-Null
+scp -r src/ res/ ./zec-qt-wallet.pro ./application.qrc ./LICENSE ./README.md ${server}:/tmp/zqwbuild/ | Out-Null
 ssh $server "dos2unix -q /tmp/zqwbuild/src/scripts/mkrelease.sh" | Out-Null
+ssh $server "dos2unix -q /tmp/zqwbuild/src/version.h"
 Write-Host "[OK]"
 
 ssh $server "cd /tmp/zqwbuild && APP_VERSION=$version PREV_VERSION=$prev bash src/scripts/mkrelease.sh"
@@ -69,7 +73,7 @@ if (! (Test-Path ./artifacts/linux-zec-qt-wallet-v$version.tar.gz) -or
     ! (Test-Path ./artifacts/Windows-zec-qt-wallet-v$version.zip) -or
     ! (Test-Path ./artifacts/zec-qt-wallet-v$version.deb) -or
     ! (Test-Path ./artifacts/zec-qt-wallet-v$version.msi) -or 
-    ! (Test-Path ./artifacts/zec-qt-wallet-v$version.dmg) ) {
+    ! (Test-Path ./artifacts/macOS-zec-qt-wallet-v$version.dmg) ) {
         Write-Host "[Error]"
         exit 1;
     }

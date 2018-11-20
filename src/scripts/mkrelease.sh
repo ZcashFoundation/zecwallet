@@ -56,7 +56,7 @@ make distclean >/dev/null 2>&1
 echo "[OK]"
 
 echo ""
-echo "[Building on" `lsb_release -r` "]"
+echo "[Building on" `lsb_release -r`"]"
 
 echo -n "Configuring............"
 $QT_STATIC/bin/qmake zec-qt-wallet.pro -spec linux-clang CONFIG+=release > /dev/null

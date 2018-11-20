@@ -6,7 +6,7 @@ if [ -z $QT_PATH ]; then
 fi
 
 if [ -z $ZCASH_DIR ]; then
-    echo "ZCASH_PATH is not set. Please set it to the base directory of a compiled zcashd";
+    echo "ZCASH_DIR is not set. Please set it to the base directory of a compiled zcashd";
     exit 1;
 fi
 
@@ -56,7 +56,7 @@ cp res/dmgbg.png bin/dmgbuild/
 cp -r zec-qt-wallet.app bin/dmgbuild/
 
 appdmg --quiet bin/dmgbuild/appdmg.json artifacts/macOS-zec-qt-wallet-v$APP_VERSION.dmg >/dev/null
-if [ ! -f artifacts/zec-qt-wallet-v$APP_VERSION.dmg ]; then
+if [ ! -f artifacts/macOS-zec-qt-wallet-v$APP_VERSION.dmg ]; then
     echo "[ERROR]"
     exit 1
 fi
