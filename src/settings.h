@@ -72,6 +72,8 @@ public:
     static double  getTotalFee();
     
     static bool    isValidAddress(QString addr);
+    static QString addressFromAddressLabel(const QString& lblAddr);
+    static QString addressLabelFromAddress(const QString& addr);
 
     static const int     updateSpeed         = 20 * 1000;        // 20 sec
     static const int     quickUpdateSpeed    = 5  * 1000;        // 5 sec

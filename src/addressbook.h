@@ -31,12 +31,32 @@ private:
 
 class AddressBook {
 public:    
+    // Method that opens the AddressBook dialog window. 
     static void open(MainWindow* parent, QLineEdit* target = nullptr);
 
-    static QList<QPair<QString, QString>> readFromStorage();
-    static void writeToStorage(QList<QPair<QString, QString>> labels);
+    static AddressBook* getInstance(); 
 
-    static QString writeableFile();
+    // Add a new address/label to the database
+    void addAddressLabel(QString label, QString address);
+
+    // Remove a new address/label from the database
+    void removeAddressLabel(QString label, QString address);
+
+    // Read all addresses
+    const QList<QPair<QString, QString>>& getAllAddressLabels();
+
+    // Get an address's first label
+    QString getLabelForAddress(QString address);
+private:
+    AddressBook();
+
+    void readFromStorage();
+    void writeToStorage();
+
+    QString writeableFile();
+    QList<QPair<QString, QString>> allLabels;
+
+    static AddressBook* instance;
 };
 
 #endif // ADDRESSBOOK_H

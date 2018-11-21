@@ -92,7 +92,7 @@ void MainWindow::setupSendTab() {
 
 void MainWindow::updateLabelsAutoComplete() {
     QList<QString> list;
-    auto labels = AddressBook::readFromStorage();
+    auto labels = AddressBook::getInstance()->getAllAddressLabels();
     
     std::transform(labels.begin(), labels.end(), std::back_inserter(list), [=] (auto la) -> QString {
         return la.first % "/" % la.second;
@@ -244,7 +244,7 @@ void MainWindow::addAddressSection() {
 }
 
 void MainWindow::addressChanged(int itemNumber, const QString& text) {   
-    auto addr = addressFromAddressField(text);
+    auto addr = Settings::addressFromAddressLabel(text);
     setMemoEnabled(itemNumber, addr.startsWith("z"));
 }
 
@@ -267,7 +267,7 @@ void MainWindow::setMemoEnabled(int number, bool enabled) {
 void MainWindow::memoButtonClicked(int number) {
     // Memos can only be used with zAddrs. So check that first
     auto addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") + QString::number(number));
-    if (!addressFromAddressField(addr->text()).startsWith("z")) {
+    if (!Settings::addressFromAddressLabel(addr->text()).startsWith("z")) {
         QMessageBox msg(QMessageBox::Critical, "Memos can only be used with z-addresses",
         "The memo field can only be used with a z-address.\n" + addr->text() + "\ndoesn't look like a z-address",
         QMessageBox::Ok, this);
@@ -357,7 +357,7 @@ void MainWindow::maxAmountChecked(int checked) {
         }
         sumAllAmounts += Settings::getTotalFee();
 
-        auto addr = ui->inputsCombo->currentText().split("(")[0];
+        auto addr = Settings::addressFromAddressLabel(ui->inputsCombo->currentText().split("(")[0]);
 
         auto maxamount  = rpc->getAllBalances()->value(addr) - sumAllAmounts;
         maxamount       = (maxamount < 0) ? 0 : maxamount;
@@ -380,7 +380,7 @@ Tx MainWindow::createTxFromSendPage() {
     for (int i=0; i < totalItems; i++) {
         QString addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") % QString::number(i+1))->text().trimmed();
         // Remove label if it exists
-        addr = addressFromAddressField(addr);
+        addr = Settings::addressFromAddressLabel(addr);
 
         double  amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1))->text().trimmed().toDouble();        
         QString memo = ui->sendToWidgets->findChild<QLabel*>(QString("MemoTxt")  % QString::number(i+1))->text().trimmed();

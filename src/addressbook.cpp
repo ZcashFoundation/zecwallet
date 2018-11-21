@@ -18,22 +18,23 @@ AddressBookModel::~AddressBookModel() {
 }
 
 void AddressBookModel::saveData() {
-    AddressBook::writeToStorage(labels);
-
     // Save column positions
     QSettings().setValue("addresstablegeometry", parent->horizontalHeader()->saveState());
 }
 
 
 void AddressBookModel::loadData() {        
-    labels = AddressBook::readFromStorage();
+    labels = AddressBook::getInstance()->getAllAddressLabels();
 
     parent->horizontalHeader()->restoreState(QSettings().value("addresstablegeometry").toByteArray());
 }
 
 void AddressBookModel::addNewLabel(QString label, QString addr) {
-    labels.push_back(QPair<QString, QString>(label, addr));
-    AddressBook::writeToStorage(labels);
+    //labels.push_back(QPair<QString, QString>(label, addr));
+    AddressBook::getInstance()->addAddressLabel(label, addr);
+
+    labels.clear();
+    labels = AddressBook::getInstance()->getAllAddressLabels();
 
     dataChanged(index(0, 0), index(labels.size()-1, columnCount(index(0,0))-1));
     layoutChanged();
@@ -43,9 +44,10 @@ void AddressBookModel::removeItemAt(int row) {
     if (row >= labels.size())
         return;
 
-    labels.removeAt(row);
-    AddressBook::writeToStorage(labels);
-
+    AddressBook::getInstance()->removeAddressLabel(labels[row].first, labels[row].second);
+    
+    labels.clear();
+    labels = AddressBook::getInstance()->getAllAddressLabels();
 
     dataChanged(index(0, 0), index(labels.size()-1, columnCount(index(0,0))-1));
     layoutChanged();
@@ -86,6 +88,10 @@ QVariant AddressBookModel::headerData(int section, Qt::Orientation orientation, 
     return QVariant();
 }
 
+
+//===============
+// AddressBook
+//===============
 void AddressBook::open(MainWindow* parent, QLineEdit* target) {
     QDialog d(parent);
     Ui_addressBook ab;
@@ -180,31 +186,41 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
     };
 }
 
-QList<QPair<QString, QString>> AddressBook::readFromStorage() {
+//=============
+// AddressBook singleton class
+//=============
+AddressBook* AddressBook::getInstance() {
+    if (!instance)
+        instance = new AddressBook();
+
+    return instance;
+}
+
+AddressBook::AddressBook() {
+    readFromStorage();
+}
+
+void AddressBook::readFromStorage() {
     QFile file(AddressBook::writeableFile());
-    
-    QList<QPair<QString, QString>> labels;    
 
     if (!file.exists()) {
-        return labels;
+        return;
     }
 
+    allLabels.clear();
     file.open(QIODevice::ReadOnly);
     QDataStream in(&file);    // read the data serialized from the file
     QString version;
-    in >> version >> labels; 
+    in >> version >> allLabels; 
 
     file.close();
-
-    return labels;
 }
 
-
-void AddressBook::writeToStorage(QList<QPair<QString, QString>> labels) {
+void AddressBook::writeToStorage() {
     QFile file(AddressBook::writeableFile());
     file.open(QIODevice::ReadWrite | QIODevice::Truncate);
     QDataStream out(&file);   // we will serialize the data into the file
-    out << QString("v1") << labels;
+    out << QString("v1") << allLabels;
     file.close();
 }
 
@@ -221,3 +237,40 @@ QString AddressBook::writeableFile() {
         return dir.filePath(filename);
     }
 }
+
+
+// Add a new address/label to the database
+void AddressBook::addAddressLabel(QString label, QString address) {
+    Q_ASSERT(Settings::isValidAddress(address));
+
+    allLabels.push_back(QPair<QString, QString>(label, address));
+    writeToStorage();
+}
+
+// Remove a new address/label from the database
+void AddressBook::removeAddressLabel(QString label, QString address) {
+    // Iterate over the list and remove the label/address
+    for (int i=0; i < allLabels.size(); i++) {
+        if (allLabels[i].first == label && allLabels[i].second == address)
+            allLabels.removeAt(i);
+            writeToStorage();
+            return;
+    }
+}
+
+// Read all addresses
+const QList<QPair<QString, QString>>& AddressBook::getAllAddressLabels() {
+    return allLabels;
+}
+
+// Get the label for an address
+QString AddressBook::getLabelForAddress(QString addr) {
+    for (auto i : allLabels) {
+        if (i.second == addr)
+            return i.first;
+    }
+
+    return "";
+}
+
+AddressBook* AddressBook::instance = nullptr;
