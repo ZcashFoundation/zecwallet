@@ -317,7 +317,7 @@ void RPC::fillTxJsonParams(json& params, Tx tx) {
         // Construct the JSON params
         json rec = json::object();
         rec["address"]      = toAddr.addr.toStdString();
-        rec["amount"]       = QString::number(toAddr.amount, 'f', 8).toDouble();        // Force it through string for rounding
+        rec["amount"]       = toAddr.amount;
         if (toAddr.addr.startsWith("z") && !toAddr.encodedMemo.trimmed().isEmpty())
             rec["memo"]     = toAddr.encodedMemo.toStdString();
 
@@ -331,7 +331,7 @@ void RPC::fillTxJsonParams(json& params, Tx tx) {
     // Add fees if custom fees are allowed.
     if (Settings::getInstance()->getAllowCustomFees()) {
         params.push_back(1); // minconf
-        params.push_back(QString::number(tx.fee, 'f', 8).toDouble());
+        params.push_back(tx.fee);
     }
 }
 
@@ -660,7 +660,7 @@ bool RPC::processUnspent(const json& reply) {
 
         utxos->push_back(
             UnspentOutput{ qsAddr, QString::fromStdString(it["txid"]),
-                            QString::number(it["amount"].get<json::number_float_t>(), 'g', 8),
+                            Settings::getDecimalString(it["amount"].get<json::number_float_t>()),
                             (int)confirmations, it["spendable"].get<json::boolean_t>() });
 
         (*allBalances)[qsAddr] = (*allBalances)[qsAddr] + it["amount"].get<json::number_float_t>();

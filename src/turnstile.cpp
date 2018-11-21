@@ -169,8 +169,6 @@ QList<double> Turnstile::splitAmount(double amount, int parts) {
     // Add the Tx fees
     sumofparts += amounts.size() * Settings::getMinerFee();
 
-    //qDebug() << QString::number(sumofparts, 'f', 8) << QString::number(amount, 'f', 8);
-    //Q_ASSERT(QString::number(sumofparts, 'f', 8) == QString::number(amount, 'f', 8));
     return amounts;
 }
 

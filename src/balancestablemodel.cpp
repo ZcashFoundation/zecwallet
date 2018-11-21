@@ -20,9 +20,9 @@ void BalancesTableModel::setNewData(const QMap<QString, double>* balances,
 
     // Process the address balances into a list
     delete modeldata;
-    modeldata = new QList<std::tuple<QString, QString>>();
+    modeldata = new QList<std::tuple<QString, double>>();
     std::for_each(balances->keyBegin(), balances->keyEnd(), [=] (auto keyIt) {
-        modeldata->push_back(std::make_tuple(keyIt, QString::number(balances->value(keyIt), 'g', 8)));
+        modeldata->push_back(std::make_tuple(keyIt, balances->value(keyIt)));
     });
 
     // And then update the data
@@ -85,7 +85,7 @@ QVariant BalancesTableModel::data(const QModelIndex &index, int role) const
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
         case 0: return std::get<0>(modeldata->at(index.row()));
-        case 1: return Settings::getZECDisplayFormat(std::get<1>(modeldata->at(index.row())).toDouble());
+        case 1: return Settings::getZECDisplayFormat(std::get<1>(modeldata->at(index.row())));
         }
     }
 
@@ -93,8 +93,7 @@ QVariant BalancesTableModel::data(const QModelIndex &index, int role) const
         switch (index.column()) {
         case 0: return std::get<0>(modeldata->at(index.row()));
         case 1: {
-                auto bal = std::get<1>(modeldata->at(index.row())).toDouble();
-                return Settings::getUSDFormat(bal);
+                return Settings::getUSDFormat(std::get<1>(modeldata->at(index.row())));
             }
         }
     }

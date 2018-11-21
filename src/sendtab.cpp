@@ -357,7 +357,7 @@ void MainWindow::maxAmountChecked(int checked) {
         auto maxamount  = rpc->getAllBalances()->value(addr) - sumAllAmounts;
         maxamount       = (maxamount < 0) ? 0 : maxamount;
             
-        ui->Amount1->setText(QString::number(maxamount, 'g', 8));
+        ui->Amount1->setText(Settings::getDecimalString(maxamount));
     } else if (checked == Qt::Unchecked) {
         // Just remove the readonly part, don't change the content
         ui->Amount1->setReadOnly(false);
