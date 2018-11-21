@@ -47,15 +47,16 @@ echo "[OK]"
 
 
 echo -n "Building dmg..........."
-# create-dmg --volname "zec-qt-wallet-v$APP_VERSION" --volicon "res/logo.icns" --window-pos 200 120 --icon "zec-qt-wallet.app" 200 190  --app-drop-link 600 185 --hide-extension "zec-qt-wallet.app"  --window-size 800 400 --hdiutil-quiet --background res/dmgbg.png  artifacts/zec-qt-wallet.dmg zec-qt-wallet.app >/dev/null
-mkdir bin/dmgbuild >/dev/null 2>&1
-sed "s/RELEASE_VERSION/${APP_VERSION}/g" res/appdmg.json > bin/dmgbuild/appdmg.json
-cp res/logo.icns bin/dmgbuild/
-cp res/dmgbg.png bin/dmgbuild/
+create-dmg --volname "zec-qt-wallet-v$APP_VERSION" --volicon "res/logo.icns" --window-pos 200 120 --icon "zec-qt-wallet.app" 200 190  --app-drop-link 600 185 --hide-extension "zec-qt-wallet.app"  --window-size 800 400 --hdiutil-quiet --background res/dmgbg.png  artifacts/macOS-zec-qt-wallet-v$APP_VERSION.dmg zec-qt-wallet.app >/dev/null
 
-cp -r zec-qt-wallet.app bin/dmgbuild/
+#mkdir bin/dmgbuild >/dev/null 2>&1
+#sed "s/RELEASE_VERSION/${APP_VERSION}/g" res/appdmg.json > bin/dmgbuild/appdmg.json
+#cp res/logo.icns bin/dmgbuild/
+#cp res/dmgbg.png bin/dmgbuild/
 
-appdmg --quiet bin/dmgbuild/appdmg.json artifacts/macOS-zec-qt-wallet-v$APP_VERSION.dmg >/dev/null
+#cp -r zec-qt-wallet.app bin/dmgbuild/
+
+#appdmg --quiet bin/dmgbuild/appdmg.json artifacts/macOS-zec-qt-wallet-v$APP_VERSION.dmg >/dev/null
 if [ ! -f artifacts/macOS-zec-qt-wallet-v$APP_VERSION.dmg ]; then
     echo "[ERROR]"
     exit 1
