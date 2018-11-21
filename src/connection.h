@@ -21,6 +21,7 @@ struct ConnectionConfig {
     QString rpcuser;
     QString rpcpassword;
     bool    usingZcashConf;
+    bool    zcashDaemon;
     QString zcashDir;
 
     ConnectionType connType;

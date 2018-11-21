@@ -53,25 +53,38 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
                         main->logger->write("Embedded zcashd started up, trying autoconnect in 1 sec");
                         QTimer::singleShot(1000, [=]() { doAutoConnect(); } );
                     } else {
-                        // Something is wrong. This is happenening intermittently on Mac platforms. 
-                        //  - We tried to start zcashd
-                        //  - QProcess started
-                        //  - QProcess ended, but the embedded zcashd is still in the background. 
-                        // We're going to attempt to connect to the one in the background one last time
-                        // and see if that works, else throw an error
-                        main->logger->write("Something is wrong, trying no-retry autoconnect in 2 sec");
-                        QTimer::singleShot(2000, [=]() { doAutoConnect(/* don't attempt to start ezcashd */ false); });
+                        if (config->zcashDaemon) {
+                            // zcashd is configured to run as a daemon, so we must wait for a few seconds
+                            // to let it start up. 
+                            main->logger->write("zcashd is daemon=1. Waiting for it to start up");
+                            this->showInformation("zcashd is set to run as daemon", "Waiting for zcashd");
+                            QTimer::singleShot(5000, [=]() { doAutoConnect(/* don't attempt to start ezcashd */ false); });
+                        } else {
+                            // Something is wrong. 
+                            // We're going to attempt to connect to the one in the background one last time
+                            // and see if that works, else throw an error
+                            main->logger->write("Unknown problem while trying to start zcashd");
+                            QTimer::singleShot(2000, [=]() { doAutoConnect(/* don't attempt to start ezcashd */ false); });
+                        }
                     }
                 } else {
                     // We tried to start ezcashd previously, and it didn't work. So, show the error. 
                     main->logger->write("Couldn't start embedded zcashd for unknown reason");
-                    QString explanation = QString() % "Couldn't start the embedded zcashd.\n\n" %
-                                        "Please try restarting.\n\nIf you previously started zcashd with custom arguments, you might need to reset zcash.conf.\n\n" %
-                                        "If all else fails, please run zcashd manually." %
-                                        (ezcashd ? "The process returned:\n\n" % ezcashd->errorString() : QString(""));
+                    QString explanation;
+                    if (config->zcashDaemon) {
+                        explanation = QString() % "You have zcashd set to start as a daemon, which can cause problems "
+                            "with zec-qt-wallet\n\n."
+                            "Please remove the following line from your zcash.conf and restart zec-qt-wallet\n"
+                            "daemon=1";
+                    } else {
+                        explanation = QString() % "Couldn't start the embedded zcashd.\n\n" %
+                            "Please try restarting.\n\nIf you previously started zcashd with custom arguments, you might need to reset zcash.conf.\n\n" %
+                            "If all else fails, please run zcashd manually." %
+                            (ezcashd ? "The process returned:\n\n" % ezcashd->errorString() : QString(""));
+                    }
+                    
                     this->showError(explanation);
-                }
-                
+                }                
             } else {
                 // zcash.conf exists, there's no connection, and the user asked us not to start zcashd. Error!
                 main->logger->write("Not using embedded and couldn't connect to zcashd");
@@ -255,7 +268,6 @@ bool ConnectionLoader::startEmbeddedZcashd() {
 
     if (ezcashd != nullptr) {
         if (ezcashd->state() == QProcess::NotRunning) {
-            qDebug() << "Process started and then crashed";
             if (!processStdErrOutput.isEmpty()) {
                 QMessageBox::critical(main, "zcashd error", "zcashd said: " + processStdErrOutput, 
                                       QMessageBox::Ok);
@@ -516,6 +528,7 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {
     zcashconf->connType = ConnectionType::DetectedConfExternalZcashD;
     zcashconf->usingZcashConf = true;
     zcashconf->zcashDir = QFileInfo(confLocation).absoluteDir().absolutePath();
+    zcashconf->zcashDaemon = false;
 
     Settings::getInstance()->setUsingZcashConf(confLocation);
 
@@ -533,6 +546,9 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {
         }
         if (name == "rpcport") {
             zcashconf->port = value;
+        }
+        if (name == "daemon" && value == "1") {
+            zcashconf->zcashDaemon = true;
         }
         if (name == "testnet" &&
             value == "1"  &&
@@ -565,7 +581,7 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::loadFromSettings() {
     if (username.isEmpty() || password.isEmpty())
         return nullptr;
 
-    auto uiConfig = new ConnectionConfig{ host, port, username, password, false, "",  ConnectionType::UISettingsZCashD};
+    auto uiConfig = new ConnectionConfig{ host, port, username, password, false, false, "",  ConnectionType::UISettingsZCashD};
 
     return std::shared_ptr<ConnectionConfig>(uiConfig);
 }

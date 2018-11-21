@@ -940,8 +940,10 @@ void RPC::shutdownZcashd() {
     int waitCount = 0;
     QObject::connect(&waiter, &QTimer::timeout, [&] () {
         waitCount++;
+
         if ((ezcashd->atEnd() && ezcashd->processId() == 0) ||
-            waitCount > 30) {
+            waitCount > 30 || 
+            conn->config->zcashDaemon)  {   // If zcashd is daemon, then we don't have to do anything else
             qDebug() << "Ended";
             waiter.stop();
             QTimer::singleShot(1000, [&]() { d.accept(); });
