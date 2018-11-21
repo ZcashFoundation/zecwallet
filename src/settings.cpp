@@ -206,6 +206,3 @@ bool Settings::isValidAddress(QString addr) {
             ztsexp.exactMatch(addr) || zsexp.exactMatch(addr);
 }
 
-QString Settings::addressFromAddressLabel(const QString& lblAddr) { 
-    return lblAddr.trimmed().split("/").last(); 
-}

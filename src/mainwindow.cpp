@@ -458,7 +458,8 @@ void MainWindow::addressBook() {
 void MainWindow::donate() {
     // Set up a donation to me :)
     ui->Address1->setText(Settings::getDonationAddr(
-                                Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
+                                Settings::getInstance()->isSaplingAddress(
+                                    AddressBook::addressFromAddressLabel(ui->inputsCombo->currentText()))));
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText("0.01");
     ui->MemoTxt1->setText("Thanks for supporting zec-qt-wallet!");
@@ -735,7 +736,8 @@ void MainWindow::setupBalancesTab() {
     auto fnDoSendFrom = [=](const QString& addr, const QString& to = QString(), bool sendMax = false) {
         // Find the inputs combo
         for (int i = 0; i < ui->inputsCombo->count(); i++) {
-            if (ui->inputsCombo->itemText(i).startsWith(addr)) {
+            auto inputComboAddress = AddressBook::addressFromAddressLabel(ui->inputsCombo->itemText(i));
+            if (inputComboAddress.startsWith(addr)) {
                 ui->inputsCombo->setCurrentIndex(i);
                 break;
             }
@@ -772,7 +774,8 @@ void MainWindow::setupBalancesTab() {
         if (index.row() < 0) return;
 
         index = index.sibling(index.row(), 0);
-        auto addr = ui->balancesTable->model()->data(index).toString();
+        auto addr = AddressBook::addressFromAddressLabel(
+                            ui->balancesTable->model()->data(index).toString());
 
         QMenu menu(this);
 
