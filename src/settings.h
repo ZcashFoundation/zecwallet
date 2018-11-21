@@ -32,9 +32,6 @@ public:
     bool    isSyncing();
     void    setSyncing(bool syncing);
 
-    QString getExecName() { return _executable; }
-    void    setExecName(QString name) { _executable = name; }
-
     void    setUseEmbedded(bool r) { _useEmbedded = r; }
     bool    useEmbedded() { return _useEmbedded; }
 

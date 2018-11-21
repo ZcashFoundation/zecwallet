@@ -279,16 +279,16 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     }
 
     // Finally, start zcashd    
-    QFileInfo fi(Settings::getInstance()->getExecName());
+    QDir appPath(QCoreApplication::applicationDirPath());
 #ifdef Q_OS_LINUX
-    auto zcashdProgram = fi.dir().absoluteFilePath("zqw-zcashd");
+    auto zcashdProgram = appPath.absoluteFilePath("zqw-zcashd");
     if (!QFile(zcashdProgram).exists()) {
-        zcashdProgram = fi.dir().absoluteFilePath("zcashd");
+        zcashdProgram = appPath.absoluteFilePath("zcashd");
     }
 #elif defined(Q_OS_DARWIN)
-    auto zcashdProgram = fi.dir().absoluteFilePath("zcashd");
+    auto zcashdProgram = appPath.absoluteFilePath("zcashd");
 #else
-    auto zcashdProgram = fi.dir().absoluteFilePath("zcashd.exe");
+    auto zcashdProgram = appPath.absoluteFilePath("zcashd.exe");
 #endif
     
     if (!QFile(zcashdProgram).exists()) {
