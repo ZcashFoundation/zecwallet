@@ -35,16 +35,19 @@ void MainWindow::setupSendTab() {
     // Max available Checkbox
     QObject::connect(ui->Max1, &QCheckBox::stateChanged, this, &MainWindow::maxAmountChecked);
 
+    // The first Address button
+    QObject::connect(ui->Address1, &QLineEdit::textChanged, [=] (auto text) {
+        this->addressChanged(1, text);
+    });
+
     // The first Memo button
     QObject::connect(ui->MemoBtn1, &QPushButton::clicked, [=] () {
         this->memoButtonClicked(1);
     });
     setMemoEnabled(1, false);
 
-    // The first Address button
-    QObject::connect(ui->Address1, &QLineEdit::textChanged, [=] (auto text) {
-        this->addressChanged(1, text);
-    });
+    // Hack to equalize the sizes of the Memo and Address buttons
+    ui->MemoBtn1->setFixedWidth(ui->AddressBook1->width());
     
     // This is the damnest thing ever. If we do AddressBook::readFromStorage() directly, the whole file
     // doesn't get read. It needs to run in a timer after everything has finished to be able to read
@@ -218,6 +221,8 @@ void MainWindow::addAddressSection() {
     });
     horizontalLayout_13->addWidget(MemoBtn1);
     setMemoEnabled(itemNumber, false);
+    // Hack to equalize the sizes of the Memo and Address buttons
+    MemoBtn1->setFixedWidth(addressBook1->width());
 
     sendAddressLayout->addLayout(horizontalLayout_13);
 
