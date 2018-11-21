@@ -647,6 +647,9 @@ void MainWindow::importPrivKey() {
  * This might fail for various reasons - Remote zcashd, non-standard locations, custom params passed to zcashd, many others
 */
 void MainWindow::backupWalletDat() {
+    if (!rpc->getConnection())
+        return;
+
     QDir zcashdir(rpc->getConnection()->config->zcashDir);
     QString backupDefaultName = "zcash-wallet-backup-" + QDateTime::currentDateTime().toString("yyyyMMdd") + ".dat";
 
@@ -981,9 +984,13 @@ void MainWindow::setupRecieveTab() {
 
     // Explicitly get new address button.
     QObject::connect(ui->btnRecieveNewAddr, &QPushButton::clicked, [=] () {
+        if (!rpc->getConnection())
+            return;
+
         if (ui->rdioZAddr->isChecked()) {
+            QString syncMsg = !Settings::getInstance()->isSaplingActive() ? "Please wait for your node to finish syncing to create Sapling addresses.\n\n" : "";
             auto confirm = QMessageBox::question(this, "Sprout Address",
-                "Sprout addresses are inefficient, and will be deprecated in the future in favour of Sapling addresses.\n\n"
+                syncMsg + "Sprout addresses are inefficient, and will be deprecated in the future in favour of Sapling addresses.\n"
                 "Are you sure you want to create a new Sprout address?", QMessageBox::Yes, QMessageBox::No);
             if (confirm != QMessageBox::Yes)
                 return;
