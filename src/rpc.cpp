@@ -285,7 +285,6 @@ void RPC::getAllPrivKeys(const std::function<void(QList<QPair<QString, QString>>
         });
     };
 
-
     // First get all the t and z addresses.
     json payloadT = {
         {"jsonrpc", "1.0"},

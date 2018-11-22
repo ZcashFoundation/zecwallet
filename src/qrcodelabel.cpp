@@ -3,7 +3,7 @@
 QRCodeLabel::QRCodeLabel(QWidget *parent) :
     QLabel(parent)
 {
-    this->setMinimumSize(1,1);
+    this->setMinimumSize(100, 100);
     setScaledContents(false);
 }
 

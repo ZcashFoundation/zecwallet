@@ -677,6 +677,12 @@ void MainWindow::backupWalletDat() {
 }
 
 void MainWindow::exportAllKeys() {
+    exportKeys("");
+}
+
+void MainWindow::exportKeys(QString addr) {
+    bool allKeys = addr.isEmpty() ? true : false;
+
     QDialog d(this);
     Ui_PrivKey pui;
     pui.setupUi(&d);
@@ -691,7 +697,11 @@ void MainWindow::exportAllKeys() {
     pui.privKeyTxt->setPlainText("Loading...");
     pui.privKeyTxt->setReadOnly(true);
     pui.privKeyTxt->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
-    pui.helpLbl->setText("These are all the private keys for all the addresses in your wallet");
+
+    if (allKeys)
+        pui.helpLbl->setText("These are all the private keys for all the addresses in your wallet");
+    else
+        pui.helpLbl->setText("Private key for " + addr);
 
     // Disable the save button until it finishes loading
     pui.buttonBox->button(QDialogButtonBox::Save)->setEnabled(false);
@@ -700,7 +710,7 @@ void MainWindow::exportAllKeys() {
     // Wire up save button
     QObject::connect(pui.buttonBox->button(QDialogButtonBox::Save), &QPushButton::clicked, [=] () {
         QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
-                           "zcash-all-privatekeys.txt");
+                           allKeys ? "zcash-all-privatekeys.txt" : "zcash-privatekey.txt");
         QFile file(fileName);
         if (!file.open(QIODevice::WriteOnly)) {
             QMessageBox::information(this, tr("Unable to open file"), file.errorString());
@@ -712,9 +722,10 @@ void MainWindow::exportAllKeys() {
 
     // Call the API
     auto isDialogAlive = std::make_shared<bool>(true);
-    rpc->getAllPrivKeys([=] (auto privKeys) {
+
+    auto fnUpdateUIWithKeys = [=](QList<QPair<QString, QString>> privKeys) {
         // Check to see if we are still showing.
-        if (! *isDialogAlive.get()) return;
+        if (!isDialogAlive) return;
 
         QString allKeysTxt;
         for (auto keypair : privKeys) {
@@ -723,10 +734,28 @@ void MainWindow::exportAllKeys() {
 
         pui.privKeyTxt->setPlainText(allKeysTxt);
         pui.buttonBox->button(QDialogButtonBox::Save)->setEnabled(true);
-    });
+    };
 
+    if (allKeys) {
+        rpc->getAllPrivKeys(fnUpdateUIWithKeys);
+    }
+    else {        
+        auto fnAddKey = [=](json key) {
+            QList<QPair<QString, QString>> singleAddrKey;
+            singleAddrKey.push_back(QPair<QString, QString>(addr, QString::fromStdString(key.get<json::string_t>())));
+            fnUpdateUIWithKeys(singleAddrKey);
+        };
+
+        if (Settings::getInstance()->isZAddress(addr)) {
+            rpc->getZPrivKey(addr, fnAddKey);
+        }
+        else {
+            rpc->getTPrivKey(addr, fnAddKey);
+        }        
+    }
+    
     d.exec();
-    *isDialogAlive.get() = false;
+    *isDialogAlive = false;
 }
 
 void MainWindow::setupBalancesTab() {
@@ -786,26 +815,7 @@ void MainWindow::setupBalancesTab() {
         });
 
         menu.addAction("Get private key", [=] () {
-            auto fnCB = [=] (const json& reply) {
-                auto privKey = QString::fromStdString(reply.get<json::string_t>());
-                QDialog d(this);
-                Ui_PrivKey pui;                
-                pui.setupUi(&d);
-
-                pui.helpLbl->setText("Private Key:");
-                pui.privKeyTxt->setPlainText(privKey);
-                pui.privKeyTxt->setReadOnly(true);
-                pui.privKeyTxt->selectAll();
-                pui.buttonBox->button(QDialogButtonBox::Save)->setVisible(false);
-                pui.buttonBox->button(QDialogButtonBox::Ok)->setVisible(false);
-
-                d.exec();
-            };
-
-            if (Settings::getInstance()->isZAddress(addr)) 
-                rpc->getZPrivKey(addr, fnCB);
-            else
-                rpc->getTPrivKey(addr, fnCB);
+            this->exportKeys(addr);
         });
 
         menu.addAction("Send from " % addr.left(40) % (addr.size() > 40 ? "..." : ""), [=]() {
@@ -1072,6 +1082,9 @@ void MainWindow::setupRecieveTab() {
         auto curLabel = AddressBook::getInstance()->getLabelForAddress(addr);
         auto label = ui->rcvLabel->text().trimmed();
 
+        if (curLabel == label)  // Nothing to update
+            return;
+
         QString info;
 
         if (!curLabel.isEmpty() && label.isEmpty()) {
@@ -1101,6 +1114,14 @@ void MainWindow::setupRecieveTab() {
         }
     });
 
+    // Recieve Export Key
+    QObject::connect(ui->exportKey, &QPushButton::clicked, [=]() {
+        QString addr = ui->listRecieveAddresses->currentText();
+        if (addr.isEmpty())
+            return;
+
+        this->exportKeys(addr);
+    });
 }
 
 MainWindow::~MainWindow()
