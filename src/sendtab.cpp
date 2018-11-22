@@ -26,7 +26,7 @@ void MainWindow::setupSendTab() {
     QObject::connect(ui->cancelSendButton, &QPushButton::clicked, this, &MainWindow::cancelButton);
 
     // Input Combobox current text changed
-    QObject::connect(ui->inputsCombo, QOverload<const QString &>::of(&QComboBox::currentIndexChanged),
+    QObject::connect(ui->inputsCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
         this, &MainWindow::inputComboTextChanged);
 
     // Hook up add address button click
@@ -52,7 +52,7 @@ void MainWindow::setupSendTab() {
     // This is the damnest thing ever. If we do AddressBook::readFromStorage() directly, the whole file
     // doesn't get read. It needs to run in a timer after everything has finished to be able to read
     // the file properly. 
-    QTimer::singleShot(100, [=]() { updateLabelsAutoComplete(); });
+    QTimer::singleShot(2000, [=]() { updateLabelsAutoComplete(); });
 
     // The first address book button
     QObject::connect(ui->AddressBook1, &QPushButton::clicked, [=] () {
@@ -117,7 +117,7 @@ void MainWindow::setDefaultPayFrom() {
         for (int i=0; i < ui->inputsCombo->count(); i++) {
             auto addr = ui->inputsCombo->itemText(i);
             if (addr.startsWith(startsWith)) {
-                auto amt = rpc->getAllBalances()->value(addr.split("(")[0]);
+                auto amt = rpc->getAllBalances()->value(addr);
                 if (max_amt < amt) {
                     max_amt = amt;
                     idx = i;
@@ -139,8 +139,9 @@ void MainWindow::setDefaultPayFrom() {
     }
 };
 
-void MainWindow::inputComboTextChanged(const QString& text) {
-    auto bal    = rpc->getAllBalances()->value(text.split("(")[0].trimmed());
+void MainWindow::inputComboTextChanged(int index) {
+    auto addr   = ui->inputsCombo->itemText(index);
+    auto bal    = rpc->getAllBalances()->value(addr);
     auto balFmt = Settings::getZECDisplayFormat(bal);
 
     ui->sendAddressBalance->setText(balFmt);
@@ -244,7 +245,7 @@ void MainWindow::addAddressSection() {
 }
 
 void MainWindow::addressChanged(int itemNumber, const QString& text) {   
-    auto addr = Settings::addressFromAddressLabel(text);
+    auto addr = AddressBook::addressFromAddressLabel(text);
     setMemoEnabled(itemNumber, addr.startsWith("z"));
 }
 
@@ -267,7 +268,7 @@ void MainWindow::setMemoEnabled(int number, bool enabled) {
 void MainWindow::memoButtonClicked(int number) {
     // Memos can only be used with zAddrs. So check that first
     auto addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") + QString::number(number));
-    if (!Settings::addressFromAddressLabel(addr->text()).startsWith("z")) {
+    if (!AddressBook::addressFromAddressLabel(addr->text()).startsWith("z")) {
         QMessageBox msg(QMessageBox::Critical, "Memos can only be used with z-addresses",
         "The memo field can only be used with a z-address.\n" + addr->text() + "\ndoesn't look like a z-address",
         QMessageBox::Ok, this);
@@ -357,7 +358,7 @@ void MainWindow::maxAmountChecked(int checked) {
         }
         sumAllAmounts += Settings::getTotalFee();
 
-        auto addr = Settings::addressFromAddressLabel(ui->inputsCombo->currentText().split("(")[0]);
+        auto addr = ui->inputsCombo->currentText();
 
         auto maxamount  = rpc->getAllBalances()->value(addr) - sumAllAmounts;
         maxamount       = (maxamount < 0) ? 0 : maxamount;
@@ -373,14 +374,14 @@ void MainWindow::maxAmountChecked(int checked) {
 Tx MainWindow::createTxFromSendPage() {
     Tx tx;
     // Gather the from / to addresses 
-    tx.fromAddr = ui->inputsCombo->currentText().split("(")[0].trimmed();
+    tx.fromAddr = ui->inputsCombo->currentText();
 
     // For each addr/amt in the sendTo tab
     int totalItems = ui->sendToWidgets->children().size() - 2;   // The last one is a spacer, so ignore that        
     for (int i=0; i < totalItems; i++) {
         QString addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") % QString::number(i+1))->text().trimmed();
         // Remove label if it exists
-        addr = Settings::addressFromAddressLabel(addr);
+        addr = AddressBook::addressFromAddressLabel(addr);
 
         double  amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1))->text().trimmed().toDouble();        
         QString memo = ui->sendToWidgets->findChild<QLabel*>(QString("MemoTxt")  % QString::number(i+1))->text().trimmed();

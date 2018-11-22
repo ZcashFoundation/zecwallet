@@ -251,10 +251,11 @@ void AddressBook::addAddressLabel(QString label, QString address) {
 void AddressBook::removeAddressLabel(QString label, QString address) {
     // Iterate over the list and remove the label/address
     for (int i=0; i < allLabels.size(); i++) {
-        if (allLabels[i].first == label && allLabels[i].second == address)
+        if (allLabels[i].first == label && allLabels[i].second == address) {
             allLabels.removeAt(i);
             writeToStorage();
             return;
+        }
     }
 }
 
@@ -271,6 +272,18 @@ QString AddressBook::getLabelForAddress(QString addr) {
     }
 
     return "";
+}
+
+QString AddressBook::addLabelToAddress(QString addr) {
+    QString label = AddressBook::getInstance()->getLabelForAddress(addr);
+    if (!label.isEmpty())
+        return label + "/" + addr;
+    else
+        return addr;
+}
+
+QString AddressBook::addressFromAddressLabel(const QString& lblAddr) { 
+    return lblAddr.trimmed().split("/").last(); 
 }
 
 AddressBook* AddressBook::instance = nullptr;

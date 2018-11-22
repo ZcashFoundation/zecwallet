@@ -50,7 +50,8 @@ SOURCES += \
     src/connection.cpp \
     src/fillediconlabel.cpp \
     src/addressbook.cpp \
-    src/logger.cpp
+    src/logger.cpp \
+    src/addresscombo.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -69,7 +70,8 @@ HEADERS += \
     src/connection.h \
     src/fillediconlabel.h \
     src/addressbook.h \
-    src/logger.h
+    src/logger.h \
+    src/addresscombo.h 
 
 FORMS += \
     src/mainwindow.ui \

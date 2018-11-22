@@ -1,5 +1,6 @@
 #include "rpc.h"
 
+#include "addressbook.h"
 #include "settings.h"
 #include "senttxstore.h"
 #include "turnstile.h"
@@ -635,14 +636,13 @@ void RPC::updateUI(bool anyUnconfirmed) {
     balancesTableModel->setNewData(allBalances, utxos);
 
     // Add all the addresses into the inputs combo box
-    auto lastFromAddr = ui->inputsCombo->currentText().split("(")[0].trimmed();
+    auto lastFromAddr = ui->inputsCombo->currentText();
 
     ui->inputsCombo->clear();
     auto i = allBalances->constBegin();
     while (i != allBalances->constEnd()) {
-        QString item = i.key() % "(" % Settings::getZECDisplayFormat(i.value()) % ")";
-        ui->inputsCombo->addItem(item);
-        if (item.startsWith(lastFromAddr)) ui->inputsCombo->setCurrentText(item);
+         ui->inputsCombo->addItem(i.key(), i.value());
+        if (i.key() == lastFromAddr) ui->inputsCombo->setCurrentText(i.key());
 
         ++i;
     }

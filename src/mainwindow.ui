@@ -228,7 +228,7 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_8">
              <item>
-              <widget class="QComboBox" name="inputsCombo"/>
+              <widget class="AddressCombo" name="inputsCombo"/>
              </item>
             </layout>
            </item>
@@ -316,8 +316,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>928</width>
-                <height>380</height>
+                <width>920</width>
+                <height>334</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -628,7 +628,7 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_10">
                <item>
-                <widget class="QComboBox" name="listRecieveAddresses">
+                <widget class="AddressCombo" name="listRecieveAddresses">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -849,7 +849,7 @@
      <x>0</x>
      <y>0</y>
      <width>968</width>
-     <height>19</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -969,6 +969,11 @@
    <class>FilledIconLabel</class>
    <extends>QLabel</extends>
    <header>fillediconlabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>AddressCombo</class>
+   <extends>QComboBox</extends>
+   <header>addresscombo.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

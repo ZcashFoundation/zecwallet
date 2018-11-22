@@ -35,6 +35,8 @@ public:
     static void open(MainWindow* parent, QLineEdit* target = nullptr);
 
     static AddressBook* getInstance(); 
+    static QString addLabelToAddress(QString addr);
+    static QString addressFromAddressLabel(const QString& lblAddr);
 
     // Add a new address/label to the database
     void addAddressLabel(QString label, QString address);
