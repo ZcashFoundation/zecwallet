@@ -20,6 +20,7 @@ QString SentTxStore::writeableFile() {
 void SentTxStore::deleteHistory() {
     QFile data(writeableFile());
     data.remove();
+    data.close();
 }
 
 QList<TransactionItem> SentTxStore::readSentTxFile() {
