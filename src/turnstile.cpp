@@ -2,10 +2,7 @@
 #include "mainwindow.h"
 #include "balancestablemodel.h"
 #include "rpc.h"
-
 #include "settings.h"
-
-#include "precompiled.h"
 
 using json = nlohmann::json;
 

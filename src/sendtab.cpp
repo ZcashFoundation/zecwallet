@@ -6,9 +6,6 @@
 #include "settings.h"
 #include "rpc.h"
 
-
-#include "precompiled.h"
-
 using json = nlohmann::json;
 
 void MainWindow::setupSendTab() {

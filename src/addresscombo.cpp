@@ -1,5 +1,4 @@
 #include "addresscombo.h"
-
 #include "addressbook.h"
 #include "settings.h"
 
