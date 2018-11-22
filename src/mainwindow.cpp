@@ -169,6 +169,7 @@ void MainWindow::turnstileProgress() {
     else
         progress.buttonBox->button(QDialogButtonBox::Discard)->setVisible(false);
 
+    // Abort button clicked
     QObject::connect(progress.buttonBox->button(QDialogButtonBox::Discard), &QPushButton::clicked, [&] () {
         if (curProgress.step != curProgress.totalSteps) {
             auto abort = QMessageBox::warning(this, "Are you sure you want to Abort?",

@@ -22,7 +22,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -711,6 +711,9 @@
                   <property name="text">
                    <string>Address</string>
                   </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                  </property>
                  </widget>
                 </item>
                </layout>
@@ -1048,19 +1051,27 @@
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>inputsCombo</tabstop>
-  <tabstop>sendAddressBalance</tabstop>
-  <tabstop>sendToScrollArea</tabstop>
   <tabstop>Address1</tabstop>
   <tabstop>Amount1</tabstop>
   <tabstop>Max1</tabstop>
+  <tabstop>AddressBook1</tabstop>
+  <tabstop>MemoBtn1</tabstop>
   <tabstop>addAddressButton</tabstop>
   <tabstop>sendTransactionButton</tabstop>
   <tabstop>cancelSendButton</tabstop>
-  <tabstop>balancesTable</tabstop>
+  <tabstop>rdioZSAddr</tabstop>
   <tabstop>rdioTAddr</tabstop>
+  <tabstop>rdioZAddr</tabstop>
   <tabstop>listRecieveAddresses</tabstop>
   <tabstop>btnRecieveNewAddr</tabstop>
+  <tabstop>txtRecieve</tabstop>
+  <tabstop>rcvLabel</tabstop>
+  <tabstop>rcvUpdateLabel</tabstop>
   <tabstop>transactionsTable</tabstop>
+  <tabstop>balancesTable</tabstop>
+  <tabstop>minerFeeAmt</tabstop>
+  <tabstop>sendAddressBalance</tabstop>
+  <tabstop>sendToScrollArea</tabstop>
  </tabstops>
  <resources>
   <include location="../application.qrc"/>
