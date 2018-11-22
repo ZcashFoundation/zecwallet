@@ -45,19 +45,19 @@ public:
     void               fillAmounts(QList<double>& amounts, double amount, int count);
 
     QList<TurnstileMigrationItem> readMigrationPlan();
-    void                writeMigrationPlan(QList<TurnstileMigrationItem> plan);
-    void            removeFile();
+    void               writeMigrationPlan(QList<TurnstileMigrationItem> plan);
+    void               removeFile();
     
-    void             executeMigrationStep();
-    ProgressReport  getPlanProgress();
-    bool            isMigrationPresent();
+    void               executeMigrationStep();
+    ProgressReport     getPlanProgress();
+    bool               isMigrationPresent();
 
-    static double    minMigrationAmount;
+    static double       minMigrationAmount;
 private:
-    QList<int>           getBlockNumbers(int start, int end, int count);
-    QString               writeableFile();
+    QList<int>          getBlockNumbers(int start, int end, int count);
+    QString             writeableFile();
 
-    void             doSendTx(Tx tx, std::function<void(void)> cb);
+    void                doSendTx(Tx tx, std::function<void(void)> cb);
 
 
     QList<TurnstileMigrationItem>::Iterator getNextStep(QList<TurnstileMigrationItem>& plan);    

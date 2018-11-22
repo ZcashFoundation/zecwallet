@@ -312,7 +312,6 @@ void Turnstile::executeMigrationStep() {
             nextStep->status = TurnstileMigrationItemStatus::SentToT;
             writeMigrationPlan(plan);
         });
-
     } else if (nextStep->status == TurnstileMigrationItemStatus::SentToT) {
         // First thing to do is check to see if the funds are confirmed. 
         // We'll check both the original sprout address and the intermediate t-addr for safety.

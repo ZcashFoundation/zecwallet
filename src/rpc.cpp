@@ -320,7 +320,9 @@ void RPC::fillTxJsonParams(json& params, Tx tx) {
         // Construct the JSON params
         json rec = json::object();
         rec["address"]      = toAddr.addr.toStdString();
-        rec["amount"]       = toAddr.amount;
+        // Force it through string for rounding. Without this, decimal points beyond 8 places
+        // will appear, causing an "invalid amount" error
+        rec["amount"]       = QString::number(toAddr.amount, 'f', 8).toDouble(); 
         if (toAddr.addr.startsWith("z") && !toAddr.encodedMemo.trimmed().isEmpty())
             rec["memo"]     = toAddr.encodedMemo.toStdString();
 
