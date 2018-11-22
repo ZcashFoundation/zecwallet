@@ -219,13 +219,13 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
         return bal;
     };
 
-    //turnstile.migrateZaddList->addItem("All Sprout z-Addrs");
     turnstile.fromBalance->setText(Settings::getZECUSDDisplayFormat(fnGetAllSproutBalance()));
     for (auto addr : *rpc->getAllZAddresses()) {
+        auto bal = rpc->getAllBalances()->value(addr);
         if (Settings::getInstance()->isSaplingAddress(addr)) {
-            turnstile.migrateTo->addItem(addr);
+            turnstile.migrateTo->addItem(addr, bal);
         } else {
-            turnstile.migrateZaddList->addItem(addr);
+            turnstile.migrateZaddList->addItem(addr, bal);
         }
     }
 
