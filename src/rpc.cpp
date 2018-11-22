@@ -82,7 +82,10 @@ void RPC::setConnection(Connection* c) {
     ui->statusBar->showMessage("Ready!");
 
     refreshZECPrice();
-    refresh();
+
+    // Force update, because this might be coming from a settings update
+    // where we need to immediately refresh
+    refresh(true);
 }
 
 void RPC::getZAddresses(const std::function<void(json)>& cb) {
