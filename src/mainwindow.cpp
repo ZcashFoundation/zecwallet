@@ -962,22 +962,27 @@ void MainWindow::setupRecieveTab() {
             });
     };
 
-    // Connect t-addr radio button
-    QObject::connect(ui->rdioTAddr, &QRadioButton::toggled, [=] (bool checked) { 
-        // Whenever the t-address is selected, we generate a new address, because we don't
-        // want to reuse t-addrs
-        if (checked && this->rpc->getUTXOs() != nullptr) { 
+    auto fnUpdateTAddrCombo = [=] (bool checked) {
+        if (checked) {
             auto utxos = this->rpc->getUTXOs();
             ui->listRecieveAddresses->clear();
 
-            std::for_each(utxos->begin(), utxos->end(), [=] (auto& utxo) {
+            std::for_each(utxos->begin(), utxos->end(), [=](auto& utxo) {
                 auto addr = utxo.address;
                 if (addr.startsWith("t") && ui->listRecieveAddresses->findText(addr) < 0) {
                     auto bal = rpc->getAllBalances()->value(addr);
                     ui->listRecieveAddresses->addItem(addr, bal);
                 }
             });
+        }
+    };
 
+    // Connect t-addr radio button
+    QObject::connect(ui->rdioTAddr, &QRadioButton::toggled, [=] (bool checked) { 
+        // Whenever the t-address is selected, we generate a new address, because we don't
+        // want to reuse t-addrs
+        if (checked && this->rpc->getUTXOs() != nullptr) { 
+            fnUpdateTAddrCombo(checked);
             addNewTAddr();
         } 
     });
@@ -1036,14 +1041,65 @@ void MainWindow::setupRecieveTab() {
         if (addr.isEmpty()) {
             // Draw empty stuff
 
+            ui->rcvLabel->clear();
+            ui->rcvBal->clear();
             ui->txtRecieve->clear();
             ui->qrcodeDisplay->clear();
             return;
         }
 
+        auto label = AddressBook::getInstance()->getLabelForAddress(addr);
+        if (label.isEmpty()) {
+            ui->rcvUpdateLabel->setText("Add Label");
+        }
+        else {
+            ui->rcvUpdateLabel->setText("Update Label");
+        }
+
+        ui->rcvLabel->setText(label);
+        ui->rcvBal->setText(Settings::getZECUSDDisplayFormat(rpc->getAllBalances()->value(addr)));
         ui->txtRecieve->setPlainText(addr);       
         ui->qrcodeDisplay->setAddress(addr);
     });    
+
+    // Recieve tab add/update label
+    QObject::connect(ui->rcvUpdateLabel, &QPushButton::clicked, [=]() {
+        QString addr = ui->listRecieveAddresses->currentText();
+        if (addr.isEmpty())
+            return;
+
+        auto curLabel = AddressBook::getInstance()->getLabelForAddress(addr);
+        auto label = ui->rcvLabel->text();
+
+        QString info;
+
+        if (!curLabel.isEmpty() && label.isEmpty()) {
+            info = "Removed Label";
+            AddressBook::getInstance()->removeAddressLabel(curLabel, addr);
+        }
+        else if (!curLabel.isEmpty() && !label.isEmpty()) {
+            info = "Updated Label";
+            AddressBook::getInstance()->updateLabel(curLabel, addr, label);
+        }
+        else if (curLabel.isEmpty() && !label.isEmpty()) {
+            info = "Added Label";
+            AddressBook::getInstance()->addAddressLabel(label, addr);
+        }
+
+        if (info.isEmpty())
+            return;
+
+        // Update the UI
+        if (ui->rdioTAddr->isChecked()) {
+            fnUpdateTAddrCombo(true);
+        }
+        else {
+            addZAddrsToComboList(ui->rdioZSAddr->isChecked())(true);
+        }
+
+        // Show the user feedback
+        QMessageBox::information(this, "Label", info, QMessageBox::Ok);
+    });
 
 }
 

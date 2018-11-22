@@ -259,6 +259,17 @@ void AddressBook::removeAddressLabel(QString label, QString address) {
     }
 }
 
+void AddressBook::updateLabel(QString oldlabel, QString address, QString newlabel) {
+    // Iterate over the list and update the label/address
+    for (int i = 0; i < allLabels.size(); i++) {
+        if (allLabels[i].first == oldlabel && allLabels[i].second == address) {
+            allLabels[i].first = newlabel;
+            writeToStorage();
+            return;
+        }
+    }
+}
+
 // Read all addresses
 const QList<QPair<QString, QString>>& AddressBook::getAllAddressLabels() {
     return allLabels;
