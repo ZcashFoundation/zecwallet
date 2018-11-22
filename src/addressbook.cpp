@@ -98,6 +98,9 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
     ab.setupUi(&d);
     Settings::saveRestore(&d);
 
+    QRegExpValidator v(QRegExp(Settings::labelRegExp), ab.label);
+    ab.label->setValidator(&v);
+
     AddressBookModel model(ab.addresses);
     ab.addresses->setModel(&model);
 

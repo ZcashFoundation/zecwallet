@@ -204,3 +204,4 @@ bool Settings::isValidAddress(QString addr) {
             ztsexp.exactMatch(addr) || zsexp.exactMatch(addr);
 }
 
+const QString Settings::labelRegExp("[a-zA-Z0-9\\-_]{0,40}");

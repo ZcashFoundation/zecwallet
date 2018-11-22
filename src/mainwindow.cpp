@@ -1045,6 +1045,10 @@ void MainWindow::setupRecieveTab() {
         }
     });
 
+    // Validator for label
+    QRegExpValidator* v = new QRegExpValidator(QRegExp(Settings::labelRegExp), ui->rcvLabel);
+    ui->rcvLabel->setValidator(v);
+
     // Select item in address list
     QObject::connect(ui->listRecieveAddresses, 
         QOverload<int>::of(&QComboBox::currentIndexChanged), [=] (int index) {
