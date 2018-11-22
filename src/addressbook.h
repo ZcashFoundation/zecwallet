@@ -45,7 +45,7 @@ public:
     void removeAddressLabel(QString label, QString address);
 
     // Update a label/address
-    void AddressBook::updateLabel(QString oldlabel, QString address, QString newlabel);
+    void updateLabel(QString oldlabel, QString address, QString newlabel);
 
     // Read all addresses
     const QList<QPair<QString, QString>>& getAllAddressLabels();
