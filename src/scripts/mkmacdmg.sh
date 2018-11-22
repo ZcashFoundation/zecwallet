@@ -20,6 +20,11 @@ if [ ! -f $ZCASH_DIR/src/zcashd ]; then
     exit 1;
 fi
 
+if ! cat src/version.h | grep -q "$APP_VERSION"; then
+    echo "Version mismatch in src/version.h"
+    exit 1
+fi
+
 export PATH=$PATH:/usr/local/bin
 
 #Clean
