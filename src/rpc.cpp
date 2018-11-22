@@ -743,6 +743,13 @@ void RPC::refreshSentZTrans() {
 
     auto sentZTxs = SentTxStore::readSentTxFile();
 
+    // If there are no sent z txs, then empty the table. 
+    // This happens when you clear history.
+    if (sentZTxs.isEmpty()) {
+        transactionsTableModel->addZSentData(sentZTxs);
+        return;
+    }
+
     QList<QString> txids;
 
     for (auto sentTx: sentZTxs) {
