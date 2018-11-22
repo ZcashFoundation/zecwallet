@@ -761,7 +761,7 @@ void MainWindow::setupBalancesTab() {
     // Double click opens up memo if one exists
     QObject::connect(ui->balancesTable, &QTableView::doubleClicked, [=](auto index) {
         index = index.sibling(index.row(), 0);
-        auto addr = ui->balancesTable->model()->data(index).toString();
+        auto addr = AddressBook::addressFromAddressLabel(ui->balancesTable->model()->data(index).toString());
         
         fnDoSendFrom(addr);
     });
@@ -1069,25 +1069,22 @@ void MainWindow::setupRecieveTab() {
             return;
 
         auto curLabel = AddressBook::getInstance()->getLabelForAddress(addr);
-        auto label = ui->rcvLabel->text();
+        auto label = ui->rcvLabel->text().trimmed();
 
         QString info;
 
         if (!curLabel.isEmpty() && label.isEmpty()) {
-            info = "Removed Label";
+            info = "Removed Label '" % curLabel % "'";
             AddressBook::getInstance()->removeAddressLabel(curLabel, addr);
         }
         else if (!curLabel.isEmpty() && !label.isEmpty()) {
-            info = "Updated Label";
+            info = "Updated Label '" % curLabel % "' to '" % label % "'";
             AddressBook::getInstance()->updateLabel(curLabel, addr, label);
         }
         else if (curLabel.isEmpty() && !label.isEmpty()) {
-            info = "Added Label";
+            info = "Added Label '" % label % "'";
             AddressBook::getInstance()->addAddressLabel(label, addr);
         }
-
-        if (info.isEmpty())
-            return;
 
         // Update the UI
         if (ui->rdioTAddr->isChecked()) {
@@ -1098,7 +1095,9 @@ void MainWindow::setupRecieveTab() {
         }
 
         // Show the user feedback
-        QMessageBox::information(this, "Label", info, QMessageBox::Ok);
+        if (!info.isEmpty()) {
+            QMessageBox::information(this, "Label", info, QMessageBox::Ok);
+        }
     });
 
 }
