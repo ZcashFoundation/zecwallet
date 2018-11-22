@@ -26,7 +26,7 @@ void MainWindow::setupSendTab() {
     QObject::connect(ui->cancelSendButton, &QPushButton::clicked, this, &MainWindow::cancelButton);
 
     // Input Combobox current text changed
-    QObject::connect(ui->inputsCombo, QOverload<const QString &>::of(&QComboBox::currentIndexChanged),
+    QObject::connect(ui->inputsCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
         this, &MainWindow::inputComboTextChanged);
 
     // Hook up add address button click
@@ -52,7 +52,7 @@ void MainWindow::setupSendTab() {
     // This is the damnest thing ever. If we do AddressBook::readFromStorage() directly, the whole file
     // doesn't get read. It needs to run in a timer after everything has finished to be able to read
     // the file properly. 
-    QTimer::singleShot(1000, [=]() { updateLabelsAutoComplete(); });
+    QTimer::singleShot(2000, [=]() { updateLabelsAutoComplete(); });
 
     // The first address book button
     QObject::connect(ui->AddressBook1, &QPushButton::clicked, [=] () {
@@ -115,7 +115,7 @@ void MainWindow::setDefaultPayFrom() {
         int    idx     = -1;
 
         for (int i=0; i < ui->inputsCombo->count(); i++) {
-            auto addr = AddressBook::addressFromAddressLabel(ui->inputsCombo->itemText(i).split("(")[0]);
+            auto addr = ui->inputsCombo->itemText(i);
             if (addr.startsWith(startsWith)) {
                 auto amt = rpc->getAllBalances()->value(addr);
                 if (max_amt < amt) {
@@ -139,8 +139,8 @@ void MainWindow::setDefaultPayFrom() {
     }
 };
 
-void MainWindow::inputComboTextChanged(const QString& text) {
-    auto addr   = AddressBook::addressFromAddressLabel(text.split("(")[0].trimmed());
+void MainWindow::inputComboTextChanged(int index) {
+    auto addr   = ui->inputsCombo->itemText(index);
     auto bal    = rpc->getAllBalances()->value(addr);
     auto balFmt = Settings::getZECDisplayFormat(bal);
 
@@ -358,7 +358,7 @@ void MainWindow::maxAmountChecked(int checked) {
         }
         sumAllAmounts += Settings::getTotalFee();
 
-        auto addr = AddressBook::addressFromAddressLabel(ui->inputsCombo->currentText().split("(")[0]);
+        auto addr = ui->inputsCombo->currentText();
 
         auto maxamount  = rpc->getAllBalances()->value(addr) - sumAllAmounts;
         maxamount       = (maxamount < 0) ? 0 : maxamount;
@@ -374,7 +374,7 @@ void MainWindow::maxAmountChecked(int checked) {
 Tx MainWindow::createTxFromSendPage() {
     Tx tx;
     // Gather the from / to addresses 
-    tx.fromAddr = AddressBook::addressFromAddressLabel(ui->inputsCombo->currentText().split("(")[0].trimmed());
+    tx.fromAddr = ui->inputsCombo->currentText();
 
     // For each addr/amt in the sendTo tab
     int totalItems = ui->sendToWidgets->children().size() - 2;   // The last one is a spacer, so ignore that        

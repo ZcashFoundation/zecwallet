@@ -22,6 +22,7 @@
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QScrollBar>
 #include <QPainter>
 #include <QMovie>

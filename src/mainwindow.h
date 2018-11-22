@@ -71,7 +71,7 @@ private:
 
     void cancelButton();
     void sendButton();
-    void inputComboTextChanged(const QString& text);
+    void inputComboTextChanged(int index);
     void addAddressSection();
     void maxAmountChecked(int checked);
 

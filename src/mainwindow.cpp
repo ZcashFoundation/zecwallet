@@ -458,8 +458,7 @@ void MainWindow::addressBook() {
 void MainWindow::donate() {
     // Set up a donation to me :)
     ui->Address1->setText(Settings::getDonationAddr(
-                                Settings::getInstance()->isSaplingAddress(
-                                    AddressBook::addressFromAddressLabel(ui->inputsCombo->currentText()))));
+                            Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText("0.01");
     ui->MemoTxt1->setText("Thanks for supporting zec-qt-wallet!");
@@ -736,7 +735,7 @@ void MainWindow::setupBalancesTab() {
     auto fnDoSendFrom = [=](const QString& addr, const QString& to = QString(), bool sendMax = false) {
         // Find the inputs combo
         for (int i = 0; i < ui->inputsCombo->count(); i++) {
-            auto inputComboAddress = AddressBook::addressFromAddressLabel(ui->inputsCombo->itemText(i));
+            auto inputComboAddress = ui->inputsCombo->itemText(i);
             if (inputComboAddress.startsWith(addr)) {
                 ui->inputsCombo->setCurrentIndex(i);
                 break;
@@ -913,7 +912,7 @@ void MainWindow::addNewZaddr(bool sapling) {
         // Just double make sure the z-address is still checked
         if (( sapling && ui->rdioZSAddr->isChecked()) ||
             (!sapling && ui->rdioZAddr->isChecked())) {
-            ui->listRecieveAddresses->insertItem(0, addr);
+            ui->listRecieveAddresses->insertItem(0, addr); 
             ui->listRecieveAddresses->setCurrentIndex(0);
 
             ui->statusBar->showMessage(QString::fromStdString("Created new zAddr") %
@@ -934,8 +933,10 @@ std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
 
             std::for_each(addrs->begin(), addrs->end(), [=] (auto addr) {
                 if ( (sapling &&  Settings::getInstance()->isSaplingAddress(addr)) ||
-                    (!sapling && !Settings::getInstance()->isSaplingAddress(addr)))
-                    ui->listRecieveAddresses->addItem(addr);
+                    (!sapling && !Settings::getInstance()->isSaplingAddress(addr))) {
+                    auto bal = rpc->getAllBalances()->value(addr);
+                    ui->listRecieveAddresses->addItem(addr, bal);
+                }
             }); 
 
             // If z-addrs are empty, then create a new one.
@@ -972,7 +973,8 @@ void MainWindow::setupRecieveTab() {
             std::for_each(utxos->begin(), utxos->end(), [=] (auto& utxo) {
                 auto addr = utxo.address;
                 if (addr.startsWith("t") && ui->listRecieveAddresses->findText(addr) < 0) {
-                    ui->listRecieveAddresses->addItem(addr);
+                    auto bal = rpc->getAllBalances()->value(addr);
+                    ui->listRecieveAddresses->addItem(addr, bal);
                 }
             });
 
@@ -1029,7 +1031,8 @@ void MainWindow::setupRecieveTab() {
 
     // Select item in address list
     QObject::connect(ui->listRecieveAddresses, 
-        QOverload<const QString &>::of(&QComboBox::currentIndexChanged), [=] (const QString& addr) {
+        QOverload<int>::of(&QComboBox::currentIndexChanged), [=] (int index) {
+        QString addr = ui->listRecieveAddresses->itemText(index);
         if (addr.isEmpty()) {
             // Draw empty stuff
 
