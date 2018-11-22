@@ -725,7 +725,7 @@ void MainWindow::exportKeys(QString addr) {
 
     auto fnUpdateUIWithKeys = [=](QList<QPair<QString, QString>> privKeys) {
         // Check to see if we are still showing.
-        if (!isDialogAlive) return;
+        if (! *(isDialogAlive.get()) ) return;
 
         QString allKeysTxt;
         for (auto keypair : privKeys) {
