@@ -39,6 +39,8 @@ public:
 
     void updateLabelsAutoComplete();
 
+    void setDefaultPayFrom();
+
     Ui::MainWindow*     ui;
 
     QLabel*             statusLabel;
@@ -61,7 +63,6 @@ private:
     void setupStatusBar();
 
     void removeExtraAddresses();
-    void setDefaultPayFrom();
 
     Tx   createTxFromSendPage();
     bool confirmTx(Tx tx);

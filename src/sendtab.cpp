@@ -17,8 +17,6 @@ void MainWindow::setupSendTab() {
     amtValidator->setNotation(QDoubleValidator::StandardNotation);
     ui->Amount1->setValidator(amtValidator);
 
-    setDefaultPayFrom();
-    
     // Send button
     QObject::connect(ui->sendTransactionButton, &QPushButton::clicked, this, &MainWindow::sendButton);
 

@@ -646,6 +646,10 @@ void RPC::updateUI(bool anyUnconfirmed) {
 
         ++i;
     }
+
+    if (lastFromAddr.isEmpty()) {
+        main->setDefaultPayFrom();
+    }
 };
 
 // Function to process reply of the listunspent and z_listunspent API calls, used below.
