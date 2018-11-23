@@ -31,8 +31,7 @@
                   Event="NewDialog"
                   Value="WelcomeDlg"
                   Order="2">1</Publish>
-        </UI>
-        
+        </UI>        
 	</Product>
 
 	<Fragment>
@@ -56,7 +55,7 @@
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
 			<Component Id="ProductComponent" Guid="0D210F5A-53E0-4E7E-CAAD-15A26995505E">
-                <File Source="zec-qt-wallet.exe">
+                <File Source="zec-qt-wallet.exe" KeyPath="yes">
                     <Shortcut Id="startMenuShotcut" Advertise="yes" Directory="ApplicationProgramsFolder"
                         Name="zec-qt-wallet" WorkingDirectory="INSTALLFOLDER" Icon="zecqtwalleticon.exe" >
                     </Shortcut>
