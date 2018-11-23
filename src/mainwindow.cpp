@@ -961,16 +961,16 @@ std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
 void MainWindow::setupRecieveTab() {
     auto addNewTAddr = [=] () {
         rpc->newTaddr([=] (json reply) {
-                QString addr = QString::fromStdString(reply.get<json::string_t>());
+            QString addr = QString::fromStdString(reply.get<json::string_t>());
 
-                // Just double make sure the t-address is still checked
-                if (ui->rdioTAddr->isChecked()) {
-                    ui->listRecieveAddresses->insertItem(0, addr);
-                    ui->listRecieveAddresses->setCurrentIndex(0);
+            // Just double make sure the t-address is still checked
+            if (ui->rdioTAddr->isChecked()) {
+                ui->listRecieveAddresses->insertItem(0, addr);
+                ui->listRecieveAddresses->setCurrentIndex(0);
 
-                    ui->statusBar->showMessage(tr("Created new t-Addr"), 10 * 1000);
-                }
-            });
+                ui->statusBar->showMessage(tr("Created new t-Addr"), 10 * 1000);
+            }
+        });
     };
 
     auto fnUpdateTAddrCombo = [=] (bool checked) {

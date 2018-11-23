@@ -4,7 +4,6 @@
 
 AddressCombo::AddressCombo(QWidget* parent) : 
     QComboBox(parent) {
-
 }
 
 QString AddressCombo::itemText(int i) {

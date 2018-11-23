@@ -657,8 +657,15 @@ void Connection::doRPCIgnoreError(const json& payload, const std::function<void(
 void Connection::showTxError(const QString& error) {
     if (error.isNull()) return;
 
+    // Prevent multiple dialog boxes from showing, because they're all called async
+    static bool shown = false;
+    if (shown)
+        return;
+
+    shown = true;
     QMessageBox::critical(main, "Transaction Error", "There was an error sending the transaction. The error was: \n\n"
         + error, QMessageBox::StandardButton::Ok);
+    shown = false;
 }
 
 /**
