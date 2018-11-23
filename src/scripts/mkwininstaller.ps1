@@ -7,7 +7,6 @@ $target="zec-qt-wallet-v$version"
 Remove-Item -Path release/wininstaller -Recurse | Out-Null
 New-Item release/wininstaller -itemtype directory | Out-Null
 
-Copy-Item res/icon.ico release/wininstaller/
 Copy-Item release/$target/zec-qt-wallet.exe release/wininstaller/
 Copy-Item release/$target/LICENSE release/wininstaller/
 Copy-Item release/$target/README.md release/wininstaller/
