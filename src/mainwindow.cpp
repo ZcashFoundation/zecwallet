@@ -462,9 +462,9 @@ void MainWindow::donate() {
                             Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText("0.01");
-    ui->MemoTxt1->setText("Thanks for supporting zec-qt-wallet!");
+    ui->MemoTxt1->setText(tr("Thanks for supporting zec-qt-wallet!"));
 
-    ui->statusBar->showMessage("Donate 0.01 " % Settings::getTokenName() % " to support zec-qt-wallet");
+    ui->statusBar->showMessage(tr("Donate 0.01 ") % Settings::getTokenName() % tr(" to support zec-qt-wallet"));
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);
@@ -500,7 +500,7 @@ void MainWindow::postToZBoard() {
 
     // Testnet warning
     if (Settings::getInstance()->isTestnet()) {
-        zb.testnetWarning->setText("You are on testnet, your post won't actually appear on z-board.net");
+        zb.testnetWarning->setText(tr("You are on testnet, your post won't actually appear on z-board.net"));
     }
     else {
         zb.testnetWarning->setText("");
@@ -556,7 +556,7 @@ void MainWindow::postToZBoard() {
         // Send from your first sapling address that has a balance.
         tx.fromAddr = zb.fromAddr->currentText();
         if (tx.fromAddr.isEmpty()) {
-            QMessageBox::critical(this, "Error Posting Message", "You need a sapling address with available balance to post", QMessageBox::Ok);
+            QMessageBox::critical(this, "Error Posting Message", tr("You need a sapling address with available balance to post"), QMessageBox::Ok);
             return;
         }
 
@@ -575,7 +575,7 @@ void MainWindow::postToZBoard() {
         // And send the Tx
         rpc->sendZTransaction(params, [=](const json& reply) {
             QString opid = QString::fromStdString(reply.get<json::string_t>());
-            ui->statusBar->showMessage("Computing Tx: " % opid);
+            ui->statusBar->showMessage(tr("Computing Tx: ") % opid);
 
             // And then start monitoring the transaction
             rpc->addNewTxToWatch(tx, opid);
@@ -593,9 +593,9 @@ void MainWindow::doImport(QList<QString>* keys) {
         delete keys;
 
         QMessageBox::information(this,
-            "Imported", "The keys were imported. It may take several minutes to rescan the blockchain. Until then, functionality may be limited",
+            "Imported", tr("The keys were imported. It may take several minutes to rescan the blockchain. Until then, functionality may be limited"),
             QMessageBox::Ok);
-        ui->statusBar->showMessage("Private key import rescan finished");
+        ui->statusBar->showMessage(tr("Private key import rescan finished"));
         return;
     }
 
@@ -622,7 +622,7 @@ void MainWindow::importPrivKey() {
     pui.buttonBox->button(QDialogButtonBox::Save)->setVisible(false);
     pui.helpLbl->setText(QString() %
                         "Please paste your private keys (z-Addr or t-Addr) here, one per line.\n" %
-                        "The keys will be imported into your connected zcashd node");  
+                        tr("The keys will be imported into your connected zcashd node"));  
 
     if (d.exec() == QDialog::Accepted && !pui.privKeyTxt->toPlainText().trimmed().isEmpty()) {
         auto rawkeys = pui.privKeyTxt->toPlainText().trimmed().split("\n");
@@ -661,8 +661,8 @@ void MainWindow::backupWalletDat() {
     
     QFile wallet(zcashdir.filePath("wallet.dat"));
     if (!wallet.exists()) {
-        QMessageBox::critical(this, "No wallet.dat", "Couldn't find the wallet.dat on this computer."
-            "You need to back it up from the machine zcashd is running on", QMessageBox::Ok);
+        QMessageBox::critical(this, "No wallet.dat", tr("Couldn't find the wallet.dat on this computer.\n") +
+            tr("You need to back it up from the machine zcashd is running on"), QMessageBox::Ok);
         return;
     }
     
@@ -671,8 +671,8 @@ void MainWindow::backupWalletDat() {
         return;
 
     if (!wallet.copy(backupName.toLocalFile())) {
-        QMessageBox::critical(this, "Couldn't backup", "Couldn't backup the wallet.dat file."
-            "You need to back it up manually.", QMessageBox::Ok);
+        QMessageBox::critical(this, "Couldn't backup", tr("Couldn't backup the wallet.dat file.") + 
+            tr("You need to back it up manually."), QMessageBox::Ok);
     }
 }
 
@@ -694,14 +694,14 @@ void MainWindow::exportKeys(QString addr) {
 
     Settings::saveRestore(&d);
 
-    pui.privKeyTxt->setPlainText("Loading...");
+    pui.privKeyTxt->setPlainText(tr("Loading..."));
     pui.privKeyTxt->setReadOnly(true);
     pui.privKeyTxt->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
 
     if (allKeys)
-        pui.helpLbl->setText("These are all the private keys for all the addresses in your wallet");
+        pui.helpLbl->setText(tr("These are all the private keys for all the addresses in your wallet"));
     else
-        pui.helpLbl->setText("Private key for " + addr);
+        pui.helpLbl->setText(tr("Private key for ") + addr);
 
     // Disable the save button until it finishes loading
     pui.buttonBox->button(QDialogButtonBox::Save)->setEnabled(false);
@@ -808,13 +808,13 @@ void MainWindow::setupBalancesTab() {
 
         QMenu menu(this);
 
-        menu.addAction("Copy address", [=] () {
+        menu.addAction(tr("Copy address"), [=] () {
             QClipboard *clipboard = QGuiApplication::clipboard();
             clipboard->setText(addr);            
-            ui->statusBar->showMessage("Copied to clipboard", 3 * 1000);
+            ui->statusBar->showMessage(tr("Copied to clipboard"), 3 * 1000);
         });
 
-        menu.addAction("Get private key", [=] () {
+        menu.addAction(tr("Get private key"), [=] () {
             this->exportKeys(addr);
         });
 
@@ -825,12 +825,12 @@ void MainWindow::setupBalancesTab() {
         if (addr.startsWith("t")) {
             auto defaultSapling = rpc->getDefaultSaplingAddress();
             if (!defaultSapling.isEmpty()) {
-                menu.addAction("Shield balance to Sapling", [=] () {
+                menu.addAction(tr("Shield balance to Sapling"), [=] () {
                     fnDoSendFrom(addr, defaultSapling, true);
                 });
             }
 
-            menu.addAction("View on block explorer", [=] () {
+            menu.addAction(tr("View on block explorer"), [=] () {
                 QString url;
                 if (Settings::getInstance()->isTestnet()) {
                     url = "https://explorer.testnet.z.cash/address/" + addr;
@@ -842,7 +842,7 @@ void MainWindow::setupBalancesTab() {
         }
 
         if (Settings::getInstance()->isSproutAddress(addr)) {
-            menu.addAction("Migrate to Sapling", [=] () {
+            menu.addAction(tr("Migrate to Sapling"), [=] () {
                 this->turnstileDoMigration(addr);
             });
         }
@@ -862,7 +862,7 @@ void MainWindow::setupTransactionsTab() {
         QString memo = txModel->getMemo(index.row());
 
         if (!memo.isEmpty()) {
-            QMessageBox::information(this, "Memo", memo, QMessageBox::Ok);
+            QMessageBox::information(this, tr("Memo"), memo, QMessageBox::Ok);
         }
     });
 
@@ -881,19 +881,19 @@ void MainWindow::setupTransactionsTab() {
         QString memo = txModel->getMemo(index.row());
         QString addr = txModel->getAddr(index.row());
 
-        menu.addAction("Copy txid", [=] () {            
+        menu.addAction(tr("Copy txid"), [=] () {            
             QGuiApplication::clipboard()->setText(txid);
-            ui->statusBar->showMessage("Copied to clipboard", 3 * 1000);
+            ui->statusBar->showMessage(tr("Copied to clipboard"), 3 * 1000);
         });
 
         if (!addr.isEmpty()) {
-            menu.addAction("Copy address", [=] () {
+            menu.addAction(tr("Copy address"), [=] () {
                 QGuiApplication::clipboard()->setText(addr);
-                ui->statusBar->showMessage("Copied to clipboard", 3 * 1000);
+                ui->statusBar->showMessage(tr("Copied to clipboard"), 3 * 1000);
             });
         }
 
-        menu.addAction("View on block explorer", [=] () {
+        menu.addAction(tr("View on block explorer"), [=] () {
             QString url;
             if (Settings::getInstance()->isTestnet()) {
                 url = "https://explorer.testnet.z.cash/tx/" + txid;
@@ -904,8 +904,8 @@ void MainWindow::setupTransactionsTab() {
         });
 
         if (!memo.isEmpty()) {
-            menu.addAction("View Memo", [=] () {
-                QMessageBox::information(this, "Memo", memo, QMessageBox::Ok);
+            menu.addAction(tr("View Memo"), [=] () {
+                QMessageBox::information(this, tr("Memo"), memo, QMessageBox::Ok);
             });
         }
 
@@ -968,7 +968,7 @@ void MainWindow::setupRecieveTab() {
                     ui->listRecieveAddresses->insertItem(0, addr);
                     ui->listRecieveAddresses->setCurrentIndex(0);
 
-                    ui->statusBar->showMessage("Created new t-Addr", 10 * 1000);
+                    ui->statusBar->showMessage(tr("Created new t-Addr"), 10 * 1000);
                 }
             });
     };

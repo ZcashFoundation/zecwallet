@@ -345,7 +345,7 @@ void RPC::noConnection() {
     QIcon i = QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical);
     main->statusIcon->setPixmap(i.pixmap(16, 16));
     main->statusIcon->setToolTip("");
-    main->statusLabel->setText("No Connection");
+    main->statusLabel->setText(QObject::tr("No Connection"));
     main->statusLabel->setToolTip("");
     main->ui->statusBar->showMessage("No Connection", 1000);
 
