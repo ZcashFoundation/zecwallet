@@ -424,7 +424,7 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
                         dots = 0;
                 }
                 this->showInformation("Your zcashd is starting up. Please wait.", status);
-                main->logger->write("Waiting to zcashd to come online.");
+                main->logger->write("Waiting for zcashd to come online.");
                 // Refresh after one second
                 QTimer::singleShot(1000, [=]() { this->refreshZcashdState(connection, refused); });
             }
@@ -488,7 +488,7 @@ QString ConnectionLoader::zcashParamsDir() {
         QDir().mkpath(paramsLocation.absolutePath());
     }
 
-    main->logger->write("Found zcash params directory at " + paramsLocation.absolutePath());
+    main->logger->write("Found Zcash params directory at " + paramsLocation.absolutePath());
     return paramsLocation.absolutePath();
 }
 
