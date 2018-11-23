@@ -188,8 +188,7 @@ if [ -f artifacts/Windows-zec-qt-wallet-v$APP_VERSION.zip ] ; then
     else
         echo "[ERROR]"
         exit 1
-    fi    
-    
+    fi
 else
     echo "[ERROR]"
     exit 1

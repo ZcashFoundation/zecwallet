@@ -6,7 +6,7 @@
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<MediaTemplate EmbedCab="yes"/>
 
-        <Icon Id="icon.ico" SourceFile="res/icon.ico"/>
+        <Icon Id="icon.ico" SourceFile="icon.ico"/>
         <Property Id="ARPPRODUCTICON" Value="icon.ico" />
 
 		<Feature Id="ProductFeature" Title="zec-qt-wallet" Level="1">
@@ -58,7 +58,7 @@
 			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
 			<Component Id="ProductComponent" Guid="0D210F5A-53E0-4E7E-CAAD-15A26995505E">
                 <File Source="zec-qt-wallet.exe">
-                    <Shortcut Id="startMenuShotcut" Advertise="yes" Directory="ApplicationProgramsFolder"
+                    <Shortcut Id="startMenuShotcut" Directory="ApplicationProgramsFolder"
                         Name="zec-qt-wallet" WorkingDirectory="INSTALLFOLDER" Icon="icon.ico" >
                     </Shortcut>
                 </File>
