@@ -552,7 +552,7 @@ void RPC::getInfoThenRefresh(bool force) {
 
         conn->doRPCIgnoreError(payload, [=](const json& reply) {
             auto progress    = reply["verificationprogress"].get<double>();
-            bool isSyncing   = progress < 0.995; // 99.59%
+            bool isSyncing   = progress < 0.9999; // 99.99%
             int  blockNumber = reply["blocks"].get<json::number_unsigned_t>();
 
             int estimatedheight = 0;
@@ -601,9 +601,14 @@ void RPC::getInfoThenRefresh(bool force) {
     }, [=](QNetworkReply* reply, const json&) {
         // zcashd has probably disappeared.
         this->noConnection();
-        if (prevCallSucceeded) { // show error only first time
+
+        // Prevent multiple dialog boxes, because these are called async
+        static bool shown = false;
+        if (!shown && prevCallSucceeded) { // show error only first time
+            shown = true;
             QMessageBox::critical(main, "Connection Error", "There was an error connecting to zcashd. The error was: \n\n"
                 + reply->errorString(), QMessageBox::StandardButton::Ok);
+            shown = false;
         }
 
         prevCallSucceeded = false;
