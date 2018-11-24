@@ -117,10 +117,10 @@ public:
         static QMap<QString, bool> inProgress;
 
         QString method = QString::fromStdString(payloadGenerator(payloads[0])["method"]);
-        if (inProgress.value(method, false)) {
-            qDebug() << "In progress batch, skipping";
-            return;
-        }
+        //if (inProgress.value(method, false)) {
+        //    qDebug() << "In progress batch, skipping";
+        //    return;
+        //}
 
         for (auto item: payloads) {
             json payload = payloadGenerator(item);
