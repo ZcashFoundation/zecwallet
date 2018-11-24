@@ -395,7 +395,7 @@ Tx MainWindow::createTxFromSendPage() {
         tx.fee = Settings::getMinerFee();
     }
 
-    if (sendChangeToSapling) {
+    if (Settings::getInstance()->getAutoShield() && sendChangeToSapling) {
         auto saplingAddr = std::find_if(rpc->getAllZAddresses()->begin(), rpc->getAllZAddresses()->end(), [=](auto i) -> bool { 
             // We're finding a sapling address that is not one of the To addresses, because zcash doesn't allow duplicated addresses
             bool isSapling = Settings::getInstance()->isSaplingAddress(i); 
@@ -409,11 +409,11 @@ Tx MainWindow::createTxFromSendPage() {
 
             return true;
         });
+
         if (saplingAddr != rpc->getAllZAddresses()->end()) {
-            tx.sendChangeToSapling = sendChangeToSapling;
             double change = rpc->getAllBalances()->value(tx.fromAddr) - totalAmt - tx.fee;
 
-            QString changeMemo = "change from " + tx.fromAddr;
+            QString changeMemo = "Change from " + tx.fromAddr;
             tx.toAddrs.push_back( ToFields{*saplingAddr, change, changeMemo, changeMemo.toUtf8().toHex()} );
         }
     }

@@ -573,7 +573,6 @@ void MainWindow::postToZBoard() {
         auto toAddr = topics[zb.topicsList->currentText()];
         tx.toAddrs.push_back(ToFields{ toAddr, Settings::getZboardAmount(), memo, memo.toUtf8().toHex() });
         tx.fee = Settings::getMinerFee();
-        tx.sendChangeToSapling = false;
 
         json params = json::array();
         rpc->fillTxJsonParams(params, tx);
