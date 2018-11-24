@@ -363,17 +363,26 @@ void MainWindow::maxAmountChecked(int checked) {
 // Create a Tx from the current state of the send page. 
 Tx MainWindow::createTxFromSendPage() {
     Tx tx;
+
+    bool sendChangeToSapling = Settings::getInstance()->getAutoShield();
+
     // Gather the from / to addresses 
     tx.fromAddr = ui->inputsCombo->currentText();
+    sendChangeToSapling = sendChangeToSapling && Settings::isTAddress(tx.fromAddr);
 
     // For each addr/amt in the sendTo tab
     int totalItems = ui->sendToWidgets->children().size() - 2;   // The last one is a spacer, so ignore that        
+    double totalAmt = 0;
     for (int i=0; i < totalItems; i++) {
         QString addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") % QString::number(i+1))->text().trimmed();
         // Remove label if it exists
         addr = AddressBook::addressFromAddressLabel(addr);
+        
+        // If address is sprout, then we can't send change to sapling, because of turnstile.
+        sendChangeToSapling = sendChangeToSapling && !Settings::getInstance()->isSproutAddress(addr);
 
         double  amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1))->text().trimmed().toDouble();        
+        totalAmt += amt;
         QString memo = ui->sendToWidgets->findChild<QLabel*>(QString("MemoTxt")  % QString::number(i+1))->text().trimmed();
         
         tx.toAddrs.push_back( ToFields{addr, amt, memo, memo.toUtf8().toHex()} );
@@ -381,10 +390,34 @@ Tx MainWindow::createTxFromSendPage() {
 
     if (Settings::getInstance()->getAllowCustomFees()) {
         tx.fee = ui->minerFeeAmt->text().toDouble();
-    } else {
+    }
+    else {
         tx.fee = Settings::getMinerFee();
     }
 
+    if (sendChangeToSapling) {
+        auto saplingAddr = std::find_if(rpc->getAllZAddresses()->begin(), rpc->getAllZAddresses()->end(), [=](auto i) -> bool { 
+            // We're finding a sapling address that is not one of the To addresses, because zcash doesn't allow duplicated addresses
+            bool isSapling = Settings::getInstance()->isSaplingAddress(i); 
+            if (!isSapling) return false;
+
+            // Also check all the To addresses
+            for (auto t : tx.toAddrs) {
+                if (t.addr == i)
+                    return false;
+            }
+
+            return true;
+        });
+        if (saplingAddr != rpc->getAllZAddresses()->end()) {
+            tx.sendChangeToSapling = sendChangeToSapling;
+            double change = rpc->getAllBalances()->value(tx.fromAddr) - totalAmt - tx.fee;
+
+            QString changeMemo = "change from " + tx.fromAddr;
+            tx.toAddrs.push_back( ToFields{*saplingAddr, change, changeMemo, changeMemo.toUtf8().toHex()} );
+        }
+    }
+    
     return tx;
 }
 

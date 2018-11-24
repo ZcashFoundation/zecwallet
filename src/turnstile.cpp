@@ -304,7 +304,7 @@ void Turnstile::executeMigrationStep() {
         }
 
         // Create the Tx
-        auto tx = Tx{ nextStep->fromAddr, { to }, Settings::getMinerFee() };
+        auto tx = Tx{ nextStep->fromAddr, { to }, Settings::getMinerFee(), false };
 
         // And send it
         doSendTx(tx, [=] () {
@@ -339,7 +339,7 @@ void Turnstile::executeMigrationStep() {
         QList<ToFields> to = { ToFields{ nextStep->destAddr, sendAmt, "", "" } };
 
         // Create the Tx
-        auto tx = Tx{ nextStep->intTAddr, to, Settings::getMinerFee() };
+        auto tx = Tx{ nextStep->intTAddr, to, Settings::getMinerFee(), false };
 
         // And send it
         doSendTx(tx, [=] () {

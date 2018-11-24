@@ -27,7 +27,6 @@ public:
             
     bool    isSaplingAddress(QString addr);
     bool    isSproutAddress(QString addr);
-    bool    isZAddress(QString addr);
             
     bool    isSyncing();
     void    setSyncing(bool syncing);
@@ -40,7 +39,10 @@ public:
             
     bool    getSaveZtxs();
     void    setSaveZtxs(bool save);
-            
+
+    bool    getAutoShield();
+    void    setAutoShield(bool allow);
+
     bool    getAllowCustomFees();
     void    setAllowCustomFees(bool allow);
             
@@ -56,6 +58,9 @@ public:
     static const QString txidStatusMessage;
     
     static void saveRestore(QDialog* d);
+
+    static bool    isZAddress(QString addr);
+    static bool    isTAddress(QString addr);
 
     static QString getDecimalString(double amt);
     static QString getUSDFormat(double bal);

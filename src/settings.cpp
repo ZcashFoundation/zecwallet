@@ -66,6 +66,10 @@ bool Settings::isZAddress(QString addr) {
     return addr.startsWith("z");
 }
 
+bool Settings::isTAddress(QString addr) {
+    return addr.startsWith("t");
+}
+
 bool Settings::isSyncing() {
     return _isSyncing;
 }
@@ -91,6 +95,14 @@ double Settings::getZECPrice() {
     return zecPrice; 
 }
 
+bool Settings::getAutoShield() {
+    // Load from Qt settings
+    return QSettings().value("options/autoshield", false).toBool();
+}
+
+void Settings::setAutoShield(bool allow) {
+    QSettings().setValue("options/autoshield", allow);
+}
 
 bool Settings::getAllowCustomFees() {
     // Load from the QT Settings. 

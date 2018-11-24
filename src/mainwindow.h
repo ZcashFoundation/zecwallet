@@ -23,6 +23,7 @@ struct Tx {
     QString         fromAddr;
     QList<ToFields> toAddrs;
     double          fee;
+    bool            sendChangeToSapling;
 };
 
 namespace Ui {
