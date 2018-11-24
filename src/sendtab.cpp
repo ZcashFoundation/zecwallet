@@ -443,11 +443,13 @@ bool MainWindow::confirmTx(Tx tx) {
         auto amt    = confirm.sendToAddrs->findChild<QLabel*>(QString("Amt")    % QString::number(i+1));
         auto memo   = confirm.sendToAddrs->findChild<QLabel*>(QString("Memo")   % QString::number(i+1));
         auto amtUSD = confirm.sendToAddrs->findChild<QLabel*>(QString("AmtUSD") % QString::number(i+1));
+        auto spacer = confirm.sendToAddrs->findChild<QLabel*>(QString("spacer") % QString::number(i+1));
 
         delete memo;
         delete addr;
         delete amt;
         delete amtUSD;
+        delete spacer;
     }
 
     // Remove the fee labels
@@ -456,6 +458,7 @@ bool MainWindow::confirmTx(Tx tx) {
     delete confirm.sendToAddrs->findChild<QLabel*>("minerFeeUSD");
     
     // For each addr/amt/memo, construct the JSON and also build the confirm dialog box    
+    int row = 0;
     for (int i=0; i < tx.toAddrs.size(); i++) {
         auto toAddr = tx.toAddrs[i];
 
@@ -466,24 +469,25 @@ bool MainWindow::confirmTx(Tx tx) {
             Addr->setObjectName(QString("Addr") % QString::number(i + 1));
             Addr->setWordWrap(true);
             Addr->setText(fnSplitAddressForWrap(toAddr.addr));
-            confirm.gridLayout->addWidget(Addr, i*2, 0, 1, 1);
+            confirm.gridLayout->addWidget(Addr, row, 0, 1, 1);
 
             // Amount (ZEC)
             auto Amt = new QLabel(confirm.sendToAddrs);
             Amt->setObjectName(QString("Amt") % QString::number(i + 1));
             Amt->setText(Settings::getZECDisplayFormat(toAddr.amount));
             Amt->setAlignment(Qt::AlignRight | Qt::AlignTrailing | Qt::AlignVCenter);
-            confirm.gridLayout->addWidget(Amt, i*2, 1, 1, 1);
+            confirm.gridLayout->addWidget(Amt, row, 1, 1, 1);
 
             // Amount (USD)
             auto AmtUSD = new QLabel(confirm.sendToAddrs);
             AmtUSD->setObjectName(QString("AmtUSD") % QString::number(i + 1));
             AmtUSD->setText(Settings::getUSDFormat(toAddr.amount));
             AmtUSD->setAlignment(Qt::AlignRight | Qt::AlignTrailing | Qt::AlignVCenter);
-            confirm.gridLayout->addWidget(AmtUSD, i*2, 2, 1, 1);            
+            confirm.gridLayout->addWidget(AmtUSD, row, 2, 1, 1);            
 
             // Memo
-            if (toAddr.addr.startsWith("z")) {
+            if (toAddr.addr.startsWith("z") && !toAddr.txtMemo.isEmpty()) {
+                row++;
                 auto Memo = new QLabel(confirm.sendToAddrs);
                 Memo->setObjectName(QStringLiteral("Memo") % QString::number(i + 1));
                 Memo->setText(toAddr.txtMemo);
@@ -492,18 +496,25 @@ bool MainWindow::confirmTx(Tx tx) {
                 Memo->setFont(font1);
                 Memo->setWordWrap(true);
 
-                confirm.gridLayout->addWidget(Memo, (i*2)+1, 0, 1, 3);
+                confirm.gridLayout->addWidget(Memo, row, 0, 1, 3);
             }
+
+            row ++;
+
+            // Add an empty spacer to create a blank space
+            auto spacer = new QLabel(confirm.sendToAddrs);
+            spacer->setObjectName(QString("spacer") % QString::number(i + 1));
+            confirm.gridLayout->addWidget(spacer, row, 0, 1, 1);
+
+            row++;
         }
     }
 
     // Add fees
     {
-        auto i = tx.toAddrs.size() * 2;
-
         auto labelMinerFee = new QLabel(confirm.sendToAddrs);
         labelMinerFee->setObjectName(QStringLiteral("labelMinerFee"));
-        confirm.gridLayout->addWidget(labelMinerFee, i, 0, 1, 1);
+        confirm.gridLayout->addWidget(labelMinerFee, row, 0, 1, 1);
         labelMinerFee->setText("Miner Fee");
 
         auto minerFee = new QLabel(confirm.sendToAddrs);
@@ -511,7 +522,7 @@ bool MainWindow::confirmTx(Tx tx) {
         minerFee->setSizePolicy(sizePolicy);
         minerFee->setObjectName(QStringLiteral("minerFee"));
         minerFee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-        confirm.gridLayout->addWidget(minerFee, i, 1, 1, 1);
+        confirm.gridLayout->addWidget(minerFee, row, 1, 1, 1);
         minerFee->setText(Settings::getZECDisplayFormat(tx.fee));
 
         auto minerFeeUSD = new QLabel(confirm.sendToAddrs);
@@ -519,7 +530,7 @@ bool MainWindow::confirmTx(Tx tx) {
         minerFeeUSD->setSizePolicy(sizePolicy1);
         minerFeeUSD->setObjectName(QStringLiteral("minerFeeUSD"));
         minerFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-        confirm.gridLayout->addWidget(minerFeeUSD, i, 2, 1, 1);
+        confirm.gridLayout->addWidget(minerFeeUSD, row, 2, 1, 1);
         minerFeeUSD->setText(Settings::getUSDFormat(tx.fee));
 
         if (Settings::getInstance()->getAllowCustomFees() && tx.fee != Settings::getMinerFee()) {
