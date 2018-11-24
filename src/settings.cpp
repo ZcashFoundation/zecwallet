@@ -143,9 +143,12 @@ QString Settings::getUSDFormat(double bal) {
 
 QString Settings::getDecimalString(double amt) {
     QString f = QString::number(amt, 'f', 8);
+
     while (f.contains(".") && (f.right(1) == "0" || f.right(1) == ".")) {
         f = f.left(f.length() - 1);
     }
+    if (f == "-0")
+        f = "0";
 
     return f;
 }

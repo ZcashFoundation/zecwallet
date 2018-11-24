@@ -413,8 +413,10 @@ Tx MainWindow::createTxFromSendPage() {
         if (saplingAddr != rpc->getAllZAddresses()->end()) {
             double change = rpc->getAllBalances()->value(tx.fromAddr) - totalAmt - tx.fee;
 
-            QString changeMemo = "Change from " + tx.fromAddr;
-            tx.toAddrs.push_back( ToFields{*saplingAddr, change, changeMemo, changeMemo.toUtf8().toHex()} );
+            if (Settings::getDecimalString(change) != "0") {
+                QString changeMemo = "Change from " + tx.fromAddr;
+                tx.toAddrs.push_back(ToFields{ *saplingAddr, change, changeMemo, changeMemo.toUtf8().toHex() });
+            }
         }
     }
     
