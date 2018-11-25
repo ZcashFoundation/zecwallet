@@ -216,7 +216,7 @@
        <item row="7" column="0" colspan="2">
         <widget class="QLabel" name="label_7">
          <property name="text">
-          <string>Normally, change from t-Addresses goes to another t-Address. Checking this option will send the change to your shielded Sapling address instead. Check this option to increase your privacy.</string>
+          <string>Normally, change from t-Addresses goes to another t-Address. Checking this option will send the change to your shielded sapling address instead. Check this option to increase your privacy.</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -226,7 +226,7 @@
        <item row="6" column="0" colspan="2">
         <widget class="QCheckBox" name="chkAutoShield">
          <property name="text">
-          <string>Shield change from t-Addresses to your Sapling addresses</string>
+          <string>Shield change from t-Addresses to your sapling address</string>
          </property>
         </widget>
        </item>

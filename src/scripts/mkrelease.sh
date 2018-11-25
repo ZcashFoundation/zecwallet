@@ -90,14 +90,14 @@ cp LICENSE bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cd bin && tar cvf linux-zec-qt-wallet-v$APP_VERSION.tar.gz zec-qt-wallet-v$APP_VERSION/ > /dev/null
 cd .. 
 mkdir artifacts >/dev/null 2>&1
-cp bin/linux-zec-qt-wallet-v$APP_VERSION.tar.gz ./artifacts
+cp bin/linux-zec-qt-wallet-v$APP_VERSION.tar.gz ./artifacts/linux-binaries-zec-qt-wallet-v$APP_VERSION.tar.gz
 echo "[OK]"
 
 
-if [ -f artifacts/linux-zec-qt-wallet-v$APP_VERSION.tar.gz ] ; then
+if [ -f artifacts/linux-binaries-zec-qt-wallet-v$APP_VERSION.tar.gz ] ; then
     echo -n "Package contents......."
     # Test if the package is built OK
-    if tar tf "artifacts/linux-zec-qt-wallet-v$APP_VERSION.tar.gz" | wc -l | grep -q "6"; then 
+    if tar tf "artifacts/linux-binaries-zec-qt-wallet-v$APP_VERSION.tar.gz" | wc -l | grep -q "6"; then 
         echo "[OK]"
     else
         echo "[ERROR]"
@@ -126,7 +126,7 @@ mkdir -p $debdir/usr/share/applications
 cp src/scripts/desktopentry $debdir/usr/share/applications/zec-qt-wallet.desktop
 
 dpkg-deb --build $debdir >/dev/null
-cp $debdir.deb artifacts/
+cp $debdir.deb artifacts/linux-deb-zec-qt-wallet-v$APP_VERSION.deb
 echo "[OK]"
 
 
@@ -175,15 +175,15 @@ cp $ZCASH_DIR/artifacts/zcashd.exe release/zec-qt-wallet-v$APP_VERSION > /dev/nu
 cp $ZCASH_DIR/artifacts/zcash-cli.exe release/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp README.md release/zec-qt-wallet-v$APP_VERSION 
 cp LICENSE release/zec-qt-wallet-v$APP_VERSION 
-cd release && zip -r Windows-zec-qt-wallet-v$APP_VERSION.zip zec-qt-wallet-v$APP_VERSION/ > /dev/null
+cd release && zip -r Windows-binaries-zec-qt-wallet-v$APP_VERSION.zip zec-qt-wallet-v$APP_VERSION/ > /dev/null
 cd ..
 mkdir artifacts >/dev/null 2>&1
-cp release/Windows-zec-qt-wallet-v$APP_VERSION.zip ./artifacts/
+cp release/Windows-binaries-zec-qt-wallet-v$APP_VERSION.zip ./artifacts/
 echo "[OK]"
 
-if [ -f artifacts/Windows-zec-qt-wallet-v$APP_VERSION.zip ] ; then
+if [ -f artifacts/Windows-binaries-zec-qt-wallet-v$APP_VERSION.zip ] ; then
     echo -n "Package contents......."
-    if unzip -l "artifacts/Windows-zec-qt-wallet-v$APP_VERSION.zip" | wc -l | grep -q "11"; then 
+    if unzip -l "artifacts/Windows-binaries-zec-qt-wallet-v$APP_VERSION.zip" | wc -l | grep -q "11"; then 
         echo "[OK]"
     else
         echo "[ERROR]"

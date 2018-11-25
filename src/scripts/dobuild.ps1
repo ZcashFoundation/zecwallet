@@ -2,23 +2,25 @@
 param (
     [Parameter(Mandatory=$true)][string]$version,
     [Parameter(Mandatory=$true)][string]$prev,
-    [Parameter(Mandatory=$true)][string]$server,
-    [Parameter(Mandatory=$true)][string]$macserver
+    [Parameter(Mandatory=$true)][string]$server
+#    [Parameter(Mandatory=$true)][string]$macserver
 )
 
 Write-Host "[Initializing]"
 Remove-Item -Force -ErrorAction Ignore ./artifacts/linux-zec-qt-wallet-v$version.tar.gz
-Remove-Item -Force -ErrorAction Ignore ./artifacts/Windows-zec-qt-wallet-v$version.zip
+Remove-Item -Force -ErrorAction Ignore ./artifacts/Windows-binaries-zec-qt-wallet-v$version.zip
 Remove-Item -Force -ErrorAction Ignore ./artifacts/zec-qt-wallet-v$version.deb
-Remove-Item -Force -ErrorAction Ignore ./artifacts/zec-qt-wallet-v$version.msi
+Remove-Item -Force -ErrorAction Ignore ./artifacts/Windows-installer-zec-qt-wallet-v$version.msi
 Remove-Item -Force -ErrorAction Ignore ./artifacts/macOS-zec-qt-wallet-v$version.dmg
 
 Remove-Item -Recurse -Force -ErrorAction Ignore ./bin
 Remove-Item -Recurse -Force -ErrorAction Ignore ./debug
 Remove-Item -Recurse -Force -ErrorAction Ignore ./release
 
-# Create the version.h file
+# Create the version.h file and update README version number
 Write-Output "#define APP_VERSION `"$version`"" > src/version.h
+Get-Content README.md | Foreach-Object { $_ -replace "$prev", "$version" } | Out-File README-new.md
+Move-Item -Force README-new.md README.md
 Write-Host ""
 
 
@@ -69,11 +71,11 @@ Write-Host "[OK]"
 
 # Finally, test to make sure all files exist
 Write-Host -NoNewline "Checking Build........."
-if (! (Test-Path ./artifacts/linux-zec-qt-wallet-v$version.tar.gz) -or
-    ! (Test-Path ./artifacts/Windows-zec-qt-wallet-v$version.zip) -or
-    ! (Test-Path ./artifacts/zec-qt-wallet-v$version.deb) -or
+if (! (Test-Path ./artifacts/linux-binaries-zec-qt-wallet-v$version.tar.gz) -or
+    ! (Test-Path ./artifacts/linux-deb-zec-qt-wallet-v$version.deb) -or
+    ! (Test-Path ./artifacts/Windows-binaries-zec-qt-wallet-v$version.zip) -or
 #    ! (Test-Path ./artifacts/macOS-zec-qt-wallet-v$version.dmg) -or 
-    ! (Test-Path ./artifacts/zec-qt-wallet-v$version.msi) ) {
+    ! (Test-Path ./artifacts/Windows-installer-zec-qt-wallet-v$version.msi) ) {
         Write-Host "[Error]"
         exit 1;
     }

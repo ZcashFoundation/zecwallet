@@ -26,4 +26,4 @@ if (!$?) {
 }
 
 New-Item artifacts -itemtype directory -Force | Out-Null
-Copy-Item release/wininstaller/zec-qt-wallet.msi ./artifacts/$target.msi
+Copy-Item release/wininstaller/zec-qt-wallet.msi ./artifacts/Windows-installer-$target.msi
