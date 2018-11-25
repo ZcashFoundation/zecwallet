@@ -82,13 +82,16 @@ echo "[OK]"
 echo -n "Packaging.............."
 mkdir bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 strip zec-qt-wallet
-cp zec-qt-wallet bin/zec-qt-wallet-v$APP_VERSION > /dev/null
-cp $ZCASH_DIR/artifacts/zcashd bin/zec-qt-wallet-v$APP_VERSION > /dev/null
+
+cp zec-qt-wallet                  bin/zec-qt-wallet-v$APP_VERSION > /dev/null
+cp $ZCASH_DIR/artifacts/zcashd    bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp $ZCASH_DIR/artifacts/zcash-cli bin/zec-qt-wallet-v$APP_VERSION > /dev/null
-cp README.md bin/zec-qt-wallet-v$APP_VERSION > /dev/null
-cp LICENSE bin/zec-qt-wallet-v$APP_VERSION > /dev/null
+cp README.md                      bin/zec-qt-wallet-v$APP_VERSION > /dev/null
+cp LICENSE                        bin/zec-qt-wallet-v$APP_VERSION > /dev/null
+
 cd bin && tar cvf linux-zec-qt-wallet-v$APP_VERSION.tar.gz zec-qt-wallet-v$APP_VERSION/ > /dev/null
 cd .. 
+
 mkdir artifacts >/dev/null 2>&1
 cp bin/linux-zec-qt-wallet-v$APP_VERSION.tar.gz ./artifacts/linux-binaries-zec-qt-wallet-v$APP_VERSION.tar.gz
 echo "[OK]"
@@ -111,22 +114,22 @@ fi
 echo -n "Building deb..........."
 debdir=bin/deb/zec-qt-wallet-v$APP_VERSION
 mkdir -p $debdir > /dev/null
-mkdir $debdir/DEBIAN
+mkdir    $debdir/DEBIAN
 mkdir -p $debdir/usr/local/bin
 
 cat src/scripts/control | sed "s/RELEASE_VERSION/$APP_VERSION/g" > $debdir/DEBIAN/control
 
-cp zec-qt-wallet $debdir/usr/local/bin/
+cp zec-qt-wallet               $debdir/usr/local/bin/
 cp $ZCASH_DIR/artifacts/zcashd $debdir/usr/local/bin/zqw-zcashd
 
 mkdir -p $debdir/usr/share/pixmaps/
-cp res/zec-qt-wallet.xpm $debdir/usr/share/pixmaps/
+cp res/zec-qt-wallet.xpm       $debdir/usr/share/pixmaps/
 
 mkdir -p $debdir/usr/share/applications
-cp src/scripts/desktopentry $debdir/usr/share/applications/zec-qt-wallet.desktop
+cp src/scripts/desktopentry    $debdir/usr/share/applications/zec-qt-wallet.desktop
 
 dpkg-deb --build $debdir >/dev/null
-cp $debdir.deb artifacts/linux-deb-zec-qt-wallet-v$APP_VERSION.deb
+cp $debdir.deb                 artifacts/linux-deb-zec-qt-wallet-v$APP_VERSION.deb
 echo "[OK]"
 
 
@@ -170,13 +173,14 @@ echo "[OK]"
 
 echo -n "Packaging.............."
 mkdir release/zec-qt-wallet-v$APP_VERSION  
-cp release/zec-qt-wallet.exe release/zec-qt-wallet-v$APP_VERSION 
-cp $ZCASH_DIR/artifacts/zcashd.exe release/zec-qt-wallet-v$APP_VERSION > /dev/null
+cp release/zec-qt-wallet.exe          release/zec-qt-wallet-v$APP_VERSION 
+cp $ZCASH_DIR/artifacts/zcashd.exe    release/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp $ZCASH_DIR/artifacts/zcash-cli.exe release/zec-qt-wallet-v$APP_VERSION > /dev/null
-cp README.md release/zec-qt-wallet-v$APP_VERSION 
-cp LICENSE release/zec-qt-wallet-v$APP_VERSION 
+cp README.md                          release/zec-qt-wallet-v$APP_VERSION 
+cp LICENSE                            release/zec-qt-wallet-v$APP_VERSION 
 cd release && zip -r Windows-binaries-zec-qt-wallet-v$APP_VERSION.zip zec-qt-wallet-v$APP_VERSION/ > /dev/null
 cd ..
+
 mkdir artifacts >/dev/null 2>&1
 cp release/Windows-binaries-zec-qt-wallet-v$APP_VERSION.zip ./artifacts/
 echo "[OK]"

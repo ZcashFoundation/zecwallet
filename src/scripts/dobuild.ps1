@@ -57,9 +57,9 @@ if (!$?) {
     exit 1;
 }
 
-New-Item artifacts -itemtype directory -Force | Out-Null
-scp ${server}:/tmp/zqwbuild/artifacts/* artifacts/ | Out-Null
-scp -r ${server}:/tmp/zqwbuild/release . | Out-Null
+New-Item artifacts -itemtype directory -Force         | Out-Null
+scp    ${server}:/tmp/zqwbuild/artifacts/* artifacts/ | Out-Null
+scp -r ${server}:/tmp/zqwbuild/release .              | Out-Null
 
 Write-Host -NoNewline "Building Installer....."
 src/scripts/mkwininstaller.ps1 -version $version 2>&1 | Out-Null
