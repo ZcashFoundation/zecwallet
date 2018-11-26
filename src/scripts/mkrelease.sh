@@ -89,7 +89,7 @@ cp $ZCASH_DIR/artifacts/zcash-cli bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp README.md                      bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp LICENSE                        bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 
-cd bin && tar cvf linux-zec-qt-wallet-v$APP_VERSION.tar.gz zec-qt-wallet-v$APP_VERSION/ > /dev/null
+cd bin && tar czf linux-zec-qt-wallet-v$APP_VERSION.tar.gz zec-qt-wallet-v$APP_VERSION/ > /dev/null
 cd .. 
 
 mkdir artifacts >/dev/null 2>&1
