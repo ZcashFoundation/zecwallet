@@ -370,6 +370,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="584"/>
+        <location filename="../src/sendtab.cpp" line="587"/>
         <source>Computing Tx: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -503,11 +504,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="239"/>
-        <source>z</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/sendtab.cpp" line="254"/>
         <source>Only z-addresses can have memos</source>
         <translation type="unfinished"></translation>
@@ -585,16 +581,6 @@ doesn&apos;t look like a z-address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="53"/>
-        <source>Embedded zcashd started up, trying autoconnect in 1 sec</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="59"/>
-        <source>zcashd is daemon=1. Waiting for it to start up</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/connection.cpp" line="60"/>
         <source>zcashd is set to run as daemon</source>
         <translation type="unfinished"></translation>
@@ -602,11 +588,6 @@ doesn&apos;t look like a z-address</source>
     <message>
         <location filename="../src/connection.cpp" line="60"/>
         <source>Waiting for zcashd</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="66"/>
-        <source>Unknown problem while trying to start zcashd</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -629,40 +610,10 @@ If all else fails, please run zcashd manually.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="83"/>
-        <source>The process returned)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="90"/>
-        <source>Not using embedded and couldn&apos;t connect to zcashd</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/connection.cpp" line="91"/>
         <source>Couldn&apos;t connect to zcashd configured in zcash.conf.
 
 Not starting embedded zcashd because --no-embedded was passed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="131"/>
-        <source>Creating file </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="138"/>
-        <source>Could not create zcash.conf, returning</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="156"/>
-        <source>Adding params to download queue</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="182"/>
-        <source>All Downloads done</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -671,33 +622,17 @@ Not starting embedded zcashd because --no-embedded was passed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="195"/>
-        <source> already exists, skipping</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="205"/>
-        <source>Couldn&apos;t open </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="205"/>
-        <source> for writing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/connection.cpp" line="206"/>
         <source>Couldn&apos;t download params. Please check the help site for more info.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="208"/>
-        <source>Downloading to </source>
+        <location filename="../src/connection.cpp" line="83"/>
+        <source>The process returned</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="232"/>
-        <location filename="../src/connection.cpp" line="247"/>
         <location filename="../src/connection.cpp" line="248"/>
         <source>Downloading </source>
         <translation type="unfinished"></translation>
@@ -718,13 +653,73 @@ Not starting embedded zcashd because --no-embedded was passed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="239"/>
-        <source>Finished downloading </source>
+        <location filename="../src/rpc.cpp" line="575"/>
+        <source>Downloading blocks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="247"/>
+        <location filename="../src/rpc.cpp" line="578"/>
+        <source>Block height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="584"/>
+        <source>Syncing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="584"/>
+        <source>Connected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="586"/>
+        <source>testnet:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="593"/>
+        <source>Connected to zcashd</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="609"/>
+        <source>There was an error connecting to zcashd. The error was</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="848"/>
+        <source>The transaction with id </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="848"/>
+        <source> failed. The error was</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="855"/>
         <source> failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="855"/>
+        <source> Tx </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="874"/>
+        <source> tx computing. This can take several minutes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="953"/>
+        <source>Please wait for zec-qt-wallet to exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="954"/>
+        <source>Waiting for zcashd to exit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -733,19 +728,8 @@ Not starting embedded zcashd because --no-embedded was passed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="264"/>
-        <source>Trying to start embedded zcashd</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/connection.cpp" line="272"/>
         <source>zcashd error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="295"/>
-        <location filename="../src/connection.cpp" line="296"/>
-        <source>Can&apos;t find zcashd at </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -763,11 +747,6 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="409"/>
-        <source>Authentication failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/connection.cpp" line="411"/>
         <source>Authentication failed. The username / password you specified was not accepted by zcashd. Try changing it in the Edit-&gt;Settings menu</source>
         <translation type="unfinished"></translation>
@@ -778,38 +757,14 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="427"/>
-        <source>Waiting for zcashd to come online.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/connection.cpp" line="447"/>
+        <location filename="../src/rpc.cpp" line="609"/>
         <source>Connection Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="460"/>
-        <location filename="../src/connection.cpp" line="473"/>
-        <source>Found zcashconf at </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="487"/>
-        <source>Creating params location at </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="491"/>
-        <source>Found Zcash params directory at </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="634"/>
-        <source>Unknown error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/connection.cpp" line="666"/>
+        <location filename="../src/rpc.cpp" line="847"/>
         <source>Transaction Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -820,7 +775,74 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="348"/>
+        <location filename="../src/rpc.cpp" line="350"/>
         <source>No Connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/addressbook.cpp" line="127"/>
+        <source>Address Format Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/addressbook.cpp" line="127"/>
+        <source> doesn&apos;t seem to be a valid Zcash address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/addressbook.cpp" line="171"/>
+        <source>Copy address</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/addressbook.cpp" line="173"/>
+        <source>Copied to clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/addressbook.cpp" line="176"/>
+        <source>Delete label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settings.cpp" line="169"/>
+        <source>Tx submitted (right click to copy) txid:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/turnstile.cpp" line="119"/>
+        <source>Locked funds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/turnstile.cpp" line="120"/>
+        <source>Could not initiate migration.
+You either have unconfirmed funds or the balance is too low for an automatic migration.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/turnstile.cpp" line="360"/>
+        <source>Computing Tx: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/txtablemodel.cpp" line="7"/>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/txtablemodel.cpp" line="7"/>
+        <source>Address</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/txtablemodel.cpp" line="7"/>
+        <source>Date/Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/txtablemodel.cpp" line="7"/>
+        <source>Amount</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
