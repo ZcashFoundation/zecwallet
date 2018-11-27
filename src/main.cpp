@@ -4,14 +4,19 @@
 
 #include "version.h"
 
-#include "precompiled.h"
-
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QApplication a(argc, argv);
+
+    QString locale = QLocale::system().name();
+
+    QTranslator translator;
+    translator.load(QString(":/translations/res/zec_qt_wallet_") + locale);
+    a.installTranslator(&translator);
+
     QIcon icon(":/icons/res/icon.ico");
     QApplication::setWindowIcon(icon);
 

@@ -15,6 +15,7 @@
 
 #include <QFontDatabase>
 #include <QAbstractTableModel>
+#include <QTranslator>
 #include <QClipboard>
 #include <QStringBuilder>
 #include <QAbstractItemModel>
