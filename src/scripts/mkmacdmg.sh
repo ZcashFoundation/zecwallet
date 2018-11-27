@@ -36,8 +36,8 @@ echo "[OK]"
 
 echo -n "Configuring............"
 # Build
-$QT_PATH/bin/qmake zec-qt-wallet.pro CONFIG+=release >/dev/null
 QT_STATIC=$QT_STATIC src/scripts/dotranslations.sh >/dev/null
+$QT_PATH/bin/qmake zec-qt-wallet.pro CONFIG+=release >/dev/null
 echo "[OK]"
 
 
