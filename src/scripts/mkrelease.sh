@@ -61,6 +61,7 @@ echo "[Building on" `lsb_release -r`"]"
 echo -n "Configuring............"
 $QT_STATIC/bin/qmake zec-qt-wallet.pro -spec linux-clang CONFIG+=release > /dev/null
 #Mingw seems to have trouble with precompiled headers, so strip that option from the .pro file
+QT_STATIC=$QT_STATIC src/scripts/dotranslations.sh >/dev/null
 echo "[OK]"
 
 

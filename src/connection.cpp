@@ -38,7 +38,7 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
 
     // Priority 2: Try to connect to detect zcash.conf and connect to it.
     auto config = autoDetectZcashConf();
-    main->logger->write("Attempting autoconnect");
+    main->logger->write(QObject::tr("Attempting autoconnect"));
 
     if (config.get() != nullptr) {
         auto connection = makeConnection(config);
@@ -47,7 +47,7 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
             // Refused connection. So try and start embedded zcashd
             if (Settings::getInstance()->useEmbedded()) {
                 if (tryEzcashdStart) {
-                    this->showInformation("Starting embedded zcashd");
+                    this->showInformation(QObject::tr("Starting embedded zcashd"));
                     if (this->startEmbeddedZcashd()) {
                         // Embedded zcashd started up. Wait a second and then refresh the connection
                         main->logger->write("Embedded zcashd started up, trying autoconnect in 1 sec");
@@ -57,7 +57,7 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
                             // zcashd is configured to run as a daemon, so we must wait for a few seconds
                             // to let it start up. 
                             main->logger->write("zcashd is daemon=1. Waiting for it to start up");
-                            this->showInformation("zcashd is set to run as daemon", "Waiting for zcashd");
+                            this->showInformation(QObject::tr("zcashd is set to run as daemon"), QObject::tr("Waiting for zcashd"));
                             QTimer::singleShot(5000, [=]() { doAutoConnect(/* don't attempt to start ezcashd */ false); });
                         } else {
                             // Something is wrong. 
@@ -72,15 +72,15 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
                     main->logger->write("Couldn't start embedded zcashd for unknown reason");
                     QString explanation;
                     if (config->zcashDaemon) {
-                        explanation = QString() % "You have zcashd set to start as a daemon, which can cause problems "
+                        explanation = QString() % QObject::tr("You have zcashd set to start as a daemon, which can cause problems "
                             "with zec-qt-wallet\n\n."
                             "Please remove the following line from your zcash.conf and restart zec-qt-wallet\n"
-                            "daemon=1";
+                            "daemon=1");
                     } else {
-                        explanation = QString() % "Couldn't start the embedded zcashd.\n\n" %
-                            "Please try restarting.\n\nIf you previously started zcashd with custom arguments, you might need to reset zcash.conf.\n\n" %
-                            "If all else fails, please run zcashd manually." %
-                            (ezcashd ? "The process returned:\n\n" % ezcashd->errorString() : QString(""));
+                        explanation = QString() % QObject::tr("Couldn't start the embedded zcashd.\n\n" 
+                            "Please try restarting.\n\nIf you previously started zcashd with custom arguments, you might need to reset zcash.conf.\n\n" 
+                            "If all else fails, please run zcashd manually.") %  
+                            (ezcashd ? QObject::tr("The process returned") + ":\n\n" % ezcashd->errorString() : QString(""));
                     }
                     
                     this->showError(explanation);
@@ -88,8 +88,8 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
             } else {
                 // zcash.conf exists, there's no connection, and the user asked us not to start zcashd. Error!
                 main->logger->write("Not using embedded and couldn't connect to zcashd");
-                QString explanation = QString() % "Couldn't connect to zcashd configured in zcash.conf.\n\n" %
-                                      "Not starting embedded zcashd because --no-embedded was passed";
+                QString explanation = QString() % QObject::tr("Couldn't connect to zcashd configured in zcash.conf.\n\n" 
+                                      "Not starting embedded zcashd because --no-embedded was passed");
                 this->showError(explanation);
             }
         });
@@ -180,7 +180,7 @@ void ConnectionLoader::doNextDownload(std::function<void(void)> cb) {
         client->deleteLater();
 
         main->logger->write("All Downloads done");
-        this->showInformation("All Downloads Finished Successfully!");
+        this->showInformation(QObject::tr("All Downloads Finished Successfully!"));
         cb();
         return;
     }
@@ -203,7 +203,7 @@ void ConnectionLoader::doNextDownload(std::function<void(void)> cb) {
 
     if (!currentOutput->open(QIODevice::WriteOnly)) {
         main->logger->write("Couldn't open " + currentOutput->fileName() + " for writing");
-        this->showError("Couldn't download params. Please check the help site for more info.");
+        this->showError(QObject::tr("Couldn't download params. Please check the help site for more info."));
     }
     main->logger->write("Downloading to " + filename);
     qDebug() << "Downloading " << url << " to " << filename;
@@ -229,8 +229,8 @@ void ConnectionLoader::doNextDownload(std::function<void(void)> cb) {
         }
 
         this->showInformation(
-            "Downloading " % filename % (filesRemaining > 1 ? " ( +" % QString::number(filesRemaining)  % " more remaining )" : QString("")),
-            QString::number(done/1024/1024, 'f', 0) % "MB of " % QString::number(total/1024/1024, 'f', 0) + "MB at " % QString::number(speed, 'f', 2) % unit);
+            QObject::tr("Downloading ") % filename % (filesRemaining > 1 ? " ( +" % QString::number(filesRemaining)  % QObject::tr(" more remaining )") : QString("")),
+            QString::number(done/1024/1024, 'f', 0) % QObject::tr("MB of ") % QString::number(total/1024/1024, 'f', 0) + QObject::tr("MB at ") % QString::number(speed, 'f', 2) % unit);
     });
     
     // Download Finished
@@ -245,7 +245,7 @@ void ConnectionLoader::doNextDownload(std::function<void(void)> cb) {
 
         if (currentDownload->error()) {
             main->logger->write("Downloading " + filename + " failed");
-            this->showError("Downloading " + filename + " failed. Please check the help site for more info");                
+            this->showError(QObject::tr("Downloading ") + filename + QObject::tr(" failed. Please check the help site for more info"));                
         } else {
             doNextDownload(cb);
         }
@@ -269,7 +269,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     if (ezcashd != nullptr) {
         if (ezcashd->state() == QProcess::NotRunning) {
             if (!processStdErrOutput.isEmpty()) {
-                QMessageBox::critical(main, "zcashd error", "zcashd said: " + processStdErrOutput, 
+                QMessageBox::critical(main, QObject::tr("zcashd error"), "zcashd said: " + processStdErrOutput, 
                                       QMessageBox::Ok);
             }
             return false;
@@ -336,8 +336,8 @@ void ConnectionLoader::doManualConnect() {
     if (!config) {
         // Nothing configured, show an error
         QString explanation = QString()
-                % "A manual connection was requested, but the settings are not configured.\n\n" 
-                % "Please set the host/port and user/password in the Edit->Settings menu.";
+                % QObject::tr("A manual connection was requested, but the settings are not configured.\n\n"
+                "Please set the host/port and user/password in the Edit->Settings menu.");
 
         showError(explanation);
         doRPCSetConnection(nullptr);
@@ -348,8 +348,8 @@ void ConnectionLoader::doManualConnect() {
     auto connection = makeConnection(config);
     refreshZcashdState(connection, [=] () {
         QString explanation = QString()
-                % "Could not connect to zcashd configured in settings.\n\n" 
-                % "Please set the host/port and user/password in the Edit->Settings menu.";
+                % QObject::tr("Could not connect to zcashd configured in settings.\n\n" 
+                "Please set the host/port and user/password in the Edit->Settings menu.");
 
         showError(explanation);
         doRPCSetConnection(nullptr);
@@ -407,9 +407,9 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
                 refused();
             } else if (err == QNetworkReply::NetworkError::AuthenticationRequiredError) {
                 main->logger->write("Authentication failed");
-                QString explanation = QString() 
-                        % "Authentication failed. The username / password you specified was "
-                        % "not accepted by zcashd. Try changing it in the Edit->Settings menu";
+                QString explanation = QString() % 
+                        QObject::tr("Authentication failed. The username / password you specified was "
+                        "not accepted by zcashd. Try changing it in the Edit->Settings menu");
 
                 this->showError(explanation);
             } else if (err == QNetworkReply::NetworkError::InternalServerError && 
@@ -423,7 +423,7 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
                     if (dots > 3)
                         dots = 0;
                 }
-                this->showInformation("Your zcashd is starting up. Please wait.", status);
+                this->showInformation(QObject::tr("Your zcashd is starting up. Please wait."), status);
                 main->logger->write("Waiting for zcashd to come online.");
                 // Refresh after one second
                 QTimer::singleShot(1000, [=]() { this->refreshZcashdState(connection, refused); });
@@ -444,7 +444,7 @@ void ConnectionLoader::showError(QString explanation) {
     rpc->setEZcashd(nullptr);
     rpc->noConnection();
 
-    QMessageBox::critical(main, "Connection Error", explanation, QMessageBox::Ok);
+    QMessageBox::critical(main, QObject::tr("Connection Error"), explanation, QMessageBox::Ok);
     d->close();
 }
 
@@ -663,7 +663,7 @@ void Connection::showTxError(const QString& error) {
         return;
 
     shown = true;
-    QMessageBox::critical(main, "Transaction Error", "There was an error sending the transaction. The error was: \n\n"
+    QMessageBox::critical(main, QObject::tr("Transaction Error"), QObject::tr("There was an error sending the transaction. The error was:") + "\n\n"
         + error, QMessageBox::StandardButton::Ok);
     shown = false;
 }

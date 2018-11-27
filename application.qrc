@@ -11,4 +11,9 @@
         <file>res/zcashdlogo.gif</file>
         <file>res/logobig.gif</file>
     </qresource>
+    <qresource prefix="/translations">
+        <file>res/zec_qt_wallet_es.qm</file>
+        <file>res/zec_qt_wallet_fr.qm</file>
+        <file>res/zec_qt_wallet_de.qm</file>
+    </qresource>
 </RCC>

@@ -627,7 +627,7 @@ void MainWindow::importPrivKey() {
 
     pui.buttonBox->button(QDialogButtonBox::Save)->setVisible(false);
     pui.helpLbl->setText(QString() %
-                        "Please paste your private keys (z-Addr or t-Addr) here, one per line.\n" %
+                        tr("Please paste your private keys (z-Addr or t-Addr) here, one per line") % ".\n" %
                         tr("The keys will be imported into your connected zcashd node"));  
 
     if (d.exec() == QDialog::Accepted && !pui.privKeyTxt->toPlainText().trimmed().isEmpty()) {
@@ -667,17 +667,17 @@ void MainWindow::backupWalletDat() {
     
     QFile wallet(zcashdir.filePath("wallet.dat"));
     if (!wallet.exists()) {
-        QMessageBox::critical(this, "No wallet.dat", tr("Couldn't find the wallet.dat on this computer.\n") +
+        QMessageBox::critical(this, tr("No wallet.dat"), tr("Couldn't find the wallet.dat on this computer") + "\n" +
             tr("You need to back it up from the machine zcashd is running on"), QMessageBox::Ok);
         return;
     }
     
-    QUrl backupName = QFileDialog::getSaveFileUrl(this, "Backup wallet.dat", backupDefaultName, "Data file (*.dat)");
+    QUrl backupName = QFileDialog::getSaveFileUrl(this, tr("Backup wallet.dat"), backupDefaultName, "Data file (*.dat)");
     if (backupName.isEmpty())
         return;
 
     if (!wallet.copy(backupName.toLocalFile())) {
-        QMessageBox::critical(this, "Couldn't backup", tr("Couldn't backup the wallet.dat file.") + 
+        QMessageBox::critical(this, tr("Couldn't backup"), tr("Couldn't backup the wallet.dat file.") + 
             tr("You need to back it up manually."), QMessageBox::Ok);
     }
 }

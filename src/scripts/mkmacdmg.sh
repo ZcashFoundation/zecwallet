@@ -34,9 +34,14 @@ rm -f artifacts/macOS-zec-qt-wallet-v$APP_VERSION.dmg
 echo "[OK]"
 
 
-echo -n "Building..............."
+echo -n "Configuring............"
 # Build
 $QT_PATH/bin/qmake zec-qt-wallet.pro CONFIG+=release >/dev/null
+QT_STATIC=$QT_STATIC src/scripts/dotranslations.sh >/dev/null
+echo "[OK]"
+
+
+echo -n "Building..............."
 make -j4 >/dev/null
 echo "[OK]"
 

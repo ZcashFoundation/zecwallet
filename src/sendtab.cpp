@@ -145,7 +145,7 @@ void MainWindow::addAddressSection() {
     int itemNumber = ui->sendToWidgets->children().size() - 1;
 
     auto verticalGroupBox = new QGroupBox(ui->sendToWidgets);
-    verticalGroupBox->setTitle(QString("Recipient ") % QString::number(itemNumber));
+    verticalGroupBox->setTitle(QString(tr("Recipient ")) % QString::number(itemNumber));
     verticalGroupBox->setObjectName(QString("AddressGroupBox") % QString::number(itemNumber));
     auto sendAddressLayout = new QVBoxLayout(verticalGroupBox);
     sendAddressLayout->setSpacing(6);
@@ -154,12 +154,12 @@ void MainWindow::addAddressSection() {
     auto horizontalLayout_12 = new QHBoxLayout();
     horizontalLayout_12->setSpacing(6);
     auto label_4 = new QLabel(verticalGroupBox);
-    label_4->setText("Address");
+    label_4->setText(tr("Address"));
     horizontalLayout_12->addWidget(label_4);
 
     auto Address1 = new QLineEdit(verticalGroupBox);
     Address1->setObjectName(QString("Address") % QString::number(itemNumber)); 
-    Address1->setPlaceholderText("Address");
+    Address1->setPlaceholderText(tr("Address"));
     QObject::connect(Address1, &QLineEdit::textChanged, [=] (auto text) {
         this->addressChanged(itemNumber, text);
     });
@@ -169,7 +169,7 @@ void MainWindow::addAddressSection() {
 
     auto addressBook1 = new QPushButton(verticalGroupBox);
     addressBook1->setObjectName(QStringLiteral("AddressBook") % QString::number(itemNumber));
-    addressBook1->setText("Address Book");
+    addressBook1->setText(tr("Address Book"));
     QObject::connect(addressBook1, &QPushButton::clicked, [=] () {
         AddressBook::open(this, Address1);
     });
@@ -182,11 +182,11 @@ void MainWindow::addAddressSection() {
     horizontalLayout_13->setSpacing(6);
         
     auto label_6 = new QLabel(verticalGroupBox);
-    label_6->setText("Amount");
+    label_6->setText(tr("Amount"));
     horizontalLayout_13->addWidget(label_6);
 
     auto Amount1 = new QLineEdit(verticalGroupBox);
-    Amount1->setPlaceholderText("Amount");    
+    Amount1->setPlaceholderText(tr("Amount"));    
     Amount1->setObjectName(QString("Amount") % QString::number(itemNumber));   
     Amount1->setBaseSize(QSize(200, 0));
     // Create the validator for send to/amount fields
@@ -207,7 +207,7 @@ void MainWindow::addAddressSection() {
 
     auto MemoBtn1 = new QPushButton(verticalGroupBox);
     MemoBtn1->setObjectName(QString("MemoBtn") % QString::number(itemNumber));
-    MemoBtn1->setText("Memo");    
+    MemoBtn1->setText(tr("Memo"));    
     // Connect Memo Clicked button
     QObject::connect(MemoBtn1, &QPushButton::clicked, [=] () {
         this->memoButtonClicked(itemNumber);
@@ -251,7 +251,7 @@ void MainWindow::setMemoEnabled(int number, bool enabled) {
         memoBtn->setToolTip("");
     } else {
         memoBtn->setEnabled(false);
-        memoBtn->setToolTip("Only z-addresses can have memos");
+        memoBtn->setToolTip(tr("Only z-addresses can have memos"));
     }
 }
 
@@ -259,8 +259,8 @@ void MainWindow::memoButtonClicked(int number) {
     // Memos can only be used with zAddrs. So check that first
     auto addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") + QString::number(number));
     if (!AddressBook::addressFromAddressLabel(addr->text()).startsWith("z")) {
-        QMessageBox msg(QMessageBox::Critical, "Memos can only be used with z-addresses",
-        "The memo field can only be used with a z-address.\n" + addr->text() + "\ndoesn't look like a z-address",
+        QMessageBox msg(QMessageBox::Critical, tr("Memos can only be used with z-addresses"),
+        tr("The memo field can only be used with a z-address.\n") + addr->text() + tr("\ndoesn't look like a z-address"),
         QMessageBox::Ok, this);
 
         msg.exec();
@@ -414,7 +414,7 @@ Tx MainWindow::createTxFromSendPage() {
             double change = rpc->getAllBalances()->value(tx.fromAddr) - totalAmt - tx.fee;
 
             if (Settings::getDecimalString(change) != "0") {
-                QString changeMemo = "Change from " + tx.fromAddr;
+                QString changeMemo = tr("Change from ") + tx.fromAddr;
                 tx.toAddrs.push_back(ToFields{ *saplingAddr, change, changeMemo, changeMemo.toUtf8().toHex() });
             }
         }
@@ -517,7 +517,7 @@ bool MainWindow::confirmTx(Tx tx) {
         auto labelMinerFee = new QLabel(confirm.sendToAddrs);
         labelMinerFee->setObjectName(QStringLiteral("labelMinerFee"));
         confirm.gridLayout->addWidget(labelMinerFee, row, 0, 1, 1);
-        labelMinerFee->setText("Miner Fee");
+        labelMinerFee->setText(tr("Miner Fee"));
 
         auto minerFee = new QLabel(confirm.sendToAddrs);
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -566,7 +566,7 @@ void MainWindow::sendButton() {
     QString error = doSendTxValidations(tx);
     if (!error.isEmpty()) {
         // Something went wrong, so show an error and exit
-        QMessageBox msg(QMessageBox::Critical, "Transaction Error", error,
+        QMessageBox msg(QMessageBox::Critical, tr("Transaction Error"), error,
                         QMessageBox::Ok, this);
 
         msg.exec();
@@ -593,12 +593,12 @@ void MainWindow::sendButton() {
 }
 
 QString MainWindow::doSendTxValidations(Tx tx) {
-    if (!Settings::isValidAddress(tx.fromAddr)) return QString("From Address is Invalid");    
+    if (!Settings::isValidAddress(tx.fromAddr)) return QString(tr("From Address is Invalid"));    
 
     for (auto toAddr : tx.toAddrs) {
         if (!Settings::isValidAddress(toAddr.addr)) {
             QString addr = (toAddr.addr.length() > 100 ? toAddr.addr.left(100) + "..." : toAddr.addr);
-            return QString("Recipient Address ") % addr % " is Invalid";
+            return QString(tr("Recipient Address ")) % addr % tr(" is Invalid");
         }
     }
 
