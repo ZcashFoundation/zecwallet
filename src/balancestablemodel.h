@@ -13,7 +13,6 @@ struct UnspentOutput {
 
 class BalancesTableModel : public QAbstractTableModel
 {
-    Q_OBJECT
 public:
     BalancesTableModel(QObject* parent);
     ~BalancesTableModel();
