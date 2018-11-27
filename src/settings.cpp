@@ -166,7 +166,7 @@ QString Settings::getZECUSDDisplayFormat(double bal) {
         return getZECDisplayFormat(bal);
 }
 
-const QString Settings::txidStatusMessage = QString("Tx submitted (right click to copy) txid:");
+const QString Settings::txidStatusMessage = QString(tr("Tx submitted (right click to copy) txid:"));
 
 QString Settings::getTokenName() {
     if (Settings::getInstance()->isTestnet()) {

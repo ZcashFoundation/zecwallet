@@ -116,8 +116,8 @@ void Turnstile::planMigration(QString zaddr, QString destAddr, int numsplits, in
             if (migItems.empty()) {
                 // Show error and abort
                 QMessageBox::warning(mainwindow, 
-                    "Locked funds", 
-                    "Could not initiate migration.\nYou either have unconfirmed funds or the balance is too low for an automatic migration.");
+                    QObject::tr("Locked funds"), 
+                    QObject::tr("Could not initiate migration.\nYou either have unconfirmed funds or the balance is too low for an automatic migration."));
                 return;
             }
 
@@ -357,7 +357,7 @@ void Turnstile::doSendTx(Tx tx, std::function<void(void)> cb) {
     rpc->sendZTransaction(params, [=] (const json& reply) {
         QString opid = QString::fromStdString(reply.get<json::string_t>());
         //qDebug() << opid;
-        mainwindow->ui->statusBar->showMessage("Computing Tx: " % opid);
+        mainwindow->ui->statusBar->showMessage(QObject::tr("Computing Tx: ") % opid);
 
         // And then start monitoring the transaction
         rpc->addNewTxToWatch(tx, opid);

@@ -347,7 +347,7 @@ void RPC::noConnection() {
     main->statusIcon->setToolTip("");
     main->statusLabel->setText(QObject::tr("No Connection"));
     main->statusLabel->setToolTip("");
-    main->ui->statusBar->showMessage("No Connection", 1000);
+    main->ui->statusBar->showMessage(QObject::tr("No Connection"), 1000);
 
     // Clear balances table.
     QMap<QString, double> emptyBalances;
@@ -572,25 +572,25 @@ void RPC::getInfoThenRefresh(bool force) {
                     }
                     txt = txt %  " ( " % QString::number(progress * 100, 'f', 0) % "% )";
                     ui->blockheight->setText(txt);
-                    ui->heightLabel->setText("Downloading blocks");
+                    ui->heightLabel->setText(QObject::tr("Downloading blocks"));
                 } else {
                     ui->blockheight->setText(QString::number(blockNumber));
-                    ui->heightLabel->setText("Block height");
+                    ui->heightLabel->setText(QObject::tr("Block height"));
                 }
             }
 
             // Update the status bar
             QString statusText = QString() %
-                (isSyncing ? "Syncing" : "Connected") %
+                (isSyncing ? QObject::tr("Syncing") : QObject::tr("Connected")) %
                 " (" %
-                (Settings::getInstance()->isTestnet() ? "testnet:" : "") %
+                (Settings::getInstance()->isTestnet() ? QObject::tr("testnet:") : "") %
                 QString::number(blockNumber) %
                 (isSyncing ? ("/" % QString::number(progress*100, 'f', 0) % "%") : QString()) %
                 ")";
             main->statusLabel->setText(statusText);   
 
             auto zecPrice = Settings::getUSDFormat(1);
-            QString tooltip = "Connected to zcashd";;
+            QString tooltip = QObject::tr("Connected to zcashd");
             if (!zecPrice.isEmpty()) {
                 tooltip = "1 ZEC = " % zecPrice % "\n" % tooltip;
             }
@@ -606,7 +606,7 @@ void RPC::getInfoThenRefresh(bool force) {
         static bool shown = false;
         if (!shown && prevCallSucceeded) { // show error only first time
             shown = true;
-            QMessageBox::critical(main, "Connection Error", "There was an error connecting to zcashd. The error was: \n\n"
+            QMessageBox::critical(main, QObject::tr("Connection Error"), QObject::tr("There was an error connecting to zcashd. The error was") + ": \n\n"
                 + reply->errorString(), QMessageBox::StandardButton::Ok);
             shown = false;
         }
@@ -844,15 +844,15 @@ void RPC::watchTxStatus() {
                     auto errorMsg = QString::fromStdString(it["error"]["message"]);
                     QMessageBox msg(
                         QMessageBox::Critical,
-                        "Transaction Error", 
-                        "The transaction with id " % id % " failed. The error was:\n\n" % errorMsg,
+                        QObject::tr("Transaction Error"), 
+                        QObject::tr("The transaction with id ") % id % QObject::tr(" failed. The error was") + ":\n\n" + errorMsg,
                         QMessageBox::Ok,
                         main
                     );
                     
                     watchingOps.remove(id);
                     
-                    main->ui->statusBar->showMessage(" Tx " % id % " failed", 15 * 1000);
+                    main->ui->statusBar->showMessage(QObject::tr(" Tx ") % id % QObject::tr(" failed"), 15 * 1000);
                     main->loadingLabel->setVisible(false);
 
                     msg.exec();                                                  
@@ -871,7 +871,7 @@ void RPC::watchTxStatus() {
             main->loadingLabel->setVisible(false);
         } else {
             main->loadingLabel->setVisible(true);
-            main->loadingLabel->setToolTip(QString::number(watchingOps.size()) + " tx computing. This can take several minutes.");
+            main->loadingLabel->setToolTip(QString::number(watchingOps.size()) + QObject::tr(" tx computing. This can take several minutes."));
         }
     });
 }
@@ -950,8 +950,8 @@ void RPC::shutdownZcashd() {
     Ui_ConnectionDialog connD;
     connD.setupUi(&d);
     connD.topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));
-    connD.status->setText("Please wait for zec-qt-wallet to exit");
-    connD.statusDetail->setText("Waiting for zcashd to exit");
+    connD.status->setText(QObject::tr("Please wait for zec-qt-wallet to exit"));
+    connD.statusDetail->setText(QObject::tr("Waiting for zcashd to exit"));
 
     QTimer waiter(main);
 

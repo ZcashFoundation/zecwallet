@@ -584,7 +584,7 @@ void MainWindow::sendButton() {
         // And send the Tx
         rpc->sendZTransaction(params, [=](const json& reply) {
             QString opid = QString::fromStdString(reply.get<json::string_t>());
-            ui->statusBar->showMessage("Computing Tx: " % opid);
+            ui->statusBar->showMessage(tr("Computing Tx: ") % opid);
 
             // And then start monitoring the transaction
             rpc->addNewTxToWatch(tx, opid);

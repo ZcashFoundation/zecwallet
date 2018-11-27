@@ -4,7 +4,7 @@
 
 TxTableModel::TxTableModel(QObject *parent)
      : QAbstractTableModel(parent) {
-    headers << "Type" << "Address" << "Date/Time" << "Amount";
+    headers << QObject::tr("Type") << QObject::tr("Address") << QObject::tr("Date/Time") << QObject::tr("Amount");
 }
 
 TxTableModel::~TxTableModel() {

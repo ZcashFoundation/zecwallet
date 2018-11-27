@@ -12,7 +12,8 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QString locale = QLocale::system().name();
-
+    qDebug() << "Loading locale " << locale;
+    
     QTranslator translator;
     translator.load(QString(":/translations/res/zec_qt_wallet_") + locale);
     a.installTranslator(&translator);
