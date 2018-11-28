@@ -24,7 +24,7 @@
    <item row="14" column="1">
     <widget class="QLabel" name="feeAmount">
      <property name="text">
-      <string>feeamount</string>
+      <string notr="true">feeamount</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -34,7 +34,7 @@
    <item row="12" column="1">
     <widget class="QLabel" name="memoSize">
      <property name="text">
-      <string>0 / 512</string>
+      <string notr="true">0 / 512</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -104,7 +104,7 @@
       <string notr="true">color:red;</string>
      </property>
      <property name="text">
-      <string>TextLabel</string>
+      <string>Warning</string>
      </property>
     </widget>
    </item>

@@ -59,8 +59,8 @@ echo ""
 echo "[Building on" `lsb_release -r`"]"
 
 echo -n "Configuring............"
+QT_STATIC=$QT_STATIC src/scripts/dotranslations.sh >/dev/null
 $QT_STATIC/bin/qmake zec-qt-wallet.pro -spec linux-clang CONFIG+=release > /dev/null
-#Mingw seems to have trouble with precompiled headers, so strip that option from the .pro file
 echo "[OK]"
 
 
@@ -89,7 +89,7 @@ cp $ZCASH_DIR/artifacts/zcash-cli bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp README.md                      bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 cp LICENSE                        bin/zec-qt-wallet-v$APP_VERSION > /dev/null
 
-cd bin && tar cvf linux-zec-qt-wallet-v$APP_VERSION.tar.gz zec-qt-wallet-v$APP_VERSION/ > /dev/null
+cd bin && tar czf linux-zec-qt-wallet-v$APP_VERSION.tar.gz zec-qt-wallet-v$APP_VERSION/ > /dev/null
 cd .. 
 
 mkdir artifacts >/dev/null 2>&1

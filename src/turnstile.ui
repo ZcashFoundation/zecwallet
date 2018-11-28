@@ -159,7 +159,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>0.0004 ZEC $0.04</string>
+           <string notr="true">0.0004 ZEC $0.04</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

@@ -31,14 +31,14 @@
    <item row="1" column="0" colspan="3">
     <widget class="QLabel" name="fromAddr">
      <property name="text">
-      <string>From Address</string>
+      <string notr="true">From Address</string>
      </property>
     </widget>
    </item>
    <item row="6" column="2">
     <widget class="QLabel" name="progressTxt">
      <property name="text">
-      <string>4 / 12</string>
+      <string notr="true">4 / 12</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -111,7 +111,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>TextLabel</string>
+      <string notr="true">TextLabel</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -141,7 +141,7 @@
    <item row="3" column="0" colspan="3">
     <widget class="QLabel" name="toAddr">
      <property name="text">
-      <string>To Address</string>
+      <string notr="true">To Address</string>
      </property>
     </widget>
    </item>

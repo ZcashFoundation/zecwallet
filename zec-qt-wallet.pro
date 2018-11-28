@@ -86,8 +86,14 @@ FORMS += \
     src/zboard.ui \
     src/addressbook.ui
 
+
+TRANSLATIONS = res/zec_qt_wallet_es.ts \
+               res/zec_qt_wallet_fr.ts \
+	           res/zec_qt_wallet_de.ts 
+
 win32: RC_ICONS = res/icon.ico
 ICON = res/logo.icns
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

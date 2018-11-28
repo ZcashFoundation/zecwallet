@@ -4,17 +4,24 @@ zec-qt-wallet is a z-Addr first, Sapling compatible wallet and full node for zca
 ![Screenshots](docs/screenshot-sub.png?raw=true)
 # Installation
 
-Head over to the releases page and grab the latest binary. https://github.com/adityapk00/zec-qt-wallet/releases
+Head over to the releases page and grab the latest installers or binary. https://github.com/adityapk00/zec-qt-wallet/releases
 
 ### Linux
-Extract and run the binary.
+
+If you are on Debian/Ubuntu, please download the `.deb` package and install it.
 ```
-tar -xvf zec-qt-wallet-v0.4.3.tar.gz
-./zec-qt-wallet-v0.4.3/zec-qt-wallet
+sudo dpkg -i linux-deb-zec-qt-wallet-v0.5.0.deb
+sudo apt install -f
+```
+
+Or you can download and run the binaries directly.
+```
+tar -xvf zec-qt-wallet-v0.5.0.tar.gz
+./zec-qt-wallet-v0.5.0/zec-qt-wallet
 ```
 
 ### Windows
-Unzip the release binary and double click on zec-qt-wallet to start.
+Download and run the .msi installer and follow the prompts. Alternately, you can download the release binary, unzip it and double click on zec-qt-wallet to start.
 
 ### macOS
 Double-click on the .dmg file to open it, and drag zec-qt-wallet on to the Applications link to install.
@@ -29,7 +36,7 @@ Additionally, if this is the first time you're running zec-qt-wallet or a zcashd
 Pass `--no-embedded` to disable the embedded zcashd and force zec-qt-wallet to connect to an external node.
 
 ## Compiling from source
-zec-qt-wallet is written in C++ 14, and can be compiled with g++/clang++/visual c++. It also depends on Qt5, which you can get from [here](https://www.qt.io/download)
+zec-qt-wallet is written in C++ 14, and can be compiled with g++/clang++/visual c++. It also depends on Qt5, which you can get from [here](https://www.qt.io/download). Note that if you are compiling from source, you won't get the embedded zcashd by default. You can either run an external zcashd, or compile zcashd as well. 
 
 See detailed build instructions [on the wiki](https://github.com/ZcashFoundation/zec-qt-wallet/wiki/Compiling-from-source-code)
 

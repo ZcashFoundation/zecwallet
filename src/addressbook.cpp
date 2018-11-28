@@ -124,7 +124,7 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
         if (!addr.isEmpty() && !ab.label->text().isEmpty()) {
             // Test if address is valid.
             if (!Settings::isValidAddress(addr)) {
-                QMessageBox::critical(parent, "Address Format Error", addr + " doesn't seem to be a valid Zcash address.", QMessageBox::Ok);
+                QMessageBox::critical(parent, QObject::tr("Address Format Error"), addr + QObject::tr(" doesn't seem to be a valid Zcash address."), QMessageBox::Ok);
             } else {
                 model.addNewLabel(ab.label->text(), ab.addr->text());
             }
@@ -168,12 +168,12 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
             });
         }
 
-        menu.addAction("Copy address", [&] () {
+        menu.addAction(QObject::tr("Copy address"), [&] () {
             QGuiApplication::clipboard()->setText(addr);            
-            parent->ui->statusBar->showMessage("Copied to clipboard", 3 * 1000);
+            parent->ui->statusBar->showMessage(QObject::tr("Copied to clipboard"), 3 * 1000);
         });
 
-        menu.addAction("Delete label", [&] () {
+        menu.addAction(QObject::tr("Delete label"), [&] () {
             model.removeItemAt(index.row());
         });
 
