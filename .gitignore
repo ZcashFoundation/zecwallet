@@ -27,4 +27,3 @@ workspace.code-workspace
 *.mak
 *.plist
 zcashd
-res/*.qm
