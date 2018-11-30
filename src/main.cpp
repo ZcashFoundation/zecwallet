@@ -11,7 +11,11 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
+    QCoreApplication::setOrganizationName("zec-qt-wallet-org");
+    QCoreApplication::setApplicationName("zec-qt-wallet");
+
     QString locale = QLocale::system().name();
+    locale.truncate(locale.lastIndexOf('_'));   // Get the language code
     qDebug() << "Loading locale " << locale;
     
     QTranslator translator;
@@ -35,7 +39,6 @@ int main(int argc, char *argv[])
 #endif
     std::srand(seed);
 
-
     Settings::init();
 
     if (argc >= 2 && QString::fromStdString(argv[1]) == "--no-embedded") {
@@ -43,9 +46,6 @@ int main(int argc, char *argv[])
     } else {
         Settings::getInstance()->setUseEmbedded(true);
     }
-
-    QCoreApplication::setOrganizationName("zec-qt-wallet-org");
-    QCoreApplication::setApplicationName("zec-qt-wallet");
 
     MainWindow w;
     w.setWindowTitle("zec-qt-wallet v" + QString(APP_VERSION));
