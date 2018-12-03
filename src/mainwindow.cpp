@@ -51,6 +51,9 @@ MainWindow::MainWindow(QWidget *parent) :
     // Backup wallet.dat
     QObject::connect(ui->actionBackup_wallet_dat, &QAction::triggered, this, &MainWindow::backupWalletDat);
 
+    // Export transactions
+    QObject::connect(ui->actionExport_transactions, &QAction::triggered, this, &MainWindow::exportTransactions);
+
     // z-Board.net
     QObject::connect(ui->actionz_board_net, &QAction::triggered, this, &MainWindow::postToZBoard);
 
@@ -648,6 +651,25 @@ void MainWindow::importPrivKey() {
         doImport(keys);
     }
 }
+
+/** 
+ * Export transaction history into a CSV file
+ */
+void MainWindow::exportTransactions() {
+    // First, get the export file name
+    QString exportName = "zcash-transactions-" + QDateTime::currentDateTime().toString("yyyyMMdd") + ".csv";
+
+    QUrl csvName = QFileDialog::getSaveFileUrl(this, 
+            tr("Export transactions"), exportName, "CSV file (*.csv)");
+
+    if (csvName.isEmpty())
+        return;
+
+    if (!rpc->getTransactionsModel()->exportToCsv(csvName.toLocalFile())) {
+        QMessageBox::critical(this, tr("Error"), 
+            tr("Error exporting transactions, file was not saved"), QMessageBox::Ok);
+    }
+} 
 
 /**
  * Backup the wallet.dat file. This is kind of a hack, since it has to read from the filesystem rather than an RPC call

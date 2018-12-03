@@ -39,6 +39,37 @@ void TxTableModel::addTData(const QList<TransactionItem>& data) {
     updateAllData();
 }
 
+bool TxTableModel::exportToCsv(QString fileName) const {
+    if (!modeldata)
+        return false;
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadWrite | QIODevice::Truncate))
+        return false;
+
+    QTextStream out(&file);   // we will serialize the data into the file
+
+    // Write headers
+    for (int i = 0; i < headers.length(); i++) {
+        out << "\"" << headers[i] << "\"";
+    }
+    out << "\"Memo\"";
+    out << endl;
+    
+    // Write out each row
+    for (int row = 0; row < modeldata->length(); row++) {
+        for (int col = 0; col < headers.length(); col++) {
+            out << "\"" << data(index(row, col), Qt::DisplayRole).toString() << "\",";
+        }
+        // Memo
+        out << "\"" << modeldata->at(row).memo << "\"";
+        out << endl;
+    }
+
+    file.close();
+    return true;
+}
+
 void TxTableModel::updateAllData() {    
     auto newmodeldata = new QList<TransactionItem>();
 

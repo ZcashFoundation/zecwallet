@@ -46,10 +46,10 @@ public:
     void watchTxStatus();
     void addNewTxToWatch(Tx tx, const QString& newOpid); 
 
-    BalancesTableModel*               getBalancesModel()  { return balancesTableModel; }    
-    const QList<QString>*             getAllZAddresses()  { return zaddresses; }
-    const QList<UnspentOutput>*       getUTXOs()          { return utxos; }
-    const QMap<QString, double>*      getAllBalances()    { return allBalances; }
+    const TxTableModel*               getTransactionsModel() { return transactionsTableModel; }
+    const QList<QString>*             getAllZAddresses()     { return zaddresses; }
+    const QList<UnspentOutput>*       getUTXOs()             { return utxos; }
+    const QMap<QString, double>*      getAllBalances()       { return allBalances; }
 
     void newZaddr(bool sapling, const std::function<void(json)>& cb);
     void newTaddr(const std::function<void(json)>& cb);
