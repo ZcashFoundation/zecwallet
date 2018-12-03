@@ -4,7 +4,7 @@ zec-qt-wallet is a z-Addr first, Sapling compatible wallet and full node for zca
 ![Screenshots](docs/screenshot-sub.png?raw=true)
 # Installation
 
-Head over to the releases page and grab the latest installers or binary. https://github.com/adityapk00/zec-qt-wallet/releases
+Head over to the releases page and grab the latest installers or binary. https://github.com/ZcashFoundation/zec-qt-wallet/releases
 
 ### Linux
 
@@ -43,7 +43,7 @@ See detailed build instructions [on the wiki](https://github.com/ZcashFoundation
 ### Building on Linux
 
 ```
-git clone https://github.com/adityapk00/zec-qt-wallet.git
+git clone https://github.com/ZcashFoundation/zec-qt-wallet.git
 cd zec-qt-wallet
 /path/to/qt5/bin/qmake zec-qt-wallet.pro CONFIG+=debug
 make -j$(nproc)
@@ -56,7 +56,7 @@ You need Visual Studio 2017 (The free C++ Community Edition works just fine).
 
 From the VS Tools command prompt
 ```
-git clone https://github.com/adityapk00/zec-qt-wallet.git
+git clone https://github.com/ZcashFoundation/zec-qt-wallet.git
 cd zec-qt-wallet
 c:\Qt5\bin\qmake.exe zec-qt-wallet.pro -spec win32-msvc CONFIG+=debug
 nmake
@@ -73,7 +73,7 @@ c:\Qt5\bin\qmake.exe zec-qt-wallet.pro -tp vc CONFIG+=debug
 You need to install the Xcode app or the Xcode command line tools first, and then install Qt. 
 
 ```
-git clone https://github.com/adityapk00/zec-qt-wallet.git
+git clone https://github.com/ZcashFoundation/zec-qt-wallet.git
 cd zec-qt-wallet
 /path/to/qt5/bin/qmake zec-qt-wallet.pro CONFIG+=debug
 make
