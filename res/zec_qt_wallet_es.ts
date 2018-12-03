@@ -77,6 +77,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="252"/>
+        <location filename="../src/sendtab.cpp" line="298"/>
         <source>From</source>
         <translation>Desde</translation>
     </message>
@@ -139,7 +140,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="538"/>
-        <location filename="../src/sendtab.cpp" line="520"/>
+        <location filename="../src/sendtab.cpp" line="525"/>
         <source>Miner Fee</source>
         <translation>Cuota Minera</translation>
     </message>
@@ -376,7 +377,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="587"/>
-        <location filename="../src/sendtab.cpp" line="587"/>
+        <location filename="../src/sendtab.cpp" line="592"/>
         <source>Computing Tx: </source>
         <translation>Calculando Tx: </translation>
     </message>
@@ -542,27 +543,27 @@ doesn&apos;t look like a z-address</source>
         <translation>no parece una direccion z-Addr</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="417"/>
+        <location filename="../src/sendtab.cpp" line="422"/>
         <source>Change from </source>
         <translation>Cambiar de </translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="569"/>
+        <location filename="../src/sendtab.cpp" line="574"/>
         <source>Transaction Error</source>
         <translation>Error de Transacción</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="596"/>
+        <location filename="../src/sendtab.cpp" line="601"/>
         <source>From Address is Invalid</source>
         <translation>Dirección de envio inválida</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="601"/>
+        <location filename="../src/sendtab.cpp" line="606"/>
         <source>Recipient Address </source>
         <translation>Dirección de Destinatario </translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="601"/>
+        <location filename="../src/sendtab.cpp" line="606"/>
         <source> is Invalid</source>
         <translation> es Inválida</translation>
     </message>
@@ -571,9 +572,14 @@ doesn&apos;t look like a z-address</source>
     <name>MemoDialog</name>
     <message>
         <location filename="../src/memodialog.ui" line="14"/>
-        <location filename="../src/memodialog.ui" line="20"/>
+        <location filename="../src/memodialog.ui" line="43"/>
         <source>Memo</source>
         <translation>Memo</translation>
+    </message>
+    <message>
+        <location filename="../src/memodialog.ui" line="52"/>
+        <source>Add From Address</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
