@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Set up check for updates action
     QObject::connect(ui->actionCheck_for_Updates, &QAction::triggered, [=] () {
-        QDesktopServices::openUrl(QUrl("https://github.com/adityapk00/zec-qt-wallet/releases"));
+        QDesktopServices::openUrl(QUrl("https://github.com/ZcashFoundation/zec-qt-wallet/releases"));
     });
 
     // Import Private Key
