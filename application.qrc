@@ -12,5 +12,6 @@
         <file>res/logobig.gif</file>
     </qresource>
     <qresource prefix="/translations">
+        <file>res/zec_qt_wallet_es.qm</file>
     </qresource>
 </RCC>
