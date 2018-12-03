@@ -292,13 +292,18 @@ void MainWindow::memoButtonClicked(int number) {
         
     });
 
+    // Insert From Address button
+    QObject::connect(memoDialog.btnInsertFrom, &QPushButton::clicked, [=] () {
+        memoDialog.memoTxt->setPlainText(memoDialog.memoTxt->toPlainText() + 
+            "\n" + tr("From") + ":\n" + ui->inputsCombo->currentText());
+    });
+
     memoDialog.memoTxt->setPlainText(currentMemo);
     memoDialog.memoTxt->setFocus();
 
     if (dialog.exec() == QDialog::Accepted) {
         memoTxt->setText(memoDialog.memoTxt->toPlainText());
     }
-
 }
 
 void MainWindow::removeExtraAddresses() {
