@@ -294,8 +294,14 @@ void MainWindow::memoButtonClicked(int number) {
 
     // Insert From Address button
     QObject::connect(memoDialog.btnInsertFrom, &QPushButton::clicked, [=] () {
+        QString replyTo = ui->inputsCombo->currentText();
+        if (!Settings::isZAddress(replyTo)) {
+            replyTo = rpc->getDefaultSaplingAddress();
+            if (replyTo.isEmpty())
+                return;
+        }
         memoDialog.memoTxt->setPlainText(memoDialog.memoTxt->toPlainText() + 
-            "\n" + tr("From") + ":\n" + ui->inputsCombo->currentText());
+            "\n" + tr("Reply to") + ":\n" + replyTo);
     });
 
     memoDialog.memoTxt->setPlainText(currentMemo);
