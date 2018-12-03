@@ -51,7 +51,7 @@ bool TxTableModel::exportToCsv(QString fileName) const {
 
     // Write headers
     for (int i = 0; i < headers.length(); i++) {
-        out << "\"" << headers[i] << "\"";
+        out << "\"" << headers[i] << "\",";
     }
     out << "\"Memo\"";
     out << endl;
