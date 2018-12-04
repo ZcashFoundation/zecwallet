@@ -292,13 +292,24 @@ void MainWindow::memoButtonClicked(int number) {
         
     });
 
+    // Insert From Address button
+    QObject::connect(memoDialog.btnInsertFrom, &QPushButton::clicked, [=] () {
+        QString replyTo = ui->inputsCombo->currentText();
+        if (!Settings::isZAddress(replyTo)) {
+            replyTo = rpc->getDefaultSaplingAddress();
+            if (replyTo.isEmpty())
+                return;
+        }
+        memoDialog.memoTxt->setPlainText(memoDialog.memoTxt->toPlainText() + 
+            "\n" + tr("Reply to") + ":\n" + replyTo);
+    });
+
     memoDialog.memoTxt->setPlainText(currentMemo);
     memoDialog.memoTxt->setFocus();
 
     if (dialog.exec() == QDialog::Accepted) {
         memoTxt->setText(memoDialog.memoTxt->toPlainText());
     }
-
 }
 
 void MainWindow::removeExtraAddresses() {

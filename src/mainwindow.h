@@ -94,6 +94,7 @@ private:
     void exportAllKeys();
     void exportKeys(QString addr = "");
     void backupWalletDat();
+    void exportTransactions();
 
     void doImport(QList<QString>* keys);
 

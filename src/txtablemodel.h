@@ -19,6 +19,8 @@ public:
     QString  getMemo(int row);
     QString  getAddr(int row);
 
+    bool     exportToCsv(QString fileName) const;
+
     int      rowCount(const QModelIndex &parent) const;
     int      columnCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;
