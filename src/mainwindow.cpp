@@ -941,7 +941,7 @@ void MainWindow::setupTransactionsTab() {
         if (!memo.isEmpty()) {
             int lastPost     = memo.trimmed().lastIndexOf(QRegExp("[\r\n]+"));
             QString lastWord = memo.right(memo.length() - lastPost - 1);
-            qDebug() << lastWord;
+            
             if (Settings::getInstance()->isSaplingAddress(lastWord) || 
                 Settings::getInstance()->isSproutAddress(lastWord)) {
                 menu.addAction(tr("Reply to ") + lastWord.left(25) + "...", [=]() {
