@@ -301,6 +301,10 @@ void MainWindow::memoButtonClicked(int number) {
             if (replyTo.isEmpty())
                 return;
         }
+        auto curText = memoDialog.memoTxt->toPlainText();
+        if (curText.endsWith(replyTo))
+            return;
+
         memoDialog.memoTxt->setPlainText(memoDialog.memoTxt->toPlainText() + 
             "\n" + tr("Reply to") + ":\n" + replyTo);
 
