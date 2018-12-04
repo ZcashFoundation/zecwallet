@@ -77,7 +77,6 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="252"/>
-        <location filename="../src/sendtab.cpp" line="298"/>
         <source>From</source>
         <translation>De</translation>
     </message>
@@ -140,7 +139,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="538"/>
-        <location filename="../src/sendtab.cpp" line="525"/>
+        <location filename="../src/sendtab.cpp" line="531"/>
         <source>Miner Fee</source>
         <translatorcomment>I replaced this with &quot;transaction fee&quot; which sounds much better in French.. I hope it&apos;s correct too.. </translatorcomment>
         <translation>Frais de transaction</translation>
@@ -378,7 +377,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="587"/>
-        <location filename="../src/sendtab.cpp" line="592"/>
+        <location filename="../src/sendtab.cpp" line="598"/>
         <source>Computing Tx: </source>
         <translation>Calcul de la transaction en cours: </translation>
     </message>
@@ -546,27 +545,32 @@ doesn&apos;t look like a z-address</source>
 Cette adresse ne semble pas être de type adresse-z</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="422"/>
+        <location filename="../src/sendtab.cpp" line="304"/>
+        <source>Reply to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/sendtab.cpp" line="428"/>
         <source>Change from </source>
         <translation>Changer de </translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="574"/>
+        <location filename="../src/sendtab.cpp" line="580"/>
         <source>Transaction Error</source>
         <translation>Erreur de transaction</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="601"/>
+        <location filename="../src/sendtab.cpp" line="607"/>
         <source>From Address is Invalid</source>
         <translation>L&apos;adresse de l&apos;émetteur est invalide</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="606"/>
+        <location filename="../src/sendtab.cpp" line="612"/>
         <source>Recipient Address </source>
         <translation>Adresse du destinataire </translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="606"/>
+        <location filename="../src/sendtab.cpp" line="612"/>
         <source> is Invalid</source>
         <translation> est invalide</translation>
     </message>
@@ -581,7 +585,7 @@ Cette adresse ne semble pas être de type adresse-z</translation>
     </message>
     <message>
         <location filename="../src/memodialog.ui" line="52"/>
-        <source>Add From Address</source>
+        <source>Include Reply Address</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

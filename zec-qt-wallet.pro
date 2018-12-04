@@ -89,7 +89,8 @@ FORMS += \
 
 TRANSLATIONS = res/zec_qt_wallet_es.ts \
                res/zec_qt_wallet_fr.ts \
-	           res/zec_qt_wallet_de.ts 
+               res/zec_qt_wallet_de.ts \
+               res/zec_qt_wallet_pt.ts 
 
 win32: RC_ICONS = res/icon.ico
 ICON = res/logo.icns
