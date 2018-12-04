@@ -7,7 +7,7 @@
 
 AddressBookModel::AddressBookModel(QTableView *parent)
      : QAbstractTableModel(parent) {
-    headers << "Label" << "Address";
+    headers << tr("Label") << tr("Address");
 
     this->parent = parent;
     loadData();
@@ -106,7 +106,7 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
 
     // If there is no target, the we'll call the button "Ok", else "Pick"
     if (target != nullptr) {
-        ab.buttonBox->button(QDialogButtonBox::Ok)->setText("Pick");
+        ab.buttonBox->button(QDialogButtonBox::Ok)->setText(QObject::tr("Pick"));
     } 
 
     // Connect the dialog's closing to updating the label address completor

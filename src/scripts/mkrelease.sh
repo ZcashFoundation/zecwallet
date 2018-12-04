@@ -59,7 +59,7 @@ echo ""
 echo "[Building on" `lsb_release -r`"]"
 
 echo -n "Configuring............"
-QT_STATIC=$QT_STATIC src/scripts/dotranslations.sh >/dev/null
+QT_STATIC=$QT_STATIC bash src/scripts/dotranslations.sh >/dev/null
 $QT_STATIC/bin/qmake zec-qt-wallet.pro -spec linux-clang CONFIG+=release > /dev/null
 echo "[OK]"
 
