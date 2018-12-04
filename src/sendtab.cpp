@@ -274,6 +274,7 @@ void MainWindow::memoButtonClicked(int number) {
     Ui_MemoDialog memoDialog;
     QDialog dialog(this);
     memoDialog.setupUi(&dialog);
+    Settings::saveRestore(&dialog);
 
     QObject::connect(memoDialog.memoTxt, &QPlainTextEdit::textChanged, [=] () {
         QString txt = memoDialog.memoTxt->toPlainText();
@@ -293,7 +294,7 @@ void MainWindow::memoButtonClicked(int number) {
     });
 
     // Insert From Address button
-    QObject::connect(memoDialog.btnInsertFrom, &QPushButton::clicked, [=] () {
+    QObject::connect(memoDialog.btnInsertFrom, &QPushButton::clicked, [=, &dialog] () {
         QString replyTo = ui->inputsCombo->currentText();
         if (!Settings::isZAddress(replyTo)) {
             replyTo = rpc->getDefaultSaplingAddress();
@@ -302,6 +303,11 @@ void MainWindow::memoButtonClicked(int number) {
         }
         memoDialog.memoTxt->setPlainText(memoDialog.memoTxt->toPlainText() + 
             "\n" + tr("Reply to") + ":\n" + replyTo);
+
+        // MacOS has a really annoying bug where the Plaintext doesn't refresh when the content is
+        // updated. So we do this ugly hack - resize the window slightly to force it to refresh
+        dialog.setGeometry(dialog.geometry().adjusted(0,0,0,1));
+        dialog.setGeometry(dialog.geometry().adjusted(0,0,0,-1));
     });
 
     memoDialog.memoTxt->setPlainText(currentMemo);
