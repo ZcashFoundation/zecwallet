@@ -937,6 +937,34 @@ void MainWindow::setupTransactionsTab() {
             });
         }
 
+        // If memo contains a reply to addess, add a "Reply to" menu item
+        if (!memo.isEmpty()) {
+            int lastPost     = memo.trimmed().lastIndexOf(QRegExp("[\r\n]+"));
+            QString lastWord = memo.right(memo.length() - lastPost - 1);
+            qDebug() << lastWord;
+            if (Settings::getInstance()->isSaplingAddress(lastWord) || 
+                Settings::getInstance()->isSproutAddress(lastWord)) {
+                menu.addAction(tr("Reply to ") + lastWord.left(25) + "...", [=]() {
+                    // First, cancel any pending stuff in the send tab by pretending to click
+                    // the cancel button
+                    cancelButton();
+
+                    // Then set up the fields in the send tab
+                    ui->Address1->setText(lastWord);
+                    ui->Address1->setCursorPosition(0);
+                    ui->Amount1->setText("0.0001");
+
+                    // And switch to the send tab.
+                    ui->tabWidget->setCurrentIndex(1);
+
+                    qApp->processEvents();
+
+                    // Click the memo button
+                    this->memoButtonClicked(1, true);
+                });
+            }
+        }
+
         menu.exec(ui->transactionsTable->viewport()->mapToGlobal(pos));        
     });
 }

@@ -255,7 +255,7 @@ void MainWindow::setMemoEnabled(int number, bool enabled) {
     }
 }
 
-void MainWindow::memoButtonClicked(int number) {
+void MainWindow::memoButtonClicked(int number, bool includeReplyTo) {
     // Memos can only be used with zAddrs. So check that first
     auto addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") + QString::number(number));
     if (!AddressBook::addressFromAddressLabel(addr->text()).startsWith("z")) {
@@ -293,8 +293,7 @@ void MainWindow::memoButtonClicked(int number) {
         
     });
 
-    // Insert From Address button
-    QObject::connect(memoDialog.btnInsertFrom, &QPushButton::clicked, [=, &dialog] () {
+    auto fnAddReplyTo = [=, &dialog]() {
         QString replyTo = ui->inputsCombo->currentText();
         if (!Settings::isZAddress(replyTo)) {
             replyTo = rpc->getDefaultSaplingAddress();
@@ -305,17 +304,22 @@ void MainWindow::memoButtonClicked(int number) {
         if (curText.endsWith(replyTo))
             return;
 
-        memoDialog.memoTxt->setPlainText(memoDialog.memoTxt->toPlainText() + 
-            "\n" + tr("Reply to") + ":\n" + replyTo);
+        memoDialog.memoTxt->setPlainText(curText + "\n" + tr("Reply to") + ":\n" + replyTo);
 
         // MacOS has a really annoying bug where the Plaintext doesn't refresh when the content is
         // updated. So we do this ugly hack - resize the window slightly to force it to refresh
         dialog.setGeometry(dialog.geometry().adjusted(0,0,0,1));
         dialog.setGeometry(dialog.geometry().adjusted(0,0,0,-1));
-    });
+    };
+
+    // Insert From Address button
+    QObject::connect(memoDialog.btnInsertFrom, &QPushButton::clicked, fnAddReplyTo);
 
     memoDialog.memoTxt->setPlainText(currentMemo);
     memoDialog.memoTxt->setFocus();
+
+    if (includeReplyTo)
+        fnAddReplyTo();
 
     if (dialog.exec() == QDialog::Accepted) {
         memoTxt->setText(memoDialog.memoTxt->toPlainText());

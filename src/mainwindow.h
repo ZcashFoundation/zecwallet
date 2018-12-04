@@ -82,7 +82,7 @@ private:
     void addNewZaddr(bool sapling);
     std::function<void(bool)> addZAddrsToComboList(bool sapling);
 
-    void memoButtonClicked(int number);
+    void memoButtonClicked(int number, bool includeReplyTo = false);
     void setMemoEnabled(int number, bool enabled);
 
     QString doSendTxValidations(Tx tx);
