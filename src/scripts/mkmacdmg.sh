@@ -1,5 +1,35 @@
 #!/bin/bash
 
+# Accept the variables as command line arguments as well
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    -q|--qt_path)
+    QT_PATH="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -z|--zcash_path)
+    ZCASH_DIR="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -v|--version)
+    APP_VERSION="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    *)    # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    shift # past argument
+    ;;
+esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
 if [ -z $QT_PATH ]; then 
     echo "QT_PATH is not set. Please set it to the base directory of Qt"; 
     exit 1; 
@@ -57,7 +87,7 @@ echo "[OK]"
 
 
 echo -n "Building dmg..........."
-create-dmg --volname "zec-qt-wallet-v$APP_VERSION" --volicon "res/logo.icns" --window-pos 200 120 --icon "zec-qt-wallet.app" 200 190  --app-drop-link 600 185 --hide-extension "zec-qt-wallet.app"  --window-size 800 400 --hdiutil-quiet --background res/dmgbg.png  artifacts/macOS-zec-qt-wallet-v$APP_VERSION.dmg zec-qt-wallet.app >/dev/null
+create-dmg --volname "zec-qt-wallet-v$APP_VERSION" --volicon "res/logo.icns" --window-pos 200 120 --icon "zec-qt-wallet.app" 200 190  --app-drop-link 600 185 --hide-extension "zec-qt-wallet.app"  --window-size 800 400 --hdiutil-quiet --background res/dmgbg.png  artifacts/macOS-zec-qt-wallet-v$APP_VERSION.dmg zec-qt-wallet.app >/dev/null 2>&1
 
 #mkdir bin/dmgbuild >/dev/null 2>&1
 #sed "s/RELEASE_VERSION/${APP_VERSION}/g" res/appdmg.json > bin/dmgbuild/appdmg.json

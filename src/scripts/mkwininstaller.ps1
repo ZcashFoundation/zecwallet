@@ -4,8 +4,8 @@ param (
 
 $target="zec-qt-wallet-v$version"
 
-Remove-Item -Path release/wininstaller -Recurse   | Out-Null
-New-Item release/wininstaller -itemtype directory | Out-Null
+Remove-Item -Path release/wininstaller -Recurse -ErrorAction Ignore  | Out-Null
+New-Item release/wininstaller -itemtype directory                    | Out-Null
 
 Copy-Item release/$target/zec-qt-wallet.exe release/wininstaller/
 Copy-Item release/$target/LICENSE           release/wininstaller/

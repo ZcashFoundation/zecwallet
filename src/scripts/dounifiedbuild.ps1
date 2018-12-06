@@ -2,7 +2,8 @@
 param (
     [Parameter(Mandatory=$true)][string]$version,
     [Parameter(Mandatory=$true)][string]$prev,
-    [Parameter(Mandatory=$true)][string]$server
+    [Parameter(Mandatory=$true)][string]$server,
+    [Parameter(Mandatory=$true)][string]$winserver
 )
 
 Write-Host "[Initializing]"
@@ -21,6 +22,16 @@ Write-Output "#define APP_VERSION `"$version`"" > src/version.h
 Get-Content README.md | Foreach-Object { $_ -replace "$prev", "$version" } | Out-File README-new.md
 Move-Item -Force README-new.md README.md
 Write-Host ""
+
+
+Write-Host "[Building on Mac]"
+bash src/scripts/mkmacdmg.sh --qt_path ~/Qt/5.11.1/clang_64/ --version $version --zcash_path ~/github/zcash 
+if (! $?) {
+    Write-Output "[Error]"
+    exit 1;
+}
+Write-Host ""
+
 
 Write-Host "[Building Linux + Windows]"
 Write-Host -NoNewline "Copying files.........."
@@ -42,11 +53,27 @@ scp    ${server}:/tmp/zqwbuild/artifacts/* artifacts/ | Out-Null
 scp -r ${server}:/tmp/zqwbuild/release .              | Out-Null
 
 Write-Host -NoNewline "Building Installer....."
-src/scripts/mkwininstaller.ps1 -version $version 2>&1 | Out-Null
+ssh $winserver "Remove-Item -Path zqwbuild -Recurse"   | Out-Null
+ssh $winserver "New-Item zqwbuild -itemtype directory" | Out-Null
+
+# Note: For some mysterious reason, we can't seem to do a scp from here to windows machine. 
+# So, we'll ssh to windows, and execute an scp command to pull files from here to there.
+# Same while copying the built msi. A straight scp pull from windows to here doesn't work,
+# so we ssh to windows, and then scp push the file to here.
+$myhostname = (hostname) | Out-String -NoNewline
+Remove-Item -Path /tmp/zqwbuild -Recurse             | Out-Null
+New-Item    -Path /tmp/zqwbuild -itemtype directory  | Out-Null
+Copy-Item src     /tmp/zqwbuild/ -Recurse
+Copy-Item res     /tmp/zqwbuild/ -Recurse
+Copy-Item release /tmp/zqwbuild/ -Recurse
+ssh $winserver "scp -r ${myhostname}:/tmp/zqwbuild/* zqwbuild/"
+ssh $winserver "cd zqwbuild ; src/scripts/mkwininstaller.ps1 -version $version" >/dev/null
 if (!$?) {
     Write-Output "[Error]"
     exit 1;
 }
+ssh $winserver "scp zqwbuild/artifacts/* ${myhostname}:/tmp/zqwbuild/"
+Copy-Item /tmp/zqwbuild/*.msi artifacts/
 Write-Host "[OK]"
 
 # Finally, test to make sure all files exist
@@ -54,6 +81,7 @@ Write-Host -NoNewline "Checking Build........."
 if (! (Test-Path ./artifacts/linux-binaries-zec-qt-wallet-v$version.tar.gz) -or
     ! (Test-Path ./artifacts/linux-deb-zec-qt-wallet-v$version.deb) -or
     ! (Test-Path ./artifacts/Windows-binaries-zec-qt-wallet-v$version.zip) -or
+    ! (Test-Path ./artifacts/macOS-zec-qt-wallet-v$version.dmg) -or 
     ! (Test-Path ./artifacts/Windows-installer-zec-qt-wallet-v$version.msi) ) {
         Write-Host "[Error]"
         exit 1;
