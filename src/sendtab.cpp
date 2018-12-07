@@ -371,7 +371,15 @@ void MainWindow::maxAmountChecked(int checked) {
             auto amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1));
             sumAllAmounts += amt->text().toDouble();
         }
-        sumAllAmounts += Settings::getTotalFee();
+
+        if (Settings::getInstance()->getAllowCustomFees()) {
+            sumAllAmounts = ui->minerFeeAmt->text().toDouble();
+        }
+        else {
+            sumAllAmounts += Settings::getMinerFee();
+        }
+
+        
 
         auto addr = ui->inputsCombo->currentText();
 

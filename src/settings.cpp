@@ -219,8 +219,6 @@ QString Settings::getZboardAddr() {
     }
 }
 
-double Settings::getTotalFee() { return getMinerFee(); }
-
 bool Settings::isValidAddress(QString addr) {
     QRegExp zcexp("^z[a-z0-9]{94}$",  Qt::CaseInsensitive);
     QRegExp zsexp("^z[a-z0-9]{77}$",  Qt::CaseInsensitive);
