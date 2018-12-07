@@ -10,14 +10,14 @@ Head over to the releases page and grab the latest installers or binary. https:/
 
 If you are on Debian/Ubuntu, please download the `.deb` package and install it.
 ```
-sudo dpkg -i linux-deb-zec-qt-wallet-v0.5.3.deb
+sudo dpkg -i linux-deb-zec-qt-wallet-v0.5.4.deb
 sudo apt install -f
 ```
 
 Or you can download and run the binaries directly.
 ```
-tar -xvf zec-qt-wallet-v0.5.3.tar.gz
-./zec-qt-wallet-v0.5.3/zec-qt-wallet
+tar -xvf zec-qt-wallet-v0.5.4.tar.gz
+./zec-qt-wallet-v0.5.4/zec-qt-wallet
 ```
 
 ### Windows
