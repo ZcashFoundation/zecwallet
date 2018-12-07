@@ -50,6 +50,7 @@ public:
     const QList<QString>*             getAllZAddresses()     { return zaddresses; }
     const QList<UnspentOutput>*       getUTXOs()             { return utxos; }
     const QMap<QString, double>*      getAllBalances()       { return allBalances; }
+    const QMap<QString, bool>*        getUsedAddresses()     { return usedAddresses; }
 
     void newZaddr(bool sapling, const std::function<void(json)>& cb);
     void newTaddr(const std::function<void(json)>& cb);
@@ -93,6 +94,7 @@ private:
 
     QList<UnspentOutput>*       utxos                       = nullptr;
     QMap<QString, double>*      allBalances                 = nullptr;
+    QMap<QString, bool>*        usedAddresses               = nullptr;
     QList<QString>*             zaddresses                  = nullptr;
     
     QMap<QString, Tx>           watchingOps;

@@ -379,8 +379,6 @@ void MainWindow::maxAmountChecked(int checked) {
             sumAllAmounts += Settings::getMinerFee();
         }
 
-        
-
         auto addr = ui->inputsCombo->currentText();
 
         auto maxamount  = rpc->getAllBalances()->value(addr) - sumAllAmounts;

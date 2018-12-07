@@ -48,6 +48,8 @@ RPC::RPC(MainWindow* main) {
     });
     // Start at every 10s. When an operation is pending, this will change to every second
     txTimer->start(Settings::updateSpeed);  
+
+    usedAddresses = new QMap<QString, bool>();
 }
 
 RPC::~RPC() {
@@ -60,6 +62,7 @@ RPC::~RPC() {
 
     delete utxos;
     delete allBalances;
+    delete usedAddresses;
     delete zaddresses;
 
     delete conn;
@@ -410,6 +413,9 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
             for (auto it = zaddrTxids->constBegin(); it != zaddrTxids->constEnd(); it++) {
                 auto zaddr = it.key();
                 for (auto& i : it.value().get<json::array_t>()) {   
+                    // Mark the address as used
+                    usedAddresses->insert(zaddr, true);
+
                     // Filter out change txs
                     if (! i["change"].get<json::boolean_t>()) {
                         auto txid = QString::fromStdString(i["txid"].get<json::string_t>());
@@ -424,7 +430,7 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
                                 memos[zaddr + txid] = memo;
                         }
                     }
-                }        
+                }                        
             }
 
             // 2. For all txids, go and get the details of that txid.
@@ -732,16 +738,20 @@ void RPC::refreshTransactions() {
                 fee = it["fee"].get<json::number_float_t>();
             }
 
+            QString address = (it["address"].is_null() ? "" : QString::fromStdString(it["address"]));
+
             TransactionItem tx{
                 QString::fromStdString(it["category"]),
                 (qint64)it["time"].get<json::number_unsigned_t>(),
-                (it["address"].is_null() ? "" : QString::fromStdString(it["address"])),
+                address,
                 QString::fromStdString(it["txid"]),
                 it["amount"].get<json::number_float_t>() + fee,
                 (unsigned long)it["confirmations"].get<json::number_unsigned_t>(),
                 "", "" };
 
             txdata.push_back(tx);
+            if (!address.isEmpty())
+                usedAddresses->insert(address, true);
         }
 
         // Update model data, which updates the table view

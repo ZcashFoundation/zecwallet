@@ -1054,7 +1054,6 @@ void MainWindow::setupRecieveTab() {
         } 
     });
 
-
     // zAddr toggle button, one for sprout and one for sapling
     QObject::connect(ui->rdioZAddr,  &QRadioButton::toggled, addZAddrsToComboList(false));
     QObject::connect(ui->rdioZSAddr, &QRadioButton::toggled, addZAddrsToComboList(true));
@@ -1116,6 +1115,7 @@ void MainWindow::setupRecieveTab() {
             ui->rcvBal->clear();
             ui->txtRecieve->clear();
             ui->qrcodeDisplay->clear();
+            ui->lblUsed->clear();
             return;
         }
 
@@ -1126,11 +1126,17 @@ void MainWindow::setupRecieveTab() {
         else {
             ui->rcvUpdateLabel->setText("Update Label");
         }
-
+        
         ui->rcvLabel->setText(label);
         ui->rcvBal->setText(Settings::getZECUSDDisplayFormat(rpc->getAllBalances()->value(addr)));
         ui->txtRecieve->setPlainText(addr);       
         ui->qrcodeDisplay->setAddress(addr);
+        if (rpc->getUsedAddresses()->value(addr, false)) {
+            ui->lblUsed->setText(tr("Address has been previously used"));
+        } else {
+            ui->lblUsed->setText(tr("Address is unused"));
+        }
+        
     });    
 
     // Recieve tab add/update label

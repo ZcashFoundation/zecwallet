@@ -22,7 +22,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -749,7 +749,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="1" colspan="2">
+                <item row="4" column="1" colspan="2">
                  <layout class="QHBoxLayout" name="horizontalLayout_16">
                   <item>
                    <widget class="QPushButton" name="exportKey">
@@ -772,6 +772,20 @@
                    </spacer>
                   </item>
                  </layout>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="label_15">
+                  <property name="text">
+                   <string>Address used</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1" colspan="2">
+                 <widget class="QLabel" name="lblUsed">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
