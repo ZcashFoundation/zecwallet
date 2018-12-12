@@ -492,6 +492,8 @@ bool MainWindow::confirmTx(Tx tx) {
     
     // For each addr/amt/memo, construct the JSON and also build the confirm dialog box    
     int row = 0;
+    double totalSpending = 0;
+
     for (int i=0; i < tx.toAddrs.size(); i++) {
         auto toAddr = tx.toAddrs[i];
 
@@ -510,6 +512,7 @@ bool MainWindow::confirmTx(Tx tx) {
             Amt->setText(Settings::getZECDisplayFormat(toAddr.amount));
             Amt->setAlignment(Qt::AlignRight | Qt::AlignTrailing | Qt::AlignVCenter);
             confirm.gridLayout->addWidget(Amt, row, 1, 1, 1);
+            totalSpending += toAddr.amount;
 
             // Amount (USD)
             auto AmtUSD = new QLabel(confirm.sendToAddrs);
@@ -557,6 +560,7 @@ bool MainWindow::confirmTx(Tx tx) {
         minerFee->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         confirm.gridLayout->addWidget(minerFee, row, 1, 1, 1);
         minerFee->setText(Settings::getZECDisplayFormat(tx.fee));
+        totalSpending += tx.fee;
 
         auto minerFeeUSD = new QLabel(confirm.sendToAddrs);
         QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Preferred);
@@ -579,6 +583,11 @@ bool MainWindow::confirmTx(Tx tx) {
 
     // And FromAddress in the confirm dialog 
     confirm.sendFrom->setText(fnSplitAddressForWrap(tx.fromAddr));
+    QString tooltip = tr("Current balance      : ") +
+        Settings::getZECUSDDisplayFormat(rpc->getAllBalances()->value(tx.fromAddr));
+    tooltip += "\n" + tr("Balance after this Tx: ") +
+        Settings::getZECUSDDisplayFormat(rpc->getAllBalances()->value(tx.fromAddr) - totalSpending);
+    confirm.sendFrom->setToolTip(tooltip);
 
     // Show the dialog and submit it if the user confirms
     if (d.exec() == QDialog::Accepted) {        
