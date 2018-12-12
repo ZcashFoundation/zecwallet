@@ -201,6 +201,50 @@ QString Settings::getDonationAddr(bool sapling) {
             return "zcEgrceTwvoiFdEvPWcsJHAMrpLsprMF6aRJiQa3fan5ZphyXLPuHghnEPrEPRoEVzUy65GnMVyCTRdkT6BYBepnXh6NBYs";    
 }
 
+bool Settings::addToZcashConf(QString confLocation, QString line) {
+    QFile file(confLocation);
+    if (!file.open(QIODevice::ReadWrite | QIODevice::Append))
+        return false;
+    
+
+    QTextStream out(&file);
+    out << line << "\n";
+    file.close();
+
+    return true;
+}
+
+bool Settings::removeFromZcashConf(QString confLocation, QString option) {
+    // To remove an option, we'll create a new file, and copy over everything but the option.
+    QFile file(confLocation);
+    if (!file.open(QIODevice::ReadOnly)) 
+        return false;
+    
+    QList<QString> lines;
+    QTextStream in(&file);
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        auto s = line.indexOf("=");
+        QString name = line.left(s).trimmed().toLower();
+        if (name != option) {
+            qDebug() << "Copied " << line;
+            lines.append(line);
+        }
+    }    
+    file.close();
+    
+    QFile newfile(confLocation);
+    if (!newfile.open(QIODevice::ReadWrite | QIODevice::Truncate))
+        return false;
+
+    QTextStream out(&newfile);
+    for (QString line : lines) {
+        out << line << endl;
+    }
+    newfile.close();
+
+    return true;
+}
 
 double Settings::getMinerFee() {
     return 0.0001;

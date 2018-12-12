@@ -550,6 +550,9 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {
         if (name == "daemon" && value == "1") {
             zcashconf->zcashDaemon = true;
         }
+        if (name == "proxy") {
+            zcashconf->proxy = value;
+        }
         if (name == "testnet" &&
             value == "1"  &&
             zcashconf->port.isEmpty()) {
@@ -581,7 +584,7 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::loadFromSettings() {
     if (username.isEmpty() || password.isEmpty())
         return nullptr;
 
-    auto uiConfig = new ConnectionConfig{ host, port, username, password, false, false, "",  ConnectionType::UISettingsZCashD};
+    auto uiConfig = new ConnectionConfig{ host, port, username, password, false, false, "", "", ConnectionType::UISettingsZCashD};
 
     return std::shared_ptr<ConnectionConfig>(uiConfig);
 }

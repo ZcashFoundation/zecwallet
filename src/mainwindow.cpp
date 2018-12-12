@@ -393,6 +393,17 @@ void MainWindow::setupSettingsModal() {
         // Auto shielding
         settings.chkAutoShield->setChecked(Settings::getInstance()->getAutoShield());
 
+        // Use Tor
+        bool isUsingTor = !rpc->getConnection()->config->proxy.isEmpty();
+        settings.chkTor->setChecked(isUsingTor);
+        if (rpc->getEZcashD() == nullptr) {
+            settings.chkTor->setEnabled(false);
+            settings.lblTor->setEnabled(false);
+            QString tooltip = tr("Tor configuration is available only when running an embedded zcashd.");
+            settings.chkTor->setToolTip(tooltip);
+            settings.lblTor->setToolTip(tooltip);
+        }
+
         // Connection Settings
         QIntValidator validator(0, 65535);
         settings.port->setValidator(&validator);
@@ -434,6 +445,25 @@ void MainWindow::setupSettingsModal() {
 
             // Auto shield
             Settings::getInstance()->setAutoShield(settings.chkAutoShield->isChecked());
+
+            if (!isUsingTor && settings.chkTor->isChecked()) {
+                // If "use tor" was previously unchecked and now checked
+                Settings::addToZcashConf(zcashConfLocation, "proxy=127.0.0.1:9050");
+                rpc->getConnection()->config->proxy = "proxy=127.0.0.1:9050";
+
+                QMessageBox::information(this, tr("Enable Tor"), 
+                    tr("Connection over Tor has been enabled. To use this feature, you need to restart zec-qt-wallet."), 
+                    QMessageBox::Ok);
+            }
+            if (isUsingTor && !settings.chkTor->isChecked()) {
+                // If "use tor" was previously checked and now is unchecked
+                Settings::removeFromZcashConf(zcashConfLocation, "proxy");
+                rpc->getConnection()->config->proxy.clear();
+
+                QMessageBox::information(this, tr("Disable Tor"),
+                    tr("Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart zec-qt-wallet."),
+                    QMessageBox::Ok);
+            }
 
             if (zcashConfLocation.isEmpty()) {
                 // Save settings

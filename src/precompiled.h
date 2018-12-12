@@ -36,6 +36,7 @@
 #include <QSettings>
 #include <QStyle>
 #include <QFile>
+#include <QTemporaryFile>
 #include <QErrorMessage>
 #include <QApplication>
 #include <QStandardPaths>

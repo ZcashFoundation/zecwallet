@@ -23,6 +23,7 @@ struct ConnectionConfig {
     bool    usingZcashConf;
     bool    zcashDaemon;
     QString zcashDir;
+    QString proxy;
 
     ConnectionType connType;
 };

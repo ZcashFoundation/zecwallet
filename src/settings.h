@@ -76,6 +76,9 @@ public:
     
     static bool    isValidAddress(QString addr);
 
+    static bool    addToZcashConf(QString confLocation, QString line);
+    static bool    removeFromZcashConf(QString confLocation, QString option);
+
     static const QString labelRegExp;
 
     static const int     updateSpeed         = 20 * 1000;        // 20 sec

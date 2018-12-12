@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>460</width>
-    <height>464</height>
+    <width>540</width>
+    <height>504</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>460</width>
-    <height>464</height>
+    <width>540</width>
+    <height>500</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -26,7 +26,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -145,10 +145,10 @@
        <string>Options</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="1" column="0" colspan="2">
-        <widget class="QLabel" name="label_5">
+       <item row="10" column="0" colspan="2">
+        <widget class="QLabel" name="lblTor">
          <property name="text">
-          <string>Shielded transactions are saved locally and shown in the transactions tab.  If you uncheck this, shielded transactions will not appear in the transactions tab.</string>
+          <string>Connect to the Tor network via SOCKS proxy running on 127.0.0.1:9050. Please note that you'll have to install and run the Tor service externally.</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -159,6 +159,16 @@
         <widget class="QPushButton" name="btnClearSaved">
          <property name="text">
           <string>Clear History</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Shielded transactions are saved locally and shown in the transactions tab.  If you uncheck this, shielded transactions will not appear in the transactions tab.</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -182,14 +192,31 @@
          </property>
         </widget>
        </item>
-       <item row="8" column="0" colspan="2">
+       <item row="3" column="0">
+        <widget class="QCheckBox" name="chkCustomFees">
+         <property name="text">
+          <string>Allow custom fees</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0" colspan="2">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>Normally, change from t-Addresses goes to another t-Address. Checking this option will send the change to your shielded sapling address instead. Check this option to increase your privacy.</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="0" colspan="2">
         <widget class="Line" name="line_2">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
-       <item row="9" column="0" colspan="2">
+       <item row="12" column="0" colspan="2">
         <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -202,27 +229,10 @@
          </property>
         </spacer>
        </item>
-       <item row="3" column="0">
-        <widget class="QCheckBox" name="chkCustomFees">
-         <property name="text">
-          <string>Allow custom fees</string>
-         </property>
-        </widget>
-       </item>
        <item row="4" column="0" colspan="2">
         <widget class="QLabel" name="label_6">
          <property name="text">
           <string>Allow overriding the default fees when sending transactions. Enabling this option may compromise your privacy since fees are transparent. </string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0" colspan="2">
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>Normally, change from t-Addresses goes to another t-Address. Checking this option will send the change to your shielded sapling address instead. Check this option to increase your privacy.</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -240,6 +250,20 @@
         <widget class="QLabel" name="label_8">
          <property name="text">
           <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QCheckBox" name="chkTor">
+         <property name="text">
+          <string>Connect via Tor</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="label_10">
+         <property name="text">
+          <string notr="true"/>
          </property>
         </widget>
        </item>
