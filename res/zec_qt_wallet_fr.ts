@@ -6,12 +6,12 @@
     <message>
         <location filename="../src/addressbook.cpp" line="10"/>
         <source>Label</source>
-        <translation type="unfinished">Etiquette</translation>
+        <translation>Etiquette</translation>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="10"/>
         <source>Address</source>
-        <translation type="unfinished">Adresse</translation>
+        <translation>Adresse</translation>
     </message>
 </context>
 <context>
@@ -209,7 +209,7 @@
     <message>
         <location filename="../src/mainwindow.ui" line="715"/>
         <source>Address balance</source>
-        <translation type="unfinished"></translation>
+        <translation>Solde de l&apos;adresse</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="725"/>
@@ -370,32 +370,32 @@
         <location filename="../src/mainwindow.ui" line="1107"/>
         <location filename="../src/mainwindow.cpp" line="693"/>
         <source>Export transactions</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter les transactions</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="402"/>
         <source>Tor configuration is available only when running an embedded zcashd.</source>
-        <translation type="unfinished"></translation>
+        <translation>La configuration de Tor est disponible uniquement lors de l&apos;exécution du processus zcashd intégré. </translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="454"/>
         <source>Enable Tor</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer Tor</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="455"/>
         <source>Connection over Tor has been enabled. To use this feature, you need to restart zec-qt-wallet.</source>
-        <translation type="unfinished"></translation>
+        <translation>La connection via Tor est activée. Afin d'utiliser cette fonctionnalité, veuillez redémarer zec-qt-wallet.</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="463"/>
         <source>Disable Tor</source>
-        <translation type="unfinished"></translation>
+        <translation>Désactiver Tor</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="464"/>
         <source>Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart zec-qt-wallet.</source>
-        <translation type="unfinished"></translation>
+        <translation>La connection via Tor a été désactivée. Afin de complètement se déconnecter de Tor, vous devez redémarrer zec-qt-wallet.</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="504"/>
@@ -451,12 +451,12 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="699"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="700"/>
         <source>Error exporting transactions, file was not saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de l&apos;exportation des transactions. Le fichier n'a pas été sauvegardé.</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="722"/>
@@ -560,7 +560,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="977"/>
         <source>Reply to </source>
-        <translation type="unfinished"></translation>
+        <translation>Répondre à </translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1057"/>
@@ -570,12 +570,12 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="1165"/>
         <source>Address has been previously used</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;adresse a été utilisée précédemment.</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1167"/>
         <source>Address is unused</source>
-        <translation type="unfinished"></translation>
+        <translation>L'adresse est inutilisée.</translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="148"/>
@@ -609,7 +609,7 @@ Cette adresse ne semble pas être de type adresse-z</translation>
     <message>
         <location filename="../src/sendtab.cpp" line="307"/>
         <source>Reply to</source>
-        <translation type="unfinished"></translation>
+        <translation>Répondre à</translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="448"/>
@@ -619,12 +619,12 @@ Cette adresse ne semble pas être de type adresse-z</translation>
     <message>
         <location filename="../src/sendtab.cpp" line="586"/>
         <source>Current balance      : </source>
-        <translation type="unfinished"></translation>
+        <translation>Solde actuel      :</translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="588"/>
         <source>Balance after this Tx: </source>
-        <translation type="unfinished"></translation>
+        <translation>Solde après cette Tx:</translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="609"/>
@@ -658,7 +658,7 @@ Cette adresse ne semble pas être de type adresse-z</translation>
     <message>
         <location filename="../src/memodialog.ui" line="52"/>
         <source>Include Reply Address</source>
-        <translation type="unfinished"></translation>
+        <translation >Inclure l'adresse de réponse</translation>
     </message>
 </context>
 <context>
@@ -896,7 +896,7 @@ Veuillez configurer l&apos;hôte/port et utilisateur/mot de passe dans le menu E
     <message>
         <location filename="../src/addressbook.cpp" line="109"/>
         <source>Pick</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisir</translation>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="127"/>
@@ -1006,7 +1006,7 @@ Vous avez soit des fonds non confirmés soit le solde est trop petit pour une mi
     <message>
         <location filename="../src/settings.ui" line="151"/>
         <source>Connect to the Tor network via SOCKS proxy running on 127.0.0.1:9050. Please note that you&apos;ll have to install and run the Tor service externally.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se connecter au réseau Tor via le proxy SOCKS en cours d&apos;exécution sur 127.0.0.1:9050. Veuillez noter que vous devrez installer et exécuter le service Tor en externe.</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="168"/>
@@ -1016,7 +1016,7 @@ Vous avez soit des fonds non confirmés soit le solde est trop petit pour une mi
     <message>
         <location filename="../src/settings.ui" line="259"/>
         <source>Connect via Tor</source>
-        <translation type="unfinished"></translation>
+        <translation>Se connecter via Tor</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="161"/>
@@ -1238,4 +1238,3 @@ Vous avez soit des fonds non confirmés soit le solde est trop petit pour une mi
         <translation>Poster sur le forum</translation>
     </message>
 </context>
-</TS>
