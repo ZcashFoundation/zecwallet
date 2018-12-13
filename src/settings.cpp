@@ -134,7 +134,13 @@ void Settings::setSaveZtxs(bool save) {
     QSettings().setValue("options/savesenttx", save);
 }
 
+void Settings::setPeers(int peers) {
+    _peerConnections = peers;
+}
 
+int Settings::getPeers() {
+    return _peerConnections;
+}
 //=================================
 // Static Stuff
 //=================================

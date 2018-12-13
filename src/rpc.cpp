@@ -531,10 +531,17 @@ void RPC::getInfoThenRefresh(bool force) {
             refreshTransactions();
         }
 
+        int connections = reply["connections"].get<json::number_integer_t>();
+        Settings::getInstance()->setPeers(connections);
+
+        if (connections == 0) {
+            // If there are no peers connected, then the internet is probably off or something else is wrong. 
+            QIcon i = QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning);
+            main->statusIcon->setPixmap(i.pixmap(16, 16));
+        }
+
         // Get network sol/s
         if (ezcashd) {
-            int conns = reply["connections"].get<json::number_integer_t>();
-
             json payload = {
                 {"jsonrpc", "1.0"},
                 {"id", "someid"},
@@ -544,7 +551,7 @@ void RPC::getInfoThenRefresh(bool force) {
             conn->doRPCIgnoreError(payload, [=](const json& reply) {
                 qint64 solrate = reply.get<json::number_unsigned_t>();
 
-                ui->numconnections->setText(QString::number(conns));
+                ui->numconnections->setText(QString::number(connections));
                 ui->solrate->setText(QString::number(solrate) % " Sol/s");
             });
         } 
@@ -596,7 +603,14 @@ void RPC::getInfoThenRefresh(bool force) {
             main->statusLabel->setText(statusText);   
 
             auto zecPrice = Settings::getUSDFormat(1);
-            QString tooltip = QObject::tr("Connected to zcashd");
+            QString tooltip;
+            if (connections > 0) {
+                tooltip = QObject::tr("Connected to zcashd");
+            }
+            else {
+                tooltip = QObject::tr("zcashd has no peer connections");
+            }
+
             if (!zecPrice.isEmpty()) {
                 tooltip = "1 ZEC = " % zecPrice % "\n" % tooltip;
             }

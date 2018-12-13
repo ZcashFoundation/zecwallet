@@ -147,6 +147,19 @@
     </spacer>
    </item>
    <item>
+    <widget class="QLabel" name="nopeersWarning">
+     <property name="styleSheet">
+      <string notr="true">color: red;</string>
+     </property>
+     <property name="text">
+      <string>zcashd doesn't seem to have any peers. You might not be connected to the internet, so this Transaction might not work.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="syncingWarning">
      <property name="styleSheet">
       <string notr="true">color: red;</string>

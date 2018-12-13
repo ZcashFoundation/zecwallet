@@ -581,6 +581,9 @@ bool MainWindow::confirmTx(Tx tx) {
     // Syncing warning
     confirm.syncingWarning->setVisible(Settings::getInstance()->isSyncing());
 
+    // No peers warning
+    confirm.nopeersWarning->setVisible(Settings::getInstance()->getPeers() == 0);
+
     // And FromAddress in the confirm dialog 
     confirm.sendFrom->setText(fnSplitAddressForWrap(tx.fromAddr));
     QString tooltip = tr("Current balance      : ") +

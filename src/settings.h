@@ -53,6 +53,9 @@ public:
 
     void    setZECPrice(double p) { zecPrice = p; }
     double  getZECPrice();
+
+    void    setPeers(int peers);
+    int     getPeers();
        
     // Static stuff
     static const QString txidStatusMessage;
@@ -98,7 +101,7 @@ private:
     bool    _isSyncing        = false;
     int     _blockNumber      = 0;
     bool    _useEmbedded      = false;
-
+    int     _peerConnections  = 0;
     double zecPrice = 0.0;
 };
 
