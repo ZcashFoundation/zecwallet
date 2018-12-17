@@ -394,7 +394,10 @@ void MainWindow::setupSettingsModal() {
         settings.chkAutoShield->setChecked(Settings::getInstance()->getAutoShield());
 
         // Use Tor
-        bool isUsingTor = !rpc->getConnection()->config->proxy.isEmpty();
+        bool isUsingTor = false;
+        if (rpc->getConnection() != nullptr) {
+            isUsingTor = !rpc->getConnection()->config->proxy.isEmpty();
+        }
         settings.chkTor->setChecked(isUsingTor);
         if (rpc->getEZcashD() == nullptr) {
             settings.chkTor->setEnabled(false);
