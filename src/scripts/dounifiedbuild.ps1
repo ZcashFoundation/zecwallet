@@ -61,8 +61,8 @@ ssh $winserver "New-Item zqwbuild -itemtype directory" | Out-Null
 # Same while copying the built msi. A straight scp pull from windows to here doesn't work,
 # so we ssh to windows, and then scp push the file to here.
 $myhostname = (hostname) | Out-String -NoNewline
-Remove-Item -Path /tmp/zqwbuild -Recurse             | Out-Null
-New-Item    -Path /tmp/zqwbuild -itemtype directory  | Out-Null
+Remove-Item -Path /tmp/zqwbuild -Recurse -ErrorAction Ignore | Out-Null
+New-Item    -Path /tmp/zqwbuild -itemtype directory          | Out-Null
 Copy-Item src     /tmp/zqwbuild/ -Recurse
 Copy-Item res     /tmp/zqwbuild/ -Recurse
 Copy-Item release /tmp/zqwbuild/ -Recurse
