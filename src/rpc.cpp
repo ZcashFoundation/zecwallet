@@ -582,10 +582,11 @@ void RPC::getInfoThenRefresh(bool force) {
                     QString txt = QString::number(blockNumber);
                     if (estimatedheight > 0) {
                         txt = txt % " / ~" % QString::number(estimatedheight);
-                        txt = txt %  " ( " % QString::number((double)blockNumber / (double)estimatedheight * 100, 'f', 0) % "% )";
-                    } else {
-                        txt = txt %  " ( " % QString::number(progress * 100, 'f', 0) % "% )";
+                        // If estimated height is available, then use the download blocks 
+                        // as the progress instead of verification progress.
+                        progress = (double)blockNumber / (double)estimatedheight;
                     }
+                    txt = txt %  " ( " % QString::number(progress * 100, 'f', 0) % "% )";
                     ui->blockheight->setText(txt);
                     ui->heightLabel->setText(QObject::tr("Downloading blocks"));
                 } else {
