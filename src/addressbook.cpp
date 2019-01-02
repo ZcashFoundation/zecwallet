@@ -131,6 +131,40 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
         }
     });
 
+    // Import Button
+    QObject::connect(ab.btnImport, &QPushButton::clicked, [&] () {
+        // Get the import file name.
+        auto fileName = QFileDialog::getOpenFileUrl(&d, QObject::tr("Import Address Book"), QUrl(), 
+            "CSV file (*.csv)");
+        if (fileName.isEmpty())
+            return;
+
+        QFile file(fileName.toLocalFile());
+        if (!file.open(QIODevice::ReadOnly)) {
+            QMessageBox::information(&d, QObject::tr("Unable to open file"), file.errorString());
+            return;
+        }        
+
+        QTextStream in(&file);
+        QString line;
+        int numImported = 0;
+        while (in.readLineInto(&line)) {
+            QStringList items = line.split(",");
+            if (items.size() != 2)
+                continue;
+
+            if (!Settings::isValidAddress(items.at(0)))
+                continue;
+
+            // Add label, address.
+            model.addNewLabel(items.at(1), items.at(0));
+            numImported++;
+        }
+
+        QMessageBox::information(&d, QObject::tr("Address Book Import Done"),
+            QObject::tr("Imported %1 new Address book entries").arg(numImported));
+    });
+
     auto fnSetTargetLabelAddr = [=] (QLineEdit* target, QString label, QString addr) {
         target->setText(label % "/" % addr);
     };
@@ -220,6 +254,9 @@ void AddressBook::readFromStorage() {
 }
 
 void AddressBook::writeToStorage() {
+    if (allLabels.isEmpty())
+        return;
+
     QFile file(AddressBook::writeableFile());
     file.open(QIODevice::ReadWrite | QIODevice::Truncate);
     QDataStream out(&file);   // we will serialize the data into the file
@@ -245,6 +282,14 @@ QString AddressBook::writeableFile() {
 // Add a new address/label to the database
 void AddressBook::addAddressLabel(QString label, QString address) {
     Q_ASSERT(Settings::isValidAddress(address));
+
+    // First, remove any existing label
+    // Iterate over the list and remove the label/address
+    for (int i=0; i < allLabels.size(); i++) {
+        if (allLabels[i].first == label) {
+            removeAddressLabel(allLabels[i].first, allLabels[i].second);
+        }
+    }
 
     allLabels.push_back(QPair<QString, QString>(label, address));
     writeToStorage();
@@ -275,6 +320,9 @@ void AddressBook::updateLabel(QString oldlabel, QString address, QString newlabe
 
 // Read all addresses
 const QList<QPair<QString, QString>>& AddressBook::getAllAddressLabels() {
+    if (allLabels.isEmpty()) {
+        readFromStorage();
+    }
     return allLabels;
 }
 
