@@ -646,6 +646,11 @@ Cette adresse ne semble pas être de type adresse-z</translation>
         <source> is Invalid</source>
         <translation> est invalide</translation>
     </message>
+    <message>
+        <location filename="../src/sendtab.cpp" line="650"/>
+        <source>Amount &apos;%1&apos; is invalid!</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MemoDialog</name>

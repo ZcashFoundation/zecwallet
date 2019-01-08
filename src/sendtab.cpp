@@ -643,7 +643,14 @@ QString MainWindow::doSendTxValidations(Tx tx) {
             QString addr = (toAddr.addr.length() > 100 ? toAddr.addr.left(100) + "..." : toAddr.addr);
             return QString(tr("Recipient Address ")) % addr % tr(" is Invalid");
         }
+
+        // This technically shouldn't be possible, but issue #62 seems to have discovered a bug
+        // somewhere, so just add a check to make sure. 
+        if (toAddr.amount < 0) {
+            return QString(tr("Amount '%1' is invalid!").arg(toAddr.amount));
+        }
     }
+
 
     return QString();
 }
