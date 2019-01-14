@@ -905,7 +905,7 @@ void RPC::watchTxStatus() {
     });
 }
 
-void RPC::checkForUpdate() {
+void RPC::checkForUpdate(bool silent) {
     if  (conn == nullptr) 
         return noConnection();
 
@@ -926,13 +926,18 @@ void RPC::checkForUpdate() {
                 QVersionNumber maxVersion(0, 0, 0);
 
                 for (QJsonValue rel : releases) {
+                    if (!rel.toObject().contains("tag_name"))
+                        continue;
+
                     QString tag = rel.toObject()["tag_name"].toString();
                     if (tag.startsWith("v"))
                         tag = tag.right(tag.length() - 1);
 
-                    auto v = QVersionNumber::fromString(tag);
-                    if (v > maxVersion)
-                        maxVersion = v;
+                    if (!tag.isEmpty()) {
+                        auto v = QVersionNumber::fromString(tag);
+                        if (v > maxVersion)
+                            maxVersion = v;
+                    }
                 }
 
                 auto currentVersion = QVersionNumber::fromString(APP_VERSION);
@@ -945,6 +950,12 @@ void RPC::checkForUpdate() {
                         QMessageBox::Yes, QMessageBox::Cancel);
                     if (ans == QMessageBox::Yes) {
                         QDesktopServices::openUrl(QUrl("https://github.com/ZcashFoundation/zec-qt-wallet/releases"));
+                    }
+                } else {
+                    if (!silent) {
+                        QMessageBox::information(main, QObject::tr("No updates available"), 
+                            QObject::tr("You already have the latest release v%1")
+                                .arg(currentVersion.toString()));
                     }
                 }
             }

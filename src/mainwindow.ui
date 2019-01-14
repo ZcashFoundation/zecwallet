@@ -1111,7 +1111,7 @@
   </action>
   <action name="actionPay_URI">
    <property name="text">
-    <string>Pay zcash URI...</string>
+    <string>Pay zcash &amp;URI...</string>
    </property>
   </action>
  </widget>
