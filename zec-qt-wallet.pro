@@ -10,7 +10,8 @@ CONFIG += precompile_header
 
 PRECOMPILED_HEADER = src/precompiled.h
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT += widgets
+QT += websockets
 
 TARGET = zec-qt-wallet
 
@@ -100,4 +101,3 @@ ICON = res/logo.icns
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
-

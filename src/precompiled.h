@@ -55,6 +55,7 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
+#include <QtWebSockets/QtWebSockets>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>

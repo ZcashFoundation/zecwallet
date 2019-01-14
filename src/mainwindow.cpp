@@ -93,8 +93,13 @@ MainWindow::MainWindow(QWidget *parent) :
     rpc = new RPC(this);
 
     restoreSavedStates();
+
+    createWebsocket();
 }
  
+void MainWindow::createWebsocket() {
+    
+}
 
 void MainWindow::restoreSavedStates() {
     QSettings s;

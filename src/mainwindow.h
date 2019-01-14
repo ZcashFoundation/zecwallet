@@ -102,6 +102,8 @@ private:
 
     void restoreSavedStates();
 
+    void createWebsocket();
+
     RPC*         rpc  = nullptr;
     QCompleter*  labelCompleter = nullptr;
 
