@@ -89,6 +89,8 @@ private:
 
     void donate();
     void addressBook();
+    void payZcashURIError(QString errorDetail = "");
+    void payZcashURI();
     void postToZBoard();
     void importPrivKey();
     void exportAllKeys();

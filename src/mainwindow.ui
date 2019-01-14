@@ -346,8 +346,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>890</width>
-                <height>311</height>
+                <width>920</width>
+                <height>334</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -999,6 +999,8 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <addaction name="actionPay_URI"/>
+    <addaction name="separator"/>
     <addaction name="actionImport_Private_Key"/>
     <addaction name="actionExport_All_Private_Keys"/>
     <addaction name="actionBackup_wallet_dat"/>
@@ -1105,6 +1107,11 @@
   <action name="actionExport_transactions">
    <property name="text">
     <string>Export transactions</string>
+   </property>
+  </action>
+  <action name="actionPay_URI">
+   <property name="text">
+    <string>Pay zcash URI...</string>
    </property>
   </action>
  </widget>

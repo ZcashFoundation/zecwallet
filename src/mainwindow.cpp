@@ -42,6 +42,9 @@ MainWindow::MainWindow(QWidget *parent) :
         QDesktopServices::openUrl(QUrl("https://github.com/ZcashFoundation/zec-qt-wallet/releases"));
     });
 
+    // Pay zcash URI
+    QObject::connect(ui->actionPay_URI, &QAction::triggered, this, &MainWindow::payZcashURI);
+
     // Import Private Key
     QObject::connect(ui->actionImport_Private_Key, &QAction::triggered, this, &MainWindow::importPrivKey);
 
@@ -500,6 +503,8 @@ void MainWindow::addressBook() {
 
 void MainWindow::donate() {
     // Set up a donation to me :)
+    removeExtraAddresses();
+
     ui->Address1->setText(Settings::getDonationAddr(
                             Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
     ui->Address1->setCursorPosition(0);
@@ -651,6 +656,91 @@ void MainWindow::doImport(QList<QString>* keys) {
         rpc->importZPrivKey(key, rescan, [=] (auto) { this->doImport(keys); });                   
     } else {
         rpc->importTPrivKey(key, rescan, [=] (auto) { this->doImport(keys); });
+    }
+}
+
+void MainWindow::payZcashURIError(QString errorDetail) {
+    QMessageBox::critical(this, tr("Error paying zcash URI"), 
+            tr("URI should be of the form 'zcash:<addr>?amt=x&memo=y") + "\n" + errorDetail);
+}
+
+void MainWindow::payZcashURI() {
+    // Read a zcash URI and pay it
+    QInputDialog uriDialog(this);
+    uriDialog.setInputMode(QInputDialog::TextInput);
+    uriDialog.setWindowTitle(tr("Paste zcash URI"));
+    uriDialog.setLabelText("zcash://" + QString(" ").repeated(180));    // Hack to adjust the width of the dialog
+    if (uriDialog.exec() != QDialog::Accepted) {
+        return;    
+    }
+    QString uri = uriDialog.textValue();
+
+    // URI should be of the form zcash://address?amt=x&memo=y
+    if (!uri.startsWith("zcash:")) {
+        payZcashURIError();
+        return;
+    }
+
+    // Extract the address
+    uri = uri.right(uri.length() - QString("zcash:").length());
+
+    QRegExp re("([a-zA-Z0-9]+)");
+    int pos;
+    if ( (pos = re.indexIn(uri)) == -1 ) {
+        payZcashURIError();
+        return;
+    }
+
+    QString addr = re.cap(1);
+    if (!Settings::isValidAddress(addr)) {
+        payZcashURIError(tr("Could not understand address"));
+        return;
+    }
+    uri = uri.right(uri.length() - addr.length());
+
+    double amount = 0.0;
+    QString memo  = "";
+
+    if (!uri.isEmpty()) {
+        uri = uri.right(uri.length() - 1); // Eat the "?"
+
+        QStringList args = uri.split("&");
+        for (QString arg: args) {
+            QStringList kv = arg.split("=");
+            if (kv[0].toLower() == "amt" || kv[0].toLower() == "amount") {
+                amount = kv[1].toDouble(); 
+            } else if (kv[0].toLower() == "memo") {
+                memo = kv[1];
+                // Test if this is hex
+
+                QRegularExpression hexMatcher("^[0-9A-F]+$",
+                                            QRegularExpression::CaseInsensitiveOption);
+                QRegularExpressionMatch match = hexMatcher.match(memo);
+                if (match.hasMatch()) {
+                    // Encoded as hex, convert to string
+                    memo = QByteArray::fromHex(memo.toUtf8());
+                }
+            } else {
+                payZcashURIError(tr("Unknown field in URI:") + kv[0]);
+                return;
+            }
+        }
+    }
+
+    // Now, set the fields on the send tab
+    removeExtraAddresses();
+    ui->Address1->setText(addr);
+    ui->Address1->setCursorPosition(0);
+    ui->Amount1->setText(QString::number(amount));
+    ui->MemoTxt1->setText(memo);
+
+    // And switch to the send tab.
+    ui->tabWidget->setCurrentIndex(1);
+
+    // And click the send button if the amount is > 0, to validate everything. If everything is OK, it will show the confirm box
+    // else, show the error message;
+    if (amount > 0) {
+        sendButton();
     }
 }
 
