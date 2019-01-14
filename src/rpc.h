@@ -38,6 +38,7 @@ public:
 
     void refreshAddresses();    
     
+    void checkForUpdate();
     void refreshZECPrice();
     void getZboardTopics(std::function<void(QMap<QString, QString>)> cb);
 

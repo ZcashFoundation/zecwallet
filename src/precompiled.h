@@ -28,6 +28,7 @@
 #include <QPainter>
 #include <QMovie>
 #include <QPair>
+#include <QVersionNumber>
 #include <QDir>
 #include <QMenu>
 #include <QCompleter>

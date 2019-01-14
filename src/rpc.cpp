@@ -4,6 +4,7 @@
 #include "settings.h"
 #include "senttxstore.h"
 #include "turnstile.h"
+#include "version.h"
 
 using json = nlohmann::json;
 
@@ -85,6 +86,7 @@ void RPC::setConnection(Connection* c) {
     ui->statusBar->showMessage("Ready!");
 
     refreshZECPrice();
+    checkForUpdate();
 
     // Force update, because this might be coming from a settings update
     // where we need to immediately refresh
@@ -900,6 +902,57 @@ void RPC::watchTxStatus() {
             main->loadingLabel->setVisible(true);
             main->loadingLabel->setToolTip(QString::number(watchingOps.size()) + QObject::tr(" tx computing. This can take several minutes."));
         }
+    });
+}
+
+void RPC::checkForUpdate() {
+    if  (conn == nullptr) 
+        return noConnection();
+
+    QUrl cmcURL("https://api.github.com/repos/ZcashFoundation/zec-qt-wallet/releases");
+
+    QNetworkRequest req;
+    req.setUrl(cmcURL);
+    
+    QNetworkReply *reply = conn->restclient->get(req);
+
+    QObject::connect(reply, &QNetworkReply::finished, [=] {
+        reply->deleteLater();
+
+        try {
+            if (reply->error() == QNetworkReply::NoError) {
+
+                auto releases = QJsonDocument::fromJson(reply->readAll()).array();
+                QVersionNumber maxVersion(0, 0, 0);
+
+                for (QJsonValue rel : releases) {
+                    QString tag = rel.toObject()["tag_name"].toString();
+                    if (tag.startsWith("v"))
+                        tag = tag.right(tag.length() - 1);
+
+                    auto v = QVersionNumber::fromString(tag);
+                    if (v > maxVersion)
+                        maxVersion = v;
+                }
+
+                auto currentVersion = QVersionNumber::fromString(APP_VERSION);
+                qDebug() << "Version check: Current " << currentVersion << ", Available " << maxVersion;
+                if (maxVersion > currentVersion) {
+                    auto ans = QMessageBox::information(main, QObject::tr("Update Available"), 
+                        QObject::tr("A new release v%1 is available! You have v%2.\n\nWould you like to visit the releases page?")
+                            .arg(maxVersion.toString())
+                            .arg(currentVersion.toString()),
+                        QMessageBox::Yes, QMessageBox::Cancel);
+                    if (ans == QMessageBox::Yes) {
+                        QDesktopServices::openUrl(QUrl("https://github.com/ZcashFoundation/zec-qt-wallet/releases"));
+                    }
+                }
+            }
+        }
+        catch (...) {
+            // If anything at all goes wrong, just set the price to 0 and move on.
+            qDebug() << QString("Caught something nasty");
+        }       
     });
 }
 
