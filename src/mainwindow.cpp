@@ -668,7 +668,7 @@ void MainWindow::payZcashURI() {
     };
 
     // Read a zcash URI and pay it
-    QString uri = QInputDialog::getText(this, tr("Paste zcash URI"),
+    QString uri = QInputDialog::getText(this, tr("Paste Zcash URI"),
         "Zcash URI" + QString(" ").repeated(180));
 
     // URI should be of the form zcash://address?amt=x&memo=y
