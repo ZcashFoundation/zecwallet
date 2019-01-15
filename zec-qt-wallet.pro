@@ -52,7 +52,8 @@ SOURCES += \
     src/fillediconlabel.cpp \
     src/addressbook.cpp \
     src/logger.cpp \
-    src/addresscombo.cpp
+    src/addresscombo.cpp \
+    src/websockets.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -72,7 +73,8 @@ HEADERS += \
     src/fillediconlabel.h \
     src/addressbook.h \
     src/logger.h \
-    src/addresscombo.h 
+    src/addresscombo.h \ 
+    src/websockets.h
 
 FORMS += \
     src/mainwindow.ui \

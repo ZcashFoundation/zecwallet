@@ -40,6 +40,7 @@ public:
     void updateLabelsAutoComplete();
 
     void setDefaultPayFrom();
+    RPC* getRPC() { return rpc; }
 
     Ui::MainWindow*     ui;
 

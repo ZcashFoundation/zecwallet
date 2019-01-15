@@ -15,6 +15,7 @@
 #include "turnstile.h"
 #include "senttxstore.h"
 #include "connection.h"
+#include "websockets.h"
 
 using json = nlohmann::json;
 
@@ -98,7 +99,7 @@ MainWindow::MainWindow(QWidget *parent) :
 }
  
 void MainWindow::createWebsocket() {
-    
+    new WSServer(8237, true, this);
 }
 
 void MainWindow::restoreSavedStates() {

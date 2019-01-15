@@ -712,17 +712,17 @@ void RPC::refreshBalances() {
 
     // 1. Get the Balances
     getBalance([=] (json reply) {    
-        auto balT = QString::fromStdString(reply["transparent"]).toDouble();
-        auto balZ = QString::fromStdString(reply["private"]).toDouble();
-        auto tot  = QString::fromStdString(reply["total"]).toDouble();
+        balT = QString::fromStdString(reply["transparent"]).toDouble();
+        balZ = QString::fromStdString(reply["private"]).toDouble();
+        balTotal  = QString::fromStdString(reply["total"]).toDouble();
 
         ui->balSheilded   ->setText(Settings::getZECDisplayFormat(balZ));
         ui->balTransparent->setText(Settings::getZECDisplayFormat(balT));
-        ui->balTotal      ->setText(Settings::getZECDisplayFormat(tot));
+        ui->balTotal      ->setText(Settings::getZECDisplayFormat(balTotal));
 
         ui->balSheilded   ->setToolTip(Settings::getUSDFormat(balZ));
         ui->balTransparent->setToolTip(Settings::getUSDFormat(balT));
-        ui->balTotal      ->setToolTip(Settings::getUSDFormat(tot));
+        ui->balTotal      ->setToolTip(Settings::getUSDFormat(balTotal));
     });
 
     // 2. Get the UTXOs
