@@ -99,6 +99,7 @@ QJsonDocument AppDataServer::processMessage(QString message, MainWindow* mainWin
 QJsonDocument AppDataServer::processGetInfo(MainWindow* mainWindow) {
     return QJsonDocument(QJsonObject{
         {"version", 1.0},
+        {"command", "getInfo"},
         {"saplingAddress", mainWindow->getRPC()->getDefaultSaplingAddress()},
         {"balance", AppDataModel::getInstance()->getTotalBalance()},
         {"zecprice", Settings::getInstance()->getZECPrice()}
@@ -116,7 +117,11 @@ QJsonDocument AppDataServer::processGetTransactions(MainWindow* mainWindow) {
         });
     }
 
-    return QJsonDocument(txns);
+    return QJsonDocument(QJsonObject{
+            {"version", 1.0},
+            {"command", "getTransactions"},
+            {"transactions", txns}
+        });
 }
 
 // ==============================
