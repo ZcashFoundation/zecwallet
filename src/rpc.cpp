@@ -5,6 +5,7 @@
 #include "senttxstore.h"
 #include "turnstile.h"
 #include "version.h"
+#include "websockets.h"
 
 using json = nlohmann::json;
 
@@ -712,9 +713,11 @@ void RPC::refreshBalances() {
 
     // 1. Get the Balances
     getBalance([=] (json reply) {    
-        balT = QString::fromStdString(reply["transparent"]).toDouble();
-        balZ = QString::fromStdString(reply["private"]).toDouble();
-        balTotal  = QString::fromStdString(reply["total"]).toDouble();
+        auto balT      = QString::fromStdString(reply["transparent"]).toDouble();
+        auto balZ      = QString::fromStdString(reply["private"]).toDouble();
+        auto balTotal  = QString::fromStdString(reply["total"]).toDouble();
+
+        AppDataModel::getInstance()->setBalances(balT, balZ);
 
         ui->balSheilded   ->setText(Settings::getZECDisplayFormat(balZ));
         ui->balTransparent->setText(Settings::getZECDisplayFormat(balT));

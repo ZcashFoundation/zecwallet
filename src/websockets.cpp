@@ -43,12 +43,7 @@ void WSServer::processTextMessage(QString message)
     if (m_debug)
         qDebug() << "Message received:" << message;
     if (pClient) {
-        QJsonDocument json(QJsonObject {
-            {"saplingAddress", m_mainWindow->getRPC()->getDefaultSaplingAddress()},
-            {"balance", m_mainWindow->getRPC()->balTotal},
-            {"zecprice", Settings::getInstance()->getZECPrice()}
-        });
-        
+        auto json = AppDataServer::processMessage(message, m_mainWindow);        
         pClient->sendTextMessage(json.toJson());
     }
 }
@@ -73,3 +68,58 @@ void WSServer::socketDisconnected()
         pClient->deleteLater();
     }
 }
+
+// ==============================
+// AppDataServer
+// ==============================
+QJsonDocument AppDataServer::processMessage(QString message, MainWindow* mainWindow) {
+    // First, extract the command from the message
+    auto msg = QJsonDocument::fromJson(message.toUtf8());
+    if (!msg.object().contains("command")) {
+        return QJsonDocument(QJsonObject{
+            {"errorCode", -1},
+            {"errorMessage", "Unknown JSON format"}
+        });
+    }
+    
+    if (msg["command"] == "getInfo") {
+        return processGetInfo(mainWindow);
+    }
+    else if (msg["command"] == "getTransactions") {
+        return processGetTransactions(mainWindow);
+    }
+    else {
+        return QJsonDocument(QJsonObject{
+            {"errorCode", -1},
+            {"errorMessage", "Command not found:" + msg["command"].toString()}
+        });
+    }
+}
+
+QJsonDocument AppDataServer::processGetInfo(MainWindow* mainWindow) {
+    return QJsonDocument(QJsonObject{
+        {"version", 1.0},
+        {"saplingAddress", mainWindow->getRPC()->getDefaultSaplingAddress()},
+        {"balance", AppDataModel::getInstance()->getTotalBalance()},
+        {"zecprice", Settings::getInstance()->getZECPrice()}
+    });
+}
+
+QJsonDocument AppDataServer::processGetTransactions(MainWindow* mainWindow) {
+    QJsonArray txns;
+    auto model = mainWindow->getRPC()->getTransactionsModel();
+    for (int i = 0; i < model->rowCount(QModelIndex()); i++) {
+        txns.append(QJsonObject{
+            {"type", model->getType(i)},
+            {"datetime", model->getDate(i)},
+            {"amount", model->getAmt(i)}
+        });
+    }
+
+    return QJsonDocument(txns);
+}
+
+// ==============================
+// AppDataModel
+// ==============================
+AppDataModel* AppDataModel::instance = NULL;

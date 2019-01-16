@@ -186,14 +186,26 @@ void TxTableModel::updateAllData() {
      return QVariant();
  }
 
-QString TxTableModel::getTxId(int row) {
+QString TxTableModel::getTxId(int row) const {
     return modeldata->at(row).txid;
 }
 
-QString TxTableModel::getMemo(int row) {
+QString TxTableModel::getMemo(int row) const {
     return modeldata->at(row).memo;
 }
 
-QString TxTableModel::getAddr(int row) {
+QString TxTableModel::getAddr(int row) const {
     return modeldata->at(row).address.trimmed();
+}
+
+qint64 TxTableModel::getDate(int row) const {
+    return modeldata->at(row).datetime;
+}
+
+QString TxTableModel::getType(int row) const {
+    return modeldata->at(row).type;
+}
+
+QString TxTableModel::getAmt(int row) const {
+    return Settings::getDecimalString(modeldata->at(row).amount);
 }

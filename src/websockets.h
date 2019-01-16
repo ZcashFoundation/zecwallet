@@ -31,4 +31,43 @@ private:
     bool m_debug;
 };
 
+class AppDataServer {
+public:
+    static QJsonDocument processMessage(QString message, MainWindow* mainWindow);
+    static QJsonDocument processGetInfo(MainWindow* mainWindow);
+    static QJsonDocument processGetTransactions(MainWindow* mainWindow);
+};
+
+class AppDataModel {
+public:
+    static AppDataModel* getInstance() {
+        if (instance == NULL)
+            instance = new AppDataModel();
+
+        return instance;
+    }
+
+    double getTBalance()     { return balTransparent;  }
+    double getZBalance()     { return balShielded; }
+    double getTotalBalance() { return balTotal; }
+
+    void   setBalances(double transparent, double shielded) {
+        balTransparent = transparent;
+        balShielded = shielded;
+        balTotal = balTransparent + balShielded;
+    }
+
+private:
+    AppDataModel() = default;   // Private, for singleton
+
+    double balTransparent;
+    double balShielded;
+    double balTotal;
+    double balMaxSingle;
+
+    QString saplingAddress;
+
+    static AppDataModel* instance;
+};
+
 #endif // WEBSOCKETS_H

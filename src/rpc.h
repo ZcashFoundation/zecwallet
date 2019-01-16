@@ -71,10 +71,6 @@ public:
     Turnstile*  getTurnstile()  { return turnstile; }
     Connection* getConnection() { return conn; }
 
-    double balT;
-    double balZ;
-    double balTotal;
-
 private:
     void refreshBalances();
 
