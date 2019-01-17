@@ -224,7 +224,7 @@
     <message>
         <location filename="../src/mainwindow.ui" line="779"/>
         <source>Address used</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresse utilisée</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="831"/>
@@ -375,7 +375,7 @@
     <message>
         <location filename="../src/mainwindow.ui" line="1114"/>
         <source>Pay zcash &amp;URI...</source>
-        <translation type="unfinished"></translation>
+        <translation>PAyer une URI zcash</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="409"/>
@@ -446,27 +446,27 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="666"/>
         <source>Error paying zcash URI</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors du payement du URI zcash</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="667"/>
         <source>URI should be of the form &apos;zcash:&lt;addr&gt;?amt=x&amp;memo=y</source>
-        <translation type="unfinished"></translation>
+        <translation>Le format URI doit être comme suit: &apos;zcash:&lt;addr&gt;?amt=x&amp;memo=y< </translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="671"/>
         <source>Paste Zcash URI</source>
-        <translation type="unfinished"></translation>
+        <translation>Coller le URI Zcash</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="692"/>
         <source>Could not understand address</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresse non valide</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="725"/>
         <source>Unknown field in URI:</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ inconnu dans le URI</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="757"/>
@@ -679,7 +679,7 @@ Cette adresse ne semble pas être de type adresse-z</translation>
     <message>
         <location filename="../src/sendtab.cpp" line="650"/>
         <source>Amount &apos;%1&apos; is invalid!</source>
-        <translation type="unfinished"></translation>
+        <translation>Le montant &apos;%1&apos; est invalide.</translation>
     </message>
 </context>
 <context>
@@ -830,7 +830,7 @@ Not starting embedded zcashd because --no-embedded was passed</source>
     <message>
         <location filename="../src/rpc.cpp" line="616"/>
         <source>zcashd has no peer connections</source>
-        <translation type="unfinished"></translation>
+        <translation>zcashd n'a aucune connexion à un pair</translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="634"/>
@@ -865,24 +865,24 @@ Not starting embedded zcashd because --no-embedded was passed</source>
     <message>
         <location filename="../src/rpc.cpp" line="946"/>
         <source>Update Available</source>
-        <translation type="unfinished"></translation>
+        <translation>MàJ disponible</translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="947"/>
         <source>A new release v%1 is available! You have v%2.
 
 Would you like to visit the releases page?</source>
-        <translation type="unfinished"></translation>
+        <translation>Voulez-vous visiter la page des nouvelles versions ?</translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="956"/>
         <source>No updates available</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de MàJ disponible</translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="957"/>
         <source>You already have the latest release v%1</source>
-        <translation type="unfinished"></translation>
+        <translation >Vous utilisez déjà la dernière version v%1</translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="1044"/>
@@ -973,22 +973,22 @@ Veuillez configurer l&apos;hôte/port et utilisateur/mot de passe dans le menu E
     <message>
         <location filename="../src/addressbook.cpp" line="137"/>
         <source>Import Address Book</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer le carnet d&apos;adresses</translation>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="144"/>
         <source>Unable to open file</source>
-        <translation type="unfinished">mpossible d&apos;ouvrir le fichier</translation>
+        <translation>Impossible d&apos;ouvrir le fichier</translation>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="164"/>
         <source>Address Book Import Done</source>
-        <translation type="unfinished"></translation>
+        <translation>Import du carnet d&apos;adresses terminé</translation>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="165"/>
         <source>Imported %1 new Address book entries</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 nouvelle(s) entrée(s) importée(s) dans le carnet d&apos;adresses.</translation>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="205"/>
@@ -1246,7 +1246,7 @@ Vous avez soit des fonds non confirmés soit le solde est trop petit pour une mi
     <message>
         <location filename="../src/addressbook.ui" line="95"/>
         <source>Import Address Book</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer de carnet d&apos;adresses</translation>
     </message>
 </context>
 <context>
@@ -1269,7 +1269,7 @@ Vous avez soit des fonds non confirmés soit le solde est trop petit pour une mi
     <message>
         <location filename="../src/confirm.ui" line="155"/>
         <source>zcashd doesn&apos;t seem to have any peers. You might not be connected to the internet, so this Transaction might not work.</source>
-        <translation type="unfinished"></translation>
+        <translation>zcashd semble n'avoir aucune connexion à un autre pair. Comme vous n&apos;êtes peut-être pas connecté à Internet, cette transaction pourrait ne pas fonctionner.</translation>
     </message>
     <message>
         <location filename="../src/confirm.ui" line="168"/>
