@@ -113,7 +113,10 @@ QJsonDocument AppDataServer::processGetTransactions(MainWindow* mainWindow) {
         txns.append(QJsonObject{
             {"type", model->getType(i)},
             {"datetime", model->getDate(i)},
-            {"amount", model->getAmt(i)}
+            {"amount", model->getAmt(i)},
+            {"txid", model->getTxId(i)},
+            {"address", model->getAddr(i)},
+            {"memo", model->getMemo(i)}
         });
     }
 
