@@ -40,7 +40,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Set up check for updates action
     QObject::connect(ui->actionCheck_for_Updates, &QAction::triggered, [=] () {
-        QDesktopServices::openUrl(QUrl("https://github.com/ZcashFoundation/zec-qt-wallet/releases"));
+        // Silent is false, so show notification even if no update was found
+        rpc->checkForUpdate(false);
     });
 
     // Pay zcash URI
@@ -665,21 +666,19 @@ void MainWindow::doImport(QList<QString>* keys) {
     }
 }
 
-void MainWindow::payZcashURIError(QString errorDetail) {
-    QMessageBox::critical(this, tr("Error paying zcash URI"), 
-            tr("URI should be of the form 'zcash:<addr>?amt=x&memo=y") + "\n" + errorDetail);
-}
-
 void MainWindow::payZcashURI() {
+    // Error to display if something goes wrong.
+    auto payZcashURIError = [=] (QString errorDetail = "") {
+        QMessageBox::critical(this, tr("Error paying zcash URI"), 
+                tr("URI should be of the form 'zcash:<addr>?amt=x&memo=y") + "\n" + errorDetail);
+    };
+
     // Read a zcash URI and pay it
-    QInputDialog uriDialog(this);
-    uriDialog.setInputMode(QInputDialog::TextInput);
-    uriDialog.setWindowTitle(tr("Paste zcash URI"));
-    uriDialog.setLabelText("zcash://" + QString(" ").repeated(180));    // Hack to adjust the width of the dialog
-    if (uriDialog.exec() != QDialog::Accepted) {
-        return;    
-    }
-    QString uri = uriDialog.textValue();
+    QString uri = QInputDialog::getText(this, tr("Paste Zcash URI"),
+        "Zcash URI" + QString(" ").repeated(180));
+
+    if (uri.isEmpty())
+        return;
 
     // URI should be of the form zcash://address?amt=x&memo=y
     if (!uri.startsWith("zcash:")) {
@@ -713,6 +712,11 @@ void MainWindow::payZcashURI() {
         QStringList args = uri.split("&");
         for (QString arg: args) {
             QStringList kv = arg.split("=");
+            if (kv.length() != 2) {
+                payZcashURIError();
+                return;
+            }
+
             if (kv[0].toLower() == "amt" || kv[0].toLower() == "amount") {
                 amount = kv[1].toDouble(); 
             } else if (kv[0].toLower() == "memo") {
