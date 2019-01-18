@@ -41,6 +41,12 @@ int main(int argc, char *argv[])
 
     Settings::init();
 
+    // Set up libsodium
+    if (sodium_init() < 0) {
+        /* panic! the library couldn't be initialized, it is not safe to use */
+        qDebug() << "libsodium is not initialized!";
+    }
+
     if (argc >= 2 && QString::fromStdString(argv[1]) == "--no-embedded") {
         Settings::getInstance()->setUseEmbedded(false);
     } else {
