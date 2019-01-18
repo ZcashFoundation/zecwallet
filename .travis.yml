@@ -11,7 +11,7 @@ matrix:
 before_install:
  - sudo add-apt-repository ppa:beineri/opt-qt591-trusty -y
  - sudo apt-get update -qq
- - sudo apt-get install qt59base
+ - sudo apt-get install qt59base qt59websockets 
  - source /opt/qt59/bin/qt59-env.sh
 
 script:
