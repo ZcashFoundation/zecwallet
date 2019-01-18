@@ -82,10 +82,10 @@ QJsonDocument AppDataServer::processMessage(QString message, MainWindow* mainWin
         });
     }
     
-    if (msg["command"] == "getInfo") {
+    if (msg.object()["command"] == "getInfo") {
         return processGetInfo(mainWindow);
     }
-    else if (msg["command"] == "getTransactions") {
+    else if (msg.object()["command"] == "getTransactions") {
         return processGetTransactions(mainWindow);
     }
     else {
