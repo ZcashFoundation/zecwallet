@@ -20,6 +20,7 @@ fi
 # Now build it
 cd libsodium-1.0.16
 bash configure
+make clean
 make -j$(nproc)
 cd ..
 

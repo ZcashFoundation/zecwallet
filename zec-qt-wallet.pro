@@ -98,13 +98,11 @@ TRANSLATIONS = res/zec_qt_wallet_es.ts \
 win32: RC_ICONS = res/icon.ico
 ICON = res/logo.icns
 
-
-libsodium.target = libsodium
+libsodium.target = $$PWD/res/libsodium.a
 libsodium.commands = res/libsodium/buildlibsodium.sh
 
 QMAKE_EXTRA_TARGETS += libsodium
-PRE_TARGETDEPS += libsodium
-
+QMAKE_CLEAN += res/libsodium.a
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
