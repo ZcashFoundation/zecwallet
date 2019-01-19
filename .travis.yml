@@ -18,8 +18,9 @@ script:
  - qmake -v
  - clang++ -v
  - g++-8 -v
- - qmake zec-qt-wallet.pro CONFIG+=release -spec linux-g++
- - make CC=gcc-8 CXX=g++-8 -j2
- - make distclean
  - qmake zec-qt-wallet.pro CONFIG+=release -spec linux-clang
  - make CC=clang CXX=clang++ -j2
+ - make distclean
+ - qmake zec-qt-wallet.pro CONFIG+=release -spec linux-g++
+ - make CC=gcc-8 CXX=g++-8 -j2
+ 
