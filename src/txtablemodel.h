@@ -20,6 +20,7 @@ public:
     QString  getAddr(int row) const;
     qint64   getDate(int row) const;
     QString  getType(int row) const;
+    qint64   getConfirmations(int row) const;
     QString  getAmt (int row) const;
 
     bool     exportToCsv(QString fileName) const;

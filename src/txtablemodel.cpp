@@ -194,6 +194,10 @@ QString TxTableModel::getMemo(int row) const {
     return modeldata->at(row).memo;
 }
 
+qint64 TxTableModel::getConfirmations(int row) const {
+    return modeldata->at(row).confirmations;
+}
+
 QString TxTableModel::getAddr(int row) const {
     return modeldata->at(row).address.trimmed();
 }

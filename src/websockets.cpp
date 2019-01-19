@@ -116,7 +116,8 @@ QJsonDocument AppDataServer::processGetTransactions(MainWindow* mainWindow) {
             {"amount", model->getAmt(i)},
             {"txid", model->getTxId(i)},
             {"address", model->getAddr(i)},
-            {"memo", model->getMemo(i)}
+            {"memo", model->getMemo(i)},
+            {"confirmations", model->getConfirmations(i)}
         });
     }
 

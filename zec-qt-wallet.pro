@@ -109,8 +109,8 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/res/ -lsodium
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/res/ -lsodiumd
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/res/ -llibsodium
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/res/ -llibsodiumd
 else:unix: LIBS += -L$$PWD/res/ -lsodium
 
 INCLUDEPATH += $$PWD/res
@@ -118,6 +118,6 @@ DEPENDPATH += $$PWD/res
 
 win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/res/liblibsodium.a
 else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/res/liblibsodium.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/res/sodium.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/res/sodiumd.lib
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/res/libsodium.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/res/libsodiumd.lib
 else:unix: PRE_TARGETDEPS += $$PWD/res/libsodium.a
