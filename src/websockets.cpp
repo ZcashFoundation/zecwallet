@@ -91,7 +91,7 @@ QJsonDocument AppDataServer::processMessage(QString message, MainWindow* mainWin
     else {
         return QJsonDocument(QJsonObject{
             {"errorCode", -1},
-            {"errorMessage", "Command not found:" + msg["command"].toString()}
+            {"errorMessage", "Command not found:" + msg.object()["command"].toString()}
         });
     }
 }
