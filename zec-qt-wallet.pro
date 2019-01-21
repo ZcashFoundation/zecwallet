@@ -46,14 +46,15 @@ SOURCES += \
     src/sendtab.cpp \
     src/senttxstore.cpp \
     src/txtablemodel.cpp \
-	src/turnstile.cpp \
+    src/turnstile.cpp \
     src/qrcodelabel.cpp \
     src/connection.cpp \
     src/fillediconlabel.cpp \
     src/addressbook.cpp \
     src/logger.cpp \
     src/addresscombo.cpp \
-    src/websockets.cpp
+    src/websockets.cpp \
+    src/mobileappconnector.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -67,14 +68,15 @@ HEADERS += \
     src/settings.h \
     src/txtablemodel.h \
     src/senttxstore.h \
-	src/turnstile.h \
+    src/turnstile.h \
     src/qrcodelabel.h \
     src/connection.h \
     src/fillediconlabel.h \
     src/addressbook.h \
     src/logger.h \
     src/addresscombo.h \ 
-    src/websockets.h
+    src/websockets.h \
+    src/mobileappconnector.h
 
 FORMS += \
     src/mainwindow.ui \
@@ -87,7 +89,8 @@ FORMS += \
     src/memodialog.ui \ 
     src/connection.ui \
     src/zboard.ui \
-    src/addressbook.ui
+    src/addressbook.ui \
+    src/mobileappconnector.ui
 
 
 TRANSLATIONS = res/zec_qt_wallet_es.ts \

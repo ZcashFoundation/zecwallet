@@ -92,6 +92,7 @@ private:
     void addressBook();
     void payZcashURI();
     void postToZBoard();
+    void connectApp();
     void importPrivKey();
     void exportAllKeys();
     void exportKeys(QString addr = "");

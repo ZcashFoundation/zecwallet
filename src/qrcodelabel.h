@@ -10,13 +10,13 @@ public:
     explicit        QRCodeLabel(QWidget *parent = nullptr);
     virtual QSize   sizeHint() const;
     
-    void            setAddress(QString address);
+    void            setQrcodeString(QString address);
     QPixmap         scaledPixmap() const;
 public slots:    
     void resizeEvent(QResizeEvent *);
 
 private:
-    QString address;
+    QString str;
 };
 
 

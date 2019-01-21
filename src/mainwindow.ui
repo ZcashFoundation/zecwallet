@@ -346,8 +346,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>920</width>
-                <height>334</height>
+                <width>928</width>
+                <height>380</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -992,7 +992,7 @@
      <x>0</x>
      <y>0</y>
      <width>968</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1021,8 +1021,10 @@
     <property name="title">
      <string>&amp;Apps</string>
     </property>
-    <addaction name="actionTurnstile_Migration"/>
+    <addaction name="actionConnect_Mobile_App"/>
+    <addaction name="separator"/>
     <addaction name="actionz_board_net"/>
+    <addaction name="actionTurnstile_Migration"/>
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="title">
@@ -1114,9 +1116,19 @@
     <string>Pay zcash &amp;URI...</string>
    </property>
   </action>
+  <action name="actionConnect_Mobile_App">
+   <property name="text">
+    <string>Connect mobile &amp;app</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
+  <customwidget>
+   <class>AddressCombo</class>
+   <extends>QComboBox</extends>
+   <header>addresscombo.h</header>
+  </customwidget>
   <customwidget>
    <class>QRCodeLabel</class>
    <extends>QLabel</extends>
@@ -1126,11 +1138,6 @@
    <class>FilledIconLabel</class>
    <extends>QLabel</extends>
    <header>fillediconlabel.h</header>
-  </customwidget>
-  <customwidget>
-   <class>AddressCombo</class>
-   <extends>QComboBox</extends>
-   <header>addresscombo.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

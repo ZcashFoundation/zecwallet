@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "addressbook.h"
 #include "ui_mainwindow.h"
+#include "ui_mobileappconnector.h"
 #include "ui_addressbook.h"
 #include "ui_zboard.h"
 #include "ui_privkey.h"
@@ -61,6 +62,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // z-Board.net
     QObject::connect(ui->actionz_board_net, &QAction::triggered, this, &MainWindow::postToZBoard);
+
+    // Connect mobile app
+    QObject::connect(ui->actionConnect_Mobile_App, &QAction::triggered, this, &MainWindow::connectApp);
 
     // Address Book
     QObject::connect(ui->action_Address_Book, &QAction::triggered, this, &MainWindow::addressBook);
@@ -522,6 +526,39 @@ void MainWindow::donate() {
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);
+}
+
+void MainWindow::connectApp() {
+    QDialog d(this);
+    Ui_MobileAppConnector con;
+    con.setupUi(&d);
+    Settings::saveRestore(&d);
+
+    if (rpc->getConnection() == nullptr)
+        return;
+
+    // Get the address of the localhost
+    auto addrList = QNetworkInterface::allAddresses();
+
+    // Find a suitable address
+    QString ipv4Addr;
+    for (auto addr : addrList) {
+        if (addr.isLoopback() || addr.protocol() == QAbstractSocket::IPv6Protocol)
+            continue;
+
+        ipv4Addr = addr.toString();
+        break;
+    }
+
+    if (ipv4Addr.isEmpty())
+        return;
+    
+    QString uri = "ws://" + ipv4Addr + ":8237";
+
+    con.lblConnStr->setText(uri);
+    con.qrcode->setQrcodeString(uri);
+
+    d.exec();
 }
 
 void MainWindow::postToZBoard() {
@@ -1263,7 +1300,7 @@ void MainWindow::setupRecieveTab() {
         ui->rcvLabel->setText(label);
         ui->rcvBal->setText(Settings::getZECUSDDisplayFormat(rpc->getAllBalances()->value(addr)));
         ui->txtRecieve->setPlainText(addr);       
-        ui->qrcodeDisplay->setAddress(addr);
+        ui->qrcodeDisplay->setQrcodeString(addr);
         if (rpc->getUsedAddresses()->value(addr, false)) {
             ui->lblUsed->setText(tr("Address has been previously used"));
         } else {
