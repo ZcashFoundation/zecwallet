@@ -1,5 +1,5 @@
-
 #include "websockets.h"
+
 #include "rpc.h"
 #include "settings.h"
 
@@ -88,12 +88,88 @@ QJsonDocument AppDataServer::processMessage(QString message, MainWindow* mainWin
     else if (msg.object()["command"] == "getTransactions") {
         return processGetTransactions(mainWindow);
     }
+    else if (msg.object()["command"] == "sendTx") {
+        return processSendTx(msg.object()["tx"].toObject(), mainWindow);
+    }
     else {
         return QJsonDocument(QJsonObject{
             {"errorCode", -1},
             {"errorMessage", "Command not found:" + msg.object()["command"].toString()}
         });
     }
+}
+
+QJsonDocument AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow) {
+    auto error = [=](QString reason) -> QJsonDocument {
+        return QJsonDocument(QJsonObject{
+           {"errorCode", -1},
+           {"errorMessage", "Couldn't send Tx:" + reason}
+        });
+    };
+
+    // Create a Tx Object
+    Tx tx;
+    tx.fee = Settings::getMinerFee();
+
+    // Find a from address that has at least the sending amout
+    double amt = sendTx["amount"].toDouble();
+    auto allBalances = mainwindow->getRPC()->getAllBalances();
+    QList<QPair<QString, double>> bals;
+    for (auto i : allBalances->keys()) {
+        // Filter out sprout Txns
+        if (Settings::getInstance()->isSproutAddress(i))
+            continue;
+        bals.append(QPair<QString, double>(i, allBalances->value(i)));
+    }
+
+    if (bals.isEmpty()) {
+        return error("No sapling or transparent addresses");
+    }
+
+    std::sort(bals.begin(), bals.end(), [=](const QPair<QString, double>a, const QPair<QString, double> b) ->bool {
+        // If same type, sort by amount
+        if (a.first[0] == b.first[0]) {
+            return a.second > b.second;
+        }
+        else {
+            return a > b;
+        }
+    });
+
+    if (amt > bals[0].second) {
+        // There isn't any any address capable of sending the Tx.
+        return error("Amount exceeds the balance of your largest address.");
+    }
+
+    tx.fromAddr = bals[0].first;
+    tx.toAddrs = { ToFields{ sendTx["to"].toString(), amt, sendTx["memo"].toString(), sendTx["memo"].toString().toUtf8().toHex()} };
+
+    // TODO: Respect the autoshield change setting
+
+    QString validation = mainwindow->doSendTxValidations(tx);
+    if (!validation.isEmpty()) {
+        return error(validation);
+    }
+
+    json params = json::array();
+    mainwindow->getRPC()->fillTxJsonParams(params, tx);
+    std::cout << std::setw(2) << params << std::endl;
+
+    // And send the Tx
+    mainwindow->getRPC()->sendZTransaction(params, [=](const json& reply) {
+        QString opid = QString::fromStdString(reply.get<json::string_t>());
+
+        // And then start monitoring the transaction
+        mainwindow->getRPC()->addNewTxToWatch(tx, opid);
+
+        // TODO: Handle the error if the computed Tx fails.
+    });
+
+    return QJsonDocument(QJsonObject{
+            {"version", 1.0},
+            {"command", "sendTx"},
+            {"result",  "success"}
+        });
 }
 
 QJsonDocument AppDataServer::processGetInfo(MainWindow* mainWindow) {

@@ -39,6 +39,7 @@ public:
 
     void updateLabelsAutoComplete();
 
+    QString doSendTxValidations(Tx tx);
     void setDefaultPayFrom();
     RPC* getRPC() { return rpc; }
 
@@ -85,9 +86,7 @@ private:
 
     void memoButtonClicked(int number, bool includeReplyTo = false);
     void setMemoEnabled(int number, bool enabled);
-
-    QString doSendTxValidations(Tx tx);
-
+    
     void donate();
     void addressBook();
     void payZcashURI();

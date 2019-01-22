@@ -33,6 +33,7 @@ private:
 
 class AppDataServer {
 public:
+    static QJsonDocument processSendTx(QJsonObject sendTx, MainWindow* mainwindow);
     static QJsonDocument processMessage(QString message, MainWindow* mainWindow);
     static QJsonDocument processGetInfo(MainWindow* mainWindow);
     static QJsonDocument processGetTransactions(MainWindow* mainWindow);
