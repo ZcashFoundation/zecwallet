@@ -45,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
         rpc->checkForUpdate(false);
     });
 
-    // Pay zcash URI
+    // Pay Zcash URI
     QObject::connect(ui->actionPay_URI, &QAction::triggered, this, &MainWindow::payZcashURI);
 
     // Import Private Key
@@ -854,7 +854,7 @@ void MainWindow::backupWalletDat() {
 
     if (Settings::getInstance()->isTestnet()) {
         zcashdir.cd("testnet3");
-        backupDefaultName = "tesetnet-" + backupDefaultName;
+        backupDefaultName = "testnet-" + backupDefaultName;
     }
     
     QFile wallet(zcashdir.filePath("wallet.dat"));
@@ -1107,7 +1107,7 @@ void MainWindow::setupTransactionsTab() {
             });
         }
 
-        // If memo contains a reply to addess, add a "Reply to" menu item
+        // If memo contains a reply to address, add a "Reply to" menu item
         if (!memo.isEmpty()) {
             int lastPost     = memo.trimmed().lastIndexOf(QRegExp("[\r\n]+"));
             QString lastWord = memo.right(memo.length() - lastPost - 1);
@@ -1309,7 +1309,7 @@ void MainWindow::setupRecieveTab() {
         
     });    
 
-    // Recieve tab add/update label
+    // Receive tab add/update label
     QObject::connect(ui->rcvUpdateLabel, &QPushButton::clicked, [=]() {
         QString addr = ui->listRecieveAddresses->currentText();
         if (addr.isEmpty())
