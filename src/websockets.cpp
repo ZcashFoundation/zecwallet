@@ -10,7 +10,7 @@ WSServer::WSServer(quint16 port, bool debug, QObject *parent) :
     m_debug(debug)
 {
     m_mainWindow = (MainWindow *) parent;
-    if (m_pWebSocketServer->listen(QHostAddress::LocalHost, port)) {
+    if (m_pWebSocketServer->listen(QHostAddress::AnyIPv4, port)) {
         if (m_debug)
             qDebug() << "Echoserver listening on port" << port;
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection,
@@ -185,7 +185,7 @@ QJsonDocument AppDataServer::processGetInfo(MainWindow* mainWindow) {
 QJsonDocument AppDataServer::processGetTransactions(MainWindow* mainWindow) {
     QJsonArray txns;
     auto model = mainWindow->getRPC()->getTransactionsModel();
-    for (int i = 0; i < model->rowCount(QModelIndex()); i++) {
+    for (int i = 0; i < model->rowCount(QModelIndex()) && i < Settings::getMaxMobileAppTxns(); i++) {
         txns.append(QJsonObject{
             {"type", model->getType(i)},
             {"datetime", model->getDate(i)},
