@@ -50,6 +50,7 @@ public:
 
     const TxTableModel*               getTransactionsModel() { return transactionsTableModel; }
     const QList<QString>*             getAllZAddresses()     { return zaddresses; }
+    const QList<QString>*             getAllTAddresses()     { return taddresses; }
     const QList<UnspentOutput>*       getUTXOs()             { return utxos; }
     const QMap<QString, double>*      getAllBalances()       { return allBalances; }
     const QMap<QString, bool>*        getUsedAddresses()     { return usedAddresses; }
@@ -66,6 +67,7 @@ public:
     void noConnection();
 
     QString getDefaultSaplingAddress();
+    QString getDefaultTAddress();
 
     void getAllPrivKeys(const std::function<void(QList<QPair<QString, QString>>)>);
 
@@ -90,6 +92,7 @@ private:
     void getZUnspent            (const std::function<void(json)>& cb);
     void getTransactions        (const std::function<void(json)>& cb);
     void getZAddresses          (const std::function<void(json)>& cb);
+    void getTAddresses          (const std::function<void(json)>& cb);
 
     Connection*                 conn                        = nullptr;
     QProcess*                   ezcashd                     = nullptr;
@@ -98,6 +101,7 @@ private:
     QMap<QString, double>*      allBalances                 = nullptr;
     QMap<QString, bool>*        usedAddresses               = nullptr;
     QList<QString>*             zaddresses                  = nullptr;
+    QList<QString>*             taddresses                  = nullptr;
     
     QMap<QString, Tx>           watchingOps;
 

@@ -66,6 +66,7 @@ RPC::~RPC() {
     delete allBalances;
     delete usedAddresses;
     delete zaddresses;
+    delete taddresses;
 
     delete conn;
 }
@@ -92,6 +93,17 @@ void RPC::setConnection(Connection* c) {
     // Force update, because this might be coming from a settings update
     // where we need to immediately refresh
     refresh(true);
+}
+
+void RPC::getTAddresses(const std::function<void(json)>& cb) {
+    json payload = {
+        {"jsonrpc", "1.0"},
+        {"id", "someid"},
+        {"method", "getaddressesbyaccount"},
+        {"params", {""}}
+    };
+
+    conn->doRPCWithDefaultErrorHandling(payload, cb);
 }
 
 void RPC::getZAddresses(const std::function<void(json)>& cb) {
@@ -658,6 +670,22 @@ void RPC::refreshAddresses() {
         refreshSentZTrans();
         refreshReceivedZTrans(*zaddresses);
     });
+
+    delete taddresses;
+    taddresses = new QList<QString>();
+    getTAddresses([=] (json reply) {
+        for (auto& it : reply.get<json::array_t>()) {   
+            auto addr = QString::fromStdString(it.get<json::string_t>());
+            if (Settings::isTAddress(addr))
+                taddresses->push_back(addr);
+        }
+
+        // If there are no t Addresses, create one
+        newTaddr([=] (json reply) {
+            // What if taddress gets deleted before this executes?
+            taddresses->append(QString::fromStdString(reply.get<json::string_t>()));
+        });
+    });
 }
 
 // Function to create the data model and update the views, used below.
@@ -1136,4 +1164,11 @@ QString RPC::getDefaultSaplingAddress() {
     }
 
     return QString();
+}
+
+QString RPC::getDefaultTAddress() {
+    if (getAllTAddresses()->length() > 0)
+        return getAllTAddresses()->at(0);
+    else 
+        return QString();
 }

@@ -177,7 +177,9 @@ QJsonDocument AppDataServer::processGetInfo(MainWindow* mainWindow) {
         {"version", 1.0},
         {"command", "getInfo"},
         {"saplingAddress", mainWindow->getRPC()->getDefaultSaplingAddress()},
+        {"tAddress", mainWindow->getRPC()->getDefaultTAddress()},
         {"balance", AppDataModel::getInstance()->getTotalBalance()},
+        {"tokenName", Settings::getTokenName()},
         {"zecprice", Settings::getInstance()->getZECPrice()}
     });
 }
