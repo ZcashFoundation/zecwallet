@@ -185,6 +185,22 @@ QJsonDocument AppDataServer::processGetInfo(MainWindow* mainWindow) {
 QJsonDocument AppDataServer::processGetTransactions(MainWindow* mainWindow) {
     QJsonArray txns;
     auto model = mainWindow->getRPC()->getTransactionsModel();
+
+    // Manually add pending ops, so that computing transactions will also show up
+    auto wtxns = mainWindow->getRPC()->getWatchingTxns();
+    for (auto opid : wtxns.keys()) {
+        txns.append(QJsonObject{
+            {"type", "send"},
+            {"datetime", QDateTime::currentSecsSinceEpoch()},
+            {"amount", wtxns[opid].toAddrs[0].amount},
+            {"txid", ""},
+            {"address", wtxns[opid].toAddrs[0].addr},
+            {"memo", wtxns[opid].toAddrs[0].txtMemo},
+            {"confirmations", 0}
+            });
+    }
+    
+    // Add transactions
     for (int i = 0; i < model->rowCount(QModelIndex()) && i < Settings::getMaxMobileAppTxns(); i++) {
         txns.append(QJsonObject{
             {"type", model->getType(i)},
