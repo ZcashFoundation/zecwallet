@@ -112,7 +112,7 @@ QJsonDocument AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainw
     tx.fee = Settings::getMinerFee();
 
     // Find a from address that has at least the sending amout
-    double amt = sendTx["amount"].toDouble();
+    double amt = sendTx["amount"].toString().toDouble();
     auto allBalances = mainwindow->getRPC()->getAllBalances();
     QList<QPair<QString, double>> bals;
     for (auto i : allBalances->keys()) {
