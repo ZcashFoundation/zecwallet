@@ -535,6 +535,9 @@ void RPC::getInfoThenRefresh(bool force) {
             // Something changed, so refresh everything.
             lastBlock = curBlock;
 
+            // See if the turnstile migration has any steps that need to be done.
+            turnstile->executeMigrationStep();
+
             refreshBalances();        
             refreshAddresses(); // This calls refreshZSentTransactions() and refreshReceivedZTrans()
             refreshTransactions();
@@ -667,10 +670,7 @@ void RPC::refreshAddresses() {
 }
 
 // Function to create the data model and update the views, used below.
-void RPC::updateUI(bool anyUnconfirmed) {
-    // See if the turnstile migration has any steps that need to be done.
-    turnstile->executeMigrationStep();
-    
+void RPC::updateUI(bool anyUnconfirmed) {    
     ui->unconfirmedWarning->setVisible(anyUnconfirmed);
 
     // Update balances model data, which will update the table too
