@@ -192,7 +192,7 @@ QJsonDocument AppDataServer::processGetTransactions(MainWindow* mainWindow) {
         txns.append(QJsonObject{
             {"type", "send"},
             {"datetime", QDateTime::currentSecsSinceEpoch()},
-            {"amount", wtxns[opid].toAddrs[0].amount},
+            {"amount", Settings::getDecimalString(wtxns[opid].toAddrs[0].amount)},
             {"txid", ""},
             {"address", wtxns[opid].toAddrs[0].addr},
             {"memo", wtxns[opid].toAddrs[0].txtMemo},
