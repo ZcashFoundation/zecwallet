@@ -38,6 +38,7 @@ public:
     ~MainWindow();
 
     void updateLabelsAutoComplete();
+    RPC* getRPC() { return rpc; }
 
     void setDefaultPayFrom();
 
@@ -75,6 +76,8 @@ private:
     void inputComboTextChanged(int index);
     void addAddressSection();
     void maxAmountChecked(int checked);
+
+    void editSchedule();
 
     void addressChanged(int number, const QString& text);
     void amountChanged (int number, const QString& text);

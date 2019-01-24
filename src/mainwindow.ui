@@ -346,8 +346,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>928</width>
-                <height>380</height>
+                <width>920</width>
+                <height>301</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -531,6 +531,50 @@
          </widget>
         </item>
         <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_17">
+          <item>
+           <widget class="QCheckBox" name="chkRecurring">
+            <property name="text">
+             <string>Recurring payment</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblRecurDesc">
+            <property name="text">
+             <string>Every month, starting 12-May-2012, for 6 payments</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnRecurSchedule">
+            <property name="text">
+             <string>Edit Schedule</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_7">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
            <widget class="QLabel" name="minerFeeLabel">
@@ -553,6 +597,20 @@
            </widget>
           </item>
           <item>
+           <widget class="QLabel" name="lblMinerFeeUSD">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_17">
+            <property name="text">
+             <string notr="true"/>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="horizontalSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -564,34 +622,6 @@
              </size>
             </property>
            </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="lblMinerFeeUSD">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_16">
-            <property name="text">
-             <string>This transaction does not recur</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton">
-            <property name="text">
-             <string>Setup Recurring Payment</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_17">
-            <property name="text">
-             <string notr="true">      </string>
-            </property>
-           </widget>
           </item>
           <item>
            <widget class="QPushButton" name="sendTransactionButton">
@@ -1013,7 +1043,7 @@
      <x>0</x>
      <y>0</y>
      <width>968</width>
-     <height>19</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

@@ -3,8 +3,10 @@
 #include "addressbook.h"
 #include "ui_confirm.h"
 #include "ui_memodialog.h"
+#include "ui_newrecurring.h"
 #include "settings.h"
 #include "rpc.h"
+#include "recurring.h"
 
 using json = nlohmann::json;
 
@@ -80,6 +82,29 @@ void MainWindow::setupSendTab() {
     QFont f = ui->Address1->font();
     f.setPointSize(f.pointSize() - 1);
     ui->MemoTxt1->setFont(f);
+
+    // Recurring button
+    QObject::connect(ui->chkRecurring, &QCheckBox::stateChanged, [=] (int checked) {
+        if (checked) {
+            ui->btnRecurSchedule->setEnabled(true);            
+        } else {
+            ui->btnRecurSchedule->setEnabled(false);
+            ui->lblRecurDesc->setText("");
+        }
+
+    });
+
+    // Recurring schedule button
+    QObject::connect(ui->btnRecurSchedule, &QPushButton::clicked, this, &MainWindow::editSchedule);
+
+    // Set the default state for the whole page
+    removeExtraAddresses();
+}
+
+void MainWindow::editSchedule() {
+    // Open the edit schedule dialog
+    Recurring::showEditDialog(this, this, createTxFromSendPage());
+
 }
 
 void MainWindow::updateLabelsAutoComplete() {
@@ -354,6 +379,11 @@ void MainWindow::removeExtraAddresses() {
             
         delete addressGroupBox;
     }    
+
+    // Reset the recurring button
+    ui->chkRecurring->setCheckState(Qt::Unchecked);
+    ui->btnRecurSchedule->setEnabled(false);
+    ui->lblRecurDesc->setText("");
 }
 
 void MainWindow::maxAmountChecked(int checked) {

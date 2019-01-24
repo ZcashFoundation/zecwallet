@@ -1,22 +1,36 @@
 #ifndef RECURRING_H
 #define RECURRING_H
 
-#include <QDialog>
+#include "precompiled.h"
 
-namespace Ui {
-class RecurringDialog;
-}
+#include "mainwindow.h"
 
-class RecurringDialog : public QDialog
+enum Schedule {
+    DAY = 1,
+    WEEK,
+    MONTH,
+    YEAR
+};
+
+struct RecurringPaymentInfo {
+    QString         desc;
+    QString         fromAddr;
+    QString         toAddr;
+    double          amt;
+    QString         currency;
+    Schedule        schedule;
+    int             numPayments;
+
+    long            startBlock;
+    int             completedPayments;
+};
+
+class Recurring
 {
-    Q_OBJECT
-
 public:
-    explicit RecurringDialog(QWidget *parent = nullptr);
-    ~RecurringDialog();
+    Recurring();
 
-private:
-    Ui::RecurringDialog *ui;
+    static void showEditDialog(QWidget* parent, MainWindow* main, Tx tx);
 };
 
 #endif // RECURRING_H
