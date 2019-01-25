@@ -557,6 +557,12 @@ void MainWindow::connectApp() {
 
     con.lblConnStr->setText(uri);
     con.qrcode->setQrcodeString(uri);
+    con.lblRemoteNonce->setText(AppDataServer::getNonceHex(NonceType::REMOTE));
+    con.lblLocalNonce->setText(AppDataServer::getNonceHex(NonceType::LOCAL));
+
+    QObject::connect(con.btnDisconnect, &QPushButton::clicked, [=]() {
+        AppDataServer::saveNonceHex(NonceType::REMOTE, QString("00").repeated(24));
+    });
 
     d.exec();
 }
