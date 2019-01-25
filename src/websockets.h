@@ -42,6 +42,10 @@ public:
     static QJsonDocument processMessage(QString message, MainWindow* mainWindow);
     static QJsonDocument processGetInfo(MainWindow* mainWindow);
     static QJsonDocument processGetTransactions(MainWindow* mainWindow);
+
+    static QString       decryptMessage(QJsonDocument msg);
+    static QString       encryptOutgoing(QString msg);
+
     static QString       getSecretHex();
     static QString       getNonceHex(NonceType nt);
     static void          saveNonceHex(NonceType nt, QString noncehex);

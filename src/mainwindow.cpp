@@ -562,6 +562,7 @@ void MainWindow::connectApp() {
 
     QObject::connect(con.btnDisconnect, &QPushButton::clicked, [=]() {
         AppDataServer::saveNonceHex(NonceType::REMOTE, QString("00").repeated(24));
+        AppDataServer::saveNonceHex(NonceType::LOCAL, QString("00").repeated(24));
     });
 
     d.exec();
