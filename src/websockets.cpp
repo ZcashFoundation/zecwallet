@@ -43,8 +43,9 @@ void WSServer::processTextMessage(QString message)
     if (m_debug)
         qDebug() << "Message received:" << message;
     if (pClient) {
-        auto json = AppDataServer::processMessage(message, m_mainWindow);        
-        pClient->sendTextMessage(json.toJson());
+        auto json = AppDataServer::processMessage(message, m_mainWindow);  
+        if (!json.isEmpty())      
+            pClient->sendTextMessage(json.toJson());
     }
 }
 
@@ -75,6 +76,47 @@ void WSServer::socketDisconnected()
 QJsonDocument AppDataServer::processMessage(QString message, MainWindow* mainWindow) {
     // First, extract the command from the message
     auto msg = QJsonDocument::fromJson(message.toUtf8());
+
+    // First check if the message is encrpted
+    if (msg.object().contains("nonce")) {
+        // Decrypt and then process
+        QString noncehex = msg.object().value("nonce").toString();
+        QString encryptedhex = msg.object().value("payload").toString();
+
+        assert(crypto_secretbox_KEYBYTES == crypto_hash_sha256_BYTES);
+
+        unsigned char* secret = new unsigned char[crypto_secretbox_KEYBYTES];
+        crypto_hash_sha256(secret, (const unsigned char*)"secret", QString("secret").length());
+
+        unsigned char* noncebin = new unsigned char[crypto_secretbox_NONCEBYTES];
+        sodium_hex2bin(noncebin, crypto_secretbox_NONCEBYTES, noncehex.toStdString().c_str(), noncehex.length(),
+                        NULL, NULL, NULL);
+
+        unsigned char* encrypted = new unsigned char[encryptedhex.length() / 2];
+        sodium_hex2bin(encrypted, encryptedhex.length() / 2, encryptedhex.toStdString().c_str(), encryptedhex.length(),
+                        NULL, NULL, NULL);
+
+        int decryptedLen = encryptedhex.length() / 2 - crypto_secretbox_MACBYTES;
+        unsigned char* decrypted = new unsigned char[decryptedLen];
+        crypto_secretbox_open_easy(decrypted, encrypted, encryptedhex.length() / 2, noncebin, secret);
+
+        char* decryptedStr = new char[decryptedLen + 1];
+        sodium_memzero(decryptedStr, decryptedLen + 1);
+        memcpy(decryptedStr, decrypted, decryptedLen);
+
+        QString payload = QString(decryptedStr);
+
+        qDebug() << "Decrypted to: " << payload;
+
+        delete[] secret;
+        delete[] noncebin;
+        delete[] encrypted;
+        delete[] decrypted;
+        delete[] decryptedStr;
+        
+        return processMessage(payload, mainWindow);
+    }
+
     if (!msg.object().contains("command")) {
         return QJsonDocument(QJsonObject{
             {"errorCode", -1},
