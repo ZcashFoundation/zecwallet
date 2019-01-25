@@ -31,12 +31,20 @@ private:
     bool m_debug;
 };
 
+enum NonceType {
+    LOCAL = 1,
+    REMOTE
+};
+
 class AppDataServer {
 public:
     static QJsonDocument processSendTx(QJsonObject sendTx, MainWindow* mainwindow);
     static QJsonDocument processMessage(QString message, MainWindow* mainWindow);
     static QJsonDocument processGetInfo(MainWindow* mainWindow);
     static QJsonDocument processGetTransactions(MainWindow* mainWindow);
+    static QString       getSecretHex();
+    static QString       getNonceHex(NonceType nt);
+    static void          saveNonceHex(NonceType nt, QString noncehex);
 };
 
 class AppDataModel {

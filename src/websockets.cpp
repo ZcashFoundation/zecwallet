@@ -73,6 +73,33 @@ void WSServer::socketDisconnected()
 // ==============================
 // AppDataServer
 // ==============================
+QString AppDataServer::getSecretHex() {
+    return "secret";
+}
+
+QString AppDataServer::getNonceHex(NonceType nt) {
+    QSettings s;
+    QString hex;
+    if (nt == NonceType::LOCAL) {
+        hex = s.value("mobileapp/localnonce", QString("00").repeated(crypto_secretbox_NONCEBYTES)).toString();
+    }
+    else {
+        hex = s.value("mobileapp/remotenonce", QString("00").repeated(crypto_secretbox_NONCEBYTES)).toString();
+    }
+    return hex;
+}
+
+void AppDataServer::saveNonceHex(NonceType nt, QString noncehex) {
+    QSettings s;
+    assert(noncehex.length() == crypto_secretbox_NONCEBYTES * 2);
+    if (nt == NonceType::LOCAL) {
+        s.setValue("mobileapp/localnonce", noncehex);
+    }
+    else {
+        s.setValue("mobileapp/remotenonce", noncehex);
+    }
+}
+
 QJsonDocument AppDataServer::processMessage(QString message, MainWindow* mainWindow) {
     // First, extract the command from the message
     auto msg = QJsonDocument::fromJson(message.toUtf8());
@@ -83,14 +110,24 @@ QJsonDocument AppDataServer::processMessage(QString message, MainWindow* mainWin
         QString noncehex = msg.object().value("nonce").toString();
         QString encryptedhex = msg.object().value("payload").toString();
 
-        assert(crypto_secretbox_KEYBYTES == crypto_hash_sha256_BYTES);
-
-        unsigned char* secret = new unsigned char[crypto_secretbox_KEYBYTES];
-        crypto_hash_sha256(secret, (const unsigned char*)"secret", QString("secret").length());
+        // Check to make sure that the nonce is greater than the last known remote nonce
+        QString lastRemoteHex = getNonceHex(NonceType::REMOTE);
+        unsigned char* lastRemoteBin = new unsigned char[crypto_secretbox_NONCEBYTES];
+        sodium_hex2bin(lastRemoteBin, crypto_secretbox_NONCEBYTES, lastRemoteHex.toStdString().c_str(), lastRemoteHex.length(),
+            NULL, NULL, NULL);
 
         unsigned char* noncebin = new unsigned char[crypto_secretbox_NONCEBYTES];
         sodium_hex2bin(noncebin, crypto_secretbox_NONCEBYTES, noncehex.toStdString().c_str(), noncehex.length(),
-                        NULL, NULL, NULL);
+            NULL, NULL, NULL);
+
+        assert(sodium_compare(lastRemoteBin, noncebin, crypto_secretbox_NONCEBYTES) == -1);
+        assert(crypto_secretbox_KEYBYTES == crypto_hash_sha256_BYTES);
+
+        // Update the last seem remote hex
+        saveNonceHex(NonceType::REMOTE, noncehex);
+
+        unsigned char* secret = new unsigned char[crypto_secretbox_KEYBYTES];
+        crypto_hash_sha256(secret, (const unsigned char*)"secret", QString("secret").length());
 
         unsigned char* encrypted = new unsigned char[encryptedhex.length() / 2];
         sodium_hex2bin(encrypted, encryptedhex.length() / 2, encryptedhex.toStdString().c_str(), encryptedhex.length(),
@@ -109,6 +146,7 @@ QJsonDocument AppDataServer::processMessage(QString message, MainWindow* mainWin
         qDebug() << "Decrypted to: " << payload;
 
         delete[] secret;
+        delete[] lastRemoteBin;
         delete[] noncebin;
         delete[] encrypted;
         delete[] decrypted;
