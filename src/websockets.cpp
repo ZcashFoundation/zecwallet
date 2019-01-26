@@ -74,10 +74,10 @@ void WSServer::socketDisconnected()
 // ==============================
 // AppDataServer
 // ==============================
-QList<QString> AppDataServer::getSecretHex() {
+QString AppDataServer::getSecretHex() {
     QSettings s;
 
-    return { s.value("mobileapp/secret", "").toString() };
+    return s.value("mobileapp/secret", "").toString();
 }
 
 void AppDataServer::saveNewSecret(QString secretHex) {
@@ -179,7 +179,7 @@ QString AppDataServer::encryptOutgoing(QString msg) {
     saveNonceHex(NonceType::LOCAL, QString(newLocalNonce));
 
     unsigned char* secret = new unsigned char[crypto_secretbox_KEYBYTES];
-    sodium_hex2bin(secret, crypto_secretbox_KEYBYTES, getSecretHex()[0].toStdString().c_str(), crypto_secretbox_KEYBYTES*2, 
+    sodium_hex2bin(secret, crypto_secretbox_KEYBYTES, getSecretHex().toStdString().c_str(), crypto_secretbox_KEYBYTES*2, 
         NULL, NULL, NULL);
 
     int msgSize = strlen(msg.toStdString().c_str());
@@ -208,7 +208,7 @@ QString AppDataServer::encryptOutgoing(QString msg) {
     return json.toJson();
 }
 
-QString AppDataServer::decryptMessage(QJsonDocument msg) {
+QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex) {
     // Decrypt and then process
     QString noncehex = msg.object().value("nonce").toString();
     QString encryptedhex = msg.object().value("payload").toString();
@@ -230,7 +230,7 @@ QString AppDataServer::decryptMessage(QJsonDocument msg) {
     saveNonceHex(NonceType::REMOTE, noncehex);
 
     unsigned char* secret = new unsigned char[crypto_secretbox_KEYBYTES];
-    sodium_hex2bin(secret, crypto_secretbox_KEYBYTES, getSecretHex()[0].toStdString().c_str(), crypto_secretbox_KEYBYTES*2, 
+    sodium_hex2bin(secret, crypto_secretbox_KEYBYTES, secretHex.toStdString().c_str(), crypto_secretbox_KEYBYTES*2, 
         NULL, NULL, NULL);
 
     unsigned char* encrypted = new unsigned char[encryptedhex.length() / 2];
@@ -239,22 +239,28 @@ QString AppDataServer::decryptMessage(QJsonDocument msg) {
 
     int decryptedLen = encryptedhex.length() / 2 - crypto_secretbox_MACBYTES;
     unsigned char* decrypted = new unsigned char[decryptedLen];
-    crypto_secretbox_open_easy(decrypted, encrypted, encryptedhex.length() / 2, noncebin, secret);
+    int result = crypto_secretbox_open_easy(decrypted, encrypted, encryptedhex.length() / 2, noncebin, secret);
 
-    char* decryptedStr = new char[decryptedLen + 1];
-    sodium_memzero(decryptedStr, decryptedLen + 1);
-    memcpy(decryptedStr, decrypted, decryptedLen);
+    QString payload;
+    if (result == -1) {
+        payload = "error";
+        
+    } else {
+        char* decryptedStr = new char[decryptedLen + 1];
+        sodium_memzero(decryptedStr, decryptedLen + 1);
+        memcpy(decryptedStr, decrypted, decryptedLen);
 
-    QString payload = QString(decryptedStr);
+        payload = QString(decryptedStr);
 
-    qDebug() << "Decrypted to: " << payload;
+        qDebug() << "Decrypted to: " << payload;
+        delete[] decryptedStr;
+    }
 
     delete[] secret;
     delete[] lastRemoteBin;
     delete[] noncebin;
     delete[] encrypted;
     delete[] decrypted;
-    delete[] decryptedStr;
     
     return payload;
 }
@@ -264,9 +270,23 @@ QJsonDocument AppDataServer::processMessage(QString message, MainWindow* mainWin
     auto msg = QJsonDocument::fromJson(message.toUtf8());
 
     // First check if the message is encrpted
-    if (msg.object().contains("nonce")) {
-        return processMessage(decryptMessage(msg), mainWindow);
+    if (!msg.object().contains("nonce")) {
+        // TODO: Log error?
+        return QJsonDocument();
     }
+
+    auto decrypted = decryptMessage(msg, getSecretHex());
+    if (decrypted == "error") {
+        // If the dialog is open, then there might be a temporary, new secret key. Attempt to decrypt
+        // with that.
+    }
+
+    return processDecryptedMessage(decrypted, mainWindow);
+}
+
+QJsonDocument AppDataServer::processDecryptedMessage(QString message, MainWindow* mainWindow) {
+    // First, extract the command from the message
+    auto msg = QJsonDocument::fromJson(message.toUtf8());
 
     if (!msg.object().contains("command")) {
         return QJsonDocument(QJsonObject{
