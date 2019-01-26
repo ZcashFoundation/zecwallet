@@ -64,7 +64,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionz_board_net, &QAction::triggered, this, &MainWindow::postToZBoard);
 
     // Connect mobile app
-    QObject::connect(ui->actionConnect_Mobile_App, &QAction::triggered, this, &MainWindow::connectApp);
+    QObject::connect(ui->actionConnect_Mobile_App, &QAction::triggered, this, [=] () {
+        if (rpc->getConnection() == nullptr)
+            return;
+
+        AppDataServer::connectAppDialog(this);
+    });
 
     // Address Book
     QObject::connect(ui->action_Address_Book, &QAction::triggered, this, &MainWindow::addressBook);
@@ -528,45 +533,6 @@ void MainWindow::donate() {
     ui->tabWidget->setCurrentIndex(1);
 }
 
-void MainWindow::connectApp() {
-    QDialog d(this);
-    Ui_MobileAppConnector con;
-    con.setupUi(&d);
-    Settings::saveRestore(&d);
-
-    if (rpc->getConnection() == nullptr)
-        return;
-
-    // Get the address of the localhost
-    auto addrList = QNetworkInterface::allAddresses();
-
-    // Find a suitable address
-    QString ipv4Addr;
-    for (auto addr : addrList) {
-        if (addr.isLoopback() || addr.protocol() == QAbstractSocket::IPv6Protocol)
-            continue;
-
-        ipv4Addr = addr.toString();
-        break;
-    }
-
-    if (ipv4Addr.isEmpty())
-        return;
-    
-    QString uri = "ws://" + ipv4Addr + ":8237";
-
-    con.lblConnStr->setText(uri);
-    con.qrcode->setQrcodeString(uri);
-    con.lblRemoteNonce->setText(AppDataServer::getNonceHex(NonceType::REMOTE));
-    con.lblLocalNonce->setText(AppDataServer::getNonceHex(NonceType::LOCAL));
-
-    QObject::connect(con.btnDisconnect, &QPushButton::clicked, [=]() {
-        AppDataServer::saveNonceHex(NonceType::REMOTE, QString("00").repeated(24));
-        AppDataServer::saveNonceHex(NonceType::LOCAL, QString("00").repeated(24));
-    });
-
-    d.exec();
-}
 
 void MainWindow::postToZBoard() {
     QDialog d(this);

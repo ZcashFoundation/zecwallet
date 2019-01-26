@@ -2,6 +2,7 @@
 
 #include "rpc.h"
 #include "settings.h"
+#include "ui_mobileappconnector.h"
 
 WSServer::WSServer(quint16 port, bool debug, QObject *parent) :
     QObject(parent),
@@ -73,8 +74,67 @@ void WSServer::socketDisconnected()
 // ==============================
 // AppDataServer
 // ==============================
-QString AppDataServer::getSecretHex() {
-    return "secret";
+QList<QString> AppDataServer::getSecretHex() {
+    QSettings s;
+
+    return { s.value("mobileapp/secret", "").toString() };
+}
+
+void AppDataServer::saveNewSecret(QString secretHex) {
+    QSettings s;
+    s.setValue("mobileapp/secret", secretHex);
+}
+
+void AppDataServer::connectAppDialog(QWidget* parent) {
+    QDialog d(parent);
+    Ui_MobileAppConnector con;
+    con.setupUi(&d);
+    Settings::saveRestore(&d);
+
+    // Get the address of the localhost
+    auto addrList = QNetworkInterface::allAddresses();
+
+    // Find a suitable address
+    QString ipv4Addr;
+    for (auto addr : addrList) {
+        if (addr.isLoopback() || addr.protocol() == QAbstractSocket::IPv6Protocol)
+            continue;
+
+        ipv4Addr = addr.toString();
+        break;
+    }
+
+    if (ipv4Addr.isEmpty())
+        return;
+    
+    QString uri = "ws://" + ipv4Addr + ":8237";
+
+    // Get a new secret
+    unsigned char* secretBin = new unsigned char[crypto_secretbox_KEYBYTES];
+    randombytes_buf(secretBin, crypto_secretbox_KEYBYTES);
+    char* secretHex = new char[crypto_secretbox_KEYBYTES*2 + 1];
+    sodium_bin2hex(secretHex, crypto_secretbox_KEYBYTES*2+1, secretBin, crypto_secretbox_KEYBYTES);
+
+    saveNewSecret(secretHex);
+
+    QString secretStr(secretHex);
+
+    QString codeStr = uri + "," + secretHex;
+
+    con.lblConnStr->setText(codeStr);
+    con.qrcode->setQrcodeString(codeStr);
+    con.lblRemoteNonce->setText(AppDataServer::getNonceHex(NonceType::REMOTE));
+    con.lblLocalNonce->setText(AppDataServer::getNonceHex(NonceType::LOCAL));
+
+    AppDataServer::saveNonceHex(NonceType::REMOTE, QString("00").repeated(24));
+    AppDataServer::saveNonceHex(NonceType::LOCAL, QString("00").repeated(24));
+
+    QObject::connect(con.btnDisconnect, &QPushButton::clicked, [=]() {
+        AppDataServer::saveNonceHex(NonceType::REMOTE, QString("00").repeated(24));
+        AppDataServer::saveNonceHex(NonceType::LOCAL, QString("00").repeated(24));
+    });
+
+    d.exec();
 }
 
 QString AppDataServer::getNonceHex(NonceType nt) {
@@ -119,7 +179,8 @@ QString AppDataServer::encryptOutgoing(QString msg) {
     saveNonceHex(NonceType::LOCAL, QString(newLocalNonce));
 
     unsigned char* secret = new unsigned char[crypto_secretbox_KEYBYTES];
-    crypto_hash_sha256(secret, (const unsigned char*)"secret", QString("secret").length());
+    sodium_hex2bin(secret, crypto_secretbox_KEYBYTES, getSecretHex()[0].toStdString().c_str(), crypto_secretbox_KEYBYTES*2, 
+        NULL, NULL, NULL);
 
     int msgSize = strlen(msg.toStdString().c_str());
     unsigned char* encrpyted = new unsigned char[ msgSize + crypto_secretbox_MACBYTES];
@@ -138,6 +199,12 @@ QString AppDataServer::encryptOutgoing(QString msg) {
             {"payload", QString(encryptedHex)}
         });
     
+    delete[] noncebin;
+    delete[] newLocalNonce;
+    delete[] secret;
+    delete[] encrpyted;
+    delete[] encryptedHex;
+
     return json.toJson();
 }
 
@@ -163,7 +230,8 @@ QString AppDataServer::decryptMessage(QJsonDocument msg) {
     saveNonceHex(NonceType::REMOTE, noncehex);
 
     unsigned char* secret = new unsigned char[crypto_secretbox_KEYBYTES];
-    crypto_hash_sha256(secret, (const unsigned char*)"secret", QString("secret").length());
+    sodium_hex2bin(secret, crypto_secretbox_KEYBYTES, getSecretHex()[0].toStdString().c_str(), crypto_secretbox_KEYBYTES*2, 
+        NULL, NULL, NULL);
 
     unsigned char* encrypted = new unsigned char[encryptedhex.length() / 2];
     sodium_hex2bin(encrypted, encryptedhex.length() / 2, encryptedhex.toStdString().c_str(), encryptedhex.length(),
