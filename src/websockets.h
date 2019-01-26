@@ -40,11 +40,11 @@ class AppDataServer {
 public:
     static void          connectAppDialog(QWidget* parent);
 
-    static QJsonDocument processSendTx(QJsonObject sendTx, MainWindow* mainwindow);
-    static QJsonDocument processMessage(QString message, MainWindow* mainWindow);
-    static QJsonDocument processDecryptedMessage(QString message, MainWindow* mainWindow);
-    static QJsonDocument processGetInfo(MainWindow* mainWindow);
-    static QJsonDocument processGetTransactions(MainWindow* mainWindow);
+    static void          processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QWebSocket* pClient);
+    static void          processMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient);
+    static void          processDecryptedMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient);
+    static void          processGetInfo(MainWindow* mainWindow, QWebSocket* pClient);
+    static void          processGetTransactions(MainWindow* mainWindow, QWebSocket* pClient);
 
     static QString       decryptMessage(QJsonDocument msg, QString secretHex);
     static QString       encryptOutgoing(QString msg);

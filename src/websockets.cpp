@@ -44,9 +44,9 @@ void WSServer::processTextMessage(QString message)
     if (m_debug)
         qDebug() << "Message received:" << message;
     if (pClient) {
-        auto json = AppDataServer::processMessage(message, m_mainWindow);  
-        if (!json.isEmpty())      
-            pClient->sendTextMessage(AppDataServer::encryptOutgoing(json.toJson()));
+        AppDataServer::processMessage(message, m_mainWindow, pClient);
+
+        //    pClient->sendTextMessage(AppDataServer::encryptOutgoing(json.toJson()));
     }
 }
 
@@ -265,59 +265,69 @@ QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex) {
     return payload;
 }
 
-QJsonDocument AppDataServer::processMessage(QString message, MainWindow* mainWindow) {
+void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient) {
     // First, extract the command from the message
     auto msg = QJsonDocument::fromJson(message.toUtf8());
 
     // First check if the message is encrpted
     if (!msg.object().contains("nonce")) {
         // TODO: Log error?
-        return QJsonDocument();
+        return;
     }
 
     auto decrypted = decryptMessage(msg, getSecretHex());
     if (decrypted == "error") {
         // If the dialog is open, then there might be a temporary, new secret key. Attempt to decrypt
         // with that.
+        auto r = QJsonDocument(QJsonObject{
+            {"error", "Encrption error"}
+            }).toJson();
+        pClient->sendTextMessage(r);
+        return;
     }
 
-    return processDecryptedMessage(decrypted, mainWindow);
+    processDecryptedMessage(decrypted, mainWindow, pClient);
 }
 
-QJsonDocument AppDataServer::processDecryptedMessage(QString message, MainWindow* mainWindow) {
+void AppDataServer::processDecryptedMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient) {
     // First, extract the command from the message
     auto msg = QJsonDocument::fromJson(message.toUtf8());
 
     if (!msg.object().contains("command")) {
-        return QJsonDocument(QJsonObject{
+        auto r = QJsonDocument(QJsonObject{
             {"errorCode", -1},
             {"errorMessage", "Unknown JSON format"}
-        });
+        }).toJson();
+        pClient->sendTextMessage(encryptOutgoing(r));
+        return;
     }
     
     if (msg.object()["command"] == "getInfo") {
-        return processGetInfo(mainWindow);
+        processGetInfo(mainWindow, pClient);
     }
     else if (msg.object()["command"] == "getTransactions") {
-        return processGetTransactions(mainWindow);
+        processGetTransactions(mainWindow, pClient);
     }
     else if (msg.object()["command"] == "sendTx") {
-        return processSendTx(msg.object()["tx"].toObject(), mainWindow);
+        processSendTx(msg.object()["tx"].toObject(), mainWindow, pClient);
     }
     else {
-        return QJsonDocument(QJsonObject{
+        auto r = QJsonDocument(QJsonObject{
             {"errorCode", -1},
             {"errorMessage", "Command not found:" + msg.object()["command"].toString()}
-        });
+        }).toJson();
+        pClient->sendTextMessage(encryptOutgoing(r));
     }
 }
 
-QJsonDocument AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow) {
-    auto error = [=](QString reason) -> QJsonDocument {
-        return QJsonDocument(QJsonObject{
+void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QWebSocket* pClient) {
+    auto error = [=](QString reason) {
+        auto r = QJsonDocument(QJsonObject{
            {"errorCode", -1},
            {"errorMessage", "Couldn't send Tx:" + reason}
-        });
+        }).toJson();
+        pClient->sendTextMessage(encryptOutgoing(r));
+        return;
     };
 
     // Create a Tx Object
@@ -336,7 +346,8 @@ QJsonDocument AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainw
     }
 
     if (bals.isEmpty()) {
-        return error("No sapling or transparent addresses");
+        error("No sapling or transparent addresses");
+        return;
     }
 
     std::sort(bals.begin(), bals.end(), [=](const QPair<QString, double>a, const QPair<QString, double> b) ->bool {
@@ -351,7 +362,8 @@ QJsonDocument AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainw
 
     if (amt > bals[0].second) {
         // There isn't any any address capable of sending the Tx.
-        return error("Amount exceeds the balance of your largest address.");
+        error("Amount exceeds the balance of your largest address.");
+        return;
     }
 
     tx.fromAddr = bals[0].first;
@@ -361,7 +373,8 @@ QJsonDocument AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainw
 
     QString validation = mainwindow->doSendTxValidations(tx);
     if (!validation.isEmpty()) {
-        return error(validation);
+        error(validation);
+        return;
     }
 
     json params = json::array();
@@ -378,15 +391,16 @@ QJsonDocument AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainw
         // TODO: Handle the error if the computed Tx fails.
     });
 
-    return QJsonDocument(QJsonObject{
+    auto r = QJsonDocument(QJsonObject{
             {"version", 1.0},
             {"command", "sendTx"},
             {"result",  "success"}
-        });
+        }).toJson();
+    pClient->sendTextMessage(encryptOutgoing(r));
 }
 
-QJsonDocument AppDataServer::processGetInfo(MainWindow* mainWindow) {
-    return QJsonDocument(QJsonObject{
+void AppDataServer::processGetInfo(MainWindow* mainWindow, QWebSocket* pClient) {
+    auto r = QJsonDocument(QJsonObject{
         {"version", 1.0},
         {"command", "getInfo"},
         {"saplingAddress", mainWindow->getRPC()->getDefaultSaplingAddress()},
@@ -394,10 +408,11 @@ QJsonDocument AppDataServer::processGetInfo(MainWindow* mainWindow) {
         {"balance", AppDataModel::getInstance()->getTotalBalance()},
         {"tokenName", Settings::getTokenName()},
         {"zecprice", Settings::getInstance()->getZECPrice()}
-    });
+    }).toJson();
+    pClient->sendTextMessage(encryptOutgoing(r));
 }
 
-QJsonDocument AppDataServer::processGetTransactions(MainWindow* mainWindow) {
+void AppDataServer::processGetTransactions(MainWindow* mainWindow, QWebSocket* pClient) {
     QJsonArray txns;
     auto model = mainWindow->getRPC()->getTransactionsModel();
 
@@ -428,11 +443,12 @@ QJsonDocument AppDataServer::processGetTransactions(MainWindow* mainWindow) {
         });
     }
 
-    return QJsonDocument(QJsonObject{
+    auto r = QJsonDocument(QJsonObject{
             {"version", 1.0},
             {"command", "getTransactions"},
             {"transactions", txns}
-        });
+        }).toJson();
+    pClient->sendTextMessage(encryptOutgoing(r));
 }
 
 // ==============================
