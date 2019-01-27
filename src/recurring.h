@@ -16,6 +16,8 @@ enum Schedule {
 QString schedule_desc(Schedule s);
 
 struct RecurringPaymentInfo {
+    QString hashid;
+
     QString         desc;
     QString         fromAddr;
     QString         toAddr;
@@ -27,6 +29,13 @@ struct RecurringPaymentInfo {
 
     QDateTime       startDate;
     int             completedPayments;
+
+    struct HistoryItem {
+        int paymentNumber;
+        QDateTime dt;
+        QString txid;
+    };
+    QList<HistoryItem> history;
 
     QString getScheduleDescription() {
         return "Every " % schedule_desc(schedule) % ", starting " % startDate.toString("yyyy-MMM-dd")
