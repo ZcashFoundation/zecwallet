@@ -86,12 +86,16 @@ void MainWindow::setupSendTab() {
     // Recurring button
     QObject::connect(ui->chkRecurring, &QCheckBox::stateChanged, [=] (int checked) {
         if (checked) {
-            ui->btnRecurSchedule->setEnabled(true);            
+            ui->btnRecurSchedule->setEnabled(true);   
+
+            // If this is the first time the button is checked, open the edit schedule dialog
+            if (sendTxRecurringInfo == nullptr) {
+                ui->btnRecurSchedule->click();
+            }
         } else {
             ui->btnRecurSchedule->setEnabled(false);
             ui->lblRecurDesc->setText("");
         }
-
     });
 
     // Recurring schedule button
@@ -106,7 +110,11 @@ void MainWindow::editSchedule() {
     RecurringPaymentInfo* recurringInfo = Recurring::getInstance()->getNewRecurringFromTx(this, this, 
                                                 createTxFromSendPage(), this->sendTxRecurringInfo);
     if (recurringInfo == nullptr) {
-
+        // User pressed cancel. 
+        // If there is no existing recurring info, uncheck the recurring box
+        if (sendTxRecurringInfo == nullptr) {
+            ui->chkRecurring->setCheckState(Qt::Unchecked);
+        }
     }
     else {
         delete this->sendTxRecurringInfo;
@@ -276,6 +284,12 @@ void MainWindow::addressChanged(int itemNumber, const QString& text) {
 void MainWindow::amountChanged(int item, const QString& text) {
     auto usd = ui->sendToWidgets->findChild<QLabel*>(QString("AmtUSD") % QString::number(item));
     usd->setText(Settings::getUSDFromZecAmount(text.toDouble()));
+
+    // If there is a recurring payment, update the info there as well
+    if (sendTxRecurringInfo != nullptr) {
+        Recurring::getInstance()->updateInfoWithTx(sendTxRecurringInfo, createTxFromSendPage());
+        ui->lblRecurDesc->setText(sendTxRecurringInfo->getScheduleDescription());
+    }
 }
 
 void MainWindow::setMemoEnabled(int number, bool enabled) {
