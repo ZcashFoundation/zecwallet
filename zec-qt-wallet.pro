@@ -84,7 +84,8 @@ FORMS += \
     src/memodialog.ui \ 
     src/connection.ui \
     src/zboard.ui \
-    src/addressbook.ui
+    src/addressbook.ui \
+    src/createzcashconfdialog.ui
 
 
 TRANSLATIONS = res/zec_qt_wallet_es.ts \
