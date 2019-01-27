@@ -138,7 +138,12 @@ void ConnectionLoader::createZcashConf() {
     QPixmap logo(":/img/res/zcashdlogo.gif");
     ui.lblTopIcon->setBasePixmap(logo.scaled(256, 256, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     ui.btnPickDir->setEnabled(false);
-    ui.lblDirName->setText(fi.dir().absolutePath());
+
+    ui.grpAdvanced->setVisible(false);
+    QObject::connect(ui.btnAdvancedConfig, &QPushButton::toggled, [=](bool isVisible) {
+        ui.grpAdvanced->setVisible(isVisible);
+        ui.btnAdvancedConfig->setText(isVisible ? QObject::tr("Hide Advanced Config") : QObject::tr("Show Advanced Config"));
+    });
 
     QObject::connect(ui.chkCustomDatadir, &QCheckBox::stateChanged, [=](int chked) {
         if (chked == Qt::Checked) {
@@ -152,7 +157,7 @@ void ConnectionLoader::createZcashConf() {
     QObject::connect(ui.btnPickDir, &QPushButton::clicked, [=]() {
         auto datadir = QFileDialog::getExistingDirectory(main, QObject::tr("Choose data directory"), fi.dir().absolutePath(), QFileDialog::ShowDirsOnly);
         if (!datadir.isEmpty()) {
-            ui.lblDirName->setText(datadir);
+            ui.lblDirName->setText(QDir::toNativeSeparators(datadir));
         }
     });
 
@@ -180,7 +185,7 @@ void ConnectionLoader::createZcashConf() {
     out << "rpcuser=zec-qt-wallet\n";
     out << "rpcpassword=" % randomPassword() << "\n";
     if (!datadir.isEmpty()) {
-        out << "datadir=" % QDir::toNativeSeparators(datadir) % "\n";
+        out << "datadir=" % datadir % "\n";
     }
     if (useTor) {
         out << "proxy=127.0.0.1:9050\n";

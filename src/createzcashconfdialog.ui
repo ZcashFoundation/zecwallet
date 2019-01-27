@@ -6,28 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>503</width>
-    <height>288</height>
+    <width>508</width>
+    <height>352</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Configure zcash.conf</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="1">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Please chose a directory to store your wallet.dat and blockchain</string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="1">
     <widget class="FilledIconLabel" name="lblTopIcon">
      <property name="sizePolicy">
@@ -47,31 +33,40 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
-    <widget class="QCheckBox" name="chkUseTor">
-     <property name="text">
-      <string>Connect over Tor</string>
+   <item row="1" column="1">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+   <item row="6" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Ok</set>
+     </property>
+     <property name="centerButtons">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QPushButton" name="btnPickDir">
+      <widget class="QPushButton" name="btnAdvancedConfig">
        <property name="text">
-        <string>Choose directory</string>
+        <string>Show Advanced Configuration</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="lblDirName">
-       <property name="text">
-        <string notr="true">TextLabel</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
+      <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -85,45 +80,89 @@
      </item>
     </layout>
    </item>
-   <item row="6" column="1">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string notr="true"/>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="1">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Ok</set>
-     </property>
-     <property name="centerButtons">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="1">
-    <widget class="QCheckBox" name="chkCustomDatadir">
+    <widget class="QLabel" name="label">
      <property name="text">
-      <string>Use custom datadir</string>
+      <string>Your zcash node will be configured for you automatically</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
-   <item row="8" column="1">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>Please note that you'll need to already have a Tor service configured on port 9050</string>
+   <item row="4" column="1">
+    <widget class="QGroupBox" name="grpAdvanced">
+     <property name="title">
+      <string/>
      </property>
-    </widget>
-   </item>
-   <item row="9" column="1">
-    <widget class="Line" name="line_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="chkCustomDatadir">
+        <property name="text">
+         <string>Use custom datadir</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Please chose a directory to store your wallet.dat and blockchain</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="btnPickDir">
+          <property name="text">
+           <string>Choose directory</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblDirName">
+          <property name="text">
+           <string notr="true"/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string notr="true"/>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="chkUseTor">
+        <property name="text">
+         <string>Connect over Tor</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Please note that you'll need to already have a Tor service configured on port 9050</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
