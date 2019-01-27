@@ -2,7 +2,9 @@
 #define MAINWINDOW_H
 
 #include "precompiled.h"
+
 #include "logger.h"
+#include "recurring.h"
 
 // Forward declare to break circular dependency.
 class RPC;
@@ -106,6 +108,8 @@ private:
 
     RPC*         rpc  = nullptr;
     QCompleter*  labelCompleter = nullptr;
+
+    RecurringPaymentInfo* sendTxRecurringInfo = nullptr;
 
     QMovie*      loadingMovie;
 };

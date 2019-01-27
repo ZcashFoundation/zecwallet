@@ -153,10 +153,10 @@ void Settings::saveRestore(QDialog* d) {
 }
 
 QString Settings::getUSDFormat(double bal) {
-    if (!Settings::getInstance()->isTestnet() && Settings::getInstance()->getZECPrice() > 0) 
+    //if (!Settings::getInstance()->isTestnet() && Settings::getInstance()->getZECPrice() > 0) 
         return "$" + QLocale(QLocale::English).toString(bal * Settings::getInstance()->getZECPrice(), 'f', 2);
-    else 
-        return QString();
+    //else 
+    //    return QString();
 }
 
 QString Settings::getDecimalString(double amt) {

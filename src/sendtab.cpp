@@ -103,8 +103,14 @@ void MainWindow::setupSendTab() {
 
 void MainWindow::editSchedule() {
     // Open the edit schedule dialog
-    Recurring::showEditDialog(this, this, createTxFromSendPage());
+    RecurringPaymentInfo* recurringInfo = Recurring::getNewRecurringFromTx(this, this, createTxFromSendPage(), this->sendTxRecurringInfo);
+    if (recurringInfo == nullptr) {
 
+    }
+    else {
+        this->sendTxRecurringInfo = recurringInfo;
+        ui->lblRecurDesc->setText(recurringInfo->getScheduleDescription());
+    }
 }
 
 void MainWindow::updateLabelsAutoComplete() {
@@ -384,6 +390,8 @@ void MainWindow::removeExtraAddresses() {
     ui->chkRecurring->setCheckState(Qt::Unchecked);
     ui->btnRecurSchedule->setEnabled(false);
     ui->lblRecurDesc->setText("");
+    delete sendTxRecurringInfo;
+    sendTxRecurringInfo = nullptr;
 }
 
 void MainWindow::maxAmountChecked(int checked) {
