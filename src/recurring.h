@@ -40,7 +40,9 @@ public:
     Recurring() = default;
 
     static RecurringPaymentInfo*    getNewRecurringFromTx(QWidget* parent, MainWindow* main, Tx tx, RecurringPaymentInfo* rpi);
-    static QDateTime                getNextPaymentDate(Schedule s);
+    
+    static QDateTime    getNextPaymentDate(Schedule s);
+    static void         updateInfoWithTx(RecurringPaymentInfo* r, Tx tx);
 };
 
 

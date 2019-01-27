@@ -98,7 +98,7 @@ void MainWindow::setupSendTab() {
     QObject::connect(ui->btnRecurSchedule, &QPushButton::clicked, this, &MainWindow::editSchedule);
 
     // Set the default state for the whole page
-    removeExtraAddresses();
+    clearSendForm();
 }
 
 void MainWindow::editSchedule() {
@@ -359,7 +359,7 @@ void MainWindow::memoButtonClicked(int number, bool includeReplyTo) {
     }
 }
 
-void MainWindow::removeExtraAddresses() {
+void MainWindow::clearSendForm() {
     // The last one is a spacer, so ignore that
     int totalItems = ui->sendToWidgets->children().size() - 2; 
 
@@ -503,6 +503,10 @@ bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
         return splitted;
     };
 
+    // Update the recurring info with the latest Tx
+    if (rpi != nullptr) {
+        Recurring::updateInfoWithTx(rpi, tx);
+    }
 
     // Show a confirmation dialog
     QDialog d(this);
@@ -644,7 +648,7 @@ bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
     // Show the dialog and submit it if the user confirms
     if (d.exec() == QDialog::Accepted) {        
         // Then delete the additional fields from the sendTo tab
-        removeExtraAddresses();
+        clearSendForm();
         return true;
     } else {
         return false;
@@ -666,17 +670,20 @@ void MainWindow::sendButton() {
         // abort the Tx
         return;
     }
-    
+
     // Show a dialog to confirm the Tx
     if (confirmTx(tx, sendTxRecurringInfo)) {
         // And send the Tx
         rpc->executeTransaction(tx, 
+            // Submitted
             [=] (QString opid) {
                 ui->statusBar->showMessage(tr("Computing Tx: ") % opid);
             },
+            // Accepted
             [=] (QString opid, QString txid) { 
                 ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
             },
+            // Errored out
             [=] (QString opid, QString errStr) {
                 ui->statusBar->showMessage(QObject::tr(" Tx ") % opid % QObject::tr(" failed"), 15 * 1000);
 
@@ -710,6 +717,6 @@ QString MainWindow::doSendTxValidations(Tx tx) {
 }
 
 void MainWindow::cancelButton() {
-    removeExtraAddresses();
+    clearSendForm();
 }
 

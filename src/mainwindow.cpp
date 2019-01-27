@@ -504,7 +504,7 @@ void MainWindow::addressBook() {
 
 void MainWindow::donate() {
     // Set up a donation to me :)
-    removeExtraAddresses();
+    clearSendForm();
 
     ui->Address1->setText(Settings::getDonationAddr(
                             Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
@@ -735,7 +735,7 @@ void MainWindow::payZcashURI() {
     }
 
     // Now, set the fields on the send tab
-    removeExtraAddresses();
+    clearSendForm();
     ui->Address1->setText(addr);
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText(QString::number(amount));
@@ -933,7 +933,7 @@ void MainWindow::setupBalancesTab() {
         // If there's a to address, add that as well
         if (!to.isEmpty()) {
             // Remember to clear any existing address fields, because we are creating a new transaction.
-            this->removeExtraAddresses();
+            this->clearSendForm();
             ui->Address1->setText(to);
         }
 
@@ -1325,6 +1325,8 @@ MainWindow::~MainWindow()
     delete ui;
     delete rpc;
     delete labelCompleter;
+
+    delete sendTxRecurringInfo;
 
     delete loadingMovie;
     delete logger;

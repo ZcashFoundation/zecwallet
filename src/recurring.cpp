@@ -75,12 +75,8 @@ RecurringPaymentInfo* Recurring::getNewRecurringFromTx(QWidget* parent, MainWind
     if (d.exec() == QDialog::Accepted) {
         // Construct a new Object and return it
         auto r = new RecurringPaymentInfo();
-        r->toAddr = tx.toAddrs[0].addr;
-        r->memo = tx.toAddrs[0].txtMemo;
-        r->amt = tx.toAddrs[0].amount;
-        r->currency = Settings::getTokenName();
+        updateInfoWithTx(r, tx);
         r->desc = ui.txtDesc->text();
-        r->fromAddr = tx.fromAddr;
         r->numPayments = ui.txtNumPayments->text().toInt();
         r->schedule = (Schedule)ui.cmbSchedule->currentData().toInt();
         r->startDate = QDateTime::currentDateTime();
@@ -90,6 +86,14 @@ RecurringPaymentInfo* Recurring::getNewRecurringFromTx(QWidget* parent, MainWind
     else {
         return nullptr;
     }
+}
+
+void Recurring::updateInfoWithTx(RecurringPaymentInfo* r, Tx tx) {
+    r->toAddr = tx.toAddrs[0].addr;
+    r->memo = tx.toAddrs[0].txtMemo;
+    r->amt = tx.toAddrs[0].amount;
+    r->currency = Settings::getTokenName();
+    r->fromAddr = tx.fromAddr;
 }
 
 QDateTime Recurring::getNextPaymentDate(Schedule s) {

@@ -65,7 +65,7 @@ private:
     void setupSettingsModal();
     void setupStatusBar();
 
-    void removeExtraAddresses();
+    void clearSendForm();
 
     Tx   createTxFromSendPage();
     bool confirmTx(Tx tx, RecurringPaymentInfo* rpi);
