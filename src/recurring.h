@@ -2,6 +2,7 @@
 #define RECURRING_H
 
 #include "precompiled.h"
+#include "settings.h"
 
 class MainWindow;
 struct Tx;
@@ -38,7 +39,8 @@ struct RecurringPaymentInfo {
     QList<HistoryItem> history;
 
     QString getScheduleDescription() {
-        return "Every " % schedule_desc(schedule) % ", starting " % startDate.toString("yyyy-MMM-dd")
+        return "Pay " % (currency == "USD" ? Settings::getUSDFormat(amt) : Settings::getZECDisplayFormat(amt))
+            % " every " % schedule_desc(schedule) % ", starting " % startDate.toString("yyyy-MMM-dd")
             % ", for " % QString::number(numPayments) % " payments";
     }
 };

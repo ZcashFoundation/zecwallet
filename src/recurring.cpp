@@ -33,20 +33,34 @@ RecurringPaymentInfo* Recurring::getNewRecurringFromTx(QWidget* parent, MainWind
         ui.cmbFromAddress->setCurrentText(tx.fromAddr);
         ui.cmbFromAddress->setEnabled(false);
     }
-    
-    ui.cmbCurrency->addItem(Settings::getTokenName());
+
     ui.cmbCurrency->addItem("USD");
+    ui.cmbCurrency->addItem(Settings::getTokenName());
 
     if (tx.toAddrs.length() > 0) {
         ui.txtToAddr->setText(tx.toAddrs[0].addr);
         ui.txtToAddr->setEnabled(false);
 
-        ui.txtAmt->setText(Settings::getDecimalString(tx.toAddrs[0].amount));
+        // Default is USD
+        ui.txtAmt->setText(Settings::getUSDFromZecAmount(tx.toAddrs[0].amount));
         ui.txtAmt->setEnabled(false);
 
         ui.txtMemo->setPlainText(tx.toAddrs[0].txtMemo);
         ui.txtMemo->setEnabled(false);
     }
+
+    // Wire up ZEC/USD toggle
+    QObject::connect(ui.cmbCurrency, QOverload<const QString&>::of(&QComboBox::currentIndexChanged), [&](QString c) {
+        if (tx.toAddrs.length() < 1)
+            return;
+
+        if (c == "USD") {
+            ui.txtAmt->setText(Settings::getUSDFromZecAmount(tx.toAddrs[0].amount));
+        }
+        else {
+            ui.txtAmt->setText(Settings::getDecimalString(tx.toAddrs[0].amount));
+        }
+    });
 
     for (int i = Schedule::DAY; i <= Schedule::YEAR; i++) {
         ui.cmbSchedule->addItem("Every " + schedule_desc((Schedule)i), QVariant(i));
@@ -64,8 +78,14 @@ RecurringPaymentInfo* Recurring::getNewRecurringFromTx(QWidget* parent, MainWind
         ui.txtDesc->setText(rpi->desc);
         ui.txtToAddr->setText(rpi->toAddr);
         ui.txtMemo->setPlainText(rpi->memo);
-        ui.txtAmt->setText(Settings::getDecimalString(rpi->amt));
+        
         ui.cmbCurrency->setCurrentText(rpi->currency);
+        if (rpi->currency == "USD") {
+            ui.txtAmt->setText(Settings::getUSDFormat(rpi->amt));
+        }
+        else {
+            ui.txtAmt->setText(Settings::getDecimalString(rpi->amt));
+        }
         ui.cmbFromAddress->setCurrentText(rpi->fromAddr);
         ui.txtNumPayments->setText(QString::number(rpi->numPayments));
         ui.cmbSchedule->setCurrentIndex(rpi->schedule);
@@ -75,12 +95,13 @@ RecurringPaymentInfo* Recurring::getNewRecurringFromTx(QWidget* parent, MainWind
     if (d.exec() == QDialog::Accepted) {
         // Construct a new Object and return it
         auto r = new RecurringPaymentInfo();
-        updateInfoWithTx(r, tx);
         r->desc = ui.txtDesc->text();
+        r->currency = ui.cmbCurrency->currentText();
         r->numPayments = ui.txtNumPayments->text().toInt();
         r->schedule = (Schedule)ui.cmbSchedule->currentData().toInt();
         r->startDate = QDateTime::currentDateTime();
         
+        updateInfoWithTx(r, tx);
         return r;
     }
     else {
@@ -91,9 +112,15 @@ RecurringPaymentInfo* Recurring::getNewRecurringFromTx(QWidget* parent, MainWind
 void Recurring::updateInfoWithTx(RecurringPaymentInfo* r, Tx tx) {
     r->toAddr = tx.toAddrs[0].addr;
     r->memo = tx.toAddrs[0].txtMemo;
-    r->amt = tx.toAddrs[0].amount;
-    r->currency = Settings::getTokenName();
     r->fromAddr = tx.fromAddr;
+    if (r->currency.isEmpty() || r->currency == "USD") {
+        r->currency = "USD";
+        r->amt = tx.toAddrs[0].amount * Settings::getInstance()->getZECPrice();
+    }
+    else {
+        r->currency = Settings::getTokenName();
+        r->amt = tx.toAddrs[0].amount;
+    }
 }
 
 QDateTime Recurring::getNextPaymentDate(Schedule s) {

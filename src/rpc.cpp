@@ -617,7 +617,7 @@ void RPC::getInfoThenRefresh(bool force) {
                 ")";
             main->statusLabel->setText(statusText);   
 
-            auto zecPrice = Settings::getUSDFormat(1);
+            auto zecPrice = Settings::getUSDFromZecAmount(1);
             QString tooltip;
             if (connections > 0) {
                 tooltip = QObject::tr("Connected to zcashd");
@@ -727,9 +727,9 @@ void RPC::refreshBalances() {
         ui->balTransparent->setText(Settings::getZECDisplayFormat(balT));
         ui->balTotal      ->setText(Settings::getZECDisplayFormat(tot));
 
-        ui->balSheilded   ->setToolTip(Settings::getUSDFormat(balZ));
-        ui->balTransparent->setToolTip(Settings::getUSDFormat(balT));
-        ui->balTotal      ->setToolTip(Settings::getUSDFormat(tot));
+        ui->balSheilded   ->setToolTip(Settings::getUSDFromZecAmount(balZ));
+        ui->balTransparent->setToolTip(Settings::getUSDFromZecAmount(balT));
+        ui->balTotal      ->setToolTip(Settings::getUSDFromZecAmount(tot));
     });
 
     // 2. Get the UTXOs

@@ -62,7 +62,7 @@ void MainWindow::setupSendTab() {
     // Disable custom fees if settings say no
     ui->minerFeeAmt->setReadOnly(!Settings::getInstance()->getAllowCustomFees());
     QObject::connect(ui->minerFeeAmt, &QLineEdit::textChanged, [=](auto txt) {
-        ui->lblMinerFeeUSD->setText(Settings::getUSDFormat(txt.toDouble()));
+        ui->lblMinerFeeUSD->setText(Settings::getUSDFromZecAmount(txt.toDouble()));
     });
     ui->minerFeeAmt->setText(Settings::getDecimalString(Settings::getMinerFee()));    
 
@@ -70,7 +70,7 @@ void MainWindow::setupSendTab() {
     QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int pos) {
         if (pos == 1) {
             QString txt = ui->minerFeeAmt->text();
-            ui->lblMinerFeeUSD->setText(Settings::getUSDFormat(txt.toDouble()));
+            ui->lblMinerFeeUSD->setText(Settings::getUSDFromZecAmount(txt.toDouble()));
         }
     });
     //Fees validator
@@ -171,7 +171,7 @@ void MainWindow::inputComboTextChanged(int index) {
     auto balFmt = Settings::getZECDisplayFormat(bal);
 
     ui->sendAddressBalance->setText(balFmt);
-    ui->sendAddressBalanceUSD->setText(Settings::getUSDFormat(bal));
+    ui->sendAddressBalanceUSD->setText(Settings::getUSDFromZecAmount(bal));
 }
 
     
@@ -275,7 +275,7 @@ void MainWindow::addressChanged(int itemNumber, const QString& text) {
 
 void MainWindow::amountChanged(int item, const QString& text) {
     auto usd = ui->sendToWidgets->findChild<QLabel*>(QString("AmtUSD") % QString::number(item));
-    usd->setText(Settings::getUSDFormat(text.toDouble()));
+    usd->setText(Settings::getUSDFromZecAmount(text.toDouble()));
 }
 
 void MainWindow::setMemoEnabled(int number, bool enabled) {
@@ -562,7 +562,7 @@ bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
             // Amount (USD)
             auto AmtUSD = new QLabel(confirm.sendToAddrs);
             AmtUSD->setObjectName(QString("AmtUSD") % QString::number(i + 1));
-            AmtUSD->setText(Settings::getUSDFormat(toAddr.amount));
+            AmtUSD->setText(Settings::getUSDFromZecAmount(toAddr.amount));
             AmtUSD->setAlignment(Qt::AlignRight | Qt::AlignTrailing | Qt::AlignVCenter);
             confirm.gridLayout->addWidget(AmtUSD, row, 2, 1, 1);            
 
@@ -613,7 +613,7 @@ bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
         minerFeeUSD->setObjectName(QStringLiteral("minerFeeUSD"));
         minerFeeUSD->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         confirm.gridLayout->addWidget(minerFeeUSD, row, 2, 1, 1);
-        minerFeeUSD->setText(Settings::getUSDFormat(tx.fee));
+        minerFeeUSD->setText(Settings::getUSDFromZecAmount(tx.fee));
 
         if (Settings::getInstance()->getAllowCustomFees() && tx.fee != Settings::getMinerFee()) {
             confirm.warningLabel->setVisible(true);            

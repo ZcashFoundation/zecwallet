@@ -152,11 +152,13 @@ void Settings::saveRestore(QDialog* d) {
     });
 }
 
-QString Settings::getUSDFormat(double bal) {
-    //if (!Settings::getInstance()->isTestnet() && Settings::getInstance()->getZECPrice() > 0) 
-        return "$" + QLocale(QLocale::English).toString(bal * Settings::getInstance()->getZECPrice(), 'f', 2);
-    //else 
-    //    return QString();
+
+QString Settings::getUSDFormat(double usdAmt) {
+    return "$" + QLocale(QLocale::English).toString(usdAmt, 'f', 2);
+}
+
+QString Settings::getUSDFromZecAmount(double bal) {
+    return getUSDFormat(bal * Settings::getInstance()->getZECPrice());
 }
 
 QString Settings::getDecimalString(double amt) {
@@ -177,9 +179,9 @@ QString Settings::getZECDisplayFormat(double bal) {
 }
 
 QString Settings::getZECUSDDisplayFormat(double bal) {
-    auto usdFormat = getUSDFormat(bal);
+    auto usdFormat = getUSDFromZecAmount(bal);
     if (!usdFormat.isEmpty())
-        return getZECDisplayFormat(bal) % " (" % getUSDFormat(bal) % ")";
+        return getZECDisplayFormat(bal) % " (" % usdFormat % ")";
     else
         return getZECDisplayFormat(bal);
 }
