@@ -108,6 +108,8 @@ void MainWindow::editSchedule() {
 
     }
     else {
+        delete this->sendTxRecurringInfo;
+
         this->sendTxRecurringInfo = recurringInfo;
         ui->lblRecurDesc->setText(recurringInfo->getScheduleDescription());
     }
@@ -492,7 +494,7 @@ Tx MainWindow::createTxFromSendPage() {
     return tx;
 }
 
-bool MainWindow::confirmTx(Tx tx) {
+bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
     auto fnSplitAddressForWrap = [=] (const QString& a) -> QString {
         if (!a.startsWith("z")) return a;
 
@@ -616,6 +618,15 @@ bool MainWindow::confirmTx(Tx tx) {
         }
     }
 
+    // Recurring payment info
+    if (rpi == nullptr) {
+        confirm.grpRecurring->setVisible(false);
+    }
+    else {
+        confirm.grpRecurring->setVisible(true);
+        confirm.lblRecurringDesc->setText(rpi->getScheduleDescription());
+    }
+
     // Syncing warning
     confirm.syncingWarning->setVisible(Settings::getInstance()->isSyncing());
 
@@ -657,7 +668,7 @@ void MainWindow::sendButton() {
     }
     
     // Show a dialog to confirm the Tx
-    if (confirmTx(tx)) {
+    if (confirmTx(tx, sendTxRecurringInfo)) {
         // And send the Tx
         rpc->executeTransaction(tx, 
             [=] (QString opid) {

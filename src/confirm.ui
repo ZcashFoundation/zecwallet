@@ -134,6 +134,22 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="grpRecurring">
+     <property name="title">
+      <string>Recurring Payment</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblRecurringDesc">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>

@@ -68,7 +68,7 @@ private:
     void removeExtraAddresses();
 
     Tx   createTxFromSendPage();
-    bool confirmTx(Tx tx);
+    bool confirmTx(Tx tx, RecurringPaymentInfo* rpi);
 
     void turnstileDoMigration(QString fromAddr = "");
     void turnstileProgress();
