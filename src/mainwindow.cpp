@@ -713,7 +713,7 @@ void MainWindow::payZcashURI() {
 
             if (kv[0].toLower() == "amt" || kv[0].toLower() == "amount") {
                 amount = kv[1].toDouble(); 
-            } else if (kv[0].toLower() == "memo") {
+            } else if (kv[0].toLower() == "memo" || kv[0].toLower() == "message" || kv[0].toLower() == "msg") {
                 memo = kv[1];
                 // Test if this is hex
 
