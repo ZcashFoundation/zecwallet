@@ -37,12 +37,15 @@ struct RecurringPaymentInfo {
 class Recurring
 {
 public:
-    Recurring() = default;
+    static Recurring* getInstance() { if (!instance) { instance = new Recurring(); } return instance; }
 
-    static RecurringPaymentInfo*    getNewRecurringFromTx(QWidget* parent, MainWindow* main, Tx tx, RecurringPaymentInfo* rpi);
+    RecurringPaymentInfo*    getNewRecurringFromTx(QWidget* parent, MainWindow* main, Tx tx, RecurringPaymentInfo* rpi);
     
-    static QDateTime    getNextPaymentDate(Schedule s);
-    static void         updateInfoWithTx(RecurringPaymentInfo* r, Tx tx);
+    QDateTime    getNextPaymentDate(Schedule s);
+    void         updateInfoWithTx(RecurringPaymentInfo* r, Tx tx);
+private:
+    Recurring() = default;
+    static Recurring* instance;
 };
 
 

@@ -103,7 +103,8 @@ void MainWindow::setupSendTab() {
 
 void MainWindow::editSchedule() {
     // Open the edit schedule dialog
-    RecurringPaymentInfo* recurringInfo = Recurring::getNewRecurringFromTx(this, this, createTxFromSendPage(), this->sendTxRecurringInfo);
+    RecurringPaymentInfo* recurringInfo = Recurring::getInstance()->getNewRecurringFromTx(this, this, 
+                                                createTxFromSendPage(), this->sendTxRecurringInfo);
     if (recurringInfo == nullptr) {
 
     }
@@ -505,7 +506,7 @@ bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
 
     // Update the recurring info with the latest Tx
     if (rpi != nullptr) {
-        Recurring::updateInfoWithTx(rpi, tx);
+        Recurring::getInstance()->updateInfoWithTx(rpi, tx);
     }
 
     // Show a confirmation dialog

@@ -109,3 +109,6 @@ QDateTime Recurring::getNextPaymentDate(Schedule s) {
     return nextDate;
 
 }
+
+// Singleton
+Recurring* Recurring::instance = nullptr;
