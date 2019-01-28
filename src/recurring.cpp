@@ -38,6 +38,7 @@ RecurringPaymentInfo RecurringPaymentInfo::fromJson(QJsonObject j) {
         item.paymentNumber = h.toObject()["paymentnumber"].toInt();
         item.date = QDateTime::fromSecsSinceEpoch(h.toObject()["date"].toString().toLongLong());
         item.txid = h.toObject()["txid"].toString();
+        item.status = h.toObject()["status"].toString();
 
         r.history.append(item);
     }
@@ -56,7 +57,8 @@ QJsonObject RecurringPaymentInfo::toJson() {
         historyJson.append(QJsonObject{
             {"paymentnumber", h.paymentNumber},
             {"date", QString::number(h.date.toSecsSinceEpoch())},
-            {"txid", h.txid}
+            {"txid", h.txid},
+            {"status", h.status}
             });
     }
 
@@ -79,8 +81,12 @@ QJsonObject RecurringPaymentInfo::toJson() {
     return j;
 }
 
+QString RecurringPaymentInfo::getAmountPretty() {
+    return currency == "USD" ? Settings::getUSDFormat(amt) : Settings::getZECDisplayFormat(amt);
+}
+
 QString RecurringPaymentInfo::getScheduleDescription() {
-    return "Pay " % (currency == "USD" ? Settings::getUSDFormat(amt) : Settings::getZECDisplayFormat(amt))
+    return "Pay " % getAmountPretty()
         % " every " % schedule_desc(schedule) % ", starting " % startDate.toString("yyyy-MMM-dd")
         % ", for " % QString::number(numPayments) % " payments";
 }
@@ -150,12 +156,7 @@ RecurringPaymentInfo* Recurring::getNewRecurringFromTx(QWidget* parent, MainWind
         ui.txtMemo->setPlainText(rpi->memo);
         
         ui.cmbCurrency->setCurrentText(rpi->currency);
-        if (rpi->currency == "USD") {
-            ui.txtAmt->setText(Settings::getUSDFormat(rpi->amt));
-        }
-        else {
-            ui.txtAmt->setText(Settings::getDecimalString(rpi->amt));
-        }
+        ui.txtAmt->setText(rpi->getAmountPretty()); 
         ui.cmbFromAddress->setCurrentText(rpi->fromAddr);
         ui.txtNumPayments->setText(QString::number(rpi->numPayments));
         ui.cmbSchedule->setCurrentIndex(rpi->schedule);
@@ -251,3 +252,36 @@ void Recurring::writeToStorage() {
 
 // Singleton
 Recurring* Recurring::instance = nullptr;
+
+
+RecurringListViewModel::RecurringListViewModel(QTableView* parent) {
+    this->parent = parent;
+    headers << tr("To") << tr("Amount") << tr("Schedule") << tr("Payments Left");
+}
+
+
+int RecurringListViewModel::rowCount(const QModelIndex &parent) const {
+    return Recurring::getInstance()->getAsList().size();
+}
+
+int RecurringListViewModel::columnCount(const QModelIndex &parent) const {
+    return headers.size();
+}
+
+QVariant RecurringListViewModel::data(const QModelIndex &index, int role) const {
+    auto rpi = Recurring::getInstance()->getAsList().at(index.row());
+    if (role == Qt::DisplayRole) {
+        switch (index.column()) {
+        case 0: return rpi.toAddr;
+        case 1: return rpi.getAmountPretty();
+        case 2: return schedule_desc(rpi.schedule);
+        case 3: return rpi.numPayments - rpi.completedPayments;
+        }
+    }
+
+    return QVariant();
+}
+
+QVariant RecurringListViewModel::headerData(int section, Qt::Orientation orientation, int role) const {
+    return QVariant();
+}

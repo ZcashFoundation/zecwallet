@@ -33,9 +33,10 @@ struct RecurringPaymentInfo {
     int         completedPayments;
 
     struct HistoryItem {
-        int paymentNumber;
-        QDateTime date;
-        QString txid;
+        int         paymentNumber;
+        QDateTime   date;
+        QString     txid;
+        QString     status;
     };
 
     QList<HistoryItem> history;
@@ -43,6 +44,9 @@ struct RecurringPaymentInfo {
     void        updateHash();
     QString     getScheduleDescription();
     QJsonObject toJson();
+
+
+    QString getAmountPretty();
 
     static RecurringPaymentInfo fromJson(QJsonObject j);
 };
@@ -61,6 +65,8 @@ public:
 
     void        addRecurringInfo(const RecurringPaymentInfo& rpi);
     void        writeToStorage();
+
+    QList<RecurringPaymentInfo> getAsList() { return payments.values(); }
 private:
     Recurring() = default;
     QMap<QString, RecurringPaymentInfo> payments;
@@ -68,5 +74,21 @@ private:
     static Recurring* instance;
 };
 
+
+class RecurringListViewModel : public QAbstractTableModel {
+
+public:
+    RecurringListViewModel(QTableView* parent);
+    ~RecurringListViewModel() = default;
+
+    int      rowCount(const QModelIndex &parent) const;
+    int      columnCount(const QModelIndex &parent) const;
+    QVariant data(const QModelIndex &index, int role) const;
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+
+private:
+    QTableView* parent;
+    QStringList headers;
+};
 
 #endif // RECURRING_H

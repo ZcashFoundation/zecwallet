@@ -10,9 +10,9 @@ class AddressBookModel : public QAbstractTableModel {
 public:
     AddressBookModel(QTableView* parent);
     ~AddressBookModel();
-
-    void addNewLabel(QString label, QString addr);
-    void removeItemAt(int row);
+                            
+    void                    addNewLabel(QString label, QString addr);
+    void                    removeItemAt(int row);
     QPair<QString, QString> itemAt(int row);
 
     int      rowCount(const QModelIndex &parent) const;
