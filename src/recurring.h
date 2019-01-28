@@ -70,7 +70,7 @@ struct RecurringPaymentInfo {
 
     void updateHash() {
         auto val = getScheduleDescription() + fromAddr + toAddr;
-        hashid = QCryptographicHash::hash(val.toUtf8(), QCryptographicHash::Sha256);
+        hashid = QString(QCryptographicHash::hash(val.toUtf8(), QCryptographicHash::Sha256).toHex());
     }
 
     QJsonObject toJson() {
@@ -116,10 +116,17 @@ public:
 
     RecurringPaymentInfo*    getNewRecurringFromTx(QWidget* parent, MainWindow* main, Tx tx, RecurringPaymentInfo* rpi);
     
-    QDateTime    getNextPaymentDate(Schedule s);
-    void         updateInfoWithTx(RecurringPaymentInfo* r, Tx tx);
+    QDateTime   getNextPaymentDate(Schedule s);
+    void        updateInfoWithTx(RecurringPaymentInfo* r, Tx tx);
+
+    QString     writeableFile();
+
+    void        addRecurringInfo(const RecurringPaymentInfo& rpi);
+    void        writeToStorage();
 private:
     Recurring() = default;
+    QMap<QString, RecurringPaymentInfo> payments;
+
     static Recurring* instance;
 };
 

@@ -121,6 +121,8 @@ void Recurring::updateInfoWithTx(RecurringPaymentInfo* r, Tx tx) {
         r->currency = Settings::getTokenName();
         r->amt = tx.toAddrs[0].amount;
     }
+
+    r->updateHash();
 }
 
 QDateTime Recurring::getNextPaymentDate(Schedule s) {
@@ -134,7 +136,47 @@ QDateTime Recurring::getNextPaymentDate(Schedule s) {
     }
 
     return nextDate;
+}
 
+
+QString Recurring::writeableFile() {
+    auto filename = QStringLiteral("recurringpayments.json");
+
+    auto dir = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+    if (!dir.exists())
+        QDir().mkpath(dir.absolutePath());
+
+    if (Settings::getInstance()->isTestnet()) {
+        return dir.filePath("testnet-" % filename);
+    }
+    else {
+        return dir.filePath(filename);
+    }
+}
+
+void Recurring::addRecurringInfo(const RecurringPaymentInfo& rpi) {
+    if (payments.contains(rpi.hashid)) {
+        payments.remove(rpi.hashid);
+    }
+    
+    payments.insert(rpi.hashid, rpi);
+    
+    writeToStorage();
+}
+
+void Recurring::writeToStorage() {
+    QFile file(writeableFile());
+    file.open(QIODevice::ReadWrite | QIODevice::Truncate);
+
+    QJsonArray arr;
+    for (auto k : payments.keys()) {
+        arr.append(payments[k].toJson());
+    }
+
+    QTextStream out(&file);   
+    out << QJsonDocument(arr).toJson();
+
+    file.close();
 }
 
 // Singleton

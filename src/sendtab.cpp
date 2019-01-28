@@ -521,6 +521,7 @@ bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
     // Update the recurring info with the latest Tx
     if (rpi != nullptr) {
         Recurring::getInstance()->updateInfoWithTx(rpi, tx);
+        rpi->updateHash();
     }
 
     // Show a confirmation dialog
@@ -661,13 +662,7 @@ bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
     confirm.sendFrom->setToolTip(tooltip);
 
     // Show the dialog and submit it if the user confirms
-    if (d.exec() == QDialog::Accepted) {        
-        // Then delete the additional fields from the sendTo tab
-        clearSendForm();
-        return true;
-    } else {
-        return false;
-    }        
+    return d.exec() == QDialog::Accepted;        
 }
 
 // Send button clicked
@@ -688,6 +683,12 @@ void MainWindow::sendButton() {
 
     // Show a dialog to confirm the Tx
     if (confirmTx(tx, sendTxRecurringInfo)) {
+        // Add it to the list
+        Recurring::getInstance()->addRecurringInfo(*sendTxRecurringInfo);
+
+        // Then delete the additional fields from the sendTo tab
+        clearSendForm();
+
         // And send the Tx
         rpc->executeTransaction(tx, 
             // Submitted
