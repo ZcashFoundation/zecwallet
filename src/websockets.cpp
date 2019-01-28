@@ -161,6 +161,10 @@ void AppDataServer::saveNonceHex(NonceType nt, QString noncehex) {
 }
 
 QString AppDataServer::encryptOutgoing(QString msg) {
+    if (msg.length() % 256 > 0) {
+        msg = msg + QString(" ").repeated(256 - (msg.length() % 256));
+    }
+
     QString localNonceHex = getNonceHex(NonceType::LOCAL);
 
     unsigned char* noncebin = new unsigned char[crypto_secretbox_NONCEBYTES];
