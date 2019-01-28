@@ -254,9 +254,6 @@ void AddressBook::readFromStorage() {
 }
 
 void AddressBook::writeToStorage() {
-    if (allLabels.isEmpty())
-        return;
-
     QFile file(AddressBook::writeableFile());
     file.open(QIODevice::ReadWrite | QIODevice::Truncate);
     QDataStream out(&file);   // we will serialize the data into the file
