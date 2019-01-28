@@ -155,7 +155,7 @@ void ConnectionLoader::createZcashConf() {
     });
 
     QObject::connect(ui.btnPickDir, &QPushButton::clicked, [=]() {
-        auto datadir = QFileDialog::getExistingDirectory(main, QObject::tr("Choose data directory"), "", QFileDialog::ShowDirsOnly);
+        auto datadir = QFileDialog::getExistingDirectory(main, QObject::tr("Choose data directory"), ui.lblDirName->text(), QFileDialog::ShowDirsOnly);
         if (!datadir.isEmpty()) {
             ui.lblDirName->setText(QDir::toNativeSeparators(datadir));
         }
