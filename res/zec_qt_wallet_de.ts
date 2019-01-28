@@ -138,8 +138,8 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="446"/>
-        <location filename="../src/mainwindow.cpp" line="1017"/>
-        <location filename="../src/mainwindow.cpp" line="1060"/>
+        <location filename="../src/mainwindow.cpp" line="1020"/>
+        <location filename="../src/mainwindow.cpp" line="1063"/>
         <location filename="../src/sendtab.cpp" line="210"/>
         <source>Memo</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
@@ -244,7 +244,7 @@
         <location filename="../src/mainwindow.ui" line="898"/>
         <location filename="../src/mainwindow.ui" line="912"/>
         <location filename="../src/mainwindow.ui" line="933"/>
-        <location filename="../src/mainwindow.cpp" line="849"/>
+        <location filename="../src/mainwindow.cpp" line="852"/>
         <source>Loading...</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
@@ -367,7 +367,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1109"/>
-        <location filename="../src/mainwindow.cpp" line="787"/>
+        <location filename="../src/mainwindow.cpp" line="790"/>
         <source>Export transactions</source>
         <translation type="unfinished"></translation>
     </message>
@@ -458,151 +458,151 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="692"/>
+        <location filename="../src/mainwindow.cpp" line="695"/>
         <source>Could not understand address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="725"/>
+        <location filename="../src/mainwindow.cpp" line="728"/>
         <source>Unknown field in URI:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="757"/>
+        <location filename="../src/mainwindow.cpp" line="760"/>
         <source>Please paste your private keys (z-Addr or t-Addr) here, one per line</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="758"/>
+        <location filename="../src/mainwindow.cpp" line="761"/>
         <source>The keys will be imported into your connected zcashd node</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="793"/>
+        <location filename="../src/mainwindow.cpp" line="796"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="794"/>
+        <location filename="../src/mainwindow.cpp" line="797"/>
         <source>Error exporting transactions, file was not saved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="816"/>
+        <location filename="../src/mainwindow.cpp" line="819"/>
         <source>No wallet.dat</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="816"/>
+        <location filename="../src/mainwindow.cpp" line="819"/>
         <source>Couldn&apos;t find the wallet.dat on this computer</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="817"/>
+        <location filename="../src/mainwindow.cpp" line="820"/>
         <source>You need to back it up from the machine zcashd is running on</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="821"/>
+        <location filename="../src/mainwindow.cpp" line="824"/>
         <source>Backup wallet.dat</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="826"/>
+        <location filename="../src/mainwindow.cpp" line="829"/>
         <source>Couldn&apos;t backup</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="826"/>
+        <location filename="../src/mainwindow.cpp" line="829"/>
         <source>Couldn&apos;t backup the wallet.dat file.</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="827"/>
+        <location filename="../src/mainwindow.cpp" line="830"/>
         <source>You need to back it up manually.</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="854"/>
+        <location filename="../src/mainwindow.cpp" line="857"/>
         <source>These are all the private keys for all the addresses in your wallet</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="856"/>
+        <location filename="../src/mainwindow.cpp" line="859"/>
         <source>Private key for </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="864"/>
+        <location filename="../src/mainwindow.cpp" line="867"/>
         <source>Save File</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="868"/>
+        <location filename="../src/mainwindow.cpp" line="871"/>
         <source>Unable to open file</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="963"/>
-        <location filename="../src/mainwindow.cpp" line="1042"/>
+        <location filename="../src/mainwindow.cpp" line="966"/>
+        <location filename="../src/mainwindow.cpp" line="1045"/>
         <source>Copy address</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="966"/>
-        <location filename="../src/mainwindow.cpp" line="1038"/>
-        <location filename="../src/mainwindow.cpp" line="1044"/>
+        <location filename="../src/mainwindow.cpp" line="969"/>
+        <location filename="../src/mainwindow.cpp" line="1041"/>
+        <location filename="../src/mainwindow.cpp" line="1047"/>
         <source>Copied to clipboard</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="969"/>
+        <location filename="../src/mainwindow.cpp" line="972"/>
         <source>Get private key</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="980"/>
+        <location filename="../src/mainwindow.cpp" line="983"/>
         <source>Shield balance to Sapling</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="985"/>
-        <location filename="../src/mainwindow.cpp" line="1048"/>
+        <location filename="../src/mainwindow.cpp" line="988"/>
+        <location filename="../src/mainwindow.cpp" line="1051"/>
         <source>View on block explorer</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="997"/>
+        <location filename="../src/mainwindow.cpp" line="1000"/>
         <source>Migrate to Sapling</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1036"/>
+        <location filename="../src/mainwindow.cpp" line="1039"/>
         <source>Copy txid</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1059"/>
+        <location filename="../src/mainwindow.cpp" line="1062"/>
         <source>View Memo</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1071"/>
+        <location filename="../src/mainwindow.cpp" line="1074"/>
         <source>Reply to </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1151"/>
+        <location filename="../src/mainwindow.cpp" line="1154"/>
         <source>Created new t-Addr</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1259"/>
+        <location filename="../src/mainwindow.cpp" line="1262"/>
         <source>Address has been previously used</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1261"/>
+        <location filename="../src/mainwindow.cpp" line="1264"/>
         <source>Address is unused</source>
         <translation type="unfinished"></translation>
     </message>
@@ -704,27 +704,27 @@ doesn&apos;t look like a z-address</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/connection.cpp" line="41"/>
+        <location filename="../src/connection.cpp" line="42"/>
         <source>Attempting autoconnect</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="50"/>
+        <location filename="../src/connection.cpp" line="51"/>
         <source>Starting embedded zcashd</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="60"/>
+        <location filename="../src/connection.cpp" line="61"/>
         <source>zcashd is set to run as daemon</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="60"/>
+        <location filename="../src/connection.cpp" line="61"/>
         <source>Waiting for zcashd</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="75"/>
+        <location filename="../src/connection.cpp" line="76"/>
         <source>You have zcashd set to start as a daemon, which can cause problems with zec-qt-wallet
 
 .Please remove the following line from your zcash.conf and restart zec-qt-wallet
@@ -732,7 +732,7 @@ daemon=1</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="80"/>
+        <location filename="../src/connection.cpp" line="81"/>
         <source>Couldn&apos;t start the embedded zcashd.
 
 Please try restarting.
@@ -743,193 +743,208 @@ If all else fails, please run zcashd manually.</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="91"/>
+        <location filename="../src/connection.cpp" line="92"/>
         <source>Couldn&apos;t connect to zcashd configured in zcash.conf.
 
 Not starting embedded zcashd because --no-embedded was passed</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="183"/>
+        <location filename="../src/connection.cpp" line="145"/>
+        <source>Hide Advanced Config</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="145"/>
+        <source>Show Advanced Config</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="158"/>
+        <source>Choose data directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="229"/>
         <source>All Downloads Finished Successfully!</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="206"/>
+        <location filename="../src/connection.cpp" line="252"/>
         <source>Couldn&apos;t download params. Please check the help site for more info.</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="83"/>
+        <location filename="../src/connection.cpp" line="84"/>
         <source>The process returned</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="232"/>
-        <location filename="../src/connection.cpp" line="248"/>
+        <location filename="../src/connection.cpp" line="278"/>
+        <location filename="../src/connection.cpp" line="294"/>
         <source>Downloading </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="232"/>
+        <location filename="../src/connection.cpp" line="278"/>
         <source> more remaining )</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="233"/>
+        <location filename="../src/connection.cpp" line="279"/>
         <source>MB of </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="233"/>
+        <location filename="../src/connection.cpp" line="279"/>
         <source>MB at </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="593"/>
+        <location filename="../src/rpc.cpp" line="594"/>
         <source>Downloading blocks</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="596"/>
+        <location filename="../src/rpc.cpp" line="597"/>
         <source>Block height</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="602"/>
+        <location filename="../src/rpc.cpp" line="603"/>
         <source>Syncing</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="602"/>
+        <location filename="../src/rpc.cpp" line="603"/>
         <source>Connected</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="604"/>
+        <location filename="../src/rpc.cpp" line="605"/>
         <source>testnet:</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="613"/>
+        <location filename="../src/rpc.cpp" line="614"/>
         <source>Connected to zcashd</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="616"/>
+        <location filename="../src/rpc.cpp" line="617"/>
         <source>zcashd has no peer connections</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="634"/>
+        <location filename="../src/rpc.cpp" line="636"/>
         <source>There was an error connecting to zcashd. The error was</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="877"/>
+        <location filename="../src/rpc.cpp" line="879"/>
         <source>The transaction with id </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="877"/>
+        <location filename="../src/rpc.cpp" line="879"/>
         <source> failed. The error was</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="884"/>
+        <location filename="../src/rpc.cpp" line="886"/>
         <source> failed</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="884"/>
+        <location filename="../src/rpc.cpp" line="886"/>
         <source> Tx </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="903"/>
+        <location filename="../src/rpc.cpp" line="905"/>
         <source> tx computing. This can take several minutes.</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="946"/>
+        <location filename="../src/rpc.cpp" line="948"/>
         <source>Update Available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="947"/>
+        <location filename="../src/rpc.cpp" line="949"/>
         <source>A new release v%1 is available! You have v%2.
 
 Would you like to visit the releases page?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="956"/>
+        <location filename="../src/rpc.cpp" line="958"/>
         <source>No updates available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="957"/>
+        <location filename="../src/rpc.cpp" line="959"/>
         <source>You already have the latest release v%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="1044"/>
+        <location filename="../src/rpc.cpp" line="1046"/>
         <source>Please wait for zec-qt-wallet to exit</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="1045"/>
+        <location filename="../src/rpc.cpp" line="1047"/>
         <source>Waiting for zcashd to exit</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="248"/>
+        <location filename="../src/connection.cpp" line="294"/>
         <source> failed. Please check the help site for more info</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="272"/>
+        <location filename="../src/connection.cpp" line="318"/>
         <source>zcashd error</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="339"/>
+        <location filename="../src/connection.cpp" line="385"/>
         <source>A manual connection was requested, but the settings are not configured.
 
 Please set the host/port and user/password in the Edit-&gt;Settings menu.</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="351"/>
+        <location filename="../src/connection.cpp" line="397"/>
         <source>Could not connect to zcashd configured in settings.
 
 Please set the host/port and user/password in the Edit-&gt;Settings menu.</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="411"/>
+        <location filename="../src/connection.cpp" line="457"/>
         <source>Authentication failed. The username / password you specified was not accepted by zcashd. Try changing it in the Edit-&gt;Settings menu</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="426"/>
+        <location filename="../src/connection.cpp" line="472"/>
         <source>Your zcashd is starting up. Please wait.</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="447"/>
-        <location filename="../src/rpc.cpp" line="634"/>
+        <location filename="../src/connection.cpp" line="493"/>
+        <location filename="../src/rpc.cpp" line="636"/>
         <source>Connection Error</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="669"/>
-        <location filename="../src/rpc.cpp" line="876"/>
+        <location filename="../src/connection.cpp" line="715"/>
+        <location filename="../src/rpc.cpp" line="878"/>
         <source>Transaction Error</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="669"/>
+        <location filename="../src/connection.cpp" line="715"/>
         <source>There was an error sending the transaction. The error was:</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
@@ -1263,6 +1278,49 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
         <location filename="../src/confirm.ui" line="181"/>
         <source>You are using a custom fee. Since fees are transparent, you are giving up some privacy. Please use this only if you know what you are doing!</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+    </message>
+</context>
+<context>
+    <name>createZcashConf</name>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="14"/>
+        <source>Configure zcash.conf</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="61"/>
+        <source>Show Advanced Configuration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="86"/>
+        <source>Your zcash node will be configured for you automatically</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="102"/>
+        <source>Use custom datadir</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="109"/>
+        <source>Please chose a directory to store your wallet.dat and blockchain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="118"/>
+        <source>Choose directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="154"/>
+        <source>Connect over Tor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="161"/>
+        <source>Please note that you&apos;ll need to already have a Tor service configured on port 9050</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
