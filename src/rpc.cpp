@@ -523,6 +523,7 @@ void RPC::getInfoThenRefresh(bool force) {
 
         static int    lastBlock = 0;
         int curBlock  = reply["blocks"].get<json::number_integer_t>();
+        int version = reply["version"].get<json::number_integer_t>();
 
         if ( force || (curBlock != lastBlock) ) {
             // Something changed, so refresh everything.
@@ -588,7 +589,7 @@ void RPC::getInfoThenRefresh(bool force) {
                         // as the progress instead of verification progress.
                         progress = (double)blockNumber / (double)estimatedheight;
                     }
-                    txt = txt %  " ( " % QString::number(progress * 100, 'f', 0) % "% )";
+                    txt = txt %  " ( " % QString::number(progress * 100, 'f', 2) % "% )";
                     ui->blockheight->setText(txt);
                     ui->heightLabel->setText(QObject::tr("Downloading blocks"));
                 } else {
@@ -603,7 +604,7 @@ void RPC::getInfoThenRefresh(bool force) {
                 " (" %
                 (Settings::getInstance()->isTestnet() ? QObject::tr("testnet:") : "") %
                 QString::number(blockNumber) %
-                (isSyncing ? ("/" % QString::number(progress*100, 'f', 0) % "%") : QString()) %
+                (isSyncing ? ("/" % QString::number(progress*100, 'f', 2) % "%") : QString()) %
                 ")";
             main->statusLabel->setText(statusText);   
 
@@ -615,6 +616,7 @@ void RPC::getInfoThenRefresh(bool force) {
             else {
                 tooltip = QObject::tr("zcashd has no peer connections");
             }
+            tooltip = tooltip % "(v " % QString::number(version) % ")";
 
             if (!zecPrice.isEmpty()) {
                 tooltip = "1 ZEC = " % zecPrice % "\n" % tooltip;
