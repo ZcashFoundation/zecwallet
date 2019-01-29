@@ -43,10 +43,9 @@ void WSServer::processTextMessage(QString message)
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     if (m_debug)
         qDebug() << "Message received:" << message;
+
     if (pClient) {
         AppDataServer::processMessage(message, m_mainWindow, pClient);
-
-        //    pClient->sendTextMessage(AppDataServer::encryptOutgoing(json.toJson()));
     }
 }
 
@@ -129,11 +128,6 @@ void AppDataServer::connectAppDialog(QWidget* parent) {
     con.lblRemoteNonce->setText(AppDataServer::getNonceHex(NonceType::REMOTE));
     con.lblLocalNonce->setText(AppDataServer::getNonceHex(NonceType::LOCAL));
 
-    QObject::connect(con.btnDisconnect, &QPushButton::clicked, [=]() {
-        AppDataServer::saveNonceHex(NonceType::REMOTE, QString("00").repeated(24));
-        AppDataServer::saveNonceHex(NonceType::LOCAL, QString("00").repeated(24));
-    });
-
     d.exec();
     tempSecret = "";
 }
@@ -142,7 +136,9 @@ QString AppDataServer::getNonceHex(NonceType nt) {
     QSettings s;
     QString hex;
     if (nt == NonceType::LOCAL) {
-        hex = s.value("mobileapp/localnonce", QString("00").repeated(crypto_secretbox_NONCEBYTES)).toString();
+        // The default local nonce starts from 1, to always keep it odd
+        auto defaultLocalNonce = "01" + QString("00").repeated(crypto_secretbox_NONCEBYTES-1);
+        hex = s.value("mobileapp/localnonce", defaultLocalNonce).toString();
     }
     else {
         hex = s.value("mobileapp/remotenonce", QString("00").repeated(crypto_secretbox_NONCEBYTES)).toString();
@@ -311,10 +307,9 @@ void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWeb
                 return;
             }
             else {
-                // This is a new connection. So, update the nonces and the secret
+                // This is a new connection. So, update the remote nonce (to accept any nonce) and the secret
                 saveNewSecret(tempSecret);
                 AppDataServer::saveNonceHex(NonceType::REMOTE, QString("00").repeated(24));
-                AppDataServer::saveNonceHex(NonceType::LOCAL, QString("00").repeated(24));
 
                 // Fall through to processDecryptedMessage
             }
