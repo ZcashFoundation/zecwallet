@@ -943,8 +943,14 @@ void RPC::checkForUpdate(bool silent) {
                 }
 
                 auto currentVersion = QVersionNumber::fromString(APP_VERSION);
+                
+                // Get the max version that the user has hidden updates for
+                QSettings s;
+                auto maxHiddenVersion = QVersionNumber::fromString(s.value("update/lastversion", "0.0.0").toString());
+
                 qDebug() << "Version check: Current " << currentVersion << ", Available " << maxVersion;
-                if (maxVersion > currentVersion) {
+
+                if (maxVersion > currentVersion && maxVersion > maxHiddenVersion) {
                     auto ans = QMessageBox::information(main, QObject::tr("Update Available"), 
                         QObject::tr("A new release v%1 is available! You have v%2.\n\nWould you like to visit the releases page?")
                             .arg(maxVersion.toString())
@@ -952,6 +958,9 @@ void RPC::checkForUpdate(bool silent) {
                         QMessageBox::Yes, QMessageBox::Cancel);
                     if (ans == QMessageBox::Yes) {
                         QDesktopServices::openUrl(QUrl("https://github.com/ZcashFoundation/zec-qt-wallet/releases"));
+                    } else {
+                        // If the user selects cancel, don't bother them again for this version
+                        s.setValue("update/lastversion", maxVersion.toString());
                     }
                 } else {
                     if (!silent) {

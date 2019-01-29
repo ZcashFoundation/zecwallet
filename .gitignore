@@ -4,6 +4,7 @@ release/
 x64/
 artifacts/
 .vscode/
+res/libsodium/libsodium*
 src/ui_*.h
 *.autosave
 src/precompiled.h.cpp
