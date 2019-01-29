@@ -46,7 +46,7 @@ public:
     static void          processGetInfo(MainWindow* mainWindow, QWebSocket* pClient);
     static void          processGetTransactions(MainWindow* mainWindow, QWebSocket* pClient);
 
-    static QString       decryptMessage(QJsonDocument msg, QString secretHex);
+    static QString       decryptMessage(QJsonDocument msg, QString secretHex, bool skipNonceCheck = false);
     static QString       encryptOutgoing(QString msg);
 
     static QString       getSecretHex();
@@ -54,6 +54,9 @@ public:
 
     static QString       getNonceHex(NonceType nt);
     static void          saveNonceHex(NonceType nt, QString noncehex);
+
+private:
+    static QString       tempSecret;
 };
 
 class AppDataModel {

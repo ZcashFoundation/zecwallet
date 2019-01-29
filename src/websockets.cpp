@@ -83,7 +83,11 @@ QString AppDataServer::getSecretHex() {
 void AppDataServer::saveNewSecret(QString secretHex) {
     QSettings s;
     s.setValue("mobileapp/secret", secretHex);
+
+    s.sync();
 }
+
+QString AppDataServer::tempSecret;
 
 void AppDataServer::connectAppDialog(QWidget* parent) {
     QDialog d(parent);
@@ -115,19 +119,15 @@ void AppDataServer::connectAppDialog(QWidget* parent) {
     char* secretHex = new char[crypto_secretbox_KEYBYTES*2 + 1];
     sodium_bin2hex(secretHex, crypto_secretbox_KEYBYTES*2+1, secretBin, crypto_secretbox_KEYBYTES);
 
-    saveNewSecret(secretHex);
-
     QString secretStr(secretHex);
+    tempSecret = secretStr;
 
-    QString codeStr = uri + "," + secretHex;
+    QString codeStr = uri + "," + secretStr;
 
     con.lblConnStr->setText(codeStr);
     con.qrcode->setQrcodeString(codeStr);
     con.lblRemoteNonce->setText(AppDataServer::getNonceHex(NonceType::REMOTE));
     con.lblLocalNonce->setText(AppDataServer::getNonceHex(NonceType::LOCAL));
-
-    AppDataServer::saveNonceHex(NonceType::REMOTE, QString("00").repeated(24));
-    AppDataServer::saveNonceHex(NonceType::LOCAL, QString("00").repeated(24));
 
     QObject::connect(con.btnDisconnect, &QPushButton::clicked, [=]() {
         AppDataServer::saveNonceHex(NonceType::REMOTE, QString("00").repeated(24));
@@ -135,6 +135,7 @@ void AppDataServer::connectAppDialog(QWidget* parent) {
     });
 
     d.exec();
+    tempSecret = "";
 }
 
 QString AppDataServer::getNonceHex(NonceType nt) {
@@ -158,6 +159,7 @@ void AppDataServer::saveNonceHex(NonceType nt, QString noncehex) {
     else {
         s.setValue("mobileapp/remotenonce", noncehex);
     }
+    s.sync();
 }
 
 QString AppDataServer::encryptOutgoing(QString msg) {
@@ -212,7 +214,7 @@ QString AppDataServer::encryptOutgoing(QString msg) {
     return json.toJson();
 }
 
-QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex) {
+QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex, bool skipNonceCheck) {
     // Decrypt and then process
     QString noncehex = msg.object().value("nonce").toString();
     QString encryptedhex = msg.object().value("payload").toString();
@@ -227,8 +229,15 @@ QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex) {
     sodium_hex2bin(noncebin, crypto_secretbox_NONCEBYTES, noncehex.toStdString().c_str(), noncehex.length(),
         NULL, NULL, NULL);
 
-    assert(sodium_compare(lastRemoteBin, noncebin, crypto_secretbox_NONCEBYTES) == -1);
     assert(crypto_secretbox_KEYBYTES == crypto_hash_sha256_BYTES);
+    if (!skipNonceCheck) {
+        if (sodium_compare(lastRemoteBin, noncebin, crypto_secretbox_NONCEBYTES) != -1) {
+            // Refuse to accept a lower nonce, return an error
+            delete[] lastRemoteBin;
+            delete[] noncebin;
+            return "error";
+        }
+    }
 
     // Update the last seem remote hex
     saveNonceHex(NonceType::REMOTE, noncehex);
@@ -247,8 +256,7 @@ QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex) {
 
     QString payload;
     if (result == -1) {
-        payload = "error";
-        
+        payload = "error";        
     } else {
         char* decryptedStr = new char[decryptedLen + 1];
         sodium_memzero(decryptedStr, decryptedLen + 1);
@@ -280,14 +288,42 @@ void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWeb
     }
 
     auto decrypted = decryptMessage(msg, getSecretHex());
-    if (decrypted == "error") {
-        // If the dialog is open, then there might be a temporary, new secret key. Attempt to decrypt
-        // with that.
+
+    // If the decryption failed, maybe this is a new connection, so see if the dialog is open and a 
+    // temp secret is in place
+
+    auto replyWithError = [=]() {
         auto r = QJsonDocument(QJsonObject{
-            {"error", "Encrption error"}
+                    {"error", "Encryption error"}
             }).toJson();
         pClient->sendTextMessage(r);
         return;
+    };
+
+    if (decrypted == "error") {
+        // If the dialog is open, then there might be a temporary, new secret key. Attempt to decrypt
+        // with that.
+        if (!tempSecret.isEmpty()) {
+            decrypted = decryptMessage(msg, tempSecret, true);
+            if (decrypted == "error") {
+                // Oh, well. Just return an error
+                replyWithError();
+                return;
+            }
+            else {
+                // This is a new connection. So, update the nonces and the secret
+                saveNewSecret(tempSecret);
+                AppDataServer::saveNonceHex(NonceType::REMOTE, QString("00").repeated(24));
+                AppDataServer::saveNonceHex(NonceType::LOCAL, QString("00").repeated(24));
+
+                // Fall through to processDecryptedMessage
+            }
+        }
+        else {
+            replyWithError();
+            return;
+        }
+
     }
 
     processDecryptedMessage(decrypted, mainWindow, pClient);

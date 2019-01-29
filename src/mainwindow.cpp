@@ -127,6 +127,8 @@ void MainWindow::closeEvent(QCloseEvent* event) {
     s.setValue("baltablegeometry", ui->balancesTable->horizontalHeader()->saveState());
     s.setValue("tratablegeometry", ui->transactionsTable->horizontalHeader()->saveState());
 
+    s.sync();
+
     // Let the RPC know to shut down any running service.
     rpc->shutdownZcashd();
 
