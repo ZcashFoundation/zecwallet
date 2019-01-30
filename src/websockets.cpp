@@ -234,10 +234,7 @@ QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex, bool
             return "error";
         }
     }
-
-    // Update the last seem remote hex
-    saveNonceHex(NonceType::REMOTE, noncehex);
-
+    
     unsigned char* secret = new unsigned char[crypto_secretbox_KEYBYTES];
     sodium_hex2bin(secret, crypto_secretbox_KEYBYTES, secretHex.toStdString().c_str(), crypto_secretbox_KEYBYTES*2, 
         NULL, NULL, NULL);
@@ -254,6 +251,9 @@ QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex, bool
     if (result == -1) {
         payload = "error";        
     } else {
+        // Update the last seen remote hex
+        saveNonceHex(NonceType::REMOTE, noncehex);
+
         char* decryptedStr = new char[decryptedLen + 1];
         sodium_memzero(decryptedStr, decryptedLen + 1);
         memcpy(decryptedStr, decrypted, decryptedLen);
