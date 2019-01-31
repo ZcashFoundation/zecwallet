@@ -88,7 +88,8 @@ void RPC::setConnection(Connection* c) {
     ui->statusBar->showMessage("Ready!");
 
     refreshZECPrice();
-    checkForUpdate();
+    // Commented for Android beta. 
+    // checkForUpdate();
 
     // Force update, because this might be coming from a settings update
     // where we need to immediately refresh

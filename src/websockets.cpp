@@ -3,6 +3,7 @@
 #include "rpc.h"
 #include "settings.h"
 #include "ui_mobileappconnector.h"
+#include "version.h"
 
 WSServer::WSServer(quint16 port, bool debug, QObject *parent) :
     QObject(parent),
@@ -408,29 +409,22 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QW
         // Filter out sprout Txns
         if (Settings::getInstance()->isSproutAddress(i))
             continue;
+        // Filter out balances that don't have the requisite amount
+        if (allBalances->value(i) < amt)
+            continue;
+
         bals.append(QPair<QString, double>(i, allBalances->value(i)));
     }
 
     if (bals.isEmpty()) {
-        error("No sapling or transparent addresses");
+        error("No sapling or transparent addresses with enough balance to spend.");
         return;
     }
 
-    std::sort(bals.begin(), bals.end(), [=](const QPair<QString, double>a, const QPair<QString, double> b) ->bool {
-        // If same type, sort by amount
-        if (a.first[0] == b.first[0]) {
-            return a.second > b.second;
-        }
-        else {
-            return a > b;
-        }
+    std::sort(bals.begin(), bals.end(), [=](const QPair<QString, double>a, const QPair<QString, double> b) -> bool {
+        // Sort z addresses first
+        return a.first > b.first;
     });
-
-    if (amt > bals[0].second) {
-        // There isn't any any address capable of sending the Tx.
-        error("Amount exceeds the balance of your largest address.");
-        return;
-    }
 
     tx.fromAddr = bals[0].first;
     tx.toAddrs = { ToFields{ sendTx["to"].toString(), amt, sendTx["memo"].toString(), sendTx["memo"].toString().toUtf8().toHex()} };
@@ -468,6 +462,13 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QW
 void AppDataServer::processGetInfo(QJsonObject jobj, MainWindow* mainWindow, QWebSocket* pClient) {
     auto connectedName = jobj["name"].toString();
 
+    double maxSpendable = 0;
+    auto balances = mainWindow->getRPC()->getAllBalances()->values();
+    if (balances.length() > 0) {
+        std::sort(balances.begin(), balances.end(), std::less<double>());
+        maxSpendable = balances[balances.length() - 1];
+    }
+
     {
         QSettings s;
         s.setValue("mobileapp/connectedname", connectedName);
@@ -479,8 +480,10 @@ void AppDataServer::processGetInfo(QJsonObject jobj, MainWindow* mainWindow, QWe
         {"saplingAddress", mainWindow->getRPC()->getDefaultSaplingAddress()},
         {"tAddress", mainWindow->getRPC()->getDefaultTAddress()},
         {"balance", AppDataModel::getInstance()->getTotalBalance()},
+        {"maxspendable", maxSpendable},
         {"tokenName", Settings::getTokenName()},
-        {"zecprice", Settings::getInstance()->getZECPrice()}
+        {"zecprice", Settings::getInstance()->getZECPrice()},
+        {"serverversion", QString(APP_VERSION)}
     }).toJson();
     pClient->sendTextMessage(encryptOutgoing(r));
 }

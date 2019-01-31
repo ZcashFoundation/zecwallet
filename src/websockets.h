@@ -89,7 +89,6 @@ private:
     double balTransparent;
     double balShielded;
     double balTotal;
-    double balMaxSingle;
 
     QString saplingAddress;
 
