@@ -86,12 +86,13 @@ void AppDataServer::saveNewSecret(QString secretHex) {
     s.sync();
 }
 
-QString AppDataServer::tempSecret;
+QString AppDataServer::tempSecret = "";
+Ui_MobileAppConnector* AppDataServer::ui = nullptr;
 
 void AppDataServer::connectAppDialog(QWidget* parent) {
     QDialog d(parent);
-    Ui_MobileAppConnector con;
-    con.setupUi(&d);
+    ui = new Ui_MobileAppConnector();
+    ui->setupUi(&d);
     Settings::saveRestore(&d);
 
     // Get the address of the localhost
@@ -123,13 +124,34 @@ void AppDataServer::connectAppDialog(QWidget* parent) {
 
     QString codeStr = uri + "," + secretStr;
 
-    con.lblConnStr->setText(codeStr);
-    con.qrcode->setQrcodeString(codeStr);
-    con.lblRemoteNonce->setText(AppDataServer::getNonceHex(NonceType::REMOTE));
-    con.lblLocalNonce->setText(AppDataServer::getNonceHex(NonceType::LOCAL));
+    ui->lblConnStr->setText(codeStr);
+    ui->qrcode->setQrcodeString(codeStr);
+
+    updateConnectedUI();
+
+    QObject::connect(ui->btnDisconnect, &QPushButton::clicked, [=] () {
+        QSettings().setValue("mobileapp/connectedname", "");
+        saveNewSecret("");
+
+        updateConnectedUI();
+    });
+    
 
     d.exec();
+
+    // Cleanup
     tempSecret = "";
+    delete ui;
+    ui = nullptr;
+}
+
+void AppDataServer::updateConnectedUI() {
+    if (ui == nullptr)
+        return;
+
+    auto remoteName = QSettings().value("mobileapp/connectedname", "").toString();
+    ui->lblRemoteName->setText(remoteName.isEmpty() ?  "(Not connected to any device)" : remoteName);
+    ui->btnDisconnect->setEnabled(!remoteName.isEmpty());
 }
 
 QString AppDataServer::getNonceHex(NonceType nt) {
@@ -311,17 +333,20 @@ void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWeb
                 saveNewSecret(tempSecret);
                 AppDataServer::saveNonceHex(NonceType::REMOTE, QString("00").repeated(24));
 
-                // Fall through to processDecryptedMessage
+                processDecryptedMessage(decrypted, mainWindow, pClient);
+
+                // If the Connection UI is showing, we have to update the UI as well
+                if (ui != nullptr) {
+                    updateConnectedUI();
+                }
             }
         }
         else {
             replyWithError();
-            return;
         }
-
+    } else {
+        processDecryptedMessage(decrypted, mainWindow, pClient);
     }
-
-    processDecryptedMessage(decrypted, mainWindow, pClient);
 }
 
 void AppDataServer::processDecryptedMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient) {
@@ -338,7 +363,7 @@ void AppDataServer::processDecryptedMessage(QString message, MainWindow* mainWin
     }
     
     if (msg.object()["command"] == "getInfo") {
-        processGetInfo(mainWindow, pClient);
+        processGetInfo(msg.object(), mainWindow, pClient);
     }
     else if (msg.object()["command"] == "getTransactions") {
         processGetTransactions(mainWindow, pClient);
@@ -434,7 +459,14 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QW
     pClient->sendTextMessage(encryptOutgoing(r));
 }
 
-void AppDataServer::processGetInfo(MainWindow* mainWindow, QWebSocket* pClient) {
+void AppDataServer::processGetInfo(QJsonObject jobj, MainWindow* mainWindow, QWebSocket* pClient) {
+    auto connectedName = jobj["name"].toString();
+
+    {
+        QSettings s;
+        s.setValue("mobileapp/connectedname", connectedName);
+    }
+
     auto r = QJsonDocument(QJsonObject{
         {"version", 1.0},
         {"command", "getInfo"},

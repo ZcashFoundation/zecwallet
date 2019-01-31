@@ -78,21 +78,7 @@
       <string>ZecQT Wallet Companion App</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="3" column="0">
-       <widget class="QPushButton" name="btnDisconnect">
-        <property name="text">
-         <string>Disconnect</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lblConnectedApp">
-        <property name="text">
-         <string>Connected Phone Name and Description</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
+      <item row="2" column="0">
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -106,14 +92,20 @@
        </spacer>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="lblRemoteNonce">
+       <widget class="QPushButton" name="btnDisconnect">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
-         <string>TextLabel</string>
+         <string>Disconnect</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="lblLocalNonce">
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblRemoteName">
         <property name="text">
          <string>TextLabel</string>
         </property>

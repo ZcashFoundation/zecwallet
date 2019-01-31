@@ -1,8 +1,10 @@
 #ifndef WEBSOCKETS_H
 #define WEBSOCKETS_H
 
-#include "mainwindow.h"
 #include "precompiled.h"
+
+#include "mainwindow.h"
+#include "ui_mobileappconnector.h"
 
 
 QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
@@ -39,11 +41,12 @@ enum NonceType {
 class AppDataServer {
 public:
     static void          connectAppDialog(QWidget* parent);
+    static void          updateConnectedUI();
 
     static void          processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QWebSocket* pClient);
     static void          processMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient);
     static void          processDecryptedMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient);
-    static void          processGetInfo(MainWindow* mainWindow, QWebSocket* pClient);
+    static void          processGetInfo(QJsonObject jobj, MainWindow* mainWindow, QWebSocket* pClient);
     static void          processGetTransactions(MainWindow* mainWindow, QWebSocket* pClient);
 
     static QString       decryptMessage(QJsonDocument msg, QString secretHex, bool skipNonceCheck = false);
@@ -57,6 +60,7 @@ public:
 
 private:
     static QString       tempSecret;
+    static Ui_MobileAppConnector* ui;
 };
 
 class AppDataModel {
