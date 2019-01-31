@@ -42,6 +42,7 @@ class AppDataServer {
 public:
     static void          connectAppDialog(QWidget* parent);
     static void          updateConnectedUI();
+    static void          updateUIWithNewQRCode();
 
     static void          processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QWebSocket* pClient);
     static void          processMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient);

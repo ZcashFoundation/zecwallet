@@ -95,6 +95,26 @@ void AppDataServer::connectAppDialog(QWidget* parent) {
     ui->setupUi(&d);
     Settings::saveRestore(&d);
 
+    updateUIWithNewQRCode();
+    updateConnectedUI();
+
+    QObject::connect(ui->btnDisconnect, &QPushButton::clicked, [=] () {
+        QSettings().setValue("mobileapp/connectedname", "");
+        saveNewSecret("");
+
+        updateConnectedUI();
+    });
+    
+
+    d.exec();
+
+    // Cleanup
+    tempSecret = "";
+    delete ui;
+    ui = nullptr;
+}
+
+void AppDataServer::updateUIWithNewQRCode() {
     // Get the address of the localhost
     auto addrList = QNetworkInterface::allAddresses();
 
@@ -124,25 +144,7 @@ void AppDataServer::connectAppDialog(QWidget* parent) {
 
     QString codeStr = uri + "," + secretStr;
 
-    ui->lblConnStr->setText(codeStr);
     ui->qrcode->setQrcodeString(codeStr);
-
-    updateConnectedUI();
-
-    QObject::connect(ui->btnDisconnect, &QPushButton::clicked, [=] () {
-        QSettings().setValue("mobileapp/connectedname", "");
-        saveNewSecret("");
-
-        updateConnectedUI();
-    });
-    
-
-    d.exec();
-
-    // Cleanup
-    tempSecret = "";
-    delete ui;
-    ui = nullptr;
 }
 
 void AppDataServer::updateConnectedUI() {
@@ -337,7 +339,11 @@ void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWeb
 
                 // If the Connection UI is showing, we have to update the UI as well
                 if (ui != nullptr) {
+                    // Update the connected phone information
                     updateConnectedUI();
+
+                    // Update with a new QR Code for safety, so this secret isn't used by anyone else
+                    updateUIWithNewQRCode();
                 }
             }
         }
