@@ -531,7 +531,7 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_17">
+         <layout class="QHBoxLayout" name="layoutSendRecurring">
           <item>
            <widget class="QCheckBox" name="chkRecurring">
             <property name="text">
@@ -1029,7 +1029,7 @@
      <x>0</x>
      <y>0</y>
      <width>968</width>
-     <height>19</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

@@ -620,7 +620,7 @@ void MainWindow::postToZBoard() {
         rpc->executeTransaction(tx, [=] (QString opid) {
             ui->statusBar->showMessage(tr("Computing Tx: ") % opid);
         },
-        [=] (QString opid, QString txid) { 
+        [=] (QString /*opid*/, QString txid) { 
             ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
         },
         [=] (QString opid, QString errStr) {

@@ -97,6 +97,11 @@ void MainWindow::setupSendTab() {
     // Recurring schedule button
     QObject::connect(ui->btnRecurSchedule, &QPushButton::clicked, this, &MainWindow::editSchedule);
 
+    // Hide the recurring section for now
+    ui->chkRecurring->setVisible(false);
+    ui->lblRecurDesc->setVisible(false);
+    ui->btnRecurSchedule->setVisible(false);
+
     // Set the default state for the whole page
     removeExtraAddresses();
 }
@@ -655,7 +660,7 @@ void MainWindow::sendButton() {
             [=] (QString opid) {
                 ui->statusBar->showMessage(tr("Computing Tx: ") % opid);
             },
-            [=] (QString opid, QString txid) { 
+            [=] (QString, QString txid) { 
                 ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
             },
             [=] (QString opid, QString errStr) {

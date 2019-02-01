@@ -350,11 +350,11 @@ void Turnstile::executeMigrationStep() {
     }
 }
 
-void Turnstile::doSendTx(Tx tx, std::function<void(void)> cb) {
+void Turnstile::doSendTx(Tx tx, std::function<void(void)> /*cb*/) {
     rpc->executeTransaction(tx, [=] (QString opid) {
             mainwindow->ui->statusBar->showMessage(QObject::tr("Computing Tx: ") % opid);
         },
-        [=] (QString opid, QString txid) { 
+        [=] (QString /*opid*/, QString txid) { 
             mainwindow->ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
         },
         [=] (QString opid, QString errStr) {
