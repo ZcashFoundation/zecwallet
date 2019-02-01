@@ -227,7 +227,8 @@ void RPC::getTransactions(const std::function<void(json)>& cb) {
     conn->doRPCWithDefaultErrorHandling(payload, cb);
 }
 
-void RPC::sendZTransaction(json params, const std::function<void(json)>& cb) {
+void RPC::sendZTransaction(json params, const std::function<void(json)>& cb, 
+    const std::function<void(QString)>& err) {
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -235,7 +236,13 @@ void RPC::sendZTransaction(json params, const std::function<void(json)>& cb) {
         {"params", params}
     };
 
-    conn->doRPCWithDefaultErrorHandling(payload, cb);
+    conn->doRPC(payload, cb,  [=] (auto reply, auto parsed) {
+        if (!parsed.is_discarded() && !parsed["error"]["message"].is_null()) {
+            err(QString::fromStdString(parsed["error"]["message"]));    
+        } else {
+            err(reply->errorString());
+        }
+    });
 }
 
 /**
@@ -537,10 +544,14 @@ void RPC::getInfoThenRefresh(bool force) {
 
         static int    lastBlock = 0;
         int curBlock  = reply["blocks"].get<json::number_integer_t>();
+        int version = reply["version"].get<json::number_integer_t>();
 
         if ( force || (curBlock != lastBlock) ) {
             // Something changed, so refresh everything.
             lastBlock = curBlock;
+
+            // See if the turnstile migration has any steps that need to be done.
+            turnstile->executeMigrationStep();
 
             refreshBalances();        
             refreshAddresses(); // This calls refreshZSentTransactions() and refreshReceivedZTrans()
@@ -602,7 +613,7 @@ void RPC::getInfoThenRefresh(bool force) {
                         // as the progress instead of verification progress.
                         progress = (double)blockNumber / (double)estimatedheight;
                     }
-                    txt = txt %  " ( " % QString::number(progress * 100, 'f', 0) % "% )";
+                    txt = txt %  " ( " % QString::number(progress * 100, 'f', 2) % "% )";
                     ui->blockheight->setText(txt);
                     ui->heightLabel->setText(QObject::tr("Downloading blocks"));
                 } else {
@@ -617,7 +628,7 @@ void RPC::getInfoThenRefresh(bool force) {
                 " (" %
                 (Settings::getInstance()->isTestnet() ? QObject::tr("testnet:") : "") %
                 QString::number(blockNumber) %
-                (isSyncing ? ("/" % QString::number(progress*100, 'f', 0) % "%") : QString()) %
+                (isSyncing ? ("/" % QString::number(progress*100, 'f', 2) % "%") : QString()) %
                 ")";
             main->statusLabel->setText(statusText);   
 
@@ -629,6 +640,7 @@ void RPC::getInfoThenRefresh(bool force) {
             else {
                 tooltip = QObject::tr("zcashd has no peer connections");
             }
+            tooltip = tooltip % "(v " % QString::number(version) % ")";
 
             if (!zecPrice.isEmpty()) {
                 tooltip = "1 ZEC = " % zecPrice % "\n" % tooltip;
@@ -690,10 +702,7 @@ void RPC::refreshAddresses() {
 }
 
 // Function to create the data model and update the views, used below.
-void RPC::updateUI(bool anyUnconfirmed) {
-    // See if the turnstile migration has any steps that need to be done.
-    turnstile->executeMigrationStep();
-    
+void RPC::updateUI(bool anyUnconfirmed) {    
     ui->unconfirmedWarning->setVisible(anyUnconfirmed);
 
     // Update balances model data, which will update the table too
@@ -863,11 +872,35 @@ void RPC::refreshSentZTrans() {
      );
 }
 
-void RPC::addNewTxToWatch(Tx tx, const QString& newOpid) {    
-    watchingOps.insert(newOpid, tx);
+void RPC::addNewTxToWatch(const QString& newOpid, WatchedTx wtx) {    
+    watchingOps.insert(newOpid, wtx);
 
     watchTxStatus();
 }
+
+
+// Execute a transaction!
+void RPC::executeTransaction(Tx tx, 
+        const std::function<void(QString opid)> submitted,
+        const std::function<void(QString opid, QString txid)> computed,
+        const std::function<void(QString opid, QString errStr)> error) {
+    // First, create the json params
+    json params = json::array();
+    fillTxJsonParams(params, tx);
+    std::cout << std::setw(2) << params << std::endl;
+
+    sendZTransaction(params, [=](const json& reply) {
+        QString opid = QString::fromStdString(reply.get<json::string_t>());
+
+        // And then start monitoring the transaction
+        addNewTxToWatch( opid, WatchedTx { opid, tx, computed, error} );
+        submitted(opid);
+    },
+    [=](QString errStr) {
+        error("", errStr);
+    });
+}
+
 
 void RPC::watchTxStatus() {
     if  (conn == nullptr) 
@@ -888,35 +921,26 @@ void RPC::watchTxStatus() {
             if (watchingOps.contains(id)) {
                 // And if it ended up successful
                 QString status = QString::fromStdString(it["status"]);
+                main->loadingLabel->setVisible(false);
+
                 if (status == "success") {
                     auto txid = QString::fromStdString(it["result"]["txid"]);
                     
-                    SentTxStore::addToSentTx(watchingOps.value(id), txid);
+                    SentTxStore::addToSentTx(watchingOps[id].tx, txid);
 
-                    main->ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
-                    main->loadingLabel->setVisible(false);
-
+                    auto wtx = watchingOps[id];
                     watchingOps.remove(id);
+                    wtx.completed(id, txid);
 
                     // Refresh balances to show unconfirmed balances                    
-                    refresh(true);  
+                    refresh(true);
                 } else if (status == "failed") {
                     // If it failed, then we'll actually show a warning. 
                     auto errorMsg = QString::fromStdString(it["error"]["message"]);
-                    QMessageBox msg(
-                        QMessageBox::Critical,
-                        QObject::tr("Transaction Error"), 
-                        QObject::tr("The transaction with id ") % id % QObject::tr(" failed. The error was") + ":\n\n" + errorMsg,
-                        QMessageBox::Ok,
-                        main
-                    );
-                    
-                    watchingOps.remove(id);
-                    
-                    main->ui->statusBar->showMessage(QObject::tr(" Tx ") % id % QObject::tr(" failed"), 15 * 1000);
-                    main->loadingLabel->setVisible(false);
 
-                    msg.exec();                                                  
+                    auto wtx = watchingOps[id];
+                    watchingOps.remove(id);
+                    wtx.error(id, errorMsg);
                 } 
             }
 
@@ -973,8 +997,14 @@ void RPC::checkForUpdate(bool silent) {
                 }
 
                 auto currentVersion = QVersionNumber::fromString(APP_VERSION);
+                
+                // Get the max version that the user has hidden updates for
+                QSettings s;
+                auto maxHiddenVersion = QVersionNumber::fromString(s.value("update/lastversion", "0.0.0").toString());
+
                 qDebug() << "Version check: Current " << currentVersion << ", Available " << maxVersion;
-                if (maxVersion > currentVersion) {
+
+                if (maxVersion > currentVersion && maxVersion > maxHiddenVersion) {
                     auto ans = QMessageBox::information(main, QObject::tr("Update Available"), 
                         QObject::tr("A new release v%1 is available! You have v%2.\n\nWould you like to visit the releases page?")
                             .arg(maxVersion.toString())
@@ -982,6 +1012,15 @@ void RPC::checkForUpdate(bool silent) {
                         QMessageBox::Yes, QMessageBox::Cancel);
                     if (ans == QMessageBox::Yes) {
                         QDesktopServices::openUrl(QUrl("https://github.com/ZcashFoundation/zec-qt-wallet/releases"));
+                    } else {
+                        // If the user selects cancel, don't bother them again for this version
+                        s.setValue("update/lastversion", maxVersion.toString());
+                    }
+                } else {
+                    if (!silent) {
+                        QMessageBox::information(main, QObject::tr("No updates available"), 
+                            QObject::tr("You already have the latest release v%1")
+                                .arg(currentVersion.toString()));
                     }
                 } else {
                     if (!silent) {

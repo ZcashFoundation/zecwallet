@@ -54,7 +54,8 @@ SOURCES += \
     src/logger.cpp \
     src/addresscombo.cpp \
     src/websockets.cpp \
-    src/mobileappconnector.cpp
+    src/mobileappconnector.cpp \
+    src/recurring.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -76,7 +77,8 @@ HEADERS += \
     src/logger.h \
     src/addresscombo.h \ 
     src/websockets.h \
-    src/mobileappconnector.h
+    src/mobileappconnector.h \
+    src/recurring.h
 
 FORMS += \
     src/mainwindow.ui \
@@ -90,7 +92,10 @@ FORMS += \
     src/connection.ui \
     src/zboard.ui \
     src/addressbook.ui \
-    src/mobileappconnector.ui
+    src/mobileappconnector.ui \
+    src/createzcashconfdialog.ui \
+    src/recurringdialog.ui \
+    src/newrecurring.ui
 
 
 TRANSLATIONS = res/zec_qt_wallet_es.ts \

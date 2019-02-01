@@ -84,12 +84,22 @@ void SentTxStore::addToSentTx(Tx tx, QString txid) {
         totalAmount += i.amount;
     }
 
+    QString toAddresses;
+    if (tx.toAddrs.length() == 1) {
+        toAddresses = tx.toAddrs[0].addr;
+    } else {
+        // Concatenate all the toAddresses
+        for (auto a : tx.toAddrs) {
+            toAddresses += a.addr % "(" % Settings::getZECDisplayFormat(a.amount) % ")  ";
+        }
+    }
+
     auto list = jsonDoc.array();
     QJsonObject txItem;
     txItem["type"]      = "sent";
     txItem["from"]      = tx.fromAddr;
     txItem["datetime"]  = QDateTime::currentMSecsSinceEpoch() / (qint64)1000;
-    txItem["address"]   = QString();    // The sent address is blank, to be consistent with t-Addr sent behaviour
+    txItem["address"]   = toAddresses;
     txItem["txid"]      = txid;
     txItem["amount"]    = -totalAmount;
     txItem["fee"]       = -tx.fee;

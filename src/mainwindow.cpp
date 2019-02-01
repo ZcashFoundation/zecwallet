@@ -256,12 +256,18 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
 
     auto fnUpdateSproutBalance = [=] (QString addr) {
         double bal = 0;
+
+        // The currentText contains the balance as well, so strip that.
+        if (addr.contains("(")) {
+            addr = addr.left(addr.indexOf("("));
+        }
+
         if (addr.startsWith("All")) {
             bal = fnGetAllSproutBalance();
         } else {
             bal = rpc->getAllBalances()->value(addr);
         }
-
+        
         auto balTxt = Settings::getZECUSDDisplayFormat(bal);
         
         if (bal < Turnstile::minMigrationAmount) {
@@ -634,17 +640,20 @@ void MainWindow::postToZBoard() {
         tx.toAddrs.push_back(ToFields{ toAddr, Settings::getZboardAmount(), memo, memo.toUtf8().toHex() });
         tx.fee = Settings::getMinerFee();
 
-        json params = json::array();
-        rpc->fillTxJsonParams(params, tx);
-        std::cout << std::setw(2) << params << std::endl;
-
         // And send the Tx
-        rpc->sendZTransaction(params, [=](const json& reply) {
-            QString opid = QString::fromStdString(reply.get<json::string_t>());
+        rpc->executeTransaction(tx, [=] (QString opid) {
             ui->statusBar->showMessage(tr("Computing Tx: ") % opid);
+        },
+        [=] (QString /*opid*/, QString txid) { 
+            ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
+        },
+        [=] (QString opid, QString errStr) {
+            ui->statusBar->showMessage(QObject::tr(" Tx ") % opid % QObject::tr(" failed"), 15 * 1000);
 
-            // And then start monitoring the transaction
-            rpc->addNewTxToWatch(tx, opid);
+            if (!opid.isEmpty())
+                errStr = QObject::tr("The transaction with id ") % opid % QObject::tr(" failed. The error was") + ":\n\n" + errStr; 
+
+            QMessageBox::critical(this, QObject::tr("Transaction Error"), errStr, QMessageBox::Ok);            
         });
     }
 }
@@ -731,7 +740,7 @@ void MainWindow::payZcashURI() {
 
             if (kv[0].toLower() == "amt" || kv[0].toLower() == "amount") {
                 amount = kv[1].toDouble(); 
-            } else if (kv[0].toLower() == "memo") {
+            } else if (kv[0].toLower() == "memo" || kv[0].toLower() == "message" || kv[0].toLower() == "msg") {
                 memo = kv[1];
                 // Test if this is hex
 
@@ -1200,7 +1209,16 @@ void MainWindow::setupRecieveTab() {
     });
 
     // zAddr toggle button, one for sprout and one for sapling
-    QObject::connect(ui->rdioZAddr,  &QRadioButton::toggled, addZAddrsToComboList(false));
+    QObject::connect(ui->rdioZAddr, &QRadioButton::toggled, [=](bool checked) {
+        ui->btnRecieveNewAddr->setEnabled(!checked);
+        if (checked) {
+            ui->btnRecieveNewAddr->setToolTip(tr("Creation of new Sprout addresses is deprecated"));
+        }
+        else {
+            ui->btnRecieveNewAddr->setToolTip("");
+        }
+        addZAddrsToComboList(false)(checked);
+    });
     QObject::connect(ui->rdioZSAddr, &QRadioButton::toggled, addZAddrsToComboList(true));
 
     // Explicitly get new address button.
@@ -1233,7 +1251,7 @@ void MainWindow::setupRecieveTab() {
             if (Settings::getInstance()->isSaplingActive()) {
                 ui->rdioZSAddr->setVisible(true);    
                 ui->rdioZSAddr->setChecked(true);
-                ui->rdioZAddr->setText("z-Addr(Sprout)");
+                ui->rdioZAddr->setText("z-Addr(Legacy Sprout)");
             } else {
                 ui->rdioZSAddr->setVisible(false);    
                 ui->rdioZAddr->setChecked(true);
@@ -1260,7 +1278,6 @@ void MainWindow::setupRecieveTab() {
             ui->rcvBal->clear();
             ui->txtRecieve->clear();
             ui->qrcodeDisplay->clear();
-            ui->lblUsed->clear();
             return;
         }
 
@@ -1277,9 +1294,9 @@ void MainWindow::setupRecieveTab() {
         ui->txtRecieve->setPlainText(addr);       
         ui->qrcodeDisplay->setQrcodeString(addr);
         if (rpc->getUsedAddresses()->value(addr, false)) {
-            ui->lblUsed->setText(tr("Address has been previously used"));
+            ui->rcvBal->setToolTip(tr("Address has been previously used"));
         } else {
-            ui->lblUsed->setText(tr("Address is unused"));
+            ui->rcvBal->setToolTip(tr("Address is unused"));
         }
         
     });    

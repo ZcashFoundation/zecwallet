@@ -84,7 +84,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="243"/>
-        <location filename="../src/mainwindow.ui" line="584"/>
+        <location filename="../src/mainwindow.ui" line="635"/>
         <source>Send</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
@@ -111,23 +111,23 @@
     <message>
         <location filename="../src/mainwindow.ui" line="365"/>
         <location filename="../src/mainwindow.ui" line="372"/>
-        <location filename="../src/mainwindow.ui" line="745"/>
-        <location filename="../src/sendtab.cpp" line="157"/>
-        <location filename="../src/sendtab.cpp" line="162"/>
+        <location filename="../src/mainwindow.ui" line="820"/>
+        <location filename="../src/sendtab.cpp" line="187"/>
+        <location filename="../src/sendtab.cpp" line="192"/>
         <source>Address</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="379"/>
-        <location filename="../src/sendtab.cpp" line="172"/>
+        <location filename="../src/sendtab.cpp" line="202"/>
         <source>Address Book</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="390"/>
         <location filename="../src/mainwindow.ui" line="406"/>
-        <location filename="../src/sendtab.cpp" line="185"/>
-        <location filename="../src/sendtab.cpp" line="189"/>
+        <location filename="../src/sendtab.cpp" line="215"/>
+        <location filename="../src/sendtab.cpp" line="219"/>
         <source>Amount</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
@@ -138,9 +138,9 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="446"/>
-        <location filename="../src/mainwindow.cpp" line="1017"/>
-        <location filename="../src/mainwindow.cpp" line="1060"/>
-        <location filename="../src/sendtab.cpp" line="210"/>
+        <location filename="../src/mainwindow.cpp" line="1047"/>
+        <location filename="../src/mainwindow.cpp" line="1090"/>
+        <location filename="../src/sendtab.cpp" line="240"/>
         <source>Memo</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
@@ -151,530 +151,563 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="538"/>
-        <location filename="../src/sendtab.cpp" line="554"/>
+        <source>Recurring payment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="545"/>
+        <source>Every month, starting 12-May-2012, for 6 payments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="552"/>
+        <source>Edit Schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="582"/>
+        <location filename="../src/sendtab.cpp" line="589"/>
         <source>Miner Fee</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="551"/>
+        <location filename="../src/mainwindow.ui" line="595"/>
         <source>0</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="600"/>
+        <location filename="../src/mainwindow.ui" line="651"/>
         <source>Cancel</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="610"/>
+        <location filename="../src/mainwindow.ui" line="661"/>
         <source>Receive</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="618"/>
+        <location filename="../src/mainwindow.ui" line="669"/>
         <source>Address Type</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="632"/>
         <source>z-Addr(Sapling)</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="obsolete">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="645"/>
+        <location filename="../src/mainwindow.ui" line="696"/>
         <source>t-Addr</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="652"/>
         <source>z-Addr(Sprout)</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="obsolete">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="676"/>
+        <location filename="../src/mainwindow.ui" line="727"/>
         <source>New Address</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="694"/>
+        <location filename="../src/mainwindow.ui" line="745"/>
         <source>Label</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="701"/>
+        <location filename="../src/mainwindow.ui" line="752"/>
         <source>Update Label</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="715"/>
+        <location filename="../src/mainwindow.ui" line="766"/>
         <source>Address balance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="725"/>
+        <location filename="../src/mainwindow.ui" line="776"/>
         <source>Optional</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="757"/>
+        <location filename="../src/mainwindow.ui" line="798"/>
         <source>Export Private Key</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="779"/>
-        <source>Address used</source>
+        <location filename="../src/mainwindow.ui" line="683"/>
+        <source>z-Addr</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="831"/>
+        <location filename="../src/mainwindow.ui" line="703"/>
+        <source>z-Addr(Legacy Sprout)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="868"/>
         <source>Transactions</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="848"/>
+        <location filename="../src/mainwindow.ui" line="885"/>
         <source>zcashd</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="878"/>
+        <location filename="../src/mainwindow.ui" line="915"/>
         <source>You are currently not mining</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="898"/>
-        <location filename="../src/mainwindow.ui" line="912"/>
-        <location filename="../src/mainwindow.ui" line="933"/>
-        <location filename="../src/mainwindow.cpp" line="849"/>
+        <location filename="../src/mainwindow.ui" line="935"/>
+        <location filename="../src/mainwindow.ui" line="949"/>
+        <location filename="../src/mainwindow.ui" line="970"/>
+        <location filename="../src/mainwindow.cpp" line="879"/>
         <source>Loading...</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="905"/>
+        <location filename="../src/mainwindow.ui" line="942"/>
         <source>Block height</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="919"/>
+        <location filename="../src/mainwindow.ui" line="956"/>
         <source>Network solution rate</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="926"/>
+        <location filename="../src/mainwindow.ui" line="963"/>
         <source>Connections</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="960"/>
-        <location filename="../src/mainwindow.ui" line="967"/>
-        <location filename="../src/mainwindow.ui" line="974"/>
+        <location filename="../src/mainwindow.ui" line="997"/>
+        <location filename="../src/mainwindow.ui" line="1004"/>
+        <location filename="../src/mainwindow.ui" line="1011"/>
         <source>|</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1000"/>
+        <location filename="../src/mainwindow.ui" line="1037"/>
         <source>&amp;File</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1014"/>
+        <location filename="../src/mainwindow.ui" line="1051"/>
         <source>&amp;Help</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1022"/>
+        <location filename="../src/mainwindow.ui" line="1059"/>
         <source>&amp;Apps</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1029"/>
+        <location filename="../src/mainwindow.ui" line="1068"/>
         <source>&amp;Edit</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1042"/>
+        <location filename="../src/mainwindow.ui" line="1081"/>
         <source>E&amp;xit</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1047"/>
+        <location filename="../src/mainwindow.ui" line="1086"/>
         <source>&amp;About</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1052"/>
+        <location filename="../src/mainwindow.ui" line="1091"/>
         <source>&amp;Settings</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1055"/>
+        <location filename="../src/mainwindow.ui" line="1094"/>
         <source>Ctrl+P</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1060"/>
+        <location filename="../src/mainwindow.ui" line="1099"/>
         <source>&amp;Donate</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1065"/>
+        <location filename="../src/mainwindow.ui" line="1104"/>
         <source>Check github.com for &amp;updates</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1070"/>
+        <location filename="../src/mainwindow.ui" line="1109"/>
         <source>Sapling &amp;turnstile</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1073"/>
+        <location filename="../src/mainwindow.ui" line="1112"/>
         <source>Ctrl+A, Ctrl+T</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1078"/>
+        <location filename="../src/mainwindow.ui" line="1117"/>
         <source>&amp;Import private key</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1083"/>
+        <location filename="../src/mainwindow.ui" line="1122"/>
         <source>&amp;Export all private keys</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1088"/>
+        <location filename="../src/mainwindow.ui" line="1127"/>
         <source>&amp;z-board.net</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1091"/>
+        <location filename="../src/mainwindow.ui" line="1130"/>
         <source>Ctrl+A, Ctrl+Z</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1096"/>
+        <location filename="../src/mainwindow.ui" line="1135"/>
         <source>Address &amp;book</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1099"/>
+        <location filename="../src/mainwindow.ui" line="1138"/>
         <source>Ctrl+B</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1104"/>
+        <location filename="../src/mainwindow.ui" line="1143"/>
         <source>&amp;Backup wallet.dat</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1109"/>
-        <location filename="../src/mainwindow.cpp" line="787"/>
+        <location filename="../src/mainwindow.ui" line="1148"/>
+        <location filename="../src/mainwindow.cpp" line="817"/>
         <source>Export transactions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1114"/>
+        <location filename="../src/mainwindow.ui" line="1153"/>
         <source>Pay zcash &amp;URI...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="409"/>
+        <location filename="../src/mainwindow.ui" line="1158"/>
+        <source>Connect mobile &amp;app</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="1161"/>
+        <source>Ctrl+M</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="432"/>
         <source>Tor configuration is available only when running an embedded zcashd.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="461"/>
+        <location filename="../src/mainwindow.cpp" line="484"/>
         <source>Enable Tor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="462"/>
+        <location filename="../src/mainwindow.cpp" line="485"/>
         <source>Connection over Tor has been enabled. To use this feature, you need to restart zec-qt-wallet.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="470"/>
+        <location filename="../src/mainwindow.cpp" line="493"/>
         <source>Disable Tor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="471"/>
+        <location filename="../src/mainwindow.cpp" line="494"/>
         <source>Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart zec-qt-wallet.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="513"/>
+        <location filename="../src/mainwindow.cpp" line="536"/>
         <source>Thanks for supporting zec-qt-wallet!</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="515"/>
+        <location filename="../src/mainwindow.cpp" line="538"/>
         <source>Donate 0.01 </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="515"/>
+        <location filename="../src/mainwindow.cpp" line="538"/>
         <source> to support zec-qt-wallet</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="551"/>
+        <location filename="../src/mainwindow.cpp" line="575"/>
         <source>You are on testnet, your post won&apos;t actually appear on z-board.net</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="607"/>
+        <location filename="../src/mainwindow.cpp" line="631"/>
         <source>You need a sapling address with available balance to post</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="626"/>
-        <location filename="../src/sendtab.cpp" line="630"/>
+        <location filename="../src/mainwindow.cpp" line="645"/>
+        <location filename="../src/sendtab.cpp" line="661"/>
         <source>Computing Tx: </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="644"/>
+        <location filename="../src/mainwindow.cpp" line="671"/>
         <source>The keys were imported. It may take several minutes to rescan the blockchain. Until then, functionality may be limited</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="646"/>
+        <location filename="../src/mainwindow.cpp" line="673"/>
         <source>Private key import rescan finished</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="666"/>
+        <location filename="../src/mainwindow.cpp" line="693"/>
         <source>Error paying zcash URI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="667"/>
+        <location filename="../src/mainwindow.cpp" line="694"/>
         <source>URI should be of the form &apos;zcash:&lt;addr&gt;?amt=x&amp;memo=y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="671"/>
+        <location filename="../src/mainwindow.cpp" line="698"/>
         <source>Paste Zcash URI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="692"/>
+        <location filename="../src/mainwindow.cpp" line="722"/>
         <source>Could not understand address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="725"/>
+        <location filename="../src/mainwindow.cpp" line="755"/>
         <source>Unknown field in URI:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="757"/>
+        <location filename="../src/mainwindow.cpp" line="787"/>
         <source>Please paste your private keys (z-Addr or t-Addr) here, one per line</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="758"/>
+        <location filename="../src/mainwindow.cpp" line="788"/>
         <source>The keys will be imported into your connected zcashd node</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="793"/>
+        <location filename="../src/mainwindow.cpp" line="823"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="794"/>
+        <location filename="../src/mainwindow.cpp" line="824"/>
         <source>Error exporting transactions, file was not saved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="816"/>
+        <location filename="../src/mainwindow.cpp" line="846"/>
         <source>No wallet.dat</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="816"/>
+        <location filename="../src/mainwindow.cpp" line="846"/>
         <source>Couldn&apos;t find the wallet.dat on this computer</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="817"/>
+        <location filename="../src/mainwindow.cpp" line="847"/>
         <source>You need to back it up from the machine zcashd is running on</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="821"/>
+        <location filename="../src/mainwindow.cpp" line="851"/>
         <source>Backup wallet.dat</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="826"/>
+        <location filename="../src/mainwindow.cpp" line="856"/>
         <source>Couldn&apos;t backup</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="826"/>
+        <location filename="../src/mainwindow.cpp" line="856"/>
         <source>Couldn&apos;t backup the wallet.dat file.</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="827"/>
+        <location filename="../src/mainwindow.cpp" line="857"/>
         <source>You need to back it up manually.</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="854"/>
+        <location filename="../src/mainwindow.cpp" line="884"/>
         <source>These are all the private keys for all the addresses in your wallet</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="856"/>
+        <location filename="../src/mainwindow.cpp" line="886"/>
         <source>Private key for </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="864"/>
+        <location filename="../src/mainwindow.cpp" line="894"/>
         <source>Save File</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="868"/>
+        <location filename="../src/mainwindow.cpp" line="898"/>
         <source>Unable to open file</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="963"/>
-        <location filename="../src/mainwindow.cpp" line="1042"/>
+        <location filename="../src/mainwindow.cpp" line="993"/>
+        <location filename="../src/mainwindow.cpp" line="1072"/>
         <source>Copy address</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="966"/>
-        <location filename="../src/mainwindow.cpp" line="1038"/>
-        <location filename="../src/mainwindow.cpp" line="1044"/>
+        <location filename="../src/mainwindow.cpp" line="996"/>
+        <location filename="../src/mainwindow.cpp" line="1068"/>
+        <location filename="../src/mainwindow.cpp" line="1074"/>
         <source>Copied to clipboard</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="969"/>
+        <location filename="../src/mainwindow.cpp" line="999"/>
         <source>Get private key</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="980"/>
+        <location filename="../src/mainwindow.cpp" line="1010"/>
         <source>Shield balance to Sapling</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="985"/>
-        <location filename="../src/mainwindow.cpp" line="1048"/>
+        <location filename="../src/mainwindow.cpp" line="1015"/>
+        <location filename="../src/mainwindow.cpp" line="1078"/>
         <source>View on block explorer</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="997"/>
+        <location filename="../src/mainwindow.cpp" line="1027"/>
         <source>Migrate to Sapling</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1036"/>
+        <location filename="../src/mainwindow.cpp" line="1066"/>
         <source>Copy txid</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1059"/>
+        <location filename="../src/mainwindow.cpp" line="1089"/>
         <source>View Memo</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1071"/>
+        <location filename="../src/mainwindow.cpp" line="1101"/>
         <source>Reply to </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1151"/>
+        <location filename="../src/mainwindow.cpp" line="1181"/>
         <source>Created new t-Addr</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1259"/>
+        <location filename="../src/mainwindow.cpp" line="1215"/>
+        <source>Creation of new Sprout addresses is deprecated</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="1297"/>
         <source>Address has been previously used</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1261"/>
+        <location filename="../src/mainwindow.cpp" line="1299"/>
         <source>Address is unused</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="148"/>
+        <location filename="../src/sendtab.cpp" line="178"/>
         <source>Recipient </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="254"/>
+        <location filename="../src/sendtab.cpp" line="284"/>
         <source>Only z-addresses can have memos</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="262"/>
+        <location filename="../src/sendtab.cpp" line="292"/>
         <source>Memos can only be used with z-addresses</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="263"/>
+        <location filename="../src/sendtab.cpp" line="293"/>
         <source>The memo field can only be used with a z-address.
 </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="263"/>
+        <location filename="../src/sendtab.cpp" line="293"/>
         <source>
 doesn&apos;t look like a z-address</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="307"/>
+        <location filename="../src/sendtab.cpp" line="337"/>
         <source>Reply to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="448"/>
+        <location filename="../src/sendtab.cpp" line="483"/>
         <source>Change from </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="589"/>
+        <location filename="../src/sendtab.cpp" line="624"/>
         <source>Current balance      : </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="591"/>
+        <location filename="../src/sendtab.cpp" line="626"/>
         <source>Balance after this Tx: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="612"/>
+        <location filename="../src/sendtab.cpp" line="647"/>
         <source>Transaction Error</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="639"/>
+        <location filename="../src/sendtab.cpp" line="679"/>
         <source>From Address is Invalid</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="644"/>
+        <location filename="../src/sendtab.cpp" line="684"/>
         <source>Recipient Address </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="644"/>
+        <location filename="../src/sendtab.cpp" line="684"/>
         <source> is Invalid</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="650"/>
+        <location filename="../src/sendtab.cpp" line="690"/>
         <source>Amount &apos;%1&apos; is invalid!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -694,6 +727,39 @@ doesn&apos;t look like a z-address</source>
     </message>
 </context>
 <context>
+    <name>MobileAppConnector</name>
+    <message>
+        <location filename="../src/mobileappconnector.ui" line="14"/>
+        <source>Connect Mobile App</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mobileappconnector.ui" line="36"/>
+        <source>Scan this QRCode from your ZecQT companion app to connect your phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mobileappconnector.ui" line="43"/>
+        <source>QR Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mobileappconnector.ui" line="68"/>
+        <source>ZecQT Wallet Companion App</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mobileappconnector.ui" line="93"/>
+        <source>Disconnect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mobileappconnector.ui" line="100"/>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>PrivKey</name>
     <message>
         <location filename="../src/privkey.ui" line="14"/>
@@ -704,27 +770,27 @@ doesn&apos;t look like a z-address</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/connection.cpp" line="41"/>
+        <location filename="../src/connection.cpp" line="42"/>
         <source>Attempting autoconnect</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="50"/>
+        <location filename="../src/connection.cpp" line="51"/>
         <source>Starting embedded zcashd</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="60"/>
+        <location filename="../src/connection.cpp" line="61"/>
         <source>zcashd is set to run as daemon</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="60"/>
+        <location filename="../src/connection.cpp" line="61"/>
         <source>Waiting for zcashd</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="75"/>
+        <location filename="../src/connection.cpp" line="76"/>
         <source>You have zcashd set to start as a daemon, which can cause problems with zec-qt-wallet
 
 .Please remove the following line from your zcash.conf and restart zec-qt-wallet
@@ -732,7 +798,7 @@ daemon=1</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="80"/>
+        <location filename="../src/connection.cpp" line="81"/>
         <source>Couldn&apos;t start the embedded zcashd.
 
 Please try restarting.
@@ -743,199 +809,226 @@ If all else fails, please run zcashd manually.</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="91"/>
+        <location filename="../src/connection.cpp" line="92"/>
         <source>Couldn&apos;t connect to zcashd configured in zcash.conf.
 
 Not starting embedded zcashd because --no-embedded was passed</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="183"/>
+        <location filename="../src/connection.cpp" line="145"/>
+        <source>Hide Advanced Config</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="145"/>
+        <source>Show Advanced Config</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="158"/>
+        <source>Choose data directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="229"/>
         <source>All Downloads Finished Successfully!</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="206"/>
+        <location filename="../src/connection.cpp" line="252"/>
         <source>Couldn&apos;t download params. Please check the help site for more info.</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="83"/>
+        <location filename="../src/connection.cpp" line="84"/>
         <source>The process returned</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="232"/>
-        <location filename="../src/connection.cpp" line="248"/>
+        <location filename="../src/connection.cpp" line="278"/>
+        <location filename="../src/connection.cpp" line="294"/>
         <source>Downloading </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="232"/>
+        <location filename="../src/connection.cpp" line="278"/>
         <source> more remaining )</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="233"/>
+        <location filename="../src/connection.cpp" line="279"/>
         <source>MB of </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="233"/>
+        <location filename="../src/connection.cpp" line="279"/>
         <source>MB at </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="593"/>
+        <location filename="../src/rpc.cpp" line="618"/>
         <source>Downloading blocks</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="596"/>
+        <location filename="../src/rpc.cpp" line="621"/>
         <source>Block height</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="602"/>
+        <location filename="../src/rpc.cpp" line="627"/>
         <source>Syncing</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="602"/>
+        <location filename="../src/rpc.cpp" line="627"/>
         <source>Connected</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="604"/>
+        <location filename="../src/rpc.cpp" line="629"/>
         <source>testnet:</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="613"/>
+        <location filename="../src/rpc.cpp" line="638"/>
         <source>Connected to zcashd</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="616"/>
+        <location filename="../src/rpc.cpp" line="641"/>
         <source>zcashd has no peer connections</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="634"/>
+        <location filename="../src/rpc.cpp" line="660"/>
         <source>There was an error connecting to zcashd. The error was</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="877"/>
+        <location filename="../src/mainwindow.cpp" line="654"/>
+        <location filename="../src/sendtab.cpp" line="670"/>
+        <location filename="../src/turnstile.cpp" line="367"/>
         <source>The transaction with id </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="877"/>
+        <location filename="../src/mainwindow.cpp" line="654"/>
+        <location filename="../src/sendtab.cpp" line="670"/>
+        <location filename="../src/turnstile.cpp" line="367"/>
         <source> failed. The error was</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="884"/>
+        <location filename="../src/mainwindow.cpp" line="651"/>
+        <location filename="../src/sendtab.cpp" line="667"/>
+        <location filename="../src/turnstile.cpp" line="364"/>
         <source> failed</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="884"/>
+        <location filename="../src/mainwindow.cpp" line="651"/>
+        <location filename="../src/sendtab.cpp" line="667"/>
+        <location filename="../src/turnstile.cpp" line="364"/>
         <source> Tx </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="903"/>
+        <location filename="../src/rpc.cpp" line="959"/>
         <source> tx computing. This can take several minutes.</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="946"/>
+        <location filename="../src/rpc.cpp" line="1008"/>
         <source>Update Available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="947"/>
+        <location filename="../src/rpc.cpp" line="1009"/>
         <source>A new release v%1 is available! You have v%2.
 
 Would you like to visit the releases page?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="956"/>
+        <location filename="../src/rpc.cpp" line="1021"/>
+        <location filename="../src/rpc.cpp" line="1027"/>
         <source>No updates available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="957"/>
+        <location filename="../src/rpc.cpp" line="1022"/>
+        <location filename="../src/rpc.cpp" line="1028"/>
         <source>You already have the latest release v%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="1044"/>
+        <location filename="../src/rpc.cpp" line="1115"/>
         <source>Please wait for zec-qt-wallet to exit</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="1045"/>
+        <location filename="../src/rpc.cpp" line="1116"/>
         <source>Waiting for zcashd to exit</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="248"/>
+        <location filename="../src/connection.cpp" line="294"/>
         <source> failed. Please check the help site for more info</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="272"/>
+        <location filename="../src/connection.cpp" line="318"/>
         <source>zcashd error</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="339"/>
+        <location filename="../src/connection.cpp" line="385"/>
         <source>A manual connection was requested, but the settings are not configured.
 
 Please set the host/port and user/password in the Edit-&gt;Settings menu.</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="351"/>
+        <location filename="../src/connection.cpp" line="397"/>
         <source>Could not connect to zcashd configured in settings.
 
 Please set the host/port and user/password in the Edit-&gt;Settings menu.</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="411"/>
+        <location filename="../src/connection.cpp" line="457"/>
         <source>Authentication failed. The username / password you specified was not accepted by zcashd. Try changing it in the Edit-&gt;Settings menu</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="426"/>
+        <location filename="../src/connection.cpp" line="472"/>
         <source>Your zcashd is starting up. Please wait.</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="447"/>
-        <location filename="../src/rpc.cpp" line="634"/>
+        <location filename="../src/connection.cpp" line="493"/>
+        <location filename="../src/rpc.cpp" line="660"/>
         <source>Connection Error</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="669"/>
-        <location filename="../src/rpc.cpp" line="876"/>
+        <location filename="../src/connection.cpp" line="715"/>
+        <location filename="../src/mainwindow.cpp" line="656"/>
+        <location filename="../src/sendtab.cpp" line="672"/>
+        <location filename="../src/turnstile.cpp" line="369"/>
         <source>Transaction Error</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/connection.cpp" line="669"/>
+        <location filename="../src/connection.cpp" line="715"/>
         <source>There was an error sending the transaction. The error was:</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="353"/>
-        <location filename="../src/rpc.cpp" line="355"/>
+        <location filename="../src/rpc.cpp" line="374"/>
+        <location filename="../src/rpc.cpp" line="376"/>
         <source>No Connection</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
@@ -1006,7 +1099,7 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
-        <location filename="../src/turnstile.cpp" line="360"/>
+        <location filename="../src/turnstile.cpp" line="357"/>
         <source>Computing Tx: </source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
@@ -1029,6 +1122,29 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
         <location filename="../src/txtablemodel.cpp" line="7"/>
         <source>Amount</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+    </message>
+</context>
+<context>
+    <name>RecurringDialog</name>
+    <message>
+        <location filename="../src/recurringdialog.ui" line="14"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/recurringdialog.ui" line="25"/>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/recurringdialog.ui" line="32"/>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/recurringdialog.ui" line="39"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1262,6 +1378,102 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     <message>
         <location filename="../src/confirm.ui" line="181"/>
         <source>You are using a custom fee. Since fees are transparent, you are giving up some privacy. Please use this only if you know what you are doing!</source>
+        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+    </message>
+</context>
+<context>
+    <name>createZcashConf</name>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="14"/>
+        <source>Configure zcash.conf</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="61"/>
+        <source>Show Advanced Configuration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="86"/>
+        <source>Your zcash node will be configured for you automatically</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="102"/>
+        <source>Use custom datadir</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="109"/>
+        <source>Please chose a directory to store your wallet.dat and blockchain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="118"/>
+        <source>Choose directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="154"/>
+        <source>Connect over Tor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="161"/>
+        <source>Please note that you&apos;ll need to already have a Tor service configured on port 9050</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>newRecurringDialog</name>
+    <message>
+        <location filename="../src/newrecurring.ui" line="14"/>
+        <source>Edit Schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/newrecurring.ui" line="50"/>
+        <source>Schedule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/newrecurring.ui" line="57"/>
+        <source>Payment Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/newrecurring.ui" line="64"/>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/newrecurring.ui" line="111"/>
+        <source>From</source>
+        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+    </message>
+    <message>
+        <location filename="../src/newrecurring.ui" line="118"/>
+        <source>Number of payments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/newrecurring.ui" line="125"/>
+        <source>Amount</source>
+        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+    </message>
+    <message>
+        <location filename="../src/newrecurring.ui" line="168"/>
+        <source>Next Payment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/newrecurring.ui" line="178"/>
+        <source>To</source>
+        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+    </message>
+    <message>
+        <location filename="../src/newrecurring.ui" line="188"/>
+        <source>Memo</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
 </context>
