@@ -239,12 +239,18 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
 
     auto fnUpdateSproutBalance = [=] (QString addr) {
         double bal = 0;
+
+        // The currentText contains the balance as well, so strip that.
+        if (addr.contains("(")) {
+            addr = addr.left(addr.indexOf("("));
+        }
+
         if (addr.startsWith("All")) {
             bal = fnGetAllSproutBalance();
         } else {
             bal = rpc->getAllBalances()->value(addr);
         }
-
+        
         auto balTxt = Settings::getZECUSDDisplayFormat(bal);
         
         if (bal < Turnstile::minMigrationAmount) {
