@@ -351,17 +351,19 @@ void Turnstile::executeMigrationStep() {
 }
 
 void Turnstile::doSendTx(Tx tx, std::function<void(void)> cb) {
-    json params = json::array();
-    rpc->fillTxJsonParams(params, tx);
-    std::cout << std::setw(2) << params << std::endl;
-    rpc->sendZTransaction(params, [=] (const json& reply) {
-        QString opid = QString::fromStdString(reply.get<json::string_t>());
-        //qDebug() << opid;
-        mainwindow->ui->statusBar->showMessage(QObject::tr("Computing Tx: ") % opid);
+    rpc->executeTransaction(tx, [=] (QString opid) {
+            mainwindow->ui->statusBar->showMessage(QObject::tr("Computing Tx: ") % opid);
+        },
+        [=] (QString opid, QString txid) { 
+            mainwindow->ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
+        },
+        [=] (QString opid, QString errStr) {
+            mainwindow->ui->statusBar->showMessage(QObject::tr(" Tx ") % opid % QObject::tr(" failed"), 15 * 1000);
 
-        // And then start monitoring the transaction
-        rpc->addNewTxToWatch(tx, opid);
+            if (!opid.isEmpty())
+                errStr = QObject::tr("The transaction with id ") % opid % QObject::tr(" failed. The error was") + ":\n\n" + errStr; 
 
-        cb();
-    });
+            QMessageBox::critical(mainwindow, QObject::tr("Transaction Error"), errStr, QMessageBox::Ok);            
+        });
+    
 }

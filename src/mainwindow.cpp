@@ -616,17 +616,20 @@ void MainWindow::postToZBoard() {
         tx.toAddrs.push_back(ToFields{ toAddr, Settings::getZboardAmount(), memo, memo.toUtf8().toHex() });
         tx.fee = Settings::getMinerFee();
 
-        json params = json::array();
-        rpc->fillTxJsonParams(params, tx);
-        std::cout << std::setw(2) << params << std::endl;
-
         // And send the Tx
-        rpc->sendZTransaction(params, [=](const json& reply) {
-            QString opid = QString::fromStdString(reply.get<json::string_t>());
+        rpc->executeTransaction(tx, [=] (QString opid) {
             ui->statusBar->showMessage(tr("Computing Tx: ") % opid);
+        },
+        [=] (QString opid, QString txid) { 
+            ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
+        },
+        [=] (QString opid, QString errStr) {
+            ui->statusBar->showMessage(QObject::tr(" Tx ") % opid % QObject::tr(" failed"), 15 * 1000);
 
-            // And then start monitoring the transaction
-            rpc->addNewTxToWatch(tx, opid);
+            if (!opid.isEmpty())
+                errStr = QObject::tr("The transaction with id ") % opid % QObject::tr(" failed. The error was") + ":\n\n" + errStr; 
+
+            QMessageBox::critical(this, QObject::tr("Transaction Error"), errStr, QMessageBox::Ok);            
         });
     }
 }

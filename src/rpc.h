@@ -24,6 +24,13 @@ struct TransactionItem {
     QString         memo;
 };
 
+struct WatchedTx {
+    QString opid;
+    Tx tx;
+    std::function<void(QString, QString)> completed;
+    std::function<void(QString, QString)> error;
+};
+
 class RPC
 {
 public:
@@ -42,10 +49,15 @@ public:
     void refreshZECPrice();
     void getZboardTopics(std::function<void(QMap<QString, QString>)> cb);
 
+    void executeTransaction(Tx tx, 
+        const std::function<void(QString opid)> submitted,
+        const std::function<void(QString opid, QString txid)> computed,
+        const std::function<void(QString opid, QString errStr)> error);
+
     void fillTxJsonParams(json& params, Tx tx);
-    void sendZTransaction   (json params, const std::function<void(json)>& cb);
+    void sendZTransaction(json params, const std::function<void(json)>& cb, const std::function<void(QString)>& err);
     void watchTxStatus();
-    void addNewTxToWatch(Tx tx, const QString& newOpid); 
+    void addNewTxToWatch(const QString& newOpid, WatchedTx wtx); 
 
     const TxTableModel*               getTransactionsModel() { return transactionsTableModel; }
     const QList<QString>*             getAllZAddresses()     { return zaddresses; }
@@ -98,7 +110,7 @@ private:
     QMap<QString, bool>*        usedAddresses               = nullptr;
     QList<QString>*             zaddresses                  = nullptr;
     
-    QMap<QString, Tx>           watchingOps;
+    QMap<QString, WatchedTx>    watchingOps;
 
     TxTableModel*               transactionsTableModel      = nullptr;
     BalancesTableModel*         balancesTableModel          = nullptr;
