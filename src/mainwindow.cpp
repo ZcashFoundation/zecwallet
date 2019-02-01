@@ -1242,7 +1242,6 @@ void MainWindow::setupRecieveTab() {
             ui->rcvBal->clear();
             ui->txtRecieve->clear();
             ui->qrcodeDisplay->clear();
-            ui->lblUsed->clear();
             return;
         }
 
@@ -1259,9 +1258,9 @@ void MainWindow::setupRecieveTab() {
         ui->txtRecieve->setPlainText(addr);       
         ui->qrcodeDisplay->setAddress(addr);
         if (rpc->getUsedAddresses()->value(addr, false)) {
-            ui->lblUsed->setText(tr("Address has been previously used"));
+            ui->rcvBal->setToolTip(tr("Address has been previously used"));
         } else {
-            ui->lblUsed->setText(tr("Address is unused"));
+            ui->rcvBal->setToolTip(tr("Address is unused"));
         }
         
     });    

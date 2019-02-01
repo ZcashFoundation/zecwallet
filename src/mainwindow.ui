@@ -346,8 +346,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>920</width>
-                <height>334</height>
+                <width>928</width>
+                <height>380</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -739,17 +739,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="label_10">
-                  <property name="text">
-                   <string>Address</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="1" colspan="2">
+                <item row="3" column="1" colspan="2">
                  <layout class="QHBoxLayout" name="horizontalLayout_16">
                   <item>
                    <widget class="QPushButton" name="exportKey">
@@ -773,17 +763,13 @@
                   </item>
                  </layout>
                 </item>
-                <item row="3" column="0">
-                 <widget class="QLabel" name="label_15">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_10">
                   <property name="text">
-                   <string>Address used</string>
+                   <string>Address</string>
                   </property>
-                 </widget>
-                </item>
-                <item row="3" column="1" colspan="2">
-                 <widget class="QLabel" name="lblUsed">
-                  <property name="text">
-                   <string notr="true"/>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
                   </property>
                  </widget>
                 </item>
@@ -992,7 +978,7 @@
      <x>0</x>
      <y>0</y>
      <width>968</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
