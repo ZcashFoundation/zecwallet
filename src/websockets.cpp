@@ -466,6 +466,12 @@ void AppDataServer::processGetInfo(QJsonObject jobj, MainWindow* mainWindow, QWe
     auto connectedName = jobj["name"].toString();
 
     double maxSpendable = 0;
+    if (mainWindow == nullptr || mainWindow->getRPC() == nullptr ||
+            mainWindow->getRPC()->getAllBalances() == nullptr) {
+        pClient->close(QWebSocketProtocol::CloseCodeNormal, "Not yet ready");
+        return;
+    }
+
     auto balances = mainWindow->getRPC()->getAllBalances()->values();
     if (balances.length() > 0) {
         std::sort(balances.begin(), balances.end(), std::less<double>());
