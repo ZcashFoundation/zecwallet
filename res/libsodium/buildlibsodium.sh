@@ -21,7 +21,11 @@ fi
 cd libsodium-1.0.16
 bash configure
 make clean
-make -j$(nproc)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    make CFLAGS="-mmacosx-version-min=10.11" CPPFLAGS="-mmacosx-version-min=10.11"
+else
+    make 
+fi
 cd ..
 
 # copy the library to the parents's res/ folder
