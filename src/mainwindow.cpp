@@ -1182,7 +1182,16 @@ void MainWindow::setupRecieveTab() {
     });
 
     // zAddr toggle button, one for sprout and one for sapling
-    QObject::connect(ui->rdioZAddr,  &QRadioButton::toggled, addZAddrsToComboList(false));
+    QObject::connect(ui->rdioZAddr, &QRadioButton::toggled, [=](bool checked) {
+        ui->btnRecieveNewAddr->setEnabled(!checked);
+        if (checked) {
+            ui->btnRecieveNewAddr->setToolTip(tr("Creation of new Sprout addresses is deprecated"));
+        }
+        else {
+            ui->btnRecieveNewAddr->setToolTip("");
+        }
+        addZAddrsToComboList(false)(checked);
+    });
     QObject::connect(ui->rdioZSAddr, &QRadioButton::toggled, addZAddrsToComboList(true));
 
     // Explicitly get new address button.
@@ -1215,7 +1224,7 @@ void MainWindow::setupRecieveTab() {
             if (Settings::getInstance()->isSaplingActive()) {
                 ui->rdioZSAddr->setVisible(true);    
                 ui->rdioZSAddr->setChecked(true);
-                ui->rdioZAddr->setText("z-Addr(Sprout)");
+                ui->rdioZAddr->setText("z-Addr(Legacy Sprout)");
             } else {
                 ui->rdioZSAddr->setVisible(false);    
                 ui->rdioZAddr->setChecked(true);

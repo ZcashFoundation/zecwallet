@@ -629,7 +629,7 @@
                <item>
                 <widget class="QRadioButton" name="rdioZSAddr">
                  <property name="text">
-                  <string>z-Addr(Sapling)</string>
+                  <string>z-Addr</string>
                  </property>
                 </widget>
                </item>
@@ -649,7 +649,7 @@
                <item>
                 <widget class="QRadioButton" name="rdioZAddr">
                  <property name="text">
-                  <string>z-Addr(Sprout)</string>
+                  <string>z-Addr(Legacy Sprout)</string>
                  </property>
                 </widget>
                </item>
