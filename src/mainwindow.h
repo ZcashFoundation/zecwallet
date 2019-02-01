@@ -42,7 +42,6 @@ public:
 
     QString doSendTxValidations(Tx tx);
     void setDefaultPayFrom();
-    RPC* getRPC() { return rpc; }
 
     Ui::MainWindow*     ui;
 

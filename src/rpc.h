@@ -58,7 +58,7 @@ public:
     void sendZTransaction(json params, const std::function<void(json)>& cb, const std::function<void(QString)>& err);
     void watchTxStatus();
 
-    const QMap<QString, Tx> getWatchingTxns() { return watchingOps; }
+    const QMap<QString, WatchedTx> getWatchingTxns() { return watchingOps; }
     void addNewTxToWatch(const QString& newOpid, WatchedTx wtx); 
 
     const TxTableModel*               getTransactionsModel() { return transactionsTableModel; }

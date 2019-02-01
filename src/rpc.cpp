@@ -1022,13 +1022,7 @@ void RPC::checkForUpdate(bool silent) {
                             QObject::tr("You already have the latest release v%1")
                                 .arg(currentVersion.toString()));
                     }
-                } else {
-                    if (!silent) {
-                        QMessageBox::information(main, QObject::tr("No updates available"), 
-                            QObject::tr("You already have the latest release v%1")
-                                .arg(currentVersion.toString()));
-                    }
-                }
+                } 
             }
         }
         catch (...) {

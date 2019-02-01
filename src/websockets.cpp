@@ -442,14 +442,17 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QW
     std::cout << std::setw(2) << params << std::endl;
 
     // And send the Tx
-    mainwindow->getRPC()->sendZTransaction(params, [=](const json& reply) {
-        QString opid = QString::fromStdString(reply.get<json::string_t>());
+    mainwindow->getRPC()->executeTransaction(tx,
+        [=] (QString opid) {
 
-        // And then start monitoring the transaction
-        mainwindow->getRPC()->addNewTxToWatch(tx, opid);
+        }, 
+        [=] (QString opid, QString txid) {
 
-        // TODO: Handle the error if the computed Tx fails.
-    });
+        },
+        [=] (QString opid, QString errStr) {
+
+        }   
+    );
 
     auto r = QJsonDocument(QJsonObject{
             {"version", 1.0},
@@ -498,10 +501,10 @@ void AppDataServer::processGetTransactions(MainWindow* mainWindow, QWebSocket* p
         txns.append(QJsonObject{
             {"type", "send"},
             {"datetime", QDateTime::currentSecsSinceEpoch()},
-            {"amount", Settings::getDecimalString(wtxns[opid].toAddrs[0].amount)},
+            {"amount", Settings::getDecimalString(wtxns[opid].tx.toAddrs[0].amount)},
             {"txid", ""},
-            {"address", wtxns[opid].toAddrs[0].addr},
-            {"memo", wtxns[opid].toAddrs[0].txtMemo},
+            {"address", wtxns[opid].tx.toAddrs[0].addr},
+            {"memo", wtxns[opid].tx.toAddrs[0].txtMemo},
             {"confirmations", 0}
             });
     }
