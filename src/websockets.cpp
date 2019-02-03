@@ -465,17 +465,26 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QW
 void AppDataServer::processGetInfo(QJsonObject jobj, MainWindow* mainWindow, QWebSocket* pClient) {
     auto connectedName = jobj["name"].toString();
 
-    double maxSpendable = 0;
+    
     if (mainWindow == nullptr || mainWindow->getRPC() == nullptr ||
             mainWindow->getRPC()->getAllBalances() == nullptr) {
         pClient->close(QWebSocketProtocol::CloseCodeNormal, "Not yet ready");
         return;
     }
 
-    auto balances = mainWindow->getRPC()->getAllBalances()->values();
-    if (balances.length() > 0) {
-        std::sort(balances.begin(), balances.end(), std::less<double>());
-        maxSpendable = balances[balances.length() - 1];
+
+    // Max spendable safely from a z address and from any address
+    double maxZSpendable = 0;
+    double maxSpendable = 0;
+    for (auto a : mainWindow->getRPC()->getAllBalances()->keys()) {
+        if (Settings::getInstance()->isSaplingAddress(a)) {
+            if (mainWindow->getRPC()->getAllBalances()->value(a) > maxZSpendable) {
+                maxZSpendable = mainWindow->getRPC()->getAllBalances()->value(a);
+            }
+        }
+        if (mainWindow->getRPC()->getAllBalances()->value(a) > maxSpendable) {
+            maxSpendable = mainWindow->getRPC()->getAllBalances()->value(a);
+        }
     }
 
     {
@@ -490,6 +499,7 @@ void AppDataServer::processGetInfo(QJsonObject jobj, MainWindow* mainWindow, QWe
         {"tAddress", mainWindow->getRPC()->getDefaultTAddress()},
         {"balance", AppDataModel::getInstance()->getTotalBalance()},
         {"maxspendable", maxSpendable},
+        {"maxzspendable", maxZSpendable},
         {"tokenName", Settings::getTokenName()},
         {"zecprice", Settings::getInstance()->getZECPrice()},
         {"serverversion", QString(APP_VERSION)}
