@@ -240,6 +240,12 @@ QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex, bool
     QString noncehex = msg.object().value("nonce").toString();
     QString encryptedhex = msg.object().value("payload").toString();
 
+    // Enforce limits on the size of the message
+    if (noncehex.length() > crypto_secretbox_NONCEBYTES * 2 ||
+        encryptedhex.length() > 2 * 50 * 1024 /*50kb*/) {
+        return "error";
+    }
+
     // Check to make sure that the nonce is greater than the last known remote nonce
     QString lastRemoteHex = getNonceHex(NonceType::REMOTE);
     unsigned char* lastRemoteBin = new unsigned char[crypto_secretbox_NONCEBYTES];
@@ -443,9 +449,8 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QW
 
     // And send the Tx
     mainwindow->getRPC()->executeTransaction(tx,
-        [=] (QString opid) {
-
-        }, 
+        [=] (QString opid) {}, 
+        // Submitted Tx successfully
         [=] (QString opid, QString txid) {
             auto r = QJsonDocument(QJsonObject{
                {"version", 1.0},
@@ -455,6 +460,7 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QW
             if (pClient->isValid())
                 pClient->sendTextMessage(encryptOutgoing(r));
         },
+        // Errored while submitting Tx
         [=] (QString opid, QString errStr) {
             auto r = QJsonDocument(QJsonObject{
                {"version", 1.0},
