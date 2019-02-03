@@ -447,10 +447,22 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QW
 
         }, 
         [=] (QString opid, QString txid) {
-
+            auto r = QJsonDocument(QJsonObject{
+               {"version", 1.0},
+               {"command", "sendTxSubmitted"},
+               {"txid",  txid}
+            }).toJson();
+            if (pClient->isValid())
+                pClient->sendTextMessage(encryptOutgoing(r));
         },
         [=] (QString opid, QString errStr) {
-
+            auto r = QJsonDocument(QJsonObject{
+               {"version", 1.0},
+               {"command", "sendTxFailed"},
+               {"err",  errStr}
+            }).toJson();
+            if (pClient->isValid())
+                pClient->sendTextMessage(encryptOutgoing(r));
         }   
     );
 
