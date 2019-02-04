@@ -106,7 +106,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Please chose a directory to store your wallet.dat and blockchain</string>
+         <string>Please choose a directory to store your wallet.dat and blockchain</string>
         </property>
        </widget>
       </item>
