@@ -1,0 +1,8 @@
+This directory contains the hashes and signatures for zec-qt-wallet
+
+Verify the hashes by running
+sha256sum -c sha256sum-vX.Y.Z.txt
+
+Verify signatures by runnnig
+gpg --verify <filename.sig> <filename>
+
