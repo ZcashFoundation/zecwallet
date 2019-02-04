@@ -87,3 +87,7 @@ if (! (Test-Path ./artifacts/linux-binaries-zec-qt-wallet-v$version.tar.gz) -or
         exit 1;
     }
 Write-Host "[OK]"
+
+Write-Host -NoNewline "Signing Binaries......"
+APP_VERSION=$version bash src/scripts/signbinaries.sh
+Write-Host "[OK]"
