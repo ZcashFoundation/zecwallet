@@ -403,6 +403,12 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QW
         return;
     };
 
+    // Refuse to send if the node is still syncing
+    if (Settings::getInstance()->isSyncing()) {
+        error(QObject::tr("Node is still syncing."));
+        return;
+    }
+
     // Create a Tx Object
     Tx tx;
     tx.fee = Settings::getMinerFee();
@@ -412,7 +418,7 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QW
     auto allBalances = mainwindow->getRPC()->getAllBalances();
     QList<QPair<QString, double>> bals;
     for (auto i : allBalances->keys()) {
-        // Filter out sprout Txns
+        // Filter out sprout addresses
         if (Settings::getInstance()->isSproutAddress(i))
             continue;
         // Filter out balances that don't have the requisite amount
@@ -423,7 +429,7 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QW
     }
 
     if (bals.isEmpty()) {
-        error("No sapling or transparent addresses with enough balance to spend.");
+        error(QObject::tr("No sapling or transparent addresses with enough balance to spend."));
         return;
     }
 
