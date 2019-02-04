@@ -1088,7 +1088,7 @@ void RPC::refreshZECPrice() {
 
 void RPC::shutdownZcashd() {
     // Shutdown embedded zcashd if it was started
-    if (ezcashd == nullptr || conn == nullptr) {
+    if (ezcashd == nullptr || ezcashd->processId() == 0 || conn == nullptr) {
         // No zcashd running internally, just return
         return;
     }

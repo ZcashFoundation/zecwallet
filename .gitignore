@@ -4,6 +4,7 @@ release/
 x64/
 artifacts/
 .vscode/
+res/libsodium.a
 res/libsodium/libsodium*
 res/libsodium.a
 src/ui_*.h
