@@ -242,7 +242,7 @@ QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex, bool
     QString encryptedhex = msg.object().value("payload").toString();
 
     // Enforce limits on the size of the message
-    if (noncehex.length() > crypto_secretbox_NONCEBYTES * 2 ||
+    if (noncehex.length() > ((int)crypto_secretbox_NONCEBYTES * 2) ||
         encryptedhex.length() > 2 * 50 * 1024 /*50kb*/) {
         return "error";
     }
@@ -456,9 +456,9 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QW
 
     // And send the Tx
     mainwindow->getRPC()->executeTransaction(tx,
-        [=] (QString opid) {}, 
+        [=] (QString) {}, 
         // Submitted Tx successfully
-        [=] (QString opid, QString txid) {
+        [=] (QString, QString txid) {
             auto r = QJsonDocument(QJsonObject{
                {"version", 1.0},
                {"command", "sendTxSubmitted"},
@@ -468,7 +468,7 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QW
                 pClient->sendTextMessage(encryptOutgoing(r));
         },
         // Errored while submitting Tx
-        [=] (QString opid, QString errStr) {
+        [=] (QString, QString errStr) {
             auto r = QJsonDocument(QJsonObject{
                {"version", 1.0},
                {"command", "sendTxFailed"},

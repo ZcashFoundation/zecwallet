@@ -66,7 +66,7 @@ echo "[OK]"
 
 echo -n "Building..............."
 rm -rf bin/zec-qt-wallet* > /dev/null
-make clean
+make clean > /dev/null
 make -j$(nproc) > /dev/null
 echo "[OK]"
 
