@@ -146,6 +146,7 @@ void AppDataServer::updateUIWithNewQRCode() {
     QString codeStr = uri + "," + secretStr;
 
     ui->qrcode->setQrcodeString(codeStr);
+    ui->txtConnStr->setText(codeStr);
 }
 
 void AppDataServer::updateConnectedUI() {
