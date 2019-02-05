@@ -57,7 +57,7 @@ public:
     void          processDecryptedMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient);
     void          processGetTransactions(MainWindow* mainWindow, QWebSocket* pClient);
 
-    QString       decryptMessage(QJsonDocument msg, QString secretHex, bool skipNonceCheck = false);
+    QString       decryptMessage(QJsonDocument msg, QString secretHex, QString lastRemoteNonceHex);
     QString       encryptOutgoing(QString msg);
 
     QString       getSecretHex();

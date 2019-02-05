@@ -181,6 +181,7 @@ void AppDataServer::saveNonceHex(NonceType nt, QString noncehex) {
     s.sync();
 }
 
+// Encrypt an outgoing message with the stored secret key.
 QString AppDataServer::encryptOutgoing(QString msg) {
     if (msg.length() % 256 > 0) {
         msg = msg + QString(" ").repeated(256 - (msg.length() % 256));
@@ -233,7 +234,12 @@ QString AppDataServer::encryptOutgoing(QString msg) {
     return json.toJson();
 }
 
-QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex, bool skipNonceCheck) {
+/**
+  Attempt to decrypt a message. If the decryption fails, it returns the string "error", the decrypted message otherwise. 
+  It will use the given secret to attempt decryption. In addition, it will enforce that the nonce is greater than the last seen nonce, 
+  unless the skipNonceCheck = true, which is used when attempting decrtption with a temp secret key.
+*/
+QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex, QString lastRemoteNonceHex) {
     // Decrypt and then process
     QString noncehex = msg.object().value("nonce").toString();
     QString encryptedhex = msg.object().value("payload").toString();
@@ -245,9 +251,8 @@ QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex, bool
     }
 
     // Check to make sure that the nonce is greater than the last known remote nonce
-    QString lastRemoteHex = getNonceHex(NonceType::REMOTE);
     unsigned char* lastRemoteBin = new unsigned char[crypto_secretbox_NONCEBYTES];
-    sodium_hex2bin(lastRemoteBin, crypto_secretbox_NONCEBYTES, lastRemoteHex.toStdString().c_str(), lastRemoteHex.length(),
+    sodium_hex2bin(lastRemoteBin, crypto_secretbox_NONCEBYTES, lastRemoteNonceHex.toStdString().c_str(), lastRemoteNonceHex.length(),
         NULL, NULL, NULL);
 
     unsigned char* noncebin = new unsigned char[crypto_secretbox_NONCEBYTES];
@@ -255,13 +260,11 @@ QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex, bool
         NULL, NULL, NULL);
 
     assert(crypto_secretbox_KEYBYTES == crypto_hash_sha256_BYTES);
-    if (!skipNonceCheck) {
-        if (sodium_compare(lastRemoteBin, noncebin, crypto_secretbox_NONCEBYTES) != -1) {
-            // Refuse to accept a lower nonce, return an error
-            delete[] lastRemoteBin;
-            delete[] noncebin;
-            return "error";
-        }
+    if (sodium_compare(lastRemoteBin, noncebin, crypto_secretbox_NONCEBYTES) != -1) {
+        // Refuse to accept a lower nonce, return an error
+        delete[] lastRemoteBin;
+        delete[] noncebin;
+        return "error";
     }
     
     unsigned char* secret = new unsigned char[crypto_secretbox_KEYBYTES];
@@ -302,45 +305,45 @@ QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex, bool
     return payload;
 }
 
+// Process an incoming text message. The message has to be encrypted with the secret key (or the temporary secret key)
 void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient) {
+    auto replyWithError = [=]() {
+        auto r = QJsonDocument(QJsonObject{
+                    {"error", "Encryption error"}
+            }).toJson();
+            pClient->sendTextMessage(r);
+            return;
+    };
+
     // First, extract the command from the message
     auto msg = QJsonDocument::fromJson(message.toUtf8());
 
     // First check if the message is encrpted
     if (!msg.object().contains("nonce")) {
-        // TODO: Log error?
+        replyWithError();
         return;
     }
 
-    auto decrypted = decryptMessage(msg, getSecretHex());
+    auto decrypted = decryptMessage(msg, getSecretHex(), getNonceHex(NonceType::REMOTE));
 
     // If the decryption failed, maybe this is a new connection, so see if the dialog is open and a 
     // temp secret is in place
-
-    auto replyWithError = [=]() {
-        auto r = QJsonDocument(QJsonObject{
-                    {"error", "Encryption error"}
-            }).toJson();
-        pClient->sendTextMessage(r);
-        return;
-    };
-
     if (decrypted == "error") {
         // If the dialog is open, then there might be a temporary, new secret key. Attempt to decrypt
         // with that.
         if (!tempSecret.isEmpty()) {
-            decrypted = decryptMessage(msg, tempSecret, true);
+            // Since this is a temp secret, the last seen nonce will be "0", so basically we'll accept any nonce
+            QString zeroNonce = QString("00").repeated(crypto_secretbox_NONCEBYTES);
+            decrypted = decryptMessage(msg, tempSecret, zeroNonce);
             if (decrypted == "error") {
                 // Oh, well. Just return an error
                 replyWithError();
                 return;
             }
             else {
-                // This is a new connection. So, update the remote nonce (to accept any nonce) and the secret
+                // This is a new connection. So, update the the secret. Note the last seen remote nonce has already been updated by
+                // decryptMessage()
                 saveNewSecret(tempSecret);
-                AppDataServer::saveNonceHex(NonceType::REMOTE, QString("00").repeated(24));
-
-                processDecryptedMessage(decrypted, mainWindow, pClient);
 
                 // If the Connection UI is showing, we have to update the UI as well
                 if (ui != nullptr) {
@@ -350,16 +353,22 @@ void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWeb
                     // Update with a new QR Code for safety, so this secret isn't used by anyone else
                     updateUIWithNewQRCode();
                 }
+
+                processDecryptedMessage(decrypted, mainWindow, pClient);
+                return;
             }
         }
         else {
             replyWithError();
+            return;
         }
     } else {
         processDecryptedMessage(decrypted, mainWindow, pClient);
+        return;
     }
 }
 
+// Decrypted method will be executed here. 
 void AppDataServer::processDecryptedMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient) {
     // First, extract the command from the message
     auto msg = QJsonDocument::fromJson(message.toUtf8());
@@ -391,6 +400,7 @@ void AppDataServer::processDecryptedMessage(QString message, MainWindow* mainWin
     }
 }
 
+// "sendTx" command. This method will actually send money, so be careful with everything
 void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QWebSocket* pClient) {
     auto error = [=](QString reason) {
         auto r = QJsonDocument(QJsonObject{
@@ -484,9 +494,9 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QW
     pClient->sendTextMessage(encryptOutgoing(r));
 }
 
+// "getInfo" command
 void AppDataServer::processGetInfo(QJsonObject jobj, MainWindow* mainWindow, QWebSocket* pClient) {
     auto connectedName = jobj["name"].toString();
-
     
     if (mainWindow == nullptr || mainWindow->getRPC() == nullptr ||
             mainWindow->getRPC()->getAllBalances() == nullptr) {
