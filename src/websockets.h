@@ -40,28 +40,38 @@ enum NonceType {
 
 class AppDataServer {
 public:
-    static void          connectAppDialog(QWidget* parent);
-    static void          updateConnectedUI();
-    static void          updateUIWithNewQRCode();
+    static AppDataServer* getInstance() {
+        if (instance == nullptr) {
+            instance = new AppDataServer();
+        }
+        return instance;
+    }
 
-    static void          processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QWebSocket* pClient);
-    static void          processMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient);
-    static void          processDecryptedMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient);
-    static void          processGetInfo(QJsonObject jobj, MainWindow* mainWindow, QWebSocket* pClient);
-    static void          processGetTransactions(MainWindow* mainWindow, QWebSocket* pClient);
+    void          connectAppDialog(QWidget* parent);
+    void          updateConnectedUI();
+    void          updateUIWithNewQRCode();
 
-    static QString       decryptMessage(QJsonDocument msg, QString secretHex, bool skipNonceCheck = false);
-    static QString       encryptOutgoing(QString msg);
+    void          processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QWebSocket* pClient);
+    void          processMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient);
+    void          processGetInfo(QJsonObject jobj, MainWindow* mainWindow, QWebSocket* pClient);
+    void          processDecryptedMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient);
+    void          processGetTransactions(MainWindow* mainWindow, QWebSocket* pClient);
 
-    static QString       getSecretHex();
-    static void          saveNewSecret(QString secretHex);
+    QString       decryptMessage(QJsonDocument msg, QString secretHex, bool skipNonceCheck = false);
+    QString       encryptOutgoing(QString msg);
 
-    static QString       getNonceHex(NonceType nt);
-    static void          saveNonceHex(NonceType nt, QString noncehex);
+    QString       getSecretHex();
+    void          saveNewSecret(QString secretHex);
+
+    QString       getNonceHex(NonceType nt);
+    void          saveNonceHex(NonceType nt, QString noncehex);
 
 private:
-    static QString       tempSecret;
-    static Ui_MobileAppConnector* ui;
+    AppDataServer() = default;
+
+    static AppDataServer*   instance;
+    QString                 tempSecret;
+    Ui_MobileAppConnector*  ui;
 };
 
 class AppDataModel {

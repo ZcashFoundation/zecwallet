@@ -46,7 +46,7 @@ void WSServer::processTextMessage(QString message)
         qDebug() << "Message received:" << message;
 
     if (pClient) {
-        AppDataServer::processMessage(message, m_mainWindow, pClient);
+        AppDataServer::getInstance()->processMessage(message, m_mainWindow, pClient);
     }
 }
 
@@ -55,9 +55,7 @@ void WSServer::processBinaryMessage(QByteArray message)
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     if (m_debug)
         qDebug() << "Binary Message received:" << message;
-    if (pClient) {
-        pClient->sendBinaryMessage(message);
-    }
+
 }
 
 void WSServer::socketDisconnected()
@@ -74,6 +72,8 @@ void WSServer::socketDisconnected()
 // ==============================
 // AppDataServer
 // ==============================
+AppDataServer* AppDataServer::instance = nullptr; 
+
 QString AppDataServer::getSecretHex() {
     QSettings s;
 
@@ -86,9 +86,6 @@ void AppDataServer::saveNewSecret(QString secretHex) {
 
     s.sync();
 }
-
-QString AppDataServer::tempSecret = "";
-Ui_MobileAppConnector* AppDataServer::ui = nullptr;
 
 void AppDataServer::connectAppDialog(QWidget* parent) {
     QDialog d(parent);
@@ -574,4 +571,4 @@ void AppDataServer::processGetTransactions(MainWindow* mainWindow, QWebSocket* p
 // ==============================
 // AppDataModel
 // ==============================
-AppDataModel* AppDataModel::instance = NULL;
+AppDataModel* AppDataModel::instance = nullptr;

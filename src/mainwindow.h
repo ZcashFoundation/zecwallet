@@ -7,6 +7,7 @@
 // Forward declare to break circular dependency.
 class RPC;
 class Settings;
+class WSServer;
 
 using json = nlohmann::json;
 
@@ -93,7 +94,6 @@ private:
     void addressBook();
     void payZcashURI();
     void postToZBoard();
-    void connectApp();
     void importPrivKey();
     void exportAllKeys();
     void exportKeys(QString addr = "");
@@ -105,6 +105,8 @@ private:
     void restoreSavedStates();
 
     void createWebsocket();
+
+    WSServer*    wsserver = nullptr;
 
     RPC*         rpc  = nullptr;
     QCompleter*  labelCompleter = nullptr;

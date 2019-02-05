@@ -68,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent) :
         if (rpc->getConnection() == nullptr)
             return;
 
-        AppDataServer::connectAppDialog(this);
+        AppDataServer::getInstance()->connectAppDialog(this);
     });
 
     // Address Book
@@ -109,7 +109,7 @@ MainWindow::MainWindow(QWidget *parent) :
 }
  
 void MainWindow::createWebsocket() {
-    new WSServer(8237, true, this);
+    wsserver = new WSServer(8237, false, this);
 }
 
 void MainWindow::restoreSavedStates() {
@@ -1365,4 +1365,6 @@ MainWindow::~MainWindow()
 
     delete loadingMovie;
     delete logger;
+
+    delete wsserver;
 }
