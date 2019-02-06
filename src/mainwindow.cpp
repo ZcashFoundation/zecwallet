@@ -109,7 +109,17 @@ MainWindow::MainWindow(QWidget *parent) :
 }
  
 void MainWindow::createWebsocket() {
+    // Create the websocket server, for listening to direct connections
     wsserver = new WSServer(8237, false, this);
+
+    // Connect to the wormhole service
+    wormhole = new WormholeClient(this, AppDataServer::getInstance()->getWormholeCode(
+                                                AppDataServer::getInstance()->getSecretHex()));
+}
+
+void MainWindow::replaceWormholeClient(WormholeClient* newClient) {
+    delete wormhole;
+    wormhole = newClient;
 }
 
 void MainWindow::restoreSavedStates() {
@@ -1367,4 +1377,5 @@ MainWindow::~MainWindow()
     delete logger;
 
     delete wsserver;
+    delete wormhole;
 }

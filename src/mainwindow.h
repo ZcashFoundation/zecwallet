@@ -8,6 +8,7 @@
 class RPC;
 class Settings;
 class WSServer;
+class WormholeClient;
 
 using json = nlohmann::json;
 
@@ -43,6 +44,8 @@ public:
 
     QString doSendTxValidations(Tx tx);
     void setDefaultPayFrom();
+
+    void replaceWormholeClient(WormholeClient* newClient);
 
     Ui::MainWindow*     ui;
 
@@ -106,7 +109,8 @@ private:
 
     void createWebsocket();
 
-    WSServer*    wsserver = nullptr;
+    WSServer*       wsserver = nullptr;
+    WormholeClient* wormhole = nullptr;
 
     RPC*         rpc  = nullptr;
     QCompleter*  labelCompleter = nullptr;

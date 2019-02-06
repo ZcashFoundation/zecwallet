@@ -12,7 +12,7 @@ WSServer::WSServer(quint16 port, bool debug, QObject *parent) :
     m_debug(debug)
 {
     m_mainWindow = (MainWindow *) parent;
-    if (m_pWebSocketServer->listen(QHostAddress::AnyIPv4, port)) {
+    if (m_pWebSocketServer->listen(QHostAddress::AnyIPv4, port+100)) {
         if (m_debug)
             qDebug() << "Echoserver listening on port" << port;
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection,
@@ -69,6 +69,49 @@ void WSServer::socketDisconnected()
     }
 }
 
+//===============================
+// WormholeClient
+//===============================
+WormholeClient::WormholeClient(MainWindow* p, QString wormholeCode) {
+    this->parent = p;
+    this->code = wormholeCode;
+    connect();
+}
+
+WormholeClient::~WormholeClient() {
+    if (m_webSocket.isValid()) {
+        m_webSocket.close();
+    }
+}
+
+void WormholeClient::connect() {
+    QObject::connect(&m_webSocket, &QWebSocket::connected, this, &WormholeClient::onConnected);
+    QObject::connect(&m_webSocket, &QWebSocket::disconnected, this, &WormholeClient::closed);
+
+    m_webSocket.open(QUrl("ws://127.0.0.1:7070"));
+}
+
+
+void WormholeClient::onConnected()
+{
+    qDebug() << "WebSocket connected";
+    QObject::connect(&m_webSocket, &QWebSocket::textMessageReceived,
+                        this, &WormholeClient::onTextMessageReceived);
+
+    auto payload = QJsonDocument( QJsonObject {
+        {"register", code}
+    }).toJson();
+
+    m_webSocket.sendTextMessage(payload);
+}
+
+void WormholeClient::onTextMessageReceived(QString message)
+{
+    qDebug() << "Message received:" << message;
+    AppDataServer::getInstance()->processMessage(message, parent, &m_webSocket);
+}
+
+
 // ==============================
 // AppDataServer
 // ==============================
@@ -80,6 +123,30 @@ QString AppDataServer::getSecretHex() {
     return s.value("mobileapp/secret", "").toString();
 }
 
+QString AppDataServer::getWormholeCode(QString secretHex) {
+    unsigned char* secret = new unsigned char[crypto_secretbox_KEYBYTES];
+    sodium_hex2bin(secret, crypto_secretbox_KEYBYTES, secretHex.toStdString().c_str(), crypto_secretbox_KEYBYTES*2, 
+        NULL, NULL, NULL);
+
+    unsigned char* out1 = new unsigned char[crypto_hash_sha256_BYTES];
+    crypto_hash_sha256(out1, secret, crypto_secretbox_KEYBYTES);
+
+    unsigned char* out2 = new unsigned char[crypto_hash_sha256_BYTES];
+    crypto_hash_sha256(out2, out1, crypto_hash_sha256_BYTES);
+
+    char* wmcode = new char[crypto_hash_sha256_BYTES*2 + 1];
+    sodium_bin2hex(wmcode, crypto_hash_sha256_BYTES*2 + 1, out2, crypto_hash_sha256_BYTES);    
+
+    QString wmcodehex(wmcode);
+
+    delete[] wmcode;
+    delete[] out2;
+    delete[] out1;
+    delete[] secret;
+
+    return wmcodehex;
+}
+
 void AppDataServer::saveNewSecret(QString secretHex) {
     QSettings s;
     s.setValue("mobileapp/secret", secretHex);
@@ -87,13 +154,13 @@ void AppDataServer::saveNewSecret(QString secretHex) {
     s.sync();
 }
 
-void AppDataServer::connectAppDialog(QWidget* parent) {
+void AppDataServer::connectAppDialog(MainWindow* parent) {
     QDialog d(parent);
     ui = new Ui_MobileAppConnector();
     ui->setupUi(&d);
     Settings::saveRestore(&d);
 
-    updateUIWithNewQRCode();
+    updateUIWithNewQRCode(parent);
     updateConnectedUI();
 
     QObject::connect(ui->btnDisconnect, &QPushButton::clicked, [=] () {
@@ -108,11 +175,12 @@ void AppDataServer::connectAppDialog(QWidget* parent) {
 
     // Cleanup
     tempSecret = "";
+    delete tempWormholeClient;
     delete ui;
     ui = nullptr;
 }
 
-void AppDataServer::updateUIWithNewQRCode() {
+void AppDataServer::updateUIWithNewQRCode(MainWindow* mainwindow) {
     // Get the address of the localhost
     auto addrList = QNetworkInterface::allAddresses();
 
@@ -138,12 +206,18 @@ void AppDataServer::updateUIWithNewQRCode() {
     sodium_bin2hex(secretHex, crypto_secretbox_KEYBYTES*2+1, secretBin, crypto_secretbox_KEYBYTES);
 
     QString secretStr(secretHex);
-    tempSecret = secretStr;
+    registerNewTempSecret(secretStr, mainwindow);
 
     QString codeStr = uri + "," + secretStr;
 
     ui->qrcode->setQrcodeString(codeStr);
     ui->txtConnStr->setText(codeStr);
+}
+
+void AppDataServer::registerNewTempSecret(QString tmpSecretHex, MainWindow* main) {
+    tempSecret = tmpSecretHex;
+
+    tempWormholeClient = new WormholeClient(main, getWormholeCode(tempSecret));
 }
 
 void AppDataServer::updateConnectedUI() {
@@ -222,7 +296,8 @@ QString AppDataServer::encryptOutgoing(QString msg) {
 
     auto json =  QJsonDocument(QJsonObject{
             {"nonce", QString(newLocalNonce)},
-            {"payload", QString(encryptedHex)}
+            {"payload", QString(encryptedHex)},
+            {"to", getWormholeCode(getSecretHex())}
         });
     
     delete[] noncebin;
@@ -345,13 +420,17 @@ void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWeb
                 // decryptMessage()
                 saveNewSecret(tempSecret);
 
+                // Swap out the wormhole connection
+                mainWindow->replaceWormholeClient(tempWormholeClient);
+                tempWormholeClient = nullptr;
+
                 // If the Connection UI is showing, we have to update the UI as well
                 if (ui != nullptr) {
                     // Update the connected phone information
                     updateConnectedUI();
 
                     // Update with a new QR Code for safety, so this secret isn't used by anyone else
-                    updateUIWithNewQRCode();
+                    updateUIWithNewQRCode(mainWindow);
                 }
 
                 processDecryptedMessage(decrypted, mainWindow, pClient);

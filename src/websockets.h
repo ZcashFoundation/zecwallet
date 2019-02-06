@@ -33,6 +33,28 @@ private:
     bool m_debug;
 };
 
+class WormholeClient : public QObject {
+    Q_OBJECT 
+
+Q_SIGNALS:
+    void closed();
+
+private Q_SLOTS:
+    void onConnected();
+    void onTextMessageReceived(QString message);
+
+public:
+    WormholeClient(MainWindow* parent, QString wormholeCode);
+    ~WormholeClient();
+
+    void connect();
+
+private:
+    MainWindow* parent = nullptr;    
+    QWebSocket  m_webSocket;
+    QString     code;
+};
+
 enum NonceType {
     LOCAL = 1,
     REMOTE
@@ -47,9 +69,9 @@ public:
         return instance;
     }
 
-    void          connectAppDialog(QWidget* parent);
+    void          connectAppDialog(MainWindow* parent);
     void          updateConnectedUI();
-    void          updateUIWithNewQRCode();
+    void          updateUIWithNewQRCode(MainWindow* mainwindow);
 
     void          processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QWebSocket* pClient);
     void          processMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient);
@@ -60,8 +82,11 @@ public:
     QString       decryptMessage(QJsonDocument msg, QString secretHex, QString lastRemoteNonceHex);
     QString       encryptOutgoing(QString msg);
 
+    QString       getWormholeCode(QString secretHex);
     QString       getSecretHex();
     void          saveNewSecret(QString secretHex);
+
+    void          registerNewTempSecret(QString tmpSecretHex, MainWindow* main);
 
     QString       getNonceHex(NonceType nt);
     void          saveNonceHex(NonceType nt, QString noncehex);
@@ -70,8 +95,10 @@ private:
     AppDataServer() = default;
 
     static AppDataServer*   instance;
-    QString                 tempSecret;
     Ui_MobileAppConnector*  ui;
+
+    QString                 tempSecret;
+    WormholeClient*         tempWormholeClient = nullptr;
 };
 
 class AppDataModel {
@@ -104,5 +131,7 @@ private:
 
     static AppDataModel* instance;
 };
+
+
 
 #endif // WEBSOCKETS_H
