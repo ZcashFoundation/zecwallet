@@ -12,7 +12,7 @@ WSServer::WSServer(quint16 port, bool debug, QObject *parent) :
     m_debug(debug)
 {
     m_mainWindow = (MainWindow *) parent;
-    if (m_pWebSocketServer->listen(QHostAddress::AnyIPv4, port+100)) {
+    if (m_pWebSocketServer->listen(QHostAddress::AnyIPv4, port)) {
         if (m_debug)
             qDebug() << "Echoserver listening on port" << port;
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection,
@@ -46,7 +46,7 @@ void WSServer::processTextMessage(QString message)
         qDebug() << "Message received:" << message;
 
     if (pClient) {
-        AppDataServer::getInstance()->processMessage(message, m_mainWindow, pClient);
+        AppDataServer::getInstance()->processMessage(message, m_mainWindow, pClient, AppConnectionType::DIRECT);
     }
 }
 
@@ -108,7 +108,7 @@ void WormholeClient::onConnected()
 void WormholeClient::onTextMessageReceived(QString message)
 {
     qDebug() << "Message received:" << message;
-    AppDataServer::getInstance()->processMessage(message, parent, &m_webSocket);
+    AppDataServer::getInstance()->processMessage(message, parent, &m_webSocket, AppConnectionType::INTERNET);
 }
 
 
@@ -154,6 +154,22 @@ void AppDataServer::saveNewSecret(QString secretHex) {
     s.sync();
 }
 
+void AppDataServer::saveLastConnectedOver(AppConnectionType type) {
+    QSettings().setValue("mobileapp/lastconnectedover", type);
+}
+
+AppConnectionType AppDataServer::getLastConnectionType() {
+    return (AppConnectionType) QSettings().value("mobileapp/lastconnectedover", AppConnectionType::DIRECT).toInt();
+}
+
+void AppDataServer::saveLastSeenTime() {
+    QSettings().setValue("mobileapp/lastseentime", QDateTime::currentSecsSinceEpoch());
+}
+
+QDateTime  AppDataServer::getLastSeenTime() {
+    return QDateTime::fromSecsSinceEpoch(QSettings().value("mobileapp/lastseentime", 0).toLongLong());
+}
+
 void AppDataServer::connectAppDialog(MainWindow* parent) {
     QDialog d(parent);
     ui = new Ui_MobileAppConnector();
@@ -170,6 +186,9 @@ void AppDataServer::connectAppDialog(MainWindow* parent) {
         updateConnectedUI();
     });
     
+    QObject::connect(ui->txtConnStr, &QLineEdit::cursorPositionChanged, [=](int, int) {
+        ui->txtConnStr->selectAll();
+    });
 
     d.exec();
 
@@ -220,12 +239,25 @@ void AppDataServer::registerNewTempSecret(QString tmpSecretHex, MainWindow* main
     tempWormholeClient = new WormholeClient(main, getWormholeCode(tempSecret));
 }
 
+QString AppDataServer::connDesc(AppConnectionType t) {
+    if (t == AppConnectionType::DIRECT) {
+        return QObject::tr("Connected directly");
+    }
+    else {
+        return QObject::tr("Connected over the internet via zec-qt-wallet service");
+    }
+}
+
 void AppDataServer::updateConnectedUI() {
     if (ui == nullptr)
         return;
 
     auto remoteName = QSettings().value("mobileapp/connectedname", "").toString();
+
     ui->lblRemoteName->setText(remoteName.isEmpty() ?  "(Not connected to any device)" : remoteName);
+    ui->lblLastSeen->setText(remoteName.isEmpty() ? "" : getLastSeenTime().toString(Qt::SystemLocaleLongDate));
+    ui->lblConnectionType->setText(remoteName.isEmpty() ? "" : connDesc(getLastConnectionType()));
+
     ui->btnDisconnect->setEnabled(!remoteName.isEmpty());
 }
 
@@ -360,6 +392,7 @@ QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex, QStr
     } else {
         // Update the last seen remote hex
         saveNonceHex(NonceType::REMOTE, noncehex);
+        saveLastSeenTime();
 
         char* decryptedStr = new char[decryptedLen + 1];
         sodium_memzero(decryptedStr, decryptedLen + 1);
@@ -381,7 +414,7 @@ QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex, QStr
 }
 
 // Process an incoming text message. The message has to be encrypted with the secret key (or the temporary secret key)
-void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient) {
+void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient, AppConnectionType connType) {
     auto replyWithError = [=]() {
         auto r = QJsonDocument(QJsonObject{
                     {"error", "Encryption error"}
@@ -424,6 +457,9 @@ void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWeb
                 mainWindow->replaceWormholeClient(tempWormholeClient);
                 tempWormholeClient = nullptr;
 
+                saveLastConnectedOver(connType);
+                processDecryptedMessage(decrypted, mainWindow, pClient);
+
                 // If the Connection UI is showing, we have to update the UI as well
                 if (ui != nullptr) {
                     // Update the connected phone information
@@ -433,7 +469,6 @@ void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWeb
                     updateUIWithNewQRCode(mainWindow);
                 }
 
-                processDecryptedMessage(decrypted, mainWindow, pClient);
                 return;
             }
         }
@@ -442,6 +477,7 @@ void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWeb
             return;
         }
     } else {
+        saveLastConnectedOver(connType);
         processDecryptedMessage(decrypted, mainWindow, pClient);
         return;
     }

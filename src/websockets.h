@@ -60,6 +60,11 @@ enum NonceType {
     REMOTE
 };
 
+enum AppConnectionType {
+    DIRECT = 1,
+    INTERNET
+};
+
 class AppDataServer {
 public:
     static AppDataServer* getInstance() {
@@ -74,7 +79,7 @@ public:
     void          updateUIWithNewQRCode(MainWindow* mainwindow);
 
     void          processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QWebSocket* pClient);
-    void          processMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient);
+    void          processMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient, AppConnectionType connType);
     void          processGetInfo(QJsonObject jobj, MainWindow* mainWindow, QWebSocket* pClient);
     void          processDecryptedMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient);
     void          processGetTransactions(MainWindow* mainWindow, QWebSocket* pClient);
@@ -90,6 +95,14 @@ public:
 
     QString       getNonceHex(NonceType nt);
     void          saveNonceHex(NonceType nt, QString noncehex);
+
+    void          saveLastSeenTime();
+    QDateTime     getLastSeenTime();
+
+    QString       connDesc(AppConnectionType t);
+
+    void               saveLastConnectedOver(AppConnectionType type);
+    AppConnectionType  getLastConnectionType();
 
 private:
     AppDataServer() = default;
