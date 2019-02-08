@@ -117,12 +117,6 @@ void WormholeClient::onTextMessageReceived(QString message)
 // ==============================
 AppDataServer* AppDataServer::instance = nullptr; 
 
-QString AppDataServer::getSecretHex() {
-    QSettings s;
-
-    return s.value("mobileapp/secret", "").toString();
-}
-
 QString AppDataServer::getWormholeCode(QString secretHex) {
     unsigned char* secret = new unsigned char[crypto_secretbox_KEYBYTES];
     sodium_hex2bin(secret, crypto_secretbox_KEYBYTES, secretHex.toStdString().c_str(), crypto_secretbox_KEYBYTES*2, 
@@ -147,11 +141,25 @@ QString AppDataServer::getWormholeCode(QString secretHex) {
     return wmcodehex;
 }
 
-void AppDataServer::saveNewSecret(QString secretHex) {
+QString AppDataServer::getSecretHex() {
     QSettings s;
-    s.setValue("mobileapp/secret", secretHex);
 
-    s.sync();
+    return s.value("mobileapp/secret", "").toString();
+}
+
+void AppDataServer::saveNewSecret(QString secretHex) {
+    QSettings().setValue("mobileapp/secret", secretHex);
+
+    if (secretHex.isEmpty())
+        setAllowInternetConnection(false);
+}
+
+bool AppDataServer::getAllowInternetConnection() {
+    return QSettings().value("mobileapp/allowinternet", false).toBool();
+}
+
+void AppDataServer::setAllowInternetConnection(bool allow) {
+    QSettings().setValue("mobileapp/allowinternet", allow);
 }
 
 void AppDataServer::saveLastConnectedOver(AppConnectionType type) {
@@ -203,9 +211,20 @@ void AppDataServer::connectAppDialog(MainWindow* parent) {
         ui->txtConnStr->selectAll();
     });
 
+    QObject::connect(ui->chkInternetConn, &QCheckBox::stateChanged, [=] (int state) {
+        if (state == Qt::Checked) {
+
+        }
+        updateUIWithNewQRCode(parent);
+    });
+
     // If we're not listening for the app, then start the websockets
     if (!parent->isWebsocketListening()) {
-        parent->createWebsocket();
+        QString wormholecode = "";
+        if (getAllowInternetConnection())
+            wormholecode = AppDataServer::getInstance()->getWormholeCode(AppDataServer::getInstance()->getSecretHex());
+
+        parent->createWebsocket(wormholecode);
     }
 
     d.exec();
@@ -217,7 +236,10 @@ void AppDataServer::connectAppDialog(MainWindow* parent) {
 
     // Cleanup
     tempSecret = "";
+    
     delete tempWormholeClient;
+    tempWormholeClient = nullptr;
+
     delete ui;
     ui = nullptr;
 }
@@ -248,18 +270,26 @@ void AppDataServer::updateUIWithNewQRCode(MainWindow* mainwindow) {
     sodium_bin2hex(secretHex, crypto_secretbox_KEYBYTES*2+1, secretBin, crypto_secretbox_KEYBYTES);
 
     QString secretStr(secretHex);
-    registerNewTempSecret(secretStr, mainwindow);
-
     QString codeStr = uri + "," + secretStr;
+
+    if (ui->chkInternetConn->isChecked()) {
+        codeStr = codeStr + ",1";
+    }
+
+    registerNewTempSecret(secretStr, ui->chkInternetConn->isChecked(), mainwindow);
 
     ui->qrcode->setQrcodeString(codeStr);
     ui->txtConnStr->setText(codeStr);
 }
 
-void AppDataServer::registerNewTempSecret(QString tmpSecretHex, MainWindow* main) {
+void AppDataServer::registerNewTempSecret(QString tmpSecretHex, bool allowInternet, MainWindow* main) {
     tempSecret = tmpSecretHex;
 
-    tempWormholeClient = new WormholeClient(main, getWormholeCode(tempSecret));
+    delete tempWormholeClient;
+    tempWormholeClient = nullptr;
+
+    if (allowInternet)
+        tempWormholeClient = new WormholeClient(main, getWormholeCode(tempSecret));
 }
 
 QString AppDataServer::connDesc(AppConnectionType t) {
@@ -473,6 +503,7 @@ void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWeb
                 // This is a new connection. So, update the the secret. Note the last seen remote nonce has already been updated by
                 // decryptMessage()
                 saveNewSecret(tempSecret);
+                setAllowInternetConnection(tempWormholeClient != nullptr);
 
                 // Swap out the wormhole connection
                 mainWindow->replaceWormholeClient(tempWormholeClient);

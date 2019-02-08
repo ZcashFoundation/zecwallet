@@ -91,10 +91,13 @@ public:
     QString       getSecretHex();
     void          saveNewSecret(QString secretHex);
 
-    void          registerNewTempSecret(QString tmpSecretHex, MainWindow* main);
+    void          registerNewTempSecret(QString tmpSecretHex, bool allowInternet, MainWindow* main);
 
     QString       getNonceHex(NonceType nt);
     void          saveNonceHex(NonceType nt, QString noncehex);
+
+    bool          getAllowInternetConnection();
+    void          setAllowInternetConnection(bool allow);
 
     void          saveLastSeenTime();
     QDateTime     getLastSeenTime();

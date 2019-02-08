@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>532</width>
-    <height>400</height>
+    <width>800</width>
+    <height>530</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,6 +43,25 @@
       <string>QR Code</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Connection String</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLineEdit" name="txtConnStr">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QRCodeLabel" name="qrcode">
         <property name="sizePolicy">
@@ -59,17 +78,10 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="chkInternetConn">
         <property name="text">
-         <string>Connection String</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLineEdit" name="txtConnStr">
-        <property name="readOnly">
-         <bool>true</bool>
+         <string>Allow connections over the internet</string>
         </property>
        </widget>
       </item>

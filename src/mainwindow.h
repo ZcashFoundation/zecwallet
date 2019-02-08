@@ -47,7 +47,7 @@ public:
 
     void replaceWormholeClient(WormholeClient* newClient);
     bool isWebsocketListening();
-    void createWebsocket();
+    void createWebsocket(QString wormholecode);
     void stopWebsocket();
 
     Ui::MainWindow*     ui;
