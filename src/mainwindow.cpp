@@ -105,16 +105,33 @@ MainWindow::MainWindow(QWidget *parent) :
 
     restoreSavedStates();
 
-    createWebsocket();
+    if (AppDataServer::getInstance()->isAppConnected()) {
+        createWebsocket();
+    }
 }
  
 void MainWindow::createWebsocket() {
+    qDebug() << "Listening for app connections on port 8237";
     // Create the websocket server, for listening to direct connections
     wsserver = new WSServer(8237, false, this);
 
     // Connect to the wormhole service
     wormhole = new WormholeClient(this, AppDataServer::getInstance()->getWormholeCode(
                                                 AppDataServer::getInstance()->getSecretHex()));
+}
+
+void MainWindow::stopWebsocket() {
+    delete wsserver;
+    wsserver = nullptr;
+
+    delete wormhole;
+    wormhole = nullptr;
+
+    qDebug() << "Websockets for app connections shut down";
+}
+
+bool MainWindow::isWebsocketListening() {
+    return wsserver != nullptr;
 }
 
 void MainWindow::replaceWormholeClient(WormholeClient* newClient) {

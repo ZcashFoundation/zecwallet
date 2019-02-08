@@ -170,6 +170,19 @@ QDateTime  AppDataServer::getLastSeenTime() {
     return QDateTime::fromSecsSinceEpoch(QSettings().value("mobileapp/lastseentime", 0).toLongLong());
 }
 
+void AppDataServer::setConnectedName(QString name) {
+    QSettings().setValue("mobileapp/connectedname", name);
+}
+
+QString AppDataServer::getConnectedName() {
+    return QSettings().value("mobileapp/connectedname", "").toString();
+}
+
+bool AppDataServer::isAppConnected() {
+    return !getConnectedName().isEmpty() && 
+        getLastSeenTime().daysTo(QDateTime::currentDateTime()) < 14;
+}
+
 void AppDataServer::connectAppDialog(MainWindow* parent) {
     QDialog d(parent);
     ui = new Ui_MobileAppConnector();
@@ -190,7 +203,17 @@ void AppDataServer::connectAppDialog(MainWindow* parent) {
         ui->txtConnStr->selectAll();
     });
 
+    // If we're not listening for the app, then start the websockets
+    if (!parent->isWebsocketListening()) {
+        parent->createWebsocket();
+    }
+
     d.exec();
+
+    // If there is nothing connected when the dialog exits, then shutdown the websockets
+    if (!isAppConnected()) {
+        parent->stopWebsocket();
+    }
 
     // Cleanup
     tempSecret = "";
@@ -252,7 +275,7 @@ void AppDataServer::updateConnectedUI() {
     if (ui == nullptr)
         return;
 
-    auto remoteName = QSettings().value("mobileapp/connectedname", "").toString();
+    auto remoteName = getConnectedName();
 
     ui->lblRemoteName->setText(remoteName.isEmpty() ?  "(Not connected to any device)" : remoteName);
     ui->lblLastSeen->setText(remoteName.isEmpty() ? "" : getLastSeenTime().toString(Qt::SystemLocaleLongDate));
@@ -267,10 +290,10 @@ QString AppDataServer::getNonceHex(NonceType nt) {
     if (nt == NonceType::LOCAL) {
         // The default local nonce starts from 1, to always keep it odd
         auto defaultLocalNonce = "01" + QString("00").repeated(crypto_secretbox_NONCEBYTES-1);
-        hex = s.value("mobileapp/localnonce", defaultLocalNonce).toString();
+        hex = s.value("mobileapp/localnoncehex", defaultLocalNonce).toString();
     }
     else {
-        hex = s.value("mobileapp/remotenonce", QString("00").repeated(crypto_secretbox_NONCEBYTES)).toString();
+        hex = s.value("mobileapp/remotenoncehex", QString("00").repeated(crypto_secretbox_NONCEBYTES)).toString();
     }
     return hex;
 }
@@ -279,10 +302,10 @@ void AppDataServer::saveNonceHex(NonceType nt, QString noncehex) {
     QSettings s;
     assert(noncehex.length() == crypto_secretbox_NONCEBYTES * 2);
     if (nt == NonceType::LOCAL) {
-        s.setValue("mobileapp/localnonce", noncehex);
+        s.setValue("mobileapp/localnoncehex", noncehex);
     }
     else {
-        s.setValue("mobileapp/remotenonce", noncehex);
+        s.setValue("mobileapp/remotenoncehex", noncehex);
     }
     s.sync();
 }
@@ -323,8 +346,6 @@ QString AppDataServer::encryptOutgoing(QString msg) {
     char * encryptedHex = new char[encryptedHexSize];     
     sodium_memzero(encryptedHex, encryptedHexSize);
     sodium_bin2hex(encryptedHex, encryptedHexSize, encrpyted, msgSize + crypto_secretbox_MACBYTES);
-
-    qDebug() << "Encrypted to " << QString(encryptedHex);
 
     auto json =  QJsonDocument(QJsonObject{
             {"nonce", QString(newLocalNonce)},
@@ -634,10 +655,7 @@ void AppDataServer::processGetInfo(QJsonObject jobj, MainWindow* mainWindow, QWe
         }
     }
 
-    {
-        QSettings s;
-        s.setValue("mobileapp/connectedname", connectedName);
-    }
+    setConnectedName(connectedName);
 
     auto r = QJsonDocument(QJsonObject{
         {"version", 1.0},

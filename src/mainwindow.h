@@ -46,6 +46,9 @@ public:
     void setDefaultPayFrom();
 
     void replaceWormholeClient(WormholeClient* newClient);
+    bool isWebsocketListening();
+    void createWebsocket();
+    void stopWebsocket();
 
     Ui::MainWindow*     ui;
 
@@ -106,8 +109,6 @@ private:
     void doImport(QList<QString>* keys);
 
     void restoreSavedStates();
-
-    void createWebsocket();
 
     WSServer*       wsserver = nullptr;
     WormholeClient* wormhole = nullptr;

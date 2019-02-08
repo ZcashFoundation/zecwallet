@@ -99,6 +99,10 @@ public:
     void          saveLastSeenTime();
     QDateTime     getLastSeenTime();
 
+    void          setConnectedName(QString name);   
+    QString       getConnectedName();
+    bool          isAppConnected();
+
     QString       connDesc(AppConnectionType t);
 
     void               saveLastConnectedOver(AppConnectionType type);
