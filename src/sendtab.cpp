@@ -439,6 +439,8 @@ Tx MainWindow::createTxFromSendPage() {
     // For each addr/amt in the sendTo tab
     int totalItems = ui->sendToWidgets->children().size() - 2;   // The last one is a spacer, so ignore that        
     double totalAmt = 0;
+    QLocale locale = QLocale::system();
+
     for (int i=0; i < totalItems; i++) {
         QString addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") % QString::number(i+1))->text().trimmed();
         // Remove label if it exists
@@ -447,7 +449,7 @@ Tx MainWindow::createTxFromSendPage() {
         // If address is sprout, then we can't send change to sapling, because of turnstile.
         sendChangeToSapling = sendChangeToSapling && !Settings::getInstance()->isSproutAddress(addr);
 
-        double  amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1))->text().trimmed().toDouble();        
+        double  amt = locale.toDouble(ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1))->text().trimmed());        
         totalAmt += amt;
         QString memo = ui->sendToWidgets->findChild<QLabel*>(QString("MemoTxt")  % QString::number(i+1))->text().trimmed();
         
@@ -455,7 +457,7 @@ Tx MainWindow::createTxFromSendPage() {
     }
 
     if (Settings::getInstance()->getAllowCustomFees()) {
-        tx.fee = ui->minerFeeAmt->text().toDouble();
+        tx.fee = locale.toDouble(ui->minerFeeAmt->text());
     }
     else {
         tx.fee = Settings::getMinerFee();
