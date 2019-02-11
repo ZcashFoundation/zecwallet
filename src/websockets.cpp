@@ -79,8 +79,10 @@ WormholeClient::WormholeClient(MainWindow* p, QString wormholeCode) {
 }
 
 WormholeClient::~WormholeClient() {
-    if (m_webSocket.isValid()) {
-        m_webSocket.close();
+    shuttingDown = true;
+
+    if (m_webSocket->isValid()) {
+        m_webSocket->close();
     }
 
     timer->stop();
@@ -88,34 +90,59 @@ WormholeClient::~WormholeClient() {
 }
 
 void WormholeClient::connect() {
-    QObject::connect(&m_webSocket, &QWebSocket::connected, this, &WormholeClient::onConnected);
-    QObject::connect(&m_webSocket, &QWebSocket::disconnected, this, &WormholeClient::closed);
+    delete m_webSocket;
+    m_webSocket = new QWebSocket();
 
-    m_webSocket.open(QUrl("ws://127.0.0.1:7070"));
+    QObject::connect(m_webSocket, &QWebSocket::connected, this, &WormholeClient::onConnected);
+    QObject::connect(m_webSocket, &QWebSocket::disconnected, this, &WormholeClient::closed);
+
+    m_webSocket->open(QUrl("ws://127.0.0.1:7070"));
 }
 
+void WormholeClient::retryConnect() {    
+    QTimer::singleShot(5 * 1000 * pow(2, retryCount), [=]() {
+        if (retryCount < 10) {
+            qDebug() << "Retrying websocket connection";
+            this->retryCount++;
+            connect();
+        }
+        else {
+            qDebug() << "Retry count exceeded, will not attempt retry any more";
+        }
+    });
+}
+
+// Called when the websocket is closed. If this was closed without our explicitly closing it, 
+// then we need to try and reconnect
+void WormholeClient::closed() {
+    if (!shuttingDown) {
+       retryConnect();
+    }
+}
 
 void WormholeClient::onConnected()
 {
     qDebug() << "WebSocket connected";
-    QObject::connect(&m_webSocket, &QWebSocket::textMessageReceived,
+    retryCount = 0;
+
+    QObject::connect(m_webSocket, &QWebSocket::textMessageReceived,
                         this, &WormholeClient::onTextMessageReceived);
 
     auto payload = QJsonDocument( QJsonObject {
         {"register", code}
     }).toJson();
 
-    m_webSocket.sendTextMessage(payload);
+    m_webSocket->sendTextMessage(payload);
 
     // On connected, we'll also create a timer to ping it every 4 minutes, since the websocket 
     // will timeout after 5 minutes
     timer = new QTimer(parent);
     QObject::connect(timer, &QTimer::timeout, [=]() {
-        if (m_webSocket.isValid()) {
+        if (m_webSocket->isValid()) {
             auto payload = QJsonDocument(QJsonObject {
                 {"ping", "ping"}
             }).toJson();
-            m_webSocket.sendTextMessage(payload);
+            m_webSocket->sendTextMessage(payload);
         }
     });
     timer->start(4 * 60 * 1000); // 4 minutes
@@ -124,7 +151,7 @@ void WormholeClient::onConnected()
 void WormholeClient::onTextMessageReceived(QString message)
 {
     qDebug() << "Message received:" << message;
-    AppDataServer::getInstance()->processMessage(message, parent, &m_webSocket, AppConnectionType::INTERNET);
+    AppDataServer::getInstance()->processMessage(message, parent, m_webSocket, AppConnectionType::INTERNET);
 }
 
 

@@ -36,24 +36,27 @@ private:
 class WormholeClient : public QObject {
     Q_OBJECT 
 
-Q_SIGNALS:
-    void closed();
-
 private Q_SLOTS:
     void onConnected();
     void onTextMessageReceived(QString message);
+    void closed();
 
 public:
     WormholeClient(MainWindow* parent, QString wormholeCode);
     ~WormholeClient();
 
     void connect();
+    void retryConnect();
 
 private:
     MainWindow* parent = nullptr;    
-    QWebSocket  m_webSocket;
+    QWebSocket*  m_webSocket = nullptr;
+    
+    QTimer* timer            = nullptr;
+
     QString     code;
-    QTimer* timer      = nullptr;
+    int  retryCount          = 0;
+    bool shuttingDown        = false;
 };
 
 enum NonceType {
