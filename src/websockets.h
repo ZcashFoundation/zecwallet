@@ -53,6 +53,7 @@ private:
     MainWindow* parent = nullptr;    
     QWebSocket  m_webSocket;
     QString     code;
+    QTimer* timer      = nullptr;
 };
 
 enum NonceType {
