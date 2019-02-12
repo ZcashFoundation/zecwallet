@@ -12,7 +12,7 @@ WSServer::WSServer(quint16 port, bool debug, QObject *parent) :
     m_debug(debug)
 {
     m_mainWindow = (MainWindow *) parent;
-    if (m_pWebSocketServer->listen(QHostAddress::AnyIPv4, port+100)) {
+    if (m_pWebSocketServer->listen(QHostAddress::AnyIPv4, port)) {
         if (m_debug)
             qDebug() << "Echoserver listening on port" << port;
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection,
@@ -97,6 +97,7 @@ void WormholeClient::connect() {
     QObject::connect(m_webSocket, &QWebSocket::disconnected, this, &WormholeClient::closed);
 
     m_webSocket->open(QUrl("wss://wormhole.zecqtwallet.com:443"));
+    //m_webSocket->open(QUrl("ws://127.0.0.1:7070"));
 }
 
 void WormholeClient::retryConnect() {    
@@ -510,7 +511,8 @@ QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex, QStr
 void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient, AppConnectionType connType) {
     auto replyWithError = [=]() {
         auto r = QJsonDocument(QJsonObject{
-                    {"error", "Encryption error"}
+                    {"error", "Encryption error"},
+                    {"to", getWormholeCode(getSecretHex())}
             }).toJson();
             pClient->sendTextMessage(r);
             return;
@@ -518,6 +520,12 @@ void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWeb
 
     // First, extract the command from the message
     auto msg = QJsonDocument::fromJson(message.toUtf8());
+
+    // Check if we got an error from the websocket
+    if (msg.object().contains("error")) {
+        qDebug() << "Error:" << msg.toJson();
+        return;
+    }
 
     // First check if the message is encrpted
     if (!msg.object().contains("nonce")) {
