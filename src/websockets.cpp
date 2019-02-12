@@ -85,7 +85,9 @@ WormholeClient::~WormholeClient() {
         m_webSocket->close();
     }
 
-    timer->stop();
+    if (timer)
+        timer->stop();
+        
     delete timer;
 }
 
