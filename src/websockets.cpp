@@ -12,7 +12,7 @@ WSServer::WSServer(quint16 port, bool debug, QObject *parent) :
     m_debug(debug)
 {
     m_mainWindow = (MainWindow *) parent;
-    if (m_pWebSocketServer->listen(QHostAddress::AnyIPv4, port)) {
+    if (m_pWebSocketServer->listen(QHostAddress::AnyIPv4, port+100)) {
         if (m_debug)
             qDebug() << "Echoserver listening on port" << port;
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection,
@@ -96,7 +96,7 @@ void WormholeClient::connect() {
     QObject::connect(m_webSocket, &QWebSocket::connected, this, &WormholeClient::onConnected);
     QObject::connect(m_webSocket, &QWebSocket::disconnected, this, &WormholeClient::closed);
 
-    m_webSocket->open(QUrl("ws://127.0.0.1:7070"));
+    m_webSocket->open(QUrl("wss://wormhole.zecqtwallet.com:443"));
 }
 
 void WormholeClient::retryConnect() {    
@@ -403,7 +403,6 @@ QString AppDataServer::encryptOutgoing(QString msg) {
     sodium_memzero(newLocalNonce, crypto_secretbox_NONCEBYTES*2 + 1);
     sodium_bin2hex(newLocalNonce, crypto_secretbox_NONCEBYTES*2+1, noncebin, crypto_box_NONCEBYTES);
 
-    qDebug() << "Local nonce was " << localNonceHex << " now is " << QString(newLocalNonce);
     saveNonceHex(NonceType::LOCAL, QString(newLocalNonce));
 
     unsigned char* secret = new unsigned char[crypto_secretbox_KEYBYTES];
