@@ -52,7 +52,7 @@ void WSServer::processTextMessage(QString message)
 
 void WSServer::processBinaryMessage(QByteArray message)
 {
-    QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
+    //QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
     if (m_debug)
         qDebug() << "Binary Message received:" << message;
 
@@ -153,7 +153,6 @@ void WormholeClient::onConnected()
 
 void WormholeClient::onTextMessageReceived(QString message)
 {
-    qDebug() << "Message received:" << message;
     AppDataServer::getInstance()->processMessage(message, parent, m_webSocket, AppConnectionType::INTERNET);
 }
 
@@ -519,7 +518,7 @@ void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWeb
             pClient->sendTextMessage(r);
             return;
     };
-
+    
     // First, extract the command from the message
     auto msg = QJsonDocument::fromJson(message.toUtf8());
 
@@ -529,7 +528,12 @@ void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWeb
         return;
     }
 
-    // First check if the message is encrpted
+    // If the message is a ping, just ignore it
+    if (msg.object().contains("ping")) {
+        return;
+    }
+
+    // Then, check if the message is encrpted
     if (!msg.object().contains("nonce")) {
         replyWithError();
         return;
