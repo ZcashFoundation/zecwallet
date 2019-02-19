@@ -12,7 +12,7 @@ echo "[Signing Binaries]"
 # sha256sum the binaries
 gsha256sum *$APP_VERSION* > ../release/signatures/sha256sum-v$APP_VERSION.txt
 
-for i in $( ls *zec-qt-wallet-v$APP_VERSION*); do
+for i in $( ls *zec-qt-wallet-v$APP_VERSION* sha256sum-v$APP_VERSION* ); do
   echo "Signing" $i
   gpg --batch --output ../release/signatures/$i.sig --detach-sig $i 
 done
