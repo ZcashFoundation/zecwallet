@@ -12,8 +12,7 @@ using json = nlohmann::json;
 
 void MainWindow::setupSendTab() {
     // Create the validator for send to/amount fields
-    auto amtValidator = new QDoubleValidator(0, 21000000, 8, ui->Amount1);
-    amtValidator->setNotation(QDoubleValidator::StandardNotation);
+    auto amtValidator = new QRegExpValidator(QRegExp("[0-9]{0,8}\\.?[0-9]{0,8}"));    
     ui->Amount1->setValidator(amtValidator);
 
     // Send button
@@ -74,8 +73,7 @@ void MainWindow::setupSendTab() {
         }
     });
     //Fees validator
-    auto feesValidator = new QDoubleValidator(0, 1, 8, ui->Amount1);
-    feesValidator->setNotation(QDoubleValidator::StandardNotation);
+    auto feesValidator = new QRegExpValidator(QRegExp("[0-9]{0,8}\\.?[0-9]{0,8}")); 
     ui->minerFeeAmt->setValidator(feesValidator);
 
     // Font for the first Memo label
@@ -219,8 +217,9 @@ void MainWindow::addAddressSection() {
     Amount1->setPlaceholderText(tr("Amount"));    
     Amount1->setObjectName(QString("Amount") % QString::number(itemNumber));   
     Amount1->setBaseSize(QSize(200, 0));
+    Amount1->setAlignment(Qt::AlignRight);    
     // Create the validator for send to/amount fields
-    auto amtValidator = new QDoubleValidator(0, 21000000, 8, Amount1);
+    auto amtValidator = new QRegExpValidator(QRegExp("[0-9]{0,8}\\.?[0-9]{0,8}")); 
     Amount1->setValidator(amtValidator);
     QObject::connect(Amount1, &QLineEdit::textChanged, [=] (auto text) {
         this->amountChanged(itemNumber, text);
