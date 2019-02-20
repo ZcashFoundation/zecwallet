@@ -27,7 +27,6 @@ rm -rf release/signatures
 mkdir -p release/signatures 
 
 cd artifacts
-echo "[Signing Binaries]"
 
 # Remove previous signatures/hashes
 rm -f sha256sum-v$APP_VERSION.txt
