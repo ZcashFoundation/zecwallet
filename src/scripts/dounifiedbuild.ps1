@@ -61,7 +61,9 @@ ssh $winserver "New-Item zqwbuild -itemtype directory" | Out-Null
 # Same while copying the built msi. A straight scp pull from windows to here doesn't work,
 # so we ssh to windows, and then scp push the file to here.
 $myhostname = (hostname) | Out-String -NoNewline
-Remove-Item -Path /tmp/zqwbuild -Recurse -ErrorAction Ignore | Out-Null
+# Powershell seems not to be able to remove this directory for some reason!
+# Remove-Item -Path /tmp/zqwbuild -Recurse -ErrorAction Ignore | Out-Null
+bash "rm -rf /tmp/zqwbuild" 2>&1 | Out-Null
 New-Item    -Path /tmp/zqwbuild -itemtype directory          | Out-Null
 Copy-Item src     /tmp/zqwbuild/ -Recurse
 Copy-Item res     /tmp/zqwbuild/ -Recurse
@@ -86,4 +88,8 @@ if (! (Test-Path ./artifacts/linux-binaries-zec-qt-wallet-v$version.tar.gz) -or
         Write-Host "[Error]"
         exit 1;
     }
+Write-Host "[OK]"
+
+Write-Host -NoNewline "Signing Binaries......"
+bash src/scripts/signbinaries.sh --version $version
 Write-Host "[OK]"

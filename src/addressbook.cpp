@@ -3,6 +3,7 @@
 #include "ui_mainwindow.h"
 #include "settings.h"
 #include "mainwindow.h"
+#include "rpc.h"
 
 
 AddressBookModel::AddressBookModel(QTableView *parent)
@@ -221,6 +222,9 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
             fnSetTargetLabelAddr(target, item.first, item.second);
         }
     };
+
+    // Refresh after the dialog is closed to update the labels everywhere.
+    parent->getRPC()->refresh(true);
 }
 
 //=============

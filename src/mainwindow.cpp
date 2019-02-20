@@ -700,10 +700,6 @@ void MainWindow::doImport(QList<QString>* keys) {
 
     if (keys->isEmpty()) {
         delete keys;
-
-        QMessageBox::information(this,
-            "Imported", tr("The keys were imported. It may take several minutes to rescan the blockchain. Until then, functionality may be limited"),
-            QMessageBox::Ok);
         ui->statusBar->showMessage(tr("Private key import rescan finished"));
         return;
     }
@@ -836,7 +832,12 @@ void MainWindow::importPrivKey() {
         });
 
         // Start the import. The function takes ownership of keys
-        doImport(keys);
+        QTimer::singleShot(1, [=]() {doImport(keys);});
+
+        // Show the dialog that keys will be imported. 
+        QMessageBox::information(this,
+            "Imported", tr("The keys were imported. It may take several minutes to rescan the blockchain. Until then, functionality may be limited"),
+            QMessageBox::Ok);
     }
 }
 
