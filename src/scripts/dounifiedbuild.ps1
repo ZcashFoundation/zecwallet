@@ -64,10 +64,14 @@ $myhostname = (hostname) | Out-String -NoNewline
 # Powershell seems not to be able to remove this directory for some reason!
 # Remove-Item -Path /tmp/zqwbuild -Recurse -ErrorAction Ignore | Out-Null
 bash "rm -rf /tmp/zqwbuild" 2>&1 | Out-Null
-New-Item    -Path /tmp/zqwbuild -itemtype directory          | Out-Null
-Copy-Item src     /tmp/zqwbuild/ -Recurse
-Copy-Item res     /tmp/zqwbuild/ -Recurse
-Copy-Item release /tmp/zqwbuild/ -Recurse
+New-Item    -Path /tmp/zqwbuild -itemtype directory -Force | Out-Null
+Copy-Item src     /tmp/zqwbuild/ -Recurse -Force 
+Copy-Item res     /tmp/zqwbuild/ -Recurse -Force
+Copy-Item release /tmp/zqwbuild/ -Recurse -Force
+
+# Remove some unnecessary stuff from the tmp directory to speed up copying
+Remove-Item -Recurse -ErrorAction Ignore /tmp/zqwbuild/res/libsodium
+
 ssh $winserver "scp -r ${myhostname}:/tmp/zqwbuild/* zqwbuild/"
 ssh $winserver "cd zqwbuild ; src/scripts/mkwininstaller.ps1 -version $version" >/dev/null
 if (!$?) {

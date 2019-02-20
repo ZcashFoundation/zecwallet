@@ -1,1 +1,1 @@
-#define APP_VERSION "0.5.9-androidbeta"
+#define APP_VERSION "0.5.11"
