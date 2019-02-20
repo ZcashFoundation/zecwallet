@@ -29,6 +29,10 @@ mkdir -p release/signatures
 cd artifacts
 echo "[Signing Binaries]"
 
+# Remove previous signatures/hashes
+rm -f sha256sum-v$APP_VERSION.txt
+rm -f signatures-v$APP_VERSION.tar.gz
+
 # sha256sum the binaries
 gsha256sum *$APP_VERSION* > sha256sum-v$APP_VERSION.txt
 
@@ -42,5 +46,5 @@ cp ../res/SIGNATURES_README ../release/signatures/README
 
 cd ../release/signatures
 tar -czf signatures-v$APP_VERSION.tar.gz *
-cp signatures-v$APP_VERSION.tar.gz ../../artifacts
+mv signatures-v$APP_VERSION.tar.gz ../../artifacts
 
