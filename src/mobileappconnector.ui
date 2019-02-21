@@ -81,7 +81,7 @@
       <item row="3" column="0">
        <widget class="QCheckBox" name="chkInternetConn">
         <property name="text">
-         <string>Allow connections over the internet</string>
+         <string>Allow connections over the internet via zec-qt-wallet wormhole</string>
         </property>
        </widget>
       </item>
