@@ -33,7 +33,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Scan this QRCode from your ZecQT companion app to connect your phone</string>
+      <string>Scan this QRCode from your ZecQT Wallet companion app to connect your phone</string>
      </property>
     </widget>
    </item>
