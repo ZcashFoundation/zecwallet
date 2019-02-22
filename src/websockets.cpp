@@ -141,7 +141,7 @@ void WormholeClient::onConnected()
     // will timeout after 5 minutes
     timer = new QTimer(parent);
     QObject::connect(timer, &QTimer::timeout, [=]() {
-        if (m_webSocket->isValid()) {
+        if (!shuttingDown && m_webSocket->isValid()) {
             auto payload = QJsonDocument(QJsonObject {
                 {"ping", "ping"}
             }).toJson();

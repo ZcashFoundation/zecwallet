@@ -3,6 +3,7 @@ debug/
 release/
 x64/
 artifacts/
+docs/website/public
 .vscode/
 res/libsodium.a
 res/libsodium/libsodium*
