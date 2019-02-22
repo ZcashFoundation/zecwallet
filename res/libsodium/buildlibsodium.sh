@@ -22,9 +22,9 @@ cd libsodium-1.0.16
 LIBS="" ./configure
 make clean
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    make CFLAGS="-mmacosx-version-min=10.11" CPPFLAGS="-mmacosx-version-min=10.11"
+    make CFLAGS="-mmacosx-version-min=10.11" CPPFLAGS="-mmacosx-version-min=10.11" -j4
 else
-    make 
+    make -j4
 fi
 cd ..
 
