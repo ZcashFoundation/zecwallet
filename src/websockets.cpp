@@ -495,7 +495,6 @@ QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex, QStr
 
         payload = QString(decryptedStr);
 
-        qDebug() << "Decrypted to: " << payload;
         delete[] decryptedStr;
     }
 
