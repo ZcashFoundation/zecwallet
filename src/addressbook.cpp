@@ -111,7 +111,7 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
     } 
 
     // Connect the dialog's closing to updating the label address completor
-    QObject::connect(&d, &QDialog::finished, [=] (auto) { parent->updateLabelsAutoComplete(); });
+    QObject::connect(&d, &QDialog::finished, [=] (auto) { parent->updateLabels(); });
 
     // If there is a target then make it the addr for the "Add to" button
     if (target != nullptr && Settings::isValidAddress(target->text())) {

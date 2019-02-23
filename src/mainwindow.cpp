@@ -1223,27 +1223,12 @@ void MainWindow::setupRecieveTab() {
         });
     };
 
-    auto fnUpdateTAddrCombo = [=] (bool checked) {
-        if (checked) {
-            auto utxos = this->rpc->getUTXOs();
-            ui->listRecieveAddresses->clear();
-
-            std::for_each(utxos->begin(), utxos->end(), [=](auto& utxo) {
-                auto addr = utxo.address;
-                if (addr.startsWith("t") && ui->listRecieveAddresses->findText(addr) < 0) {
-                    auto bal = rpc->getAllBalances()->value(addr);
-                    ui->listRecieveAddresses->addItem(addr, bal);
-                }
-            });
-        }
-    };
-
     // Connect t-addr radio button
     QObject::connect(ui->rdioTAddr, &QRadioButton::toggled, [=] (bool checked) { 
         // Whenever the t-address is selected, we generate a new address, because we don't
         // want to reuse t-addrs
         if (checked && this->rpc->getUTXOs() != nullptr) { 
-            fnUpdateTAddrCombo(checked);
+            updateTAddrCombo(checked);
             addNewTAddr();
         } 
     });
@@ -1368,16 +1353,8 @@ void MainWindow::setupRecieveTab() {
             AddressBook::getInstance()->addAddressLabel(label, addr);
         }
 
-        // Update the UI
-        if (ui->rdioTAddr->isChecked()) {
-            fnUpdateTAddrCombo(true);
-        }
-        else {
-            addZAddrsToComboList(ui->rdioZSAddr->isChecked())(true);
-        }
-
-        // Update the autocomplete
-        updateLabelsAutoComplete();
+        // Update labels everywhere on the UI
+        updateLabels();
 
         // Show the user feedback
         if (!info.isEmpty()) {
@@ -1393,6 +1370,35 @@ void MainWindow::setupRecieveTab() {
 
         this->exportKeys(addr);
     });
+}
+
+void MainWindow::updateTAddrCombo(bool checked) {
+    if (checked) {
+        auto utxos = this->rpc->getUTXOs();
+        ui->listRecieveAddresses->clear();
+
+        std::for_each(utxos->begin(), utxos->end(), [=](auto& utxo) {
+            auto addr = utxo.address;
+            if (addr.startsWith("t") && ui->listRecieveAddresses->findText(addr) < 0) {
+                auto bal = rpc->getAllBalances()->value(addr);
+                ui->listRecieveAddresses->addItem(addr, bal);
+            }
+        });
+    }
+};
+
+// Updates the labels everywhere on the UI. Call this after the labels have been updated
+void MainWindow::updateLabels() {
+    // Update the Receive tab
+    if (ui->rdioTAddr->isChecked()) {
+        updateTAddrCombo(true);
+    }
+    else {
+        addZAddrsToComboList(ui->rdioZSAddr->isChecked())(true);
+    }
+
+    // Update the autocomplete
+    updateLabelsAutoComplete();
 }
 
 MainWindow::~MainWindow()

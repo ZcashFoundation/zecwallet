@@ -50,6 +50,10 @@ public:
     void createWebsocket(QString wormholecode);
     void stopWebsocket();
 
+    void updateLabels();
+    void updateTAddrCombo(bool checked);
+
+
     Ui::MainWindow*     ui;
 
     QLabel*             statusLabel;
