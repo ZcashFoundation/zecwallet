@@ -1397,6 +1397,9 @@ void MainWindow::updateLabels() {
         addZAddrsToComboList(ui->rdioZSAddr->isChecked())(true);
     }
 
+    // Update the Send Tab
+    updateFromCombo();
+
     // Update the autocomplete
     updateLabelsAutoComplete();
 }

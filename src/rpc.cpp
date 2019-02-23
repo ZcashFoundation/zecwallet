@@ -708,21 +708,8 @@ void RPC::updateUI(bool anyUnconfirmed) {
     // Update balances model data, which will update the table too
     balancesTableModel->setNewData(allBalances, utxos);
 
-    // Add all the addresses into the inputs combo box
-    auto lastFromAddr = ui->inputsCombo->currentText();
-
-    ui->inputsCombo->clear();
-    auto i = allBalances->constBegin();
-    while (i != allBalances->constEnd()) {
-         ui->inputsCombo->addItem(i.key(), i.value());
-        if (i.key() == lastFromAddr) ui->inputsCombo->setCurrentText(i.key());
-
-        ++i;
-    }
-
-    if (lastFromAddr.isEmpty()) {
-        main->setDefaultPayFrom();
-    }
+    // Update from address
+    main->updateFromCombo();
 };
 
 // Function to process reply of the listunspent and z_listunspent API calls, used below.

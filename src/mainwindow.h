@@ -52,6 +52,7 @@ public:
 
     void updateLabels();
     void updateTAddrCombo(bool checked);
+    void updateFromCombo();
 
 
     Ui::MainWindow*     ui;

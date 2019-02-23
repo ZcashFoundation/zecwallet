@@ -159,6 +159,31 @@ void MainWindow::setDefaultPayFrom() {
     }
 };
 
+void MainWindow::updateFromCombo() {
+    if (!rpc || !rpc->getAllBalances())
+        return;
+
+    auto lastFromAddr = ui->inputsCombo->currentText();
+
+    ui->inputsCombo->clear();
+    auto i = rpc->getAllBalances()->constBegin();
+
+    // Add all the addresses into the inputs combo box
+    while (i != rpc->getAllBalances()->constEnd()) {
+        ui->inputsCombo->addItem(i.key(), i.value());
+        if (i.key() == lastFromAddr) ui->inputsCombo->setCurrentText(i.key());
+
+        ++i;
+    }
+
+    if (lastFromAddr.isEmpty()) {
+        setDefaultPayFrom();
+    }
+    else {
+        ui->inputsCombo->setCurrentText(lastFromAddr);
+    }
+}
+
 void MainWindow::inputComboTextChanged(int index) {
     auto addr   = ui->inputsCombo->itemText(index);
     auto bal    = rpc->getAllBalances()->value(addr);
