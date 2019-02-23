@@ -1376,6 +1376,9 @@ void MainWindow::setupRecieveTab() {
             addZAddrsToComboList(ui->rdioZSAddr->isChecked())(true);
         }
 
+        // Update the autocomplete
+        updateLabelsAutoComplete();
+
         // Show the user feedback
         if (!info.isEmpty()) {
             QMessageBox::information(this, "Label", info, QMessageBox::Ok);
