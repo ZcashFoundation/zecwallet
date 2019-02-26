@@ -1116,8 +1116,15 @@ void RPC::shutdownZcashd() {
     });
     waiter.start(1000);
 
-    // Wait for the zcash process to exit.     
-    d.exec(); 
+    // Wait for the zcash process to exit.
+    if (!Settings::getInstance()->isHeadless()) {
+        d.exec(); 
+    } else {
+        while (waiter.isActive()) {
+            QCoreApplication::processEvents();
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
+    }
 }
 
 

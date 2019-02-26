@@ -27,7 +27,8 @@ ConnectionLoader::~ConnectionLoader() {
 
 void ConnectionLoader::loadConnection() {
     QTimer::singleShot(1, [=]() { this->doAutoConnect(); });
-    d->exec();
+    if (!Settings::getInstance()->isHeadless())
+        d->exec();
 }
 
 void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
@@ -442,6 +443,7 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
         [=] (auto) {
             // Success, hide the dialog if it was shown. 
             d->hide();
+            main->logger->write("zcashd is online.");
             this->doRPCSetConnection(connection);
         },
         [=] (auto reply, auto res) {            
@@ -481,6 +483,8 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
 void ConnectionLoader::showInformation(QString info, QString detail) {
     connD->status->setText(info);
     connD->statusDetail->setText(detail);
+    
+    main->logger->write(info + ":" + detail);
 }
 
 /**

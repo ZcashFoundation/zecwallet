@@ -154,6 +154,10 @@ void MainWindow::restoreSavedStates() {
     ui->transactionsTable->horizontalHeader()->restoreState(s.value("tratablegeometry").toByteArray());
 }
 
+void MainWindow::doClose() {
+    closeEvent(nullptr);
+}
+
 void MainWindow::closeEvent(QCloseEvent* event) {
     QSettings s;
 
@@ -167,7 +171,8 @@ void MainWindow::closeEvent(QCloseEvent* event) {
     rpc->shutdownZcashd();
 
     // Bubble up
-    QMainWindow::closeEvent(event);
+    if (event)
+        QMainWindow::closeEvent(event);
 }
 
 void MainWindow::turnstileProgress() {

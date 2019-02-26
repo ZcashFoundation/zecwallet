@@ -54,7 +54,6 @@ public:
     void updateTAddrCombo(bool checked);
     void updateFromCombo();
 
-
     Ui::MainWindow*     ui;
 
     QLabel*             statusLabel;
@@ -63,6 +62,9 @@ public:
     QWidget*            zcashdtab;
 
     Logger*      logger;
+
+    void doClose();
+
 private:    
     void closeEvent(QCloseEvent* event);
 
