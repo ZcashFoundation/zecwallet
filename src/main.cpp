@@ -37,19 +37,12 @@ private:
 
 #else
 
-#include <windows.h>
-
 #endif //!_WIN32
 
 // There can be only ONE SignalHandler per process
 SignalHandler* g_handler(NULL);
 
 #ifdef _WIN32
-
-BOOL WINAPI WIN32_handleFunc(DWORD);
-int WIN32_physicalToLogical(DWORD);
-DWORD WIN32_logicalToPhysical(int);
-std::set<int> g_registry;
 
 #else //_WIN32
 
@@ -65,7 +58,7 @@ SignalHandler::SignalHandler(int mask) : _mask(mask)
     g_handler = this;
 
 #ifdef _WIN32
-    SetConsoleCtrlHandler(WIN32_handleFunc, TRUE);
+    
 #endif //_WIN32
 
     for (int i=0;i<numSignals;i++)
@@ -74,7 +67,7 @@ SignalHandler::SignalHandler(int mask) : _mask(mask)
         if (_mask & logical)
         {
 #ifdef _WIN32
-            g_registry.insert(logical);
+            
 #else
             int sig = POSIX_logicalToPhysical(logical);
             bool failed = signal(sig, POSIX_handleFunc) == SIG_ERR;
@@ -90,7 +83,7 @@ SignalHandler::SignalHandler(int mask) : _mask(mask)
 SignalHandler::~SignalHandler()
 {
 #ifdef _WIN32
-    SetConsoleCtrlHandler(WIN32_handleFunc, FALSE);
+    
 #else
     for (int i=0;i<numSignals;i++)
     {
@@ -105,17 +98,7 @@ SignalHandler::~SignalHandler()
 
 
 #ifdef _WIN32
-DWORD WIN32_logicalToPhysical(int signal)
-{
-    switch (signal)
-    {
-    case SignalHandler::SIG_INT: return CTRL_C_EVENT;
-    case SignalHandler::SIG_TERM: return CTRL_BREAK_EVENT;
-    case SignalHandler::SIG_CLOSE: return CTRL_CLOSE_EVENT;
-    default: 
-        return ~(unsigned int)0; // SIG_ERR = -1
-    }
-}
+
 #else
 int POSIX_logicalToPhysical(int signal)
 {
@@ -135,17 +118,6 @@ int POSIX_logicalToPhysical(int signal)
 
 
 #ifdef _WIN32
-int WIN32_physicalToLogical(DWORD signal)
-{
-    switch (signal)
-    {
-    case CTRL_C_EVENT: return SignalHandler::SIG_INT;
-    case CTRL_BREAK_EVENT: return SignalHandler::SIG_TERM;
-    case CTRL_CLOSE_EVENT: return SignalHandler::SIG_CLOSE;
-    default:
-        return SignalHandler::SIG_UNHANDLED;
-    }
-}
 #else
 int POSIX_physicalToLogical(int signal)
 {
@@ -161,29 +133,6 @@ int POSIX_physicalToLogical(int signal)
 #endif //_WIN32
 
 #ifdef _WIN32
-BOOL WINAPI WIN32_handleFunc(DWORD signal)
-{
-    if (g_handler)
-    {
-        int signo = WIN32_physicalToLogical(signal);
-        // The std::set is thread-safe in const reading access and we never
-        // write to it after the program has started so we don't need to 
-        // protect this search by a mutex
-        std::set<int>::const_iterator found = g_registry.find(signo);
-        if (signo != -1 && found != g_registry.end())
-        {
-            return g_handler->handleSignal(signo) ? TRUE : FALSE;
-        }
-        else
-        {
-            return FALSE;
-        }
-    }
-    else
-    {
-        return FALSE;
-    }
-}
 #else
 void POSIX_handleFunc(int signal)
 {

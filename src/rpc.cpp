@@ -1122,7 +1122,10 @@ void RPC::shutdownZcashd() {
     } else {
         while (waiter.isActive()) {
             QCoreApplication::processEvents();
+#ifdef _WIN32
+#else
             std::this_thread::sleep_for(std::chrono::seconds(1));
+#endif            
         }
     }
 }
