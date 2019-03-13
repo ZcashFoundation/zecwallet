@@ -7,12 +7,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="100%"
-   height="100%"
-   viewBox="0 0 180 125"
+   width="7in"
+   height="7in"
+   viewBox="0 0 672.00001 672.00003"
    version="1.1"
    xml:space="preserve"
-   style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;"
+   style="clip-rule:evenodd;fill-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5"
    id="svg947"
    sodipodi:docname="logo2.svg"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"><metadata
@@ -32,16 +32,17 @@
    inkscape:window-height="1385"
    id="namedview949"
    showgrid="false"
-   inkscape:zoom="9.632"
-   inkscape:cx="88.598422"
-   inkscape:cy="62.5"
+   inkscape:zoom="1.204"
+   inkscape:cx="69.774919"
+   inkscape:cy="327.00515"
    inkscape:window-x="67"
    inkscape:window-y="27"
    inkscape:window-maximized="1"
-   inkscape:current-layer="Layer1" />
+   inkscape:current-layer="svg947"
+   units="in" />
     <g
    id="Layer1"
-   transform="matrix(0.1,0,0,0.1,83.6,56.1)">
+   transform="matrix(0.36813642,0,0,0.36813642,312.34626,301.46667)">
         <g
    transform="matrix(21.7676,-1.67174,1.56756,20.411,-1459.09,-1317.23)"
    id="g906">
@@ -120,9 +121,10 @@
    inkscape:groupmode="layer"
    id="layer1"
    inkscape:label="Belt"
-   style="display:inline"><g
+   style="display:inline"
+   transform="translate(0,547.00007)"><g
      style="clip-rule:evenodd;fill-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5"
-     transform="matrix(0.979929,0,0,0.860465,5.4048206,-26.936711)"
+     transform="matrix(3.6074755,0,0,3.1676851,24.481313,-551.22181)"
      id="g922">
             <path
    d="m 174.197,108.212 c 0,-3.207 -2.286,-5.81 -5.101,-5.81 h -31.213 c -2.816,0 -5.102,2.603 -5.102,5.81 v 13.64 c 0,3.206 2.286,5.809 5.102,5.809 h 31.213 c 2.815,0 5.101,-2.603 5.101,-5.809 z"
@@ -131,7 +133,7 @@
    inkscape:connector-curvature="0" />
         </g><g
      style="clip-rule:evenodd;fill-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5"
-     transform="matrix(1.16657,0,0,1.17498,-18.143179,-61.844711)"
+     transform="matrix(4.2945691,0,0,4.3255294,-62.20745,-679.73088)"
      id="g926">
             <circle
    cx="140.291"
