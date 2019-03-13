@@ -15,6 +15,7 @@ src/precompiled.h.cpp
 zecwallet
 zec-qt-wallet
 zec-qt-wallet.app
+ZecWallet.app
 zec-qt-wallet-mingw*
 zec-qt-wallet.vcxproj*
 zecwallet.vcxproj*
