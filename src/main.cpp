@@ -214,7 +214,7 @@ public:
         }
 
         w = new MainWindow();
-        w->setWindowTitle("zec-qt-wallet v" + QString(APP_VERSION));
+        w->setWindowTitle("ZecWallet v" + QString(APP_VERSION));
 
         if (parser.isSet(headlessOption)) {
             Settings::getInstance()->setHeadless(true);

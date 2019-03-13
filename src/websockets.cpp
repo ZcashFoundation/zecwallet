@@ -342,7 +342,7 @@ QString AppDataServer::connDesc(AppConnectionType t) {
         return QObject::tr("Connected directly");
     }
     else {
-        return QObject::tr("Connected over the internet via zec-qt-wallet wormhole service");
+        return QObject::tr("Connected over the internet via ZecWallet wormhole service");
     }
 }
 

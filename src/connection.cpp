@@ -75,8 +75,8 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
                     QString explanation;
                     if (config->zcashDaemon) {
                         explanation = QString() % QObject::tr("You have zcashd set to start as a daemon, which can cause problems "
-                            "with zec-qt-wallet\n\n."
-                            "Please remove the following line from your zcash.conf and restart zec-qt-wallet\n"
+                            "with ZecWallet\n\n."
+                            "Please remove the following line from your zcash.conf and restart ZecWallet\n"
                             "daemon=1");
                     } else {
                         explanation = QString() % QObject::tr("Couldn't start the embedded zcashd.\n\n" 

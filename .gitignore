@@ -17,6 +17,7 @@ zec-qt-wallet
 zec-qt-wallet.app
 zec-qt-wallet-mingw*
 zec-qt-wallet.vcxproj*
+zecwallet.vcxproj*
 zec-qt-wallet.sln
 zec-qt-wallet.pro.user
 Makefile
@@ -25,6 +26,7 @@ qrc_application.cpp
 zec-qt-wallet_plugin_import.cpp
 zecwallet_plugin_import.cpp
 zec-qt-wallet_resource*
+zecwallet_resource*
 workspace.code-workspace
 *.zip
 *.tar.gz
