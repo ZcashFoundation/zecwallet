@@ -21,10 +21,10 @@ tar -xvf zecwallet-v0.6.2.tar.gz
 ```
 
 ### Windows
-Download and run the .msi installer and follow the prompts. Alternately, you can download the release binary, unzip it and double click on zecwallet.exe to start.
+Download and run the `.msi` installer and follow the prompts. Alternately, you can download the release binary, unzip it and double click on `zecwallet.exe` to start.
 
 ### macOS
-Double-click on the .dmg file to open it, and drag zecwallet on to the Applications link to install.
+Double-click on the `.dmg` file to open it, and drag `zecwallet` on to the Applications link to install.
 
 ## zcashd
 ZecWallet needs a Zcash node running zcashd. If you already have a zcashd node running, ZecWallet will connect to it. 
