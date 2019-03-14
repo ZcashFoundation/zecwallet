@@ -60,7 +60,7 @@ export PATH=$PATH:/usr/local/bin
 #Clean
 echo -n "Cleaning..............."
 make distclean >/dev/null 2>&1
-rm -f artifacts/macOS-zec-qt-wallet-v$APP_VERSION.dmg
+rm -f artifacts/macOS-zecwallet-v$APP_VERSION.dmg
 echo "[OK]"
 
 
@@ -78,26 +78,27 @@ echo "[OK]"
 #Qt deploy
 echo -n "Deploying.............."
 mkdir artifacts >/dev/null 2>&1
-rm -f artifcats/zec-qt-wallet.dmg >/dev/null 2>&1
+rm -f artifcats/zecwallet.dmg >/dev/null 2>&1
 rm -f artifacts/rw* >/dev/null 2>&1
-cp $ZCASH_DIR/src/zcashd zec-qt-wallet.app/Contents/MacOS/
-cp $ZCASH_DIR/src/zcash-cli zec-qt-wallet.app/Contents/MacOS/
-$QT_PATH/bin/macdeployqt zec-qt-wallet.app 
+cp $ZCASH_DIR/src/zcashd zecwallet.app/Contents/MacOS/
+cp $ZCASH_DIR/src/zcash-cli zecwallet.app/Contents/MacOS/
+$QT_PATH/bin/macdeployqt zecwallet.app 
 echo "[OK]"
 
 
 echo -n "Building dmg..........."
-create-dmg --volname "zec-qt-wallet-v$APP_VERSION" --volicon "res/logo.icns" --window-pos 200 120 --icon "zec-qt-wallet.app" 200 190  --app-drop-link 600 185 --hide-extension "zec-qt-wallet.app"  --window-size 800 400 --hdiutil-quiet --background res/dmgbg.png  artifacts/macOS-zec-qt-wallet-v$APP_VERSION.dmg zec-qt-wallet.app >/dev/null 2>&1
+mv zecwallet.app ZecWallet.app
+create-dmg --volname "ZecWallet-v$APP_VERSION" --volicon "res/logo.icns" --window-pos 200 120 --icon "ZecWallet.app" 200 190  --app-drop-link 600 185 --hide-extension "ZecWallet.app"  --window-size 800 400 --hdiutil-quiet --background res/dmgbg.png  artifacts/macOS-zecwallet-v$APP_VERSION.dmg ZecWallet.app >/dev/null 2>&1
 
 #mkdir bin/dmgbuild >/dev/null 2>&1
 #sed "s/RELEASE_VERSION/${APP_VERSION}/g" res/appdmg.json > bin/dmgbuild/appdmg.json
 #cp res/logo.icns bin/dmgbuild/
 #cp res/dmgbg.png bin/dmgbuild/
 
-#cp -r zec-qt-wallet.app bin/dmgbuild/
+#cp -r zecwallet.app bin/dmgbuild/
 
-#appdmg --quiet bin/dmgbuild/appdmg.json artifacts/macOS-zec-qt-wallet-v$APP_VERSION.dmg >/dev/null
-if [ ! -f artifacts/macOS-zec-qt-wallet-v$APP_VERSION.dmg ]; then
+#appdmg --quiet bin/dmgbuild/appdmg.json artifacts/macOS-zecwallet-v$APP_VERSION.dmg >/dev/null
+if [ ! -f artifacts/macOS-zecwallet-v$APP_VERSION.dmg ]; then
     echo "[ERROR]"
     exit 1
 fi
