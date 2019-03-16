@@ -54,14 +54,16 @@ struct RecurringPaymentInfo {
 class Recurring
 {
 public:
-    static Recurring* getInstance() { if (!instance) { instance = new Recurring(); } return instance; }
+    static Recurring* getInstance();
 
-    RecurringPaymentInfo*    getNewRecurringFromTx(QWidget* parent, MainWindow* main, Tx tx, RecurringPaymentInfo* rpi);
-    
-    QDateTime   getNextPaymentDate(Schedule s);
+    RecurringPaymentInfo*    getNewRecurringFromTx(QWidget* parent, MainWindow* main, Tx tx, RecurringPaymentInfo* rpi);   
+ 
     void        updateInfoWithTx(RecurringPaymentInfo* r, Tx tx);
-
     QString     writeableFile();
+    void        readFromFile();
+
+    static void         showRecurringDialog();
+    static QDateTime    getNextPaymentDate(Schedule s);
 
     void        addRecurringInfo(const RecurringPaymentInfo& rpi);
     void        writeToStorage();

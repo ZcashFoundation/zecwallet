@@ -45,6 +45,10 @@ MainWindow::MainWindow(QWidget *parent) :
         rpc->checkForUpdate(false);
     });
 
+    QObject::connect(ui->action_Recurring_Payments, &QAction::triggered, [=]() {
+        Recurring::getInstance()->showRecurringDialog();
+    });
+
     // Pay Zcash URI
     QObject::connect(ui->actionPay_URI, &QAction::triggered, this, &MainWindow::payZcashURI);
 

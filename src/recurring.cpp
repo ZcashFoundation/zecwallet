@@ -4,6 +4,7 @@
 #include "rpc.h"
 #include "settings.h"
 #include "ui_newrecurring.h"
+#include "ui_recurringdialog.h"
 
 QString schedule_desc(Schedule s) {
     switch (s) {
@@ -14,7 +15,6 @@ QString schedule_desc(Schedule s) {
     default: return "none";
     }
 }
-
 
 RecurringPaymentInfo RecurringPaymentInfo::fromJson(QJsonObject j) {
     RecurringPaymentInfo r;
@@ -209,7 +209,6 @@ QDateTime Recurring::getNextPaymentDate(Schedule s) {
     return nextDate;
 }
 
-
 QString Recurring::writeableFile() {
     auto filename = QStringLiteral("recurringpayments.json");
 
@@ -235,6 +234,22 @@ void Recurring::addRecurringInfo(const RecurringPaymentInfo& rpi) {
     writeToStorage();
 }
 
+
+void Recurring::readFromFile() {
+    QFile file(writeableFile());
+    file.open(QIODevice::ReadOnly);
+
+    QTextStream in(&file);
+    auto jsondoc = QJsonDocument::fromJson(in.readAll().toUtf8());
+
+    for (auto k : jsondoc.array()) {
+        auto p = RecurringPaymentInfo::fromJson(k.toObject());
+        p.updateHash();
+        payments.insert(p.hashid, p);
+    }
+}
+
+
 void Recurring::writeToStorage() {
     QFile file(writeableFile());
     file.open(QIODevice::ReadWrite | QIODevice::Truncate);
@@ -250,13 +265,36 @@ void Recurring::writeToStorage() {
     file.close();
 }
 
+Recurring* Recurring::getInstance() {
+    if (!instance) { 
+        instance = new Recurring(); 
+        instance->readFromFile();
+    } 
+    
+    return instance; 
+}
+
 // Singleton
 Recurring* Recurring::instance = nullptr;
 
 
+void Recurring::showRecurringDialog() {
+    Ui_RecurringDialog rd;
+    QDialog d;
+    
+    rd.setupUi(&d);
+    Settings::saveRestore(&d);
+
+    auto model = new RecurringListViewModel(rd.tableView);
+    rd.tableView->setModel(model);
+
+    d.exec();
+    delete model;
+}
+
 RecurringListViewModel::RecurringListViewModel(QTableView* parent) {
     this->parent = parent;
-    headers << tr("To") << tr("Amount") << tr("Schedule") << tr("Payments Left");
+    headers << tr("Amount") << tr("Schedule") << tr("Payments Left") << tr("To");
 }
 
 
@@ -272,10 +310,11 @@ QVariant RecurringListViewModel::data(const QModelIndex &index, int role) const 
     auto rpi = Recurring::getInstance()->getAsList().at(index.row());
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
-        case 0: return rpi.toAddr;
-        case 1: return rpi.getAmountPretty();
-        case 2: return schedule_desc(rpi.schedule);
-        case 3: return rpi.numPayments - rpi.completedPayments;
+        case 0: return rpi.getAmountPretty();
+        case 1: return tr("Every ") + schedule_desc(rpi.schedule);
+        case 2: return rpi.numPayments - rpi.completedPayments; 
+        case 3: return rpi.toAddr;        
+        //case 4: return Recurring::getNextPaymentDate(rpi.)
         }
     }
 
@@ -283,5 +322,15 @@ QVariant RecurringListViewModel::data(const QModelIndex &index, int role) const 
 }
 
 QVariant RecurringListViewModel::headerData(int section, Qt::Orientation orientation, int role) const {
+    if (role == Qt::FontRole) {
+        QFont f;
+        f.setBold(true);
+        return f;
+    }
+
+    if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
+        return headers.at(section);
+    }
+
     return QVariant();
 }

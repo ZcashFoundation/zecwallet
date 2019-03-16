@@ -748,15 +748,10 @@ void RPC::refreshBalances() {
         ui->balTransparent->setText(Settings::getZECDisplayFormat(balT));
         ui->balTotal      ->setText(Settings::getZECDisplayFormat(balTotal));
 
-<<<<<<< HEAD
-        ui->balSheilded   ->setToolTip(Settings::getUSDFromZecAmount(balZ));
-        ui->balTransparent->setToolTip(Settings::getUSDFromZecAmount(balT));
-        ui->balTotal      ->setToolTip(Settings::getUSDFromZecAmount(tot));
-=======
+
         ui->balSheilded   ->setToolTip(Settings::getUSDFormat(balZ));
         ui->balTransparent->setToolTip(Settings::getUSDFormat(balT));
         ui->balTotal      ->setToolTip(Settings::getUSDFormat(balTotal));
->>>>>>> master
     });
 
     // 2. Get the UTXOs

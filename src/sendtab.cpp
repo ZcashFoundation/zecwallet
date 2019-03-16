@@ -99,11 +99,6 @@ void MainWindow::setupSendTab() {
     // Recurring schedule button
     QObject::connect(ui->btnRecurSchedule, &QPushButton::clicked, this, &MainWindow::editSchedule);
 
-    // Hide the recurring section for now
-    ui->chkRecurring->setVisible(false);
-    ui->lblRecurDesc->setVisible(false);
-    ui->btnRecurSchedule->setVisible(false);
-
     // Set the default state for the whole page
     clearSendForm();
 }
