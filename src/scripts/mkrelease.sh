@@ -43,7 +43,7 @@ fi
 
 echo -n "Version files.........."
 # Replace the version number in the .pro file so it gets picked up everywhere
-sed -i "s/${PREV_VERSION}/${APP_VERSION}/g" zec-qt-wallet.pro > /dev/null
+sed -i "s/${PREV_VERSION}/${APP_VERSION}/g" zecwallet.pro > /dev/null
 
 # Also update it in the README.md
 sed -i "s/${PREV_VERSION}/${APP_VERSION}/g" README.md > /dev/null
@@ -60,12 +60,12 @@ echo "[Building on" `lsb_release -r`"]"
 
 echo -n "Configuring............"
 QT_STATIC=$QT_STATIC bash src/scripts/dotranslations.sh >/dev/null
-$QT_STATIC/bin/qmake zec-qt-wallet.pro -spec linux-clang CONFIG+=release > /dev/null
+$QT_STATIC/bin/qmake zecwallet.pro -spec linux-clang CONFIG+=release > /dev/null
 echo "[OK]"
 
 
 echo -n "Building..............."
-rm -rf bin/zec-qt-wallet* > /dev/null
+rm -rf bin/zecwallet* > /dev/null
 rm -rf bin/zecwallet* > /dev/null
 make clean > /dev/null
 make -j$(nproc) > /dev/null
@@ -128,7 +128,7 @@ mkdir -p $debdir/usr/share/pixmaps/
 cp res/zecwallet.xpm           $debdir/usr/share/pixmaps/
 
 mkdir -p $debdir/usr/share/applications
-cp src/scripts/desktopentry    $debdir/usr/share/applications/zec-qt-wallet.desktop
+cp src/scripts/desktopentry    $debdir/usr/share/applications/zecwallet.desktop
 
 dpkg-deb --build $debdir >/dev/null
 cp $debdir.deb                 artifacts/linux-deb-zecwallet-v$APP_VERSION.deb
@@ -160,15 +160,15 @@ export PATH=$MXE_PATH:$PATH
 
 echo -n "Configuring............"
 make clean  > /dev/null
-rm -f zec-qt-wallet-mingw.pro
+rm -f zecwallet-mingw.pro
 rm -rf release/
 #Mingw seems to have trouble with precompiled headers, so strip that option from the .pro file
-cat zec-qt-wallet.pro | sed "s/precompile_header/release/g" | sed "s/PRECOMPILED_HEADER.*//g" > zec-qt-wallet-mingw.pro
+cat zecwallet.pro | sed "s/precompile_header/release/g" | sed "s/PRECOMPILED_HEADER.*//g" > zecwallet-mingw.pro
 echo "[OK]"
 
 
 echo -n "Building..............."
-x86_64-w64-mingw32.static-qmake-qt5 zec-qt-wallet-mingw.pro CONFIG+=release > /dev/null
+x86_64-w64-mingw32.static-qmake-qt5 zecwallet-mingw.pro CONFIG+=release > /dev/null
 make -j32 > /dev/null
 echo "[OK]"
 

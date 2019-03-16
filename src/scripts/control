@@ -1,4 +1,4 @@
-Package: zec-qt-wallet
+Package: zecwallet
 Version: RELEASE_VERSION
 Section: base
 Priority: optional

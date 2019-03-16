@@ -183,7 +183,7 @@ void ConnectionLoader::createZcashConf() {
     
     out << "server=1\n";
     out << "addnode=mainnet.z.cash\n";
-    out << "rpcuser=zec-qt-wallet\n";
+    out << "rpcuser=zecwallet\n";
     out << "rpcpassword=" % randomPassword() << "\n";
     if (!datadir.isEmpty()) {
         out << "datadir=" % datadir % "\n";

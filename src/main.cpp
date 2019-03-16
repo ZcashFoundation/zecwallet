@@ -157,15 +157,15 @@ public:
 
         QApplication a(argc, argv);
 
-        QCoreApplication::setOrganizationName("zec-qt-wallet-org");
-        QCoreApplication::setApplicationName("zec-qt-wallet");
+        QCoreApplication::setOrganizationName("zecwallet-org");
+        QCoreApplication::setApplicationName("zecwallet");
 
         QString locale = QLocale::system().name();
         locale.truncate(locale.lastIndexOf('_'));   // Get the language code
         qDebug() << "Loading locale " << locale;
         
         QTranslator translator;
-        translator.load(QString(":/translations/res/zec_qt_wallet_") + locale);
+        translator.load(QString(":/translations/res/zecwallet_") + locale);
         a.installTranslator(&translator);
 
         QIcon icon(":/icons/res/icon.ico");

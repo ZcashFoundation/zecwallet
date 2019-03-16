@@ -18,7 +18,7 @@
     <name>ConnectionDialog</name>
     <message>
         <location filename="../src/connection.ui" line="17"/>
-        <source>zec-qt-wallet</source>
+        <source>zecwallet</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
@@ -31,7 +31,7 @@
     <name>MainWindow</name>
     <message>
         <location filename="../src/mainwindow.ui" line="14"/>
-        <source>zec-qt-wallet</source>
+        <source>zecwallet</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
@@ -345,7 +345,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="471"/>
-        <source>Thanks for supporting zec-qt-wallet!</source>
+        <source>Thanks for supporting zecwallet!</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
@@ -355,7 +355,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="473"/>
-        <source> to support zec-qt-wallet</source>
+        <source> to support zecwallet</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
@@ -592,9 +592,9 @@ doesn&apos;t look like a z-address</source>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="75"/>
-        <source>You have zcashd set to start as a daemon, which can cause problems with zec-qt-wallet
+        <source>You have zcashd set to start as a daemon, which can cause problems with zecwallet
 
-.Please remove the following line from your zcash.conf and restart zec-qt-wallet
+.Please remove the following line from your zcash.conf and restart zecwallet
 daemon=1</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
@@ -714,7 +714,7 @@ Not starting embedded zcashd because --no-embedded was passed</source>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="953"/>
-        <source>Please wait for zec-qt-wallet to exit</source>
+        <source>Please wait for zecwallet to exit</source>
         <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>

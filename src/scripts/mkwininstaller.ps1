@@ -13,14 +13,14 @@ Copy-Item release/$target/README.md         release/wininstaller/
 Copy-Item release/$target/zcashd.exe        release/wininstaller/
 Copy-Item release/$target/zcash-cli.exe     release/wininstaller/
 
-Get-Content src/scripts/zec-qt-wallet.wxs | ForEach-Object { $_ -replace "RELEASE_VERSION", "$version" } | Out-File -Encoding utf8 release/wininstaller/zec-qt-wallet.wxs
+Get-Content src/scripts/zecwallet.wxs | ForEach-Object { $_ -replace "RELEASE_VERSION", "$version" } | Out-File -Encoding utf8 release/wininstaller/zecwallet.wxs
 
-candle.exe release/wininstaller/zec-qt-wallet.wxs -o release/wininstaller/zec-qt-wallet.wixobj 
+candle.exe release/wininstaller/zecwallet.wxs -o release/wininstaller/zecwallet.wixobj 
 if (!$?) {
     exit 1;
 }
 
-light.exe -ext WixUIExtension -cultures:en-us release/wininstaller/zec-qt-wallet.wixobj -out release/wininstaller/zecwallet.msi 
+light.exe -ext WixUIExtension -cultures:en-us release/wininstaller/zecwallet.wixobj -out release/wininstaller/zecwallet.msi 
 if (!$?) {
     exit 1;
 }
