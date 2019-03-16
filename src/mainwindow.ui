@@ -531,7 +531,7 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_17">
+         <layout class="QHBoxLayout" name="layoutSendRecurring">
           <item>
            <widget class="QCheckBox" name="chkRecurring">
             <property name="text">
@@ -680,7 +680,7 @@
                <item>
                 <widget class="QRadioButton" name="rdioZSAddr">
                  <property name="text">
-                  <string>z-Addr(Sapling)</string>
+                  <string>z-Addr</string>
                  </property>
                 </widget>
                </item>
@@ -700,7 +700,7 @@
                <item>
                 <widget class="QRadioButton" name="rdioZAddr">
                  <property name="text">
-                  <string>z-Addr(Sprout)</string>
+                  <string>z-Addr(Legacy Sprout)</string>
                  </property>
                 </widget>
                </item>
@@ -790,17 +790,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="label_10">
-                  <property name="text">
-                   <string>Address</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="1" colspan="2">
+                <item row="3" column="1" colspan="2">
                  <layout class="QHBoxLayout" name="horizontalLayout_16">
                   <item>
                    <widget class="QPushButton" name="exportKey">
@@ -824,17 +814,13 @@
                   </item>
                  </layout>
                 </item>
-                <item row="3" column="0">
-                 <widget class="QLabel" name="label_15">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_10">
                   <property name="text">
-                   <string>Address used</string>
+                   <string>Address</string>
                   </property>
-                 </widget>
-                </item>
-                <item row="3" column="1" colspan="2">
-                 <widget class="QLabel" name="lblUsed">
-                  <property name="text">
-                   <string notr="true"/>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
                   </property>
                  </widget>
                 </item>
@@ -1043,7 +1029,7 @@
      <x>0</x>
      <y>0</y>
      <width>968</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1072,8 +1058,10 @@
     <property name="title">
      <string>&amp;Apps</string>
     </property>
-    <addaction name="actionTurnstile_Migration"/>
+    <addaction name="actionConnect_Mobile_App"/>
+    <addaction name="separator"/>
     <addaction name="actionz_board_net"/>
+    <addaction name="actionTurnstile_Migration"/>
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="title">
@@ -1165,6 +1153,14 @@
     <string>Pay zcash &amp;URI...</string>
    </property>
   </action>
+  <action name="actionConnect_Mobile_App">
+   <property name="text">
+    <string>Connect mobile &amp;app</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -1174,14 +1170,14 @@
    <header>qrcodelabel.h</header>
   </customwidget>
   <customwidget>
-   <class>FilledIconLabel</class>
-   <extends>QLabel</extends>
-   <header>fillediconlabel.h</header>
-  </customwidget>
-  <customwidget>
    <class>AddressCombo</class>
    <extends>QComboBox</extends>
    <header>addresscombo.h</header>
+  </customwidget>
+  <customwidget>
+   <class>FilledIconLabel</class>
+   <extends>QLabel</extends>
+   <header>fillediconlabel.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

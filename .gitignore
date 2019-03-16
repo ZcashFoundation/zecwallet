@@ -3,8 +3,11 @@ debug/
 release/
 x64/
 artifacts/
+docs/website/public
 .vscode/
+res/libsodium.a
 res/libsodium/libsodium*
+res/libsodium.a
 src/ui_*.h
 *.autosave
 src/precompiled.h.cpp

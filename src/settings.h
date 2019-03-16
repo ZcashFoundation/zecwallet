@@ -34,6 +34,9 @@ public:
     void    setUseEmbedded(bool r) { _useEmbedded = r; }
     bool    useEmbedded() { return _useEmbedded; }
 
+    void    setHeadless(bool h) { _headless = h; }
+    bool    isHeadless() { return _headless; }
+
     int     getBlockNumber();
     void    setBlockNumber(int number);
             
@@ -78,6 +81,8 @@ public:
     static double  getMinerFee();
     static double  getZboardAmount();
     static QString getZboardAddr();
+
+    static int     getMaxMobileAppTxns() { return 30; }
     
     static bool    isValidAddress(QString addr);
 
@@ -103,8 +108,10 @@ private:
     bool    _isSyncing        = false;
     int     _blockNumber      = 0;
     bool    _useEmbedded      = false;
+    bool    _headless         = false;
     int     _peerConnections  = 0;
-    double zecPrice = 0.0;
+    
+    double  zecPrice          = 0.0;
 };
 
 #endif // SETTINGS_H

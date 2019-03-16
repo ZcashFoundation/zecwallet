@@ -15,7 +15,7 @@ QSize QRCodeLabel::sizeHint() const
 
 void QRCodeLabel::resizeEvent(QResizeEvent*)
 {
-    if(!address.isEmpty())
+    if(!str.isEmpty())
         QLabel::setPixmap(scaledPixmap());
 }
 
@@ -24,7 +24,7 @@ QPixmap QRCodeLabel::scaledPixmap() const {
     pm.fill(Qt::white);
     QPainter painter(&pm);
     
-    qrcodegen::QrCode qr = qrcodegen::QrCode::encodeText(address.toUtf8().constData(), qrcodegen::QrCode::Ecc::LOW);
+    qrcodegen::QrCode qr = qrcodegen::QrCode::encodeText(str.toUtf8().constData(), qrcodegen::QrCode::Ecc::LOW);
     const int    s      = qr.getSize()>0?qr.getSize():1;
     const double w      = pm.width();
     const double h      = pm.height();
@@ -51,7 +51,7 @@ QPixmap QRCodeLabel::scaledPixmap() const {
     return pm;
 }
 
-void QRCodeLabel::setAddress(QString addr) {
-    address = addr;
+void QRCodeLabel::setQrcodeString(QString stra) {
+    str = stra;
     QLabel::setPixmap(scaledPixmap());
 }

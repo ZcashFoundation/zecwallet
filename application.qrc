@@ -15,5 +15,6 @@
         <file>res/zec_qt_wallet_es.qm</file>
         <file>res/zec_qt_wallet_fr.qm</file>
         <file>res/zec_qt_wallet_pt.qm</file>
+        <file>res/zec_qt_wallet_it.qm</file>
     </qresource>
 </RCC>

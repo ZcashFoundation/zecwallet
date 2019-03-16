@@ -9,6 +9,8 @@
 // Forward declare to break circular dependency.
 class RPC;
 class Settings;
+class WSServer;
+class WormholeClient;
 
 using json = nlohmann::json;
 
@@ -42,7 +44,17 @@ public:
     void updateLabelsAutoComplete();
     RPC* getRPC() { return rpc; }
 
+    QString doSendTxValidations(Tx tx);
     void setDefaultPayFrom();
+
+    void replaceWormholeClient(WormholeClient* newClient);
+    bool isWebsocketListening();
+    void createWebsocket(QString wormholecode);
+    void stopWebsocket();
+
+    void updateLabels();
+    void updateTAddrCombo(bool checked);
+    void updateFromCombo();
 
     Ui::MainWindow*     ui;
 
@@ -52,6 +64,9 @@ public:
     QWidget*            zcashdtab;
 
     Logger*      logger;
+
+    void doClose();
+
 private:    
     void closeEvent(QCloseEvent* event);
 
@@ -89,9 +104,7 @@ private:
 
     void memoButtonClicked(int number, bool includeReplyTo = false);
     void setMemoEnabled(int number, bool enabled);
-
-    QString doSendTxValidations(Tx tx);
-
+    
     void donate();
     void addressBook();
     void payZcashURI();
@@ -105,6 +118,9 @@ private:
     void doImport(QList<QString>* keys);
 
     void restoreSavedStates();
+
+    WSServer*       wsserver = nullptr;
+    WormholeClient* wormhole = nullptr;
 
     RPC*         rpc  = nullptr;
     QCompleter*  labelCompleter = nullptr;

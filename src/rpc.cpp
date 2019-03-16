@@ -5,6 +5,7 @@
 #include "senttxstore.h"
 #include "turnstile.h"
 #include "version.h"
+#include "websockets.h"
 
 using json = nlohmann::json;
 
@@ -65,6 +66,7 @@ RPC::~RPC() {
     delete allBalances;
     delete usedAddresses;
     delete zaddresses;
+    delete taddresses;
 
     delete conn;
 }
@@ -86,11 +88,23 @@ void RPC::setConnection(Connection* c) {
     ui->statusBar->showMessage("Ready!");
 
     refreshZECPrice();
-    checkForUpdate();
+    // Commented for Android beta. 
+    // checkForUpdate();
 
     // Force update, because this might be coming from a settings update
     // where we need to immediately refresh
     refresh(true);
+}
+
+void RPC::getTAddresses(const std::function<void(json)>& cb) {
+    json payload = {
+        {"jsonrpc", "1.0"},
+        {"id", "someid"},
+        {"method", "getaddressesbyaccount"},
+        {"params", {""}}
+    };
+
+    conn->doRPCWithDefaultErrorHandling(payload, cb);
 }
 
 void RPC::getZAddresses(const std::function<void(json)>& cb) {
@@ -530,6 +544,7 @@ void RPC::getInfoThenRefresh(bool force) {
 
         static int    lastBlock = 0;
         int curBlock  = reply["blocks"].get<json::number_integer_t>();
+        int version = reply["version"].get<json::number_integer_t>();
 
         if ( force || (curBlock != lastBlock) ) {
             // Something changed, so refresh everything.
@@ -598,7 +613,7 @@ void RPC::getInfoThenRefresh(bool force) {
                         // as the progress instead of verification progress.
                         progress = (double)blockNumber / (double)estimatedheight;
                     }
-                    txt = txt %  " ( " % QString::number(progress * 100, 'f', 0) % "% )";
+                    txt = txt %  " ( " % QString::number(progress * 100, 'f', 2) % "% )";
                     ui->blockheight->setText(txt);
                     ui->heightLabel->setText(QObject::tr("Downloading blocks"));
                 } else {
@@ -613,7 +628,7 @@ void RPC::getInfoThenRefresh(bool force) {
                 " (" %
                 (Settings::getInstance()->isTestnet() ? QObject::tr("testnet:") : "") %
                 QString::number(blockNumber) %
-                (isSyncing ? ("/" % QString::number(progress*100, 'f', 0) % "%") : QString()) %
+                (isSyncing ? ("/" % QString::number(progress*100, 'f', 2) % "%") : QString()) %
                 ")";
             main->statusLabel->setText(statusText);   
 
@@ -625,6 +640,7 @@ void RPC::getInfoThenRefresh(bool force) {
             else {
                 tooltip = QObject::tr("zcashd has no peer connections");
             }
+            tooltip = tooltip % "(v " % QString::number(version) % ")";
 
             if (!zecPrice.isEmpty()) {
                 tooltip = "1 ZEC = " % zecPrice % "\n" % tooltip;
@@ -667,6 +683,22 @@ void RPC::refreshAddresses() {
         refreshSentZTrans();
         refreshReceivedZTrans(*zaddresses);
     });
+
+    delete taddresses;
+    taddresses = new QList<QString>();
+    getTAddresses([=] (json reply) {
+        for (auto& it : reply.get<json::array_t>()) {   
+            auto addr = QString::fromStdString(it.get<json::string_t>());
+            if (Settings::isTAddress(addr))
+                taddresses->push_back(addr);
+        }
+
+        // If there are no t Addresses, create one
+        newTaddr([=] (json reply) {
+            // What if taddress gets deleted before this executes?
+            taddresses->append(QString::fromStdString(reply.get<json::string_t>()));
+        });
+    });
 }
 
 // Function to create the data model and update the views, used below.
@@ -676,21 +708,8 @@ void RPC::updateUI(bool anyUnconfirmed) {
     // Update balances model data, which will update the table too
     balancesTableModel->setNewData(allBalances, utxos);
 
-    // Add all the addresses into the inputs combo box
-    auto lastFromAddr = ui->inputsCombo->currentText();
-
-    ui->inputsCombo->clear();
-    auto i = allBalances->constBegin();
-    while (i != allBalances->constEnd()) {
-         ui->inputsCombo->addItem(i.key(), i.value());
-        if (i.key() == lastFromAddr) ui->inputsCombo->setCurrentText(i.key());
-
-        ++i;
-    }
-
-    if (lastFromAddr.isEmpty()) {
-        main->setDefaultPayFrom();
-    }
+    // Update from address
+    main->updateFromCombo();
 };
 
 // Function to process reply of the listunspent and z_listunspent API calls, used below.
@@ -719,17 +738,25 @@ void RPC::refreshBalances() {
 
     // 1. Get the Balances
     getBalance([=] (json reply) {    
-        auto balT = QString::fromStdString(reply["transparent"]).toDouble();
-        auto balZ = QString::fromStdString(reply["private"]).toDouble();
-        auto tot  = QString::fromStdString(reply["total"]).toDouble();
+        auto balT      = QString::fromStdString(reply["transparent"]).toDouble();
+        auto balZ      = QString::fromStdString(reply["private"]).toDouble();
+        auto balTotal  = QString::fromStdString(reply["total"]).toDouble();
+
+        AppDataModel::getInstance()->setBalances(balT, balZ);
 
         ui->balSheilded   ->setText(Settings::getZECDisplayFormat(balZ));
         ui->balTransparent->setText(Settings::getZECDisplayFormat(balT));
-        ui->balTotal      ->setText(Settings::getZECDisplayFormat(tot));
+        ui->balTotal      ->setText(Settings::getZECDisplayFormat(balTotal));
 
+<<<<<<< HEAD
         ui->balSheilded   ->setToolTip(Settings::getUSDFromZecAmount(balZ));
         ui->balTransparent->setToolTip(Settings::getUSDFromZecAmount(balT));
         ui->balTotal      ->setToolTip(Settings::getUSDFromZecAmount(tot));
+=======
+        ui->balSheilded   ->setToolTip(Settings::getUSDFormat(balZ));
+        ui->balTransparent->setToolTip(Settings::getUSDFormat(balT));
+        ui->balTotal      ->setToolTip(Settings::getUSDFormat(balTotal));
+>>>>>>> master
     });
 
     // 2. Get the UTXOs
@@ -963,8 +990,14 @@ void RPC::checkForUpdate(bool silent) {
                 }
 
                 auto currentVersion = QVersionNumber::fromString(APP_VERSION);
+                
+                // Get the max version that the user has hidden updates for
+                QSettings s;
+                auto maxHiddenVersion = QVersionNumber::fromString(s.value("update/lastversion", "0.0.0").toString());
+
                 qDebug() << "Version check: Current " << currentVersion << ", Available " << maxVersion;
-                if (maxVersion > currentVersion) {
+
+                if (maxVersion > currentVersion && maxVersion > maxHiddenVersion) {
                     auto ans = QMessageBox::information(main, QObject::tr("Update Available"), 
                         QObject::tr("A new release v%1 is available! You have v%2.\n\nWould you like to visit the releases page?")
                             .arg(maxVersion.toString())
@@ -972,6 +1005,9 @@ void RPC::checkForUpdate(bool silent) {
                         QMessageBox::Yes, QMessageBox::Cancel);
                     if (ans == QMessageBox::Yes) {
                         QDesktopServices::openUrl(QUrl("https://github.com/ZcashFoundation/zec-qt-wallet/releases"));
+                    } else {
+                        // If the user selects cancel, don't bother them again for this version
+                        s.setValue("update/lastversion", maxVersion.toString());
                     }
                 } else {
                     if (!silent) {
@@ -979,7 +1015,7 @@ void RPC::checkForUpdate(bool silent) {
                             QObject::tr("You already have the latest release v%1")
                                 .arg(currentVersion.toString()));
                     }
-                }
+                } 
             }
         }
         catch (...) {
@@ -1045,7 +1081,7 @@ void RPC::refreshZECPrice() {
 
 void RPC::shutdownZcashd() {
     // Shutdown embedded zcashd if it was started
-    if (ezcashd == nullptr || conn == nullptr) {
+    if (ezcashd == nullptr || ezcashd->processId() == 0 || conn == nullptr) {
         // No zcashd running internally, just return
         return;
     }
@@ -1086,8 +1122,18 @@ void RPC::shutdownZcashd() {
     });
     waiter.start(1000);
 
-    // Wait for the zcash process to exit.     
-    d.exec(); 
+    // Wait for the zcash process to exit.
+    if (!Settings::getInstance()->isHeadless()) {
+        d.exec(); 
+    } else {
+        while (waiter.isActive()) {
+            QCoreApplication::processEvents();
+#ifdef _WIN32
+#else
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+#endif            
+        }
+    }
 }
 
 
@@ -1155,4 +1201,11 @@ QString RPC::getDefaultSaplingAddress() {
     }
 
     return QString();
+}
+
+QString RPC::getDefaultTAddress() {
+    if (getAllTAddresses()->length() > 0)
+        return getAllTAddresses()->at(0);
+    else 
+        return QString();
 }

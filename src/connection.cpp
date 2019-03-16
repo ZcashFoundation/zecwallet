@@ -2,6 +2,7 @@
 #include "mainwindow.h"
 #include "settings.h"
 #include "ui_connection.h"
+#include "ui_createzcashconfdialog.h"
 #include "rpc.h"
 
 #include "precompiled.h"
@@ -26,7 +27,8 @@ ConnectionLoader::~ConnectionLoader() {
 
 void ConnectionLoader::loadConnection() {
     QTimer::singleShot(1, [=]() { this->doAutoConnect(); });
-    d->exec();
+    if (!Settings::getInstance()->isHeadless())
+        d->exec();
 }
 
 void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
@@ -128,9 +130,47 @@ void ConnectionLoader::createZcashConf() {
     main->logger->write("createZcashConf");
 
     auto confLocation = zcashConfWritableLocation();
-    main->logger->write("Creating file " + confLocation);
-
     QFileInfo fi(confLocation);
+
+    QDialog d(main);
+    Ui_createZcashConf ui;
+    ui.setupUi(&d);
+
+    QPixmap logo(":/img/res/zcashdlogo.gif");
+    ui.lblTopIcon->setBasePixmap(logo.scaled(256, 256, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    ui.btnPickDir->setEnabled(false);
+
+    ui.grpAdvanced->setVisible(false);
+    QObject::connect(ui.btnAdvancedConfig, &QPushButton::toggled, [=](bool isVisible) {
+        ui.grpAdvanced->setVisible(isVisible);
+        ui.btnAdvancedConfig->setText(isVisible ? QObject::tr("Hide Advanced Config") : QObject::tr("Show Advanced Config"));
+    });
+
+    QObject::connect(ui.chkCustomDatadir, &QCheckBox::stateChanged, [=](int chked) {
+        if (chked == Qt::Checked) {
+            ui.btnPickDir->setEnabled(true);
+        }
+        else {
+            ui.btnPickDir->setEnabled(false);
+        }
+    });
+
+    QObject::connect(ui.btnPickDir, &QPushButton::clicked, [=]() {
+        auto datadir = QFileDialog::getExistingDirectory(main, QObject::tr("Choose data directory"), ui.lblDirName->text(), QFileDialog::ShowDirsOnly);
+        if (!datadir.isEmpty()) {
+            ui.lblDirName->setText(QDir::toNativeSeparators(datadir));
+        }
+    });
+
+    // Show the dialog
+    QString datadir = "";
+    bool useTor = false;
+    if (d.exec() == QDialog::Accepted) {
+        datadir = ui.lblDirName->text();
+        useTor = ui.chkUseTor->isChecked();
+    }
+
+    main->logger->write("Creating file " + confLocation);
     QDir().mkdir(fi.dir().absolutePath());
 
     QFile file(confLocation);
@@ -145,6 +185,13 @@ void ConnectionLoader::createZcashConf() {
     out << "addnode=mainnet.z.cash\n";
     out << "rpcuser=zec-qt-wallet\n";
     out << "rpcpassword=" % randomPassword() << "\n";
+    if (!datadir.isEmpty()) {
+        out << "datadir=" % datadir % "\n";
+    }
+    if (useTor) {
+        out << "proxy=127.0.0.1:9050\n";
+    }
+
     file.close();
 
     // Now that zcash.conf exists, try to autoconnect again
@@ -396,6 +443,7 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
         [=] (auto) {
             // Success, hide the dialog if it was shown. 
             d->hide();
+            main->logger->write("zcashd is online.");
             this->doRPCSetConnection(connection);
         },
         [=] (auto reply, auto res) {            
@@ -435,6 +483,8 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
 void ConnectionLoader::showInformation(QString info, QString detail) {
     connD->status->setText(info);
     connD->statusDetail->setText(detail);
+    
+    main->logger->write(info + ":" + detail);
 }
 
 /**

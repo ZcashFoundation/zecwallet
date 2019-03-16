@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "addressbook.h"
 #include "ui_mainwindow.h"
+#include "ui_mobileappconnector.h"
 #include "ui_addressbook.h"
 #include "ui_zboard.h"
 #include "ui_privkey.h"
@@ -15,6 +16,7 @@
 #include "turnstile.h"
 #include "senttxstore.h"
 #include "connection.h"
+#include "websockets.h"
 
 using json = nlohmann::json;
 
@@ -43,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
         rpc->checkForUpdate(false);
     });
 
-    // Pay zcash URI
+    // Pay Zcash URI
     QObject::connect(ui->actionPay_URI, &QAction::triggered, this, &MainWindow::payZcashURI);
 
     // Import Private Key
@@ -60,6 +62,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // z-Board.net
     QObject::connect(ui->actionz_board_net, &QAction::triggered, this, &MainWindow::postToZBoard);
+
+    // Connect mobile app
+    QObject::connect(ui->actionConnect_Mobile_App, &QAction::triggered, this, [=] () {
+        if (rpc->getConnection() == nullptr)
+            return;
+
+        AppDataServer::getInstance()->connectAppDialog(this);
+    });
 
     // Address Book
     QObject::connect(ui->action_Address_Book, &QAction::triggered, this, &MainWindow::addressBook);
@@ -94,8 +104,47 @@ MainWindow::MainWindow(QWidget *parent) :
     rpc = new RPC(this);
 
     restoreSavedStates();
+
+    if (AppDataServer::getInstance()->isAppConnected()) {
+        auto ads = AppDataServer::getInstance();
+
+        QString wormholecode = "";
+        if (ads->getAllowInternetConnection())
+            wormholecode = ads->getWormholeCode(ads->getSecretHex());
+
+        createWebsocket(wormholecode);
+    }
 }
  
+void MainWindow::createWebsocket(QString wormholecode) {
+    qDebug() << "Listening for app connections on port 8237";
+    // Create the websocket server, for listening to direct connections
+    wsserver = new WSServer(8237, false, this);
+
+    if (!wormholecode.isEmpty()) {
+        // Connect to the wormhole service
+        wormhole = new WormholeClient(this, wormholecode);
+    }
+}
+
+void MainWindow::stopWebsocket() {
+    delete wsserver;
+    wsserver = nullptr;
+
+    delete wormhole;
+    wormhole = nullptr;
+
+    qDebug() << "Websockets for app connections shut down";
+}
+
+bool MainWindow::isWebsocketListening() {
+    return wsserver != nullptr;
+}
+
+void MainWindow::replaceWormholeClient(WormholeClient* newClient) {
+    delete wormhole;
+    wormhole = newClient;
+}
 
 void MainWindow::restoreSavedStates() {
     QSettings s;
@@ -105,6 +154,10 @@ void MainWindow::restoreSavedStates() {
     ui->transactionsTable->horizontalHeader()->restoreState(s.value("tratablegeometry").toByteArray());
 }
 
+void MainWindow::doClose() {
+    closeEvent(nullptr);
+}
+
 void MainWindow::closeEvent(QCloseEvent* event) {
     QSettings s;
 
@@ -112,11 +165,14 @@ void MainWindow::closeEvent(QCloseEvent* event) {
     s.setValue("baltablegeometry", ui->balancesTable->horizontalHeader()->saveState());
     s.setValue("tratablegeometry", ui->transactionsTable->horizontalHeader()->saveState());
 
+    s.sync();
+
     // Let the RPC know to shut down any running service.
     rpc->shutdownZcashd();
 
     // Bubble up
-    QMainWindow::closeEvent(event);
+    if (event)
+        QMainWindow::closeEvent(event);
 }
 
 void MainWindow::turnstileProgress() {
@@ -239,12 +295,18 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
 
     auto fnUpdateSproutBalance = [=] (QString addr) {
         double bal = 0;
+
+        // The currentText contains the balance as well, so strip that.
+        if (addr.contains("(")) {
+            addr = addr.left(addr.indexOf("("));
+        }
+
         if (addr.startsWith("All")) {
             bal = fnGetAllSproutBalance();
         } else {
             bal = rpc->getAllBalances()->value(addr);
         }
-
+        
         auto balTxt = Settings::getZECUSDDisplayFormat(bal);
         
         if (bal < Turnstile::minMigrationAmount) {
@@ -518,6 +580,7 @@ void MainWindow::donate() {
     ui->tabWidget->setCurrentIndex(1);
 }
 
+
 void MainWindow::postToZBoard() {
     QDialog d(this);
     Ui_zboard zb;
@@ -620,7 +683,7 @@ void MainWindow::postToZBoard() {
         rpc->executeTransaction(tx, [=] (QString opid) {
             ui->statusBar->showMessage(tr("Computing Tx: ") % opid);
         },
-        [=] (QString opid, QString txid) { 
+        [=] (QString /*opid*/, QString txid) { 
             ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
         },
         [=] (QString opid, QString errStr) {
@@ -642,10 +705,6 @@ void MainWindow::doImport(QList<QString>* keys) {
 
     if (keys->isEmpty()) {
         delete keys;
-
-        QMessageBox::information(this,
-            "Imported", tr("The keys were imported. It may take several minutes to rescan the blockchain. Until then, functionality may be limited"),
-            QMessageBox::Ok);
         ui->statusBar->showMessage(tr("Private key import rescan finished"));
         return;
     }
@@ -716,7 +775,7 @@ void MainWindow::payZcashURI() {
 
             if (kv[0].toLower() == "amt" || kv[0].toLower() == "amount") {
                 amount = kv[1].toDouble(); 
-            } else if (kv[0].toLower() == "memo") {
+            } else if (kv[0].toLower() == "memo" || kv[0].toLower() == "message" || kv[0].toLower() == "msg") {
                 memo = kv[1];
                 // Test if this is hex
 
@@ -778,7 +837,12 @@ void MainWindow::importPrivKey() {
         });
 
         // Start the import. The function takes ownership of keys
-        doImport(keys);
+        QTimer::singleShot(1, [=]() {doImport(keys);});
+
+        // Show the dialog that keys will be imported. 
+        QMessageBox::information(this,
+            "Imported", tr("The keys were imported. It may take several minutes to rescan the blockchain. Until then, functionality may be limited"),
+            QMessageBox::Ok);
     }
 }
 
@@ -814,7 +878,7 @@ void MainWindow::backupWalletDat() {
 
     if (Settings::getInstance()->isTestnet()) {
         zcashdir.cd("testnet3");
-        backupDefaultName = "tesetnet-" + backupDefaultName;
+        backupDefaultName = "testnet-" + backupDefaultName;
     }
     
     QFile wallet(zcashdir.filePath("wallet.dat"));
@@ -1020,12 +1084,15 @@ void MainWindow::setupTransactionsTab() {
         QString memo = txModel->getMemo(index.row());
 
         if (!memo.isEmpty()) {
-            QMessageBox::information(this, tr("Memo"), memo, QMessageBox::Ok);
+            QMessageBox mb(QMessageBox::Information, tr("Memo"), memo, QMessageBox::Ok, this);
+            mb.setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
+            mb.exec();
         }
     });
 
     // Set up context menu on transactions tab
     ui->transactionsTable->setContextMenuPolicy(Qt::CustomContextMenu);
+
     // Table right click
     QObject::connect(ui->transactionsTable, &QTableView::customContextMenuRequested, [=] (QPoint pos) {
         QModelIndex index = ui->transactionsTable->indexAt(pos);
@@ -1063,11 +1130,13 @@ void MainWindow::setupTransactionsTab() {
 
         if (!memo.isEmpty()) {
             menu.addAction(tr("View Memo"), [=] () {
-                QMessageBox::information(this, tr("Memo"), memo, QMessageBox::Ok);
+                QMessageBox mb(QMessageBox::Information, tr("Memo"), memo, QMessageBox::Ok, this);
+                mb.setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
+                mb.exec();
             });
         }
 
-        // If memo contains a reply to addess, add a "Reply to" menu item
+        // If memo contains a reply to address, add a "Reply to" menu item
         if (!memo.isEmpty()) {
             int lastPost     = memo.trimmed().lastIndexOf(QRegExp("[\r\n]+"));
             QString lastWord = memo.right(memo.length() - lastPost - 1);
@@ -1159,33 +1228,27 @@ void MainWindow::setupRecieveTab() {
         });
     };
 
-    auto fnUpdateTAddrCombo = [=] (bool checked) {
-        if (checked) {
-            auto utxos = this->rpc->getUTXOs();
-            ui->listRecieveAddresses->clear();
-
-            std::for_each(utxos->begin(), utxos->end(), [=](auto& utxo) {
-                auto addr = utxo.address;
-                if (addr.startsWith("t") && ui->listRecieveAddresses->findText(addr) < 0) {
-                    auto bal = rpc->getAllBalances()->value(addr);
-                    ui->listRecieveAddresses->addItem(addr, bal);
-                }
-            });
-        }
-    };
-
     // Connect t-addr radio button
     QObject::connect(ui->rdioTAddr, &QRadioButton::toggled, [=] (bool checked) { 
         // Whenever the t-address is selected, we generate a new address, because we don't
         // want to reuse t-addrs
         if (checked && this->rpc->getUTXOs() != nullptr) { 
-            fnUpdateTAddrCombo(checked);
+            updateTAddrCombo(checked);
             addNewTAddr();
         } 
     });
 
     // zAddr toggle button, one for sprout and one for sapling
-    QObject::connect(ui->rdioZAddr,  &QRadioButton::toggled, addZAddrsToComboList(false));
+    QObject::connect(ui->rdioZAddr, &QRadioButton::toggled, [=](bool checked) {
+        ui->btnRecieveNewAddr->setEnabled(!checked);
+        if (checked) {
+            ui->btnRecieveNewAddr->setToolTip(tr("Creation of new Sprout addresses is deprecated"));
+        }
+        else {
+            ui->btnRecieveNewAddr->setToolTip("");
+        }
+        addZAddrsToComboList(false)(checked);
+    });
     QObject::connect(ui->rdioZSAddr, &QRadioButton::toggled, addZAddrsToComboList(true));
 
     // Explicitly get new address button.
@@ -1218,7 +1281,7 @@ void MainWindow::setupRecieveTab() {
             if (Settings::getInstance()->isSaplingActive()) {
                 ui->rdioZSAddr->setVisible(true);    
                 ui->rdioZSAddr->setChecked(true);
-                ui->rdioZAddr->setText("z-Addr(Sprout)");
+                ui->rdioZAddr->setText("z-Addr(Legacy Sprout)");
             } else {
                 ui->rdioZSAddr->setVisible(false);    
                 ui->rdioZAddr->setChecked(true);
@@ -1245,7 +1308,6 @@ void MainWindow::setupRecieveTab() {
             ui->rcvBal->clear();
             ui->txtRecieve->clear();
             ui->qrcodeDisplay->clear();
-            ui->lblUsed->clear();
             return;
         }
 
@@ -1260,16 +1322,16 @@ void MainWindow::setupRecieveTab() {
         ui->rcvLabel->setText(label);
         ui->rcvBal->setText(Settings::getZECUSDDisplayFormat(rpc->getAllBalances()->value(addr)));
         ui->txtRecieve->setPlainText(addr);       
-        ui->qrcodeDisplay->setAddress(addr);
+        ui->qrcodeDisplay->setQrcodeString(addr);
         if (rpc->getUsedAddresses()->value(addr, false)) {
-            ui->lblUsed->setText(tr("Address has been previously used"));
+            ui->rcvBal->setToolTip(tr("Address has been previously used"));
         } else {
-            ui->lblUsed->setText(tr("Address is unused"));
+            ui->rcvBal->setToolTip(tr("Address is unused"));
         }
         
     });    
 
-    // Recieve tab add/update label
+    // Receive tab add/update label
     QObject::connect(ui->rcvUpdateLabel, &QPushButton::clicked, [=]() {
         QString addr = ui->listRecieveAddresses->currentText();
         if (addr.isEmpty())
@@ -1296,13 +1358,8 @@ void MainWindow::setupRecieveTab() {
             AddressBook::getInstance()->addAddressLabel(label, addr);
         }
 
-        // Update the UI
-        if (ui->rdioTAddr->isChecked()) {
-            fnUpdateTAddrCombo(true);
-        }
-        else {
-            addZAddrsToComboList(ui->rdioZSAddr->isChecked())(true);
-        }
+        // Update labels everywhere on the UI
+        updateLabels();
 
         // Show the user feedback
         if (!info.isEmpty()) {
@@ -1320,6 +1377,38 @@ void MainWindow::setupRecieveTab() {
     });
 }
 
+void MainWindow::updateTAddrCombo(bool checked) {
+    if (checked) {
+        auto utxos = this->rpc->getUTXOs();
+        ui->listRecieveAddresses->clear();
+
+        std::for_each(utxos->begin(), utxos->end(), [=](auto& utxo) {
+            auto addr = utxo.address;
+            if (addr.startsWith("t") && ui->listRecieveAddresses->findText(addr) < 0) {
+                auto bal = rpc->getAllBalances()->value(addr);
+                ui->listRecieveAddresses->addItem(addr, bal);
+            }
+        });
+    }
+};
+
+// Updates the labels everywhere on the UI. Call this after the labels have been updated
+void MainWindow::updateLabels() {
+    // Update the Receive tab
+    if (ui->rdioTAddr->isChecked()) {
+        updateTAddrCombo(true);
+    }
+    else {
+        addZAddrsToComboList(ui->rdioZSAddr->isChecked())(true);
+    }
+
+    // Update the Send Tab
+    updateFromCombo();
+
+    // Update the autocomplete
+    updateLabelsAutoComplete();
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -1330,4 +1419,7 @@ MainWindow::~MainWindow()
 
     delete loadingMovie;
     delete logger;
+
+    delete wsserver;
+    delete wormhole;
 }

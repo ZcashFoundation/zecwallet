@@ -12,8 +12,7 @@ using json = nlohmann::json;
 
 void MainWindow::setupSendTab() {
     // Create the validator for send to/amount fields
-    auto amtValidator = new QDoubleValidator(0, 21000000, 8, ui->Amount1);
-    amtValidator->setNotation(QDoubleValidator::StandardNotation);
+    auto amtValidator = new QRegExpValidator(QRegExp("[0-9]{0,8}\\.?[0-9]{0,8}"));    
     ui->Amount1->setValidator(amtValidator);
 
     // Send button
@@ -74,8 +73,7 @@ void MainWindow::setupSendTab() {
         }
     });
     //Fees validator
-    auto feesValidator = new QDoubleValidator(0, 1, 8, ui->Amount1);
-    feesValidator->setNotation(QDoubleValidator::StandardNotation);
+    auto feesValidator = new QRegExpValidator(QRegExp("[0-9]{0,8}\\.?[0-9]{0,8}")); 
     ui->minerFeeAmt->setValidator(feesValidator);
 
     // Font for the first Memo label
@@ -100,6 +98,11 @@ void MainWindow::setupSendTab() {
 
     // Recurring schedule button
     QObject::connect(ui->btnRecurSchedule, &QPushButton::clicked, this, &MainWindow::editSchedule);
+
+    // Hide the recurring section for now
+    ui->chkRecurring->setVisible(false);
+    ui->lblRecurDesc->setVisible(false);
+    ui->btnRecurSchedule->setVisible(false);
 
     // Set the default state for the whole page
     clearSendForm();
@@ -173,6 +176,31 @@ void MainWindow::setDefaultPayFrom() {
     }
 };
 
+void MainWindow::updateFromCombo() {
+    if (!rpc || !rpc->getAllBalances())
+        return;
+
+    auto lastFromAddr = ui->inputsCombo->currentText();
+
+    ui->inputsCombo->clear();
+    auto i = rpc->getAllBalances()->constBegin();
+
+    // Add all the addresses into the inputs combo box
+    while (i != rpc->getAllBalances()->constEnd()) {
+        ui->inputsCombo->addItem(i.key(), i.value());
+        if (i.key() == lastFromAddr) ui->inputsCombo->setCurrentText(i.key());
+
+        ++i;
+    }
+
+    if (lastFromAddr.isEmpty()) {
+        setDefaultPayFrom();
+    }
+    else {
+        ui->inputsCombo->setCurrentText(lastFromAddr);
+    }
+}
+
 void MainWindow::inputComboTextChanged(int index) {
     auto addr   = ui->inputsCombo->itemText(index);
     auto bal    = rpc->getAllBalances()->value(addr);
@@ -231,8 +259,9 @@ void MainWindow::addAddressSection() {
     Amount1->setPlaceholderText(tr("Amount"));    
     Amount1->setObjectName(QString("Amount") % QString::number(itemNumber));   
     Amount1->setBaseSize(QSize(200, 0));
+    Amount1->setAlignment(Qt::AlignRight);    
     // Create the validator for send to/amount fields
-    auto amtValidator = new QDoubleValidator(0, 21000000, 8, Amount1);
+    auto amtValidator = new QRegExpValidator(QRegExp("[0-9]{0,8}\\.?[0-9]{0,8}")); 
     Amount1->setValidator(amtValidator);
     QObject::connect(Amount1, &QLineEdit::textChanged, [=] (auto text) {
         this->amountChanged(itemNumber, text);

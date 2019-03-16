@@ -320,8 +320,10 @@ void Turnstile::executeMigrationStep() {
             return;
         }
 
+        // Sometimes, we check too quickly, and the unspent UTXO is not updated yet, so we'll
+        // double check to see if there is enough balance. 
         if (!rpc->getAllBalances()->keys().contains(nextStep->intTAddr)) {
-            qDebug() << QString("The intermediate t-address doesn't have balance, even though it is confirmed");
+            //qDebug() << QString("The intermediate t-address doesn't have balance, even though it seems to be confirmed");
             return;
         }
 
@@ -354,8 +356,9 @@ void Turnstile::doSendTx(Tx tx, std::function<void(void)> cb) {
     rpc->executeTransaction(tx, [=] (QString opid) {
             mainwindow->ui->statusBar->showMessage(QObject::tr("Computing Tx: ") % opid);
         },
-        [=] (QString opid, QString txid) { 
+        [=] (QString /*opid*/, QString txid) { 
             mainwindow->ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
+            cb();
         },
         [=] (QString opid, QString errStr) {
             mainwindow->ui->statusBar->showMessage(QObject::tr(" Tx ") % opid % QObject::tr(" failed"), 15 * 1000);

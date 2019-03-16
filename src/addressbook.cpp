@@ -3,6 +3,7 @@
 #include "ui_mainwindow.h"
 #include "settings.h"
 #include "mainwindow.h"
+#include "rpc.h"
 
 
 AddressBookModel::AddressBookModel(QTableView *parent)
@@ -110,7 +111,7 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
     } 
 
     // Connect the dialog's closing to updating the label address completor
-    QObject::connect(&d, &QDialog::finished, [=] (auto) { parent->updateLabelsAutoComplete(); });
+    QObject::connect(&d, &QDialog::finished, [=] (auto) { parent->updateLabels(); });
 
     // If there is a target then make it the addr for the "Add to" button
     if (target != nullptr && Settings::isValidAddress(target->text())) {
@@ -221,6 +222,9 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
             fnSetTargetLabelAddr(target, item.first, item.second);
         }
     };
+
+    // Refresh after the dialog is closed to update the labels everywhere.
+    parent->getRPC()->refresh(true);
 }
 
 //=============
@@ -254,9 +258,6 @@ void AddressBook::readFromStorage() {
 }
 
 void AddressBook::writeToStorage() {
-    if (allLabels.isEmpty())
-        return;
-
     QFile file(AddressBook::writeableFile());
     file.open(QIODevice::ReadWrite | QIODevice::Truncate);
     QDataStream out(&file);   // we will serialize the data into the file
