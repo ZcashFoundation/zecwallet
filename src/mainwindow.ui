@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>zec-qt-wallet</string>
+   <string>ZecWallet</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../application.qrc">

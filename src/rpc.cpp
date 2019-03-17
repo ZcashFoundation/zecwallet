@@ -713,7 +713,7 @@ void RPC::updateUI(bool anyUnconfirmed) {
 };
 
 // Function to process reply of the listunspent and z_listunspent API calls, used below.
-bool RPC::processUnspent(const json& reply) {
+bool RPC::processUnspent(const json& reply, QMap<QString, double>* balancesMap, QList<UnspentOutput>* newUtxos) {
     bool anyUnconfirmed = false;
     for (auto& it : reply.get<json::array_t>()) {
         QString qsAddr = QString::fromStdString(it["address"]);
@@ -722,12 +722,12 @@ bool RPC::processUnspent(const json& reply) {
             anyUnconfirmed = true;
         }
 
-        utxos->push_back(
+        newUtxos->push_back(
             UnspentOutput{ qsAddr, QString::fromStdString(it["txid"]),
                             Settings::getDecimalString(it["amount"].get<json::number_float_t>()),
                             (int)confirmations, it["spendable"].get<json::boolean_t>() });
 
-        (*allBalances)[qsAddr] = (*allBalances)[qsAddr] + it["amount"].get<json::number_float_t>();
+        (*balancesMap)[qsAddr] = (*balancesMap)[qsAddr] + it["amount"].get<json::number_float_t>();
     }
     return anyUnconfirmed;
 };
@@ -755,18 +755,23 @@ void RPC::refreshBalances() {
     });
 
     // 2. Get the UTXOs
-    // First, create a new UTXO list, deleting the old one;
-    delete utxos;
-    utxos = new QList<UnspentOutput>();
-    delete allBalances;
-    allBalances = new QMap<QString, double>();
+    // First, create a new UTXO list. It will be replacing the existing list when everything is processed.
+    auto newUtxos = new QList<UnspentOutput>();
+    auto newBalances = new QMap<QString, double>();
 
     // Call the Transparent and Z unspent APIs serially and then, once they're done, update the UI
     getTransparentUnspent([=] (json reply) {
-        auto anyTUnconfirmed = processUnspent(reply);
+        auto anyTUnconfirmed = processUnspent(reply, newBalances, newUtxos);
 
         getZUnspent([=] (json reply) {
-            auto anyZUnconfirmed = processUnspent(reply);
+            auto anyZUnconfirmed = processUnspent(reply, newBalances, newUtxos);
+
+            // Swap out the balances and UTXOs
+            delete allBalances;
+            delete utxos;
+
+            allBalances = newBalances;
+            utxos       = newUtxos;
 
             updateUI(anyTUnconfirmed || anyZUnconfirmed);    
         });        
@@ -1094,7 +1099,7 @@ void RPC::shutdownZcashd() {
     Ui_ConnectionDialog connD;
     connD.setupUi(&d);
     connD.topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));
-    connD.status->setText(QObject::tr("Please wait for zec-qt-wallet to exit"));
+    connD.status->setText(QObject::tr("Please wait for ZecWallet to exit"));
     connD.statusDetail->setText(QObject::tr("Waiting for zcashd to exit"));
 
     QTimer waiter(main);

@@ -525,7 +525,7 @@ void MainWindow::setupSettingsModal() {
                 rpc->getConnection()->config->proxy = "proxy=127.0.0.1:9050";
 
                 QMessageBox::information(this, tr("Enable Tor"), 
-                    tr("Connection over Tor has been enabled. To use this feature, you need to restart zec-qt-wallet."), 
+                    tr("Connection over Tor has been enabled. To use this feature, you need to restart ZecWallet."), 
                     QMessageBox::Ok);
             }
             if (isUsingTor && !settings.chkTor->isChecked()) {
@@ -534,7 +534,7 @@ void MainWindow::setupSettingsModal() {
                 rpc->getConnection()->config->proxy.clear();
 
                 QMessageBox::information(this, tr("Disable Tor"),
-                    tr("Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart zec-qt-wallet."),
+                    tr("Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart ZecWallet."),
                     QMessageBox::Ok);
             }
 
@@ -576,9 +576,9 @@ void MainWindow::donate() {
                             Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText("0.01");
-    ui->MemoTxt1->setText(tr("Thanks for supporting zec-qt-wallet!"));
+    ui->MemoTxt1->setText(tr("Thanks for supporting ZecWallet!"));
 
-    ui->statusBar->showMessage(tr("Donate 0.01 ") % Settings::getTokenName() % tr(" to support zec-qt-wallet"));
+    ui->statusBar->showMessage(tr("Donate 0.01 ") % Settings::getTokenName() % tr(" to support ZecWallet"));
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);

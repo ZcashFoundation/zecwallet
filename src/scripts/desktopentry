@@ -1,13 +1,13 @@
 [Desktop Entry]
-Name=zec-qt-wallet
+Name=ZecWallet
 Comment=Full node and wallet for Zcash
 GenericName=Wallet
-Exec=/usr/local/bin/zec-qt-wallet
-Icon=zec-qt-wallet.xpm
+Exec=/usr/local/bin/zecwallet
+Icon=zecwallet.xpm
 Type=Application
 StartupNotify=true
-StartupWMClass=zecqtwallet
+StartupWMClass=zecwallet
 Categories=Utility;
 MimeType=text/plain;inode/directory;
-Keywords=zec-qt-wallet;
+Keywords=zecwallet;
 

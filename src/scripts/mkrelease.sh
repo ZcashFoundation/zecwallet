@@ -66,6 +66,7 @@ echo "[OK]"
 
 echo -n "Building..............."
 rm -rf bin/zec-qt-wallet* > /dev/null
+rm -rf bin/zecwallet* > /dev/null
 make clean > /dev/null
 make -j$(nproc) > /dev/null
 echo "[OK]"
@@ -73,7 +74,7 @@ echo "[OK]"
 
 # Test for Qt
 echo -n "Static link............"
-if [[ $(ldd zec-qt-wallet | grep -i "Qt") ]]; then
+if [[ $(ldd zecwallet | grep -i "Qt") ]]; then
     echo "FOUND QT; ABORT"; 
     exit 1
 fi
@@ -81,27 +82,27 @@ echo "[OK]"
 
 
 echo -n "Packaging.............."
-mkdir bin/zec-qt-wallet-v$APP_VERSION > /dev/null
-strip zec-qt-wallet
+mkdir bin/zecwallet-v$APP_VERSION > /dev/null
+strip zecwallet
 
-cp zec-qt-wallet                  bin/zec-qt-wallet-v$APP_VERSION > /dev/null
-cp $ZCASH_DIR/artifacts/zcashd    bin/zec-qt-wallet-v$APP_VERSION > /dev/null
-cp $ZCASH_DIR/artifacts/zcash-cli bin/zec-qt-wallet-v$APP_VERSION > /dev/null
-cp README.md                      bin/zec-qt-wallet-v$APP_VERSION > /dev/null
-cp LICENSE                        bin/zec-qt-wallet-v$APP_VERSION > /dev/null
+cp zecwallet                  bin/zecwallet-v$APP_VERSION > /dev/null
+cp $ZCASH_DIR/artifacts/zcashd    bin/zecwallet-v$APP_VERSION > /dev/null
+cp $ZCASH_DIR/artifacts/zcash-cli bin/zecwallet-v$APP_VERSION > /dev/null
+cp README.md                      bin/zecwallet-v$APP_VERSION > /dev/null
+cp LICENSE                        bin/zecwallet-v$APP_VERSION > /dev/null
 
-cd bin && tar czf linux-zec-qt-wallet-v$APP_VERSION.tar.gz zec-qt-wallet-v$APP_VERSION/ > /dev/null
+cd bin && tar czf linux-zecwallet-v$APP_VERSION.tar.gz zecwallet-v$APP_VERSION/ > /dev/null
 cd .. 
 
 mkdir artifacts >/dev/null 2>&1
-cp bin/linux-zec-qt-wallet-v$APP_VERSION.tar.gz ./artifacts/linux-binaries-zec-qt-wallet-v$APP_VERSION.tar.gz
+cp bin/linux-zecwallet-v$APP_VERSION.tar.gz ./artifacts/linux-binaries-zecwallet-v$APP_VERSION.tar.gz
 echo "[OK]"
 
 
-if [ -f artifacts/linux-binaries-zec-qt-wallet-v$APP_VERSION.tar.gz ] ; then
+if [ -f artifacts/linux-binaries-zecwallet-v$APP_VERSION.tar.gz ] ; then
     echo -n "Package contents......."
     # Test if the package is built OK
-    if tar tf "artifacts/linux-binaries-zec-qt-wallet-v$APP_VERSION.tar.gz" | wc -l | grep -q "6"; then 
+    if tar tf "artifacts/linux-binaries-zecwallet-v$APP_VERSION.tar.gz" | wc -l | grep -q "6"; then 
         echo "[OK]"
     else
         echo "[ERROR]"
@@ -113,24 +114,24 @@ else
 fi
 
 echo -n "Building deb..........."
-debdir=bin/deb/zec-qt-wallet-v$APP_VERSION
+debdir=bin/deb/zecwallet-v$APP_VERSION
 mkdir -p $debdir > /dev/null
 mkdir    $debdir/DEBIAN
 mkdir -p $debdir/usr/local/bin
 
 cat src/scripts/control | sed "s/RELEASE_VERSION/$APP_VERSION/g" > $debdir/DEBIAN/control
 
-cp zec-qt-wallet               $debdir/usr/local/bin/
+cp zecwallet                   $debdir/usr/local/bin/
 cp $ZCASH_DIR/artifacts/zcashd $debdir/usr/local/bin/zqw-zcashd
 
 mkdir -p $debdir/usr/share/pixmaps/
-cp res/zec-qt-wallet.xpm       $debdir/usr/share/pixmaps/
+cp res/zecwallet.xpm           $debdir/usr/share/pixmaps/
 
 mkdir -p $debdir/usr/share/applications
 cp src/scripts/desktopentry    $debdir/usr/share/applications/zec-qt-wallet.desktop
 
 dpkg-deb --build $debdir >/dev/null
-cp $debdir.deb                 artifacts/linux-deb-zec-qt-wallet-v$APP_VERSION.deb
+cp $debdir.deb                 artifacts/linux-deb-zecwallet-v$APP_VERSION.deb
 echo "[OK]"
 
 
@@ -173,22 +174,22 @@ echo "[OK]"
 
 
 echo -n "Packaging.............."
-mkdir release/zec-qt-wallet-v$APP_VERSION  
-cp release/zec-qt-wallet.exe          release/zec-qt-wallet-v$APP_VERSION 
-cp $ZCASH_DIR/artifacts/zcashd.exe    release/zec-qt-wallet-v$APP_VERSION > /dev/null
-cp $ZCASH_DIR/artifacts/zcash-cli.exe release/zec-qt-wallet-v$APP_VERSION > /dev/null
-cp README.md                          release/zec-qt-wallet-v$APP_VERSION 
-cp LICENSE                            release/zec-qt-wallet-v$APP_VERSION 
-cd release && zip -r Windows-binaries-zec-qt-wallet-v$APP_VERSION.zip zec-qt-wallet-v$APP_VERSION/ > /dev/null
+mkdir release/zecwallet-v$APP_VERSION  
+cp release/zecwallet.exe          release/zecwallet-v$APP_VERSION 
+cp $ZCASH_DIR/artifacts/zcashd.exe    release/zecwallet-v$APP_VERSION > /dev/null
+cp $ZCASH_DIR/artifacts/zcash-cli.exe release/zecwallet-v$APP_VERSION > /dev/null
+cp README.md                          release/zecwallet-v$APP_VERSION 
+cp LICENSE                            release/zecwallet-v$APP_VERSION 
+cd release && zip -r Windows-binaries-zecwallet-v$APP_VERSION.zip zecwallet-v$APP_VERSION/ > /dev/null
 cd ..
 
 mkdir artifacts >/dev/null 2>&1
-cp release/Windows-binaries-zec-qt-wallet-v$APP_VERSION.zip ./artifacts/
+cp release/Windows-binaries-zecwallet-v$APP_VERSION.zip ./artifacts/
 echo "[OK]"
 
-if [ -f artifacts/Windows-binaries-zec-qt-wallet-v$APP_VERSION.zip ] ; then
+if [ -f artifacts/Windows-binaries-zecwallet-v$APP_VERSION.zip ] ; then
     echo -n "Package contents......."
-    if unzip -l "artifacts/Windows-binaries-zec-qt-wallet-v$APP_VERSION.zip" | wc -l | grep -q "11"; then 
+    if unzip -l "artifacts/Windows-binaries-zecwallet-v$APP_VERSION.zip" | wc -l | grep -q "11"; then 
         echo "[OK]"
     else
         echo "[ERROR]"

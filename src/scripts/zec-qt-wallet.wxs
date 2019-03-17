@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="zec-qt-wallet vRELEASE_VERSION" Language="1033" Version="RELEASE_VERSION" Manufacturer="zec-qt-wallet-org" UpgradeCode="fb9bf166-b55f-46b5-a990-9189bdf64533">
+	<Product Id="*" Name="ZecWallet vRELEASE_VERSION" Language="1033" Version="RELEASE_VERSION" Manufacturer="zec-qt-wallet-org" UpgradeCode="fb9bf166-b55f-46b5-a990-9189bdf64533">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
@@ -55,9 +55,9 @@
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
 			<Component Id="ProductComponent" Guid="0D210F5A-53E0-4E7E-CAAD-15A26995505E">
-                <File Source="zec-qt-wallet.exe" KeyPath="yes">
+                <File Source="zecwallet.exe" KeyPath="yes">
                     <Shortcut Id="startMenuShotcut" Advertise="yes" Directory="ApplicationProgramsFolder"
-                        Name="zec-qt-wallet" WorkingDirectory="INSTALLFOLDER" Icon="zecqtwalleticon.exe" >
+                        Name="ZecWallet" WorkingDirectory="INSTALLFOLDER" Icon="zecqtwalleticon.exe" >
                     </Shortcut>
                 </File>
                 <File Source="LICENSE" />

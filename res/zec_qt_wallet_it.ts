@@ -31,8 +31,8 @@
     <name>ConnectionDialog</name>
     <message>
         <location filename="../src/connection.ui" line="17"/>
-        <source>zec-qt-wallet</source>
-        <translation>zec-qt-wallet</translation>
+        <source>ZecWallet</source>
+        <translation>ZecWallet</translation>
     </message>
     <message>
         <location filename="../src/connection.ui" line="58"/>
@@ -44,8 +44,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../src/mainwindow.ui" line="14"/>
-        <source>zec-qt-wallet</source>
-        <translation>zec-qt-wallet</translation>
+        <source>ZecWallet</source>
+        <translation>ZecWallet</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="29"/>
@@ -413,8 +413,8 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="575"/>
-        <source>Thanks for supporting zec-qt-wallet!</source>
-        <translation>Grazie per il tuo supporto a zec-qt-wallet!</translation>
+        <source>Thanks for supporting ZecWallet!</source>
+        <translation>Grazie per il tuo supporto a ZecWallet!</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="577"/>
@@ -423,8 +423,8 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="577"/>
-        <source> to support zec-qt-wallet</source>
-        <translation> per supportare zec-qt-wallet</translation>
+        <source> to support ZecWallet</source>
+        <translation> per supportare ZecWallet</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="614"/>
@@ -464,7 +464,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="524"/>
-        <source>Connection over Tor has been enabled. To use this feature, you need to restart zec-qt-wallet.</source>
+        <source>Connection over Tor has been enabled. To use this feature, you need to restart ZecWallet.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -474,7 +474,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="533"/>
-        <source>Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart zec-qt-wallet.</source>
+        <source>Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart ZecWallet.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -760,7 +760,7 @@ doesn&apos;t look like a z-address</source>
     </message>
     <message>
         <location filename="../src/mobileappconnector.ui" line="84"/>
-        <source>Allow connections over the internet via zec-qt-wallet wormhole</source>
+        <source>Allow connections over the internet via ZecWallet wormhole</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -823,11 +823,11 @@ doesn&apos;t look like a z-address</source>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="77"/>
-        <source>You have zcashd set to start as a daemon, which can cause problems with zec-qt-wallet
+        <source>You have zcashd set to start as a daemon, which can cause problems with ZecWallet
 
-.Please remove the following line from your zcash.conf and restart zec-qt-wallet
+.Please remove the following line from your zcash.conf and restart ZecWallet
 daemon=1</source>
-        <translatorcomment>Hai zcashd impostato per l&apos;avvio come daemon, che può causare problemi con zec-qt-wallet</translatorcomment>
+        <translatorcomment>Hai zcashd impostato per l&apos;avvio come daemon, che può causare problemi con ZecWallet</translatorcomment>
         <translation>YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
@@ -1003,9 +1003,9 @@ Would you like to visit the releases page?</source>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="1096"/>
-        <source>Please wait for zec-qt-wallet to exit</source>
+        <source>Please wait for ZecWallet to exit</source>
         <translatorcomment>controllare, senza contesto potrebbe voler dire  &quot;attendere zec qt wallet per uscire&quot; o altro, non ho contesto</translatorcomment>
-        <translation>Si prega di attendere che zec-qt-wallet finisca la procedura di uscita</translation>
+        <translation>Si prega di attendere che ZecWallet finisca la procedura di uscita</translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="1097"/>
@@ -1174,7 +1174,7 @@ Avete fondi non confermati o il saldo è troppo basso per una migrazione automat
     </message>
     <message>
         <location filename="../src/websockets.cpp" line="345"/>
-        <source>Connected over the internet via zec-qt-wallet wormhole service</source>
+        <source>Connected over the internet via ZecWallet wormhole service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
