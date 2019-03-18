@@ -243,6 +243,9 @@ public:
         });   
 #endif
 
+        // For MacOS, we have an event filter
+        a.installEventFilter(w);
+
         // Check if starting headless
         if (parser.isSet(headlessOption)) {
             Settings::getInstance()->setHeadless(true);

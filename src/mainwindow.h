@@ -118,6 +118,7 @@ private:
     void doImport(QList<QString>* keys);
 
     void restoreSavedStates();
+    bool eventFilter(QObject *object, QEvent *event);
 
     bool            uiPaymentsReady    = false;
     QString         pendingURIPayment;

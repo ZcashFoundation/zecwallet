@@ -745,6 +745,20 @@ void MainWindow::balancesReady() {
 
 }
 
+// Event filter for MacOS specific handling of payment URIs
+bool MainWindow::eventFilter(QObject *object, QEvent *event) {
+    if (event->type() == QEvent::FileOpen) {
+        QFileOpenEvent *fileEvent = static_cast<QFileOpenEvent*>(event);
+        if (!fileEvent->url().isEmpty())
+            payZcashURI(fileEvent->url().toString());
+
+        return true;
+    }
+
+    return QObject::eventFilter(object, event);
+}
+
+
 // Pay the Zcash URI by showing a confirmation window. If the URI parameter is empty, the UI
 // will prompt for one.
 void MainWindow::payZcashURI(QString uri) {
