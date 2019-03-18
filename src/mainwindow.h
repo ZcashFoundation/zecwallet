@@ -50,6 +50,9 @@ public:
     void createWebsocket(QString wormholecode);
     void stopWebsocket();
 
+    void balancesReady();
+    void payZcashURI(QString uri = "");
+
     void updateLabels();
     void updateTAddrCombo(bool checked);
     void updateFromCombo();
@@ -105,7 +108,6 @@ private:
     
     void donate();
     void addressBook();
-    void payZcashURI();
     void postToZBoard();
     void importPrivKey();
     void exportAllKeys();
@@ -116,6 +118,9 @@ private:
     void doImport(QList<QString>* keys);
 
     void restoreSavedStates();
+
+    bool            uiPaymentsReady    = false;
+    QString         pendingURIPayment;
 
     WSServer*       wsserver = nullptr;
     WormholeClient* wormhole = nullptr;
