@@ -40,6 +40,7 @@
 #include <QTemporaryFile>
 #include <QErrorMessage>
 #include <QApplication>
+#include <QWindow>
 #include <QStandardPaths>
 #include <QMainWindow>
 #include <QPushButton>

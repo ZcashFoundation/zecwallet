@@ -46,7 +46,9 @@ MainWindow::MainWindow(QWidget *parent) :
     });
 
     // Pay Zcash URI
-    QObject::connect(ui->actionPay_URI, &QAction::triggered, this, &MainWindow::payZcashURI);
+    QObject::connect(ui->actionPay_URI, &QAction::triggered, [=] () {
+        payZcashURI();
+    });
 
     // Import Private Key
     QObject::connect(ui->actionImport_Private_Key, &QAction::triggered, this, &MainWindow::importPrivKey);
@@ -722,17 +724,50 @@ void MainWindow::doImport(QList<QString>* keys) {
     }
 }
 
-void MainWindow::payZcashURI() {
+
+// Callback invoked when the RPC has finished loading all the balances, and the UI 
+// is now ready to send transactions.
+void MainWindow::balancesReady() {
+    // First-time check
+    if (uiPaymentsReady)
+        return;
+
+    uiPaymentsReady = true;
+    qDebug() << "Payment UI now ready!";
+
+    // There is a pending URI payment (from the command line, or from a secondary instance),
+    // process it.
+    if (!pendingURIPayment.isEmpty()) {
+        qDebug() << "Paying zcash URI";
+        payZcashURI(pendingURIPayment);
+        pendingURIPayment = "";
+    }
+
+}
+
+// Pay the Zcash URI by showing a confirmation window. If the URI parameter is empty, the UI
+// will prompt for one.
+void MainWindow::payZcashURI(QString uri) {
+    // If the Payments UI is not ready (i.e, all balances have not loaded), defer the payment URI
+    if (!uiPaymentsReady) {
+        qDebug() << "Payment UI not ready, waiting for UI to pay URI";
+        pendingURIPayment = uri;
+        return;
+    }
+
     // Error to display if something goes wrong.
     auto payZcashURIError = [=] (QString errorDetail = "") {
         QMessageBox::critical(this, tr("Error paying zcash URI"), 
                 tr("URI should be of the form 'zcash:<addr>?amt=x&memo=y") + "\n" + errorDetail);
     };
 
-    // Read a zcash URI and pay it
-    QString uri = QInputDialog::getText(this, tr("Paste Zcash URI"),
-        "Zcash URI" + QString(" ").repeated(180));
+    // If there was no URI passed, ask the user for one.
+    if (uri.isEmpty()) {
+        uri = QInputDialog::getText(this, tr("Paste Zcash URI"),
+            "Zcash URI" + QString(" ").repeated(180));
+    }
 
+    // If there's no URI, just exit
     if (uri.isEmpty())
         return;
 
@@ -743,6 +778,7 @@ void MainWindow::payZcashURI() {
     }
 
     // Extract the address
+    qDebug() << "Recieved URI " << uri;
     uri = uri.right(uri.length() - QString("zcash:").length());
 
     QRegExp re("([a-zA-Z0-9]+)");

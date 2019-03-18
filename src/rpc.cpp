@@ -771,7 +771,9 @@ void RPC::refreshBalances() {
             allBalances = newBalances;
             utxos       = newUtxos;
 
-            updateUI(anyTUnconfirmed || anyZUnconfirmed);    
+            updateUI(anyTUnconfirmed || anyZUnconfirmed);
+
+            main->balancesReady();
         });        
     });
 }
