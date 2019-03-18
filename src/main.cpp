@@ -1,4 +1,6 @@
+#ifndef _WIN32
 #include <singleapplication.h>
+#endif
 
 #include "precompiled.h"
 #include "mainwindow.h"
@@ -45,9 +47,7 @@ private:
 // There can be only ONE SignalHandler per process
 SignalHandler* g_handler(NULL);
 
-#ifdef _WIN32
-
-#else //_WIN32
+#ifndef _WIN32
 
 void POSIX_handleFunc(int);
 int POSIX_physicalToLogical(int);
@@ -60,18 +60,12 @@ SignalHandler::SignalHandler(int mask) : _mask(mask)
     assert(g_handler == NULL);
     g_handler = this;
 
-#ifdef _WIN32
-    
-#endif //_WIN32
-
     for (int i=0;i<numSignals;i++)
     {
         int logical = 0x1 << i;
         if (_mask & logical)
         {
-#ifdef _WIN32
-            
-#else
+#ifndef _WIN32
             int sig = POSIX_logicalToPhysical(logical);
             bool failed = signal(sig, POSIX_handleFunc) == SIG_ERR;
             assert(!failed);
@@ -85,9 +79,7 @@ SignalHandler::SignalHandler(int mask) : _mask(mask)
 
 SignalHandler::~SignalHandler()
 {
-#ifdef _WIN32
-    
-#else
+#ifndef _WIN32
     for (int i=0;i<numSignals;i++)
     {
         int logical = 0x1 << i;
@@ -100,9 +92,7 @@ SignalHandler::~SignalHandler()
 }
 
 
-#ifdef _WIN32
-
-#else
+#ifndef _WIN32
 int POSIX_logicalToPhysical(int signal)
 {
     switch (signal)
@@ -120,8 +110,7 @@ int POSIX_logicalToPhysical(int signal)
 #endif //_WIN32
 
 
-#ifdef _WIN32
-#else
+#ifndef _WIN32
 int POSIX_physicalToLogical(int signal)
 {
     switch (signal)
@@ -135,8 +124,7 @@ int POSIX_physicalToLogical(int signal)
 }
 #endif //_WIN32
 
-#ifdef _WIN32
-#else
+#ifndef _WIN32
 void POSIX_handleFunc(int signal)
 {
     if (g_handler)
@@ -158,7 +146,11 @@ public:
         QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
         QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
+#ifndef _WIN32
         SingleApplication a(argc, argv, true);
+#else
+        QApplication a(argc, argv);
+#endif  //_WIN32
 
         // Command line parser
         QCommandLineParser parser;
@@ -178,6 +170,7 @@ public:
 
         parser.process(a);
 
+#ifndef _WIN32
         // Check for a positional argument indicating a zcash payment URI
         if (a.isSecondary()) {
             if (parser.positionalArguments().length() > 0) {
@@ -186,6 +179,7 @@ public:
             a.exit( 0 );
             return 0;            
         } 
+#endif
 
         QCoreApplication::setOrganizationName("zec-qt-wallet-org");
         QCoreApplication::setApplicationName("zec-qt-wallet");
@@ -239,6 +233,7 @@ public:
             w->payZcashURI(parser.positionalArguments()[0]);
         }
 
+#ifndef _WIN32
         // Listen for any secondary instances telling us about a zcash payment URI
         QObject::connect(&a, &SingleApplication::receivedMessage, [=] (quint32, QByteArray msg) {
             QString uri(msg);
@@ -246,6 +241,7 @@ public:
             // We need to execute this async, otherwise the app seems to crash for some reason.
             QTimer::singleShot(1, [=]() { w->payZcashURI(uri); });            
         });   
+#endif
 
         // Check if starting headless
         if (parser.isSet(headlessOption)) {

@@ -2,12 +2,12 @@
 Name=ZecWallet
 Comment=Full node and wallet for Zcash
 GenericName=Wallet
-Exec=/usr/local/bin/zecwallet
+Exec=/usr/local/bin/zecwallet %u
 Icon=zecwallet.xpm
 Type=Application
 StartupNotify=true
 StartupWMClass=zecwallet
 Categories=Utility;
-MimeType=text/plain;inode/directory;
+MimeType=x-scheme-handler/zcash;
 Keywords=zecwallet;
 
