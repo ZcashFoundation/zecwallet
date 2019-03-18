@@ -87,9 +87,8 @@ void RPC::setConnection(Connection* c) {
 
     ui->statusBar->showMessage("Ready!");
 
-    refreshZECPrice();
-    // Commented for Android beta. 
-    // checkForUpdate();
+    refreshZECPrice();    
+    checkForUpdate();
 
     // Force update, because this might be coming from a settings update
     // where we need to immediately refresh
@@ -996,7 +995,7 @@ void RPC::checkForUpdate(bool silent) {
 
                 qDebug() << "Version check: Current " << currentVersion << ", Available " << maxVersion;
 
-                if (maxVersion > currentVersion && maxVersion > maxHiddenVersion) {
+                if (maxVersion > currentVersion && (!silent || maxVersion > maxHiddenVersion)) {
                     auto ans = QMessageBox::information(main, QObject::tr("Update Available"), 
                         QObject::tr("A new release v%1 is available! You have v%2.\n\nWould you like to visit the releases page?")
                             .arg(maxVersion.toString())
