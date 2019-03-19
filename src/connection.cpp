@@ -463,7 +463,7 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
             } else if (err == QNetworkReply::NetworkError::InternalServerError && 
                     !res.is_discarded()) {
                 // The server is loading, so just poll until it succeeds
-                QString status    = QString::fromStdString(res["error"]["message"]);
+                QString status      = QString::fromStdString(res["error"]["message"]);
                 {
                     static int dots = 0;
                     status = status.left(status.length() - 3) + QString(".").repeated(dots);
@@ -480,11 +480,22 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
     );
 }
 
+// Update the UI with the status
 void ConnectionLoader::showInformation(QString info, QString detail) {
+    static int rescanCount = 0;
+    if (detail.toLower().startsWith("rescan")) {
+        rescanCount++;
+    }
+    
+    if (rescanCount > 10) {
+        detail = detail + "\n" + QObject::tr("This may take several hours");
+    }
+
     connD->status->setText(info);
     connD->statusDetail->setText(detail);
-    
-    main->logger->write(info + ":" + detail);
+
+    if (rescanCount < 10)
+        main->logger->write(info + ":" + detail);
 }
 
 /**

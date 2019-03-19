@@ -79,6 +79,7 @@ void RPC::setEZcashd(QProcess* p) {
     }
 }
 
+// Called when a connection to zcashd is available. 
 void RPC::setConnection(Connection* c) {
     if (c == nullptr) return;
 
@@ -87,6 +88,12 @@ void RPC::setConnection(Connection* c) {
 
     ui->statusBar->showMessage("Ready!");
 
+    // See if we need to remove the reindex/rescan flags from the zcash.conf file
+    auto zcashConfLocation = Settings::getInstance()->getZcashdConfLocation();
+    Settings::removeFromZcashConf(zcashConfLocation, "rescan");
+    Settings::removeFromZcashConf(zcashConfLocation, "reindex");
+
+    // Refresh the UI
     refreshZECPrice();    
     checkForUpdate();
 

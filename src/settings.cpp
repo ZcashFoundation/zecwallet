@@ -221,6 +221,9 @@ bool Settings::addToZcashConf(QString confLocation, QString line) {
 }
 
 bool Settings::removeFromZcashConf(QString confLocation, QString option) {
+    if (confLocation.isEmpty())
+        return false;
+
     // To remove an option, we'll create a new file, and copy over everything but the option.
     QFile file(confLocation);
     if (!file.open(QIODevice::ReadOnly)) 
@@ -233,7 +236,6 @@ bool Settings::removeFromZcashConf(QString confLocation, QString option) {
         auto s = line.indexOf("=");
         QString name = line.left(s).trimmed().toLower();
         if (name != option) {
-            qDebug() << "Copied " << line;
             lines.append(line);
         }
     }    

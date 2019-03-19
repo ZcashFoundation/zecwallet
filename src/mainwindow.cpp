@@ -526,6 +526,7 @@ void MainWindow::setupSettingsModal() {
                     tr("Connection over Tor has been enabled. To use this feature, you need to restart ZecWallet."), 
                     QMessageBox::Ok);
             }
+
             if (isUsingTor && !settings.chkTor->isChecked()) {
                 // If "use tor" was previously checked and now is unchecked
                 Settings::removeFromZcashConf(zcashConfLocation, "proxy");
@@ -546,6 +547,29 @@ void MainWindow::setupSettingsModal() {
                 
                 auto cl = new ConnectionLoader(this, rpc);
                 cl->loadConnection();
+            }
+
+            // Check to see if rescan or reindex have been enabled
+            bool showRestartInfo = false;
+            if (settings.chkRescan->isChecked()) {
+                Settings::addToZcashConf(zcashConfLocation, "rescan=1");
+                showRestartInfo = true;
+            }
+
+            if (settings.chkReindex->isChecked()) {
+                Settings::addToZcashConf(zcashConfLocation, "reindex=1");
+                showRestartInfo = true;
+            }
+
+            if (showRestartInfo) {
+                auto desc = tr("ZecWallet needs to restart to rescan/reindex. ZecWallet will now close, please restart ZecWallet to continue");
+
+                if (!rpc->isEmbedded()) {
+                    desc = desc + "\n\n" + tr("You also need to restart your zcashd.");
+                }
+
+                QMessageBox::information(this, tr("Restart ZecWallet"), desc, QMessageBox::Ok);
+                QTimer::singleShot(1, [=]() { this->close(); });
             }
         }
     });
