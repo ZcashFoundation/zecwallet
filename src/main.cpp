@@ -1,6 +1,4 @@
-#ifndef _WIN32
 #include <singleapplication.h>
-#endif
 
 #include "precompiled.h"
 #include "mainwindow.h"
@@ -146,11 +144,7 @@ public:
         QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
         QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-#ifndef _WIN32
         SingleApplication a(argc, argv, true);
-#else
-        QApplication a(argc, argv);
-#endif  //_WIN32
 
         // Command line parser
         QCommandLineParser parser;
@@ -170,7 +164,6 @@ public:
 
         parser.process(a);
 
-#ifndef _WIN32
         // Check for a positional argument indicating a zcash payment URI
         if (a.isSecondary()) {
             if (parser.positionalArguments().length() > 0) {
@@ -179,7 +172,6 @@ public:
             a.exit( 0 );
             return 0;            
         } 
-#endif
 
         QCoreApplication::setOrganizationName("zec-qt-wallet-org");
         QCoreApplication::setApplicationName("zec-qt-wallet");
@@ -233,7 +225,6 @@ public:
             w->payZcashURI(parser.positionalArguments()[0]);
         }
 
-#ifndef _WIN32
         // Listen for any secondary instances telling us about a zcash payment URI
         QObject::connect(&a, &SingleApplication::receivedMessage, [=] (quint32, QByteArray msg) {
             QString uri(msg);
@@ -241,7 +232,6 @@ public:
             // We need to execute this async, otherwise the app seems to crash for some reason.
             QTimer::singleShot(1, [=]() { w->payZcashURI(uri); });            
         });   
-#endif
 
         // Check if starting headless
         if (parser.isSet(headlessOption)) {

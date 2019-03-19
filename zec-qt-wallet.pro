@@ -104,8 +104,8 @@ TRANSLATIONS = res/zec_qt_wallet_es.ts \
                res/zec_qt_wallet_pt.ts \
                res/zec_qt_wallet_it.ts 
 
-unix: include(singleapplication/singleapplication.pri)
-unix: DEFINES += QAPPLICATION_CLASS=QApplication
+include(singleapplication/singleapplication.pri)
+DEFINES += QAPPLICATION_CLASS=QApplication
 
 win32: RC_ICONS = res/icon.ico
 ICON = res/logo.icns
