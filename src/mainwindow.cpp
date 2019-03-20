@@ -876,6 +876,7 @@ void MainWindow::payZcashURI(QString uri) {
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);
+    raise();
 
     // And click the send button if the amount is > 0, to validate everything. If everything is OK, it will show the confirm box
     // else, show the error message;

@@ -65,9 +65,7 @@
                 <File Source="zcash-cli.exe" />
                 <File Source="README.md" />
 
-                <RegistryKey Root="HKCR"
-                        Key="zcash"
-                        Action="createAndRemoveOnUninstall">
+                <RegistryKey Root="HKCR" Key="zcash">
                     <RegistryValue Type="string" Name="URL Protocol" Value=""/>
                     <RegistryValue Type="string" Value="URL:zcash URI protocol"/>
                     <RegistryKey Key="DefaultIcon">
