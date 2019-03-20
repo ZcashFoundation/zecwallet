@@ -12,6 +12,8 @@ Remove-Item -Force -ErrorAction Ignore ./artifacts/linux-deb-zecwallet-v$version
 Remove-Item -Force -ErrorAction Ignore ./artifacts/Windows-binaries-zecwallet-v$version.zip
 Remove-Item -Force -ErrorAction Ignore ./artifacts/Windows-installer-zecwallet-v$version.msi
 Remove-Item -Force -ErrorAction Ignore ./artifacts/macOS-zecwallet-v$version.dmg
+Remove-Item -Force -ErrorAction Ignore ./artifacts/signatures-v$version.tar.gz
+
 
 Remove-Item -Recurse -Force -ErrorAction Ignore ./bin
 Remove-Item -Recurse -Force -ErrorAction Ignore ./debug
