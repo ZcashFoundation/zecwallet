@@ -1275,8 +1275,10 @@ std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
             std::for_each(addrs->begin(), addrs->end(), [=] (auto addr) {
                 if ( (sapling &&  Settings::getInstance()->isSaplingAddress(addr)) ||
                     (!sapling && !Settings::getInstance()->isSaplingAddress(addr))) {
-                    auto bal = rpc->getAllBalances()->value(addr);
-                    ui->listRecieveAddresses->addItem(addr, bal);
+                        if (rpc->getAllBalances()) {
+                            auto bal = rpc->getAllBalances()->value(addr);
+                            ui->listRecieveAddresses->addItem(addr, bal);
+                        }
                 }
             }); 
 
@@ -1322,8 +1324,13 @@ void MainWindow::setupRecieveTab() {
         else {
             ui->btnRecieveNewAddr->setToolTip("");
         }
+        
         addZAddrsToComboList(false)(checked);
+
+        bool showWarning = checked && Settings::getInstance()->getZcashdVersion() < 2000450;
+        ui->lblSproutWarning->setVisible(showWarning);
     });
+
     QObject::connect(ui->rdioZSAddr, &QRadioButton::toggled, addZAddrsToComboList(true));
 
     // Explicitly get new address button.
