@@ -1330,7 +1330,7 @@ void MainWindow::setupRecieveTab() {
         
         addZAddrsToComboList(false)(checked);
 
-        bool showWarning = checked && Settings::getInstance()->getZcashdVersion() < 2000450;
+        bool showWarning = checked && Settings::getInstance()->getZcashdVersion() < 2000425;
         ui->lblSproutWarning->setVisible(showWarning);
     });
 
