@@ -35,3 +35,4 @@ workspace.code-workspace
 .DS_Store
 *.mak
 zcashd
+IDEWorkspaceChecks.plist
