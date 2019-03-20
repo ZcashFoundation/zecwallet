@@ -82,6 +82,14 @@ bool Settings::isTAddress(QString addr) {
     return addr.startsWith("t");
 }
 
+int Settings::getZcashdVersion() {
+    return _zcashdVersion;
+}
+
+void Settings::setZcashdVersion(int version) {
+    _zcashdVersion = version;
+}
+
 bool Settings::isSyncing() {
     return _isSyncing;
 }

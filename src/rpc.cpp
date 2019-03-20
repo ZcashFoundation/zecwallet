@@ -551,6 +551,7 @@ void RPC::getInfoThenRefresh(bool force) {
         static int    lastBlock = 0;
         int curBlock  = reply["blocks"].get<json::number_integer_t>();
         int version = reply["version"].get<json::number_integer_t>();
+        Settings::getInstance()->setZcashdVersion(version);
 
         if ( force || (curBlock != lastBlock) ) {
             // Something changed, so refresh everything.
@@ -646,7 +647,7 @@ void RPC::getInfoThenRefresh(bool force) {
             else {
                 tooltip = QObject::tr("zcashd has no peer connections");
             }
-            tooltip = tooltip % "(v " % QString::number(version) % ")";
+            tooltip = tooltip % "(v " % QString::number(Settings::getInstance()->getZcashdVersion()) % ")";
 
             if (!zecPrice.isEmpty()) {
                 tooltip = "1 ZEC = " % zecPrice % "\n" % tooltip;
