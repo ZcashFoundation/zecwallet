@@ -1315,6 +1315,9 @@ void MainWindow::setupRecieveTab() {
         } 
     });
 
+    // Sprout Warning is hidden by default
+    ui->lblSproutWarning->setVisible(false);
+
     // zAddr toggle button, one for sprout and one for sapling
     QObject::connect(ui->rdioZAddr, &QRadioButton::toggled, [=](bool checked) {
         ui->btnRecieveNewAddr->setEnabled(!checked);
