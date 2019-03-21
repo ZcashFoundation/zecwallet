@@ -506,6 +506,15 @@ void MainWindow::setupSettingsModal() {
         // Connection tab by default
         settings.tabWidget->setCurrentIndex(0);
 
+        // Enable the troubleshooting options only if using embedded zcashd
+        if (!rpc->isEmbedded()) {
+            settings.chkRescan->setEnabled(false);
+            settings.chkRescan->setToolTip(tr("You're using an external zcashd. Please restart zcashd with -rescan"));
+
+            settings.chkReindex->setEnabled(false);
+            settings.chkReindex->setToolTip(tr("You're using an external zcashd. Please restart zcashd with -reindex"));
+        }
+
         if (settingsDialog.exec() == QDialog::Accepted) {
             // Custom fees
             bool customFees = settings.chkCustomFees->isChecked();
@@ -563,11 +572,7 @@ void MainWindow::setupSettingsModal() {
 
             if (showRestartInfo) {
                 auto desc = tr("ZecWallet needs to restart to rescan/reindex. ZecWallet will now close, please restart ZecWallet to continue");
-
-                if (!rpc->isEmbedded()) {
-                    desc = desc + "\n\n" + tr("You also need to restart your zcashd.");
-                }
-
+                
                 QMessageBox::information(this, tr("Restart ZecWallet"), desc, QMessageBox::Ok);
                 QTimer::singleShot(1, [=]() { this->close(); });
             }
