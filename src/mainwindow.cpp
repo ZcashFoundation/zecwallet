@@ -16,6 +16,7 @@
 #include "turnstile.h"
 #include "senttxstore.h"
 #include "connection.h"
+#include "requestdialog.h"
 #include "websockets.h"
 
 using json = nlohmann::json;
@@ -43,6 +44,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionCheck_for_Updates, &QAction::triggered, [=] () {
         // Silent is false, so show notification even if no update was found
         rpc->checkForUpdate(false);
+    });
+
+    // Request zcash
+    QObject::connect(ui->actionRequest_zcash, &QAction::triggered, [=]() {
+        RequestDialog::showRequestZcash(this);
     });
 
     // Pay Zcash URI
@@ -1504,6 +1510,9 @@ MainWindow::~MainWindow()
     delete ui;
     delete rpc;
     delete labelCompleter;
+
+    delete amtValidator;
+    delete feesValidator;
 
     delete loadingMovie;
     delete logger;

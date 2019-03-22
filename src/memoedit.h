@@ -12,6 +12,7 @@ public:
     void setLenDisplayLabel(QLabel* label);
     void setAcceptButton(QPushButton* button);
     void includeReplyTo(QString replyToAddress);
+    void updateDisplay();
 
 private:
     int             maxlen           = 512;

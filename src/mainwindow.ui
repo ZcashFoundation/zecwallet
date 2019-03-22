@@ -22,7 +22,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -1058,6 +1058,7 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <addaction name="actionRequest_zcash"/>
     <addaction name="actionPay_URI"/>
     <addaction name="separator"/>
     <addaction name="actionImport_Private_Key"/>
@@ -1183,18 +1184,23 @@
     <string>Ctrl+M</string>
    </property>
   </action>
+  <action name="actionRequest_zcash">
+   <property name="text">
+    <string>Request zcash...</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QRCodeLabel</class>
-   <extends>QLabel</extends>
-   <header>qrcodelabel.h</header>
-  </customwidget>
-  <customwidget>
    <class>AddressCombo</class>
    <extends>QComboBox</extends>
    <header>addresscombo.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QRCodeLabel</class>
+   <extends>QLabel</extends>
+   <header>qrcodelabel.h</header>
   </customwidget>
   <customwidget>
    <class>FilledIconLabel</class>

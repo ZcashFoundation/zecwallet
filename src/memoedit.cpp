@@ -1,27 +1,35 @@
 #include "memoedit.h"
 
 MemoEdit::MemoEdit(QWidget* parent) : QPlainTextEdit(parent) {
-    QObject::connect(this, &QPlainTextEdit::textChanged, [=]() {
-        QString txt = this->toPlainText();
-        if (lenDisplayLabel)
-            lenDisplayLabel->setText(QString::number(txt.toUtf8().size()) + "/" + QString::number(maxlen));
+    QObject::connect(this, &QPlainTextEdit::textChanged, this, &MemoEdit::updateDisplay);
+}
 
-        if (txt.toUtf8().size() <= maxlen) {
-            // Everything is fine
+void MemoEdit::updateDisplay() {
+    QString txt = this->toPlainText();
+    if (lenDisplayLabel)
+        lenDisplayLabel->setText(QString::number(txt.toUtf8().size()) + "/" + QString::number(maxlen));
+
+    if (txt.toUtf8().size() <= maxlen) {
+        // Everything is fine
+        if (acceptButton)
             acceptButton->setEnabled(true);
+
+        if (lenDisplayLabel)
             lenDisplayLabel->setStyleSheet("");
-        }
-        else {
-           // Overweight
+    }
+    else {
+        // Overweight
+        if (acceptButton)
             acceptButton->setEnabled(false);
+
+        if (lenDisplayLabel)
             lenDisplayLabel->setStyleSheet("color: red;");
-        }
-        
-    });
+    }
 }
 
 void MemoEdit::setMaxLen(int len) {
     this->maxlen = len;
+    updateDisplay();
 }
 
 void MemoEdit::setLenDisplayLabel(QLabel* label) {

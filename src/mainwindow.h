@@ -42,6 +42,9 @@ public:
     void updateLabelsAutoComplete();
     RPC* getRPC() { return rpc; }
 
+    QCompleter*         getLabelCompleter() { return labelCompleter; }
+    QRegExpValidator*   getAmountValidator() { return amtValidator; }
+
     QString doSendTxValidations(Tx tx);
     void setDefaultPayFrom();
 
@@ -126,8 +129,10 @@ private:
     WSServer*       wsserver = nullptr;
     WormholeClient* wormhole = nullptr;
 
-    RPC*         rpc  = nullptr;
-    QCompleter*  labelCompleter = nullptr;
+    RPC*                rpc             = nullptr;
+    QCompleter*         labelCompleter  = nullptr;
+    QRegExpValidator*   amtValidator    = nullptr;
+    QRegExpValidator*   feesValidator   = nullptr;
 
     QMovie*      loadingMovie;
 };
