@@ -138,8 +138,14 @@ void TxTableModel::updateAllData() {
 
     if (role == Qt::ToolTipRole) {
         switch (index.column()) {
-        case 0: return modeldata->at(index.row()).type + 
-                    (dat.memo.isEmpty() ? "" : " tx memo: \"" + dat.memo + "\"");
+        case 0: { 
+                    if (dat.memo.startsWith("zcash:")) {
+                        return Settings::paymentURIPretty(Settings::parseURI(dat.memo));
+                    } else {
+                        return modeldata->at(index.row()).type + 
+                        (dat.memo.isEmpty() ? "" : " tx memo: \"" + dat.memo + "\"");
+                    }
+                }
         case 1: { 
                     auto addr = modeldata->at(index.row()).address;
                     if (addr.trimmed().isEmpty()) 
@@ -154,9 +160,15 @@ void TxTableModel::updateAllData() {
 
     if (role == Qt::DecorationRole && index.column() == 0) {
         if (!dat.memo.isEmpty()) {
-            // Return the info pixmap to indicate memo
-            QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);            
-            return QVariant(icon.pixmap(16, 16));
+            // If the memo is a Payment URI, then show a payment request icon
+            if (dat.memo.startsWith("zcash:")) {
+                QIcon icon(":/icons/res/paymentreq.gif");
+                return QVariant(icon.pixmap(16, 16));
+            } else {
+                // Return the info pixmap to indicate memo
+                QIcon icon = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);            
+                return QVariant(icon.pixmap(16, 16));
+                }
         } else {
             // Empty pixmap to make it align
             QPixmap p(16, 16);

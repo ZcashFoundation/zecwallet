@@ -804,12 +804,6 @@ void MainWindow::payZcashURI(QString uri) {
         return;
     }
 
-    // Error to display if something goes wrong.
-    auto payZcashURIError = [=] (QString errorDetail = "") {
-        QMessageBox::critical(this, tr("Error paying zcash URI"), 
-                tr("URI should be of the form 'zcash:<addr>?amt=x&memo=y") + "\n" + errorDetail);
-    };
-
     // If there was no URI passed, ask the user for one.
     if (uri.isEmpty()) {
         uri = QInputDialog::getText(this, tr("Paste Zcash URI"),
@@ -820,70 +814,21 @@ void MainWindow::payZcashURI(QString uri) {
     if (uri.isEmpty())
         return;
 
-    // URI should be of the form zcash://address?amt=x&memo=y
-    if (!uri.startsWith("zcash:")) {
-        payZcashURIError();
-        return;
-    }
-
     // Extract the address
     qDebug() << "Recieved URI " << uri;
-    uri = uri.right(uri.length() - QString("zcash:").length());
-
-    QRegExp re("([a-zA-Z0-9]+)");
-    int pos;
-    if ( (pos = re.indexIn(uri)) == -1 ) {
-        payZcashURIError();
+    PaymentURI paymentInfo = Settings::parseURI(uri);
+    if (!paymentInfo.error.isEmpty()) {
+        QMessageBox::critical(this, tr("Error paying zcash URI"), 
+                tr("URI should be of the form 'zcash:<addr>?amt=x&memo=y") + "\n" + paymentInfo.error);
         return;
-    }
-
-    QString addr = re.cap(1);
-    if (!Settings::isValidAddress(addr)) {
-        payZcashURIError(tr("Could not understand address"));
-        return;
-    }
-    uri = uri.right(uri.length() - addr.length());
-
-    double amount = 0.0;
-    QString memo  = "";
-
-    if (!uri.isEmpty()) {
-        uri = uri.right(uri.length() - 1); // Eat the "?"
-
-        QStringList args = uri.split("&");
-        for (QString arg: args) {
-            QStringList kv = arg.split("=");
-            if (kv.length() != 2) {
-                payZcashURIError();
-                return;
-            }
-
-            if (kv[0].toLower() == "amt" || kv[0].toLower() == "amount") {
-                amount = kv[1].toDouble(); 
-            } else if (kv[0].toLower() == "memo" || kv[0].toLower() == "message" || kv[0].toLower() == "msg") {
-                memo = kv[1];
-                // Test if this is hex
-
-                QRegularExpression hexMatcher("^[0-9A-F]+$",
-                                            QRegularExpression::CaseInsensitiveOption);
-                QRegularExpressionMatch match = hexMatcher.match(memo);
-                if (match.hasMatch()) {
-                    // Encoded as hex, convert to string
-                    memo = QByteArray::fromHex(memo.toUtf8());
-                }
-            } else {
-                payZcashURIError(tr("Unknown field in URI:") + kv[0]);
-                return;
-            }
-        }
     }
 
     // Now, set the fields on the send tab
     removeExtraAddresses();
-    ui->Address1->setText(addr);
+    ui->Address1->setText(paymentInfo.addr);
     ui->Address1->setCursorPosition(0);
-    ui->Amount1->setText(QString::number(amount));
-    ui->MemoTxt1->setText(memo);
+    ui->Amount1->setText(Settings::getDecimalString(paymentInfo.amt.toDouble()));
+    ui->MemoTxt1->setText(paymentInfo.memo);
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);
@@ -891,7 +836,7 @@ void MainWindow::payZcashURI(QString uri) {
 
     // And click the send button if the amount is > 0, to validate everything. If everything is OK, it will show the confirm box
     // else, show the error message;
-    if (amount > 0) {
+    if (paymentInfo.amt > 0) {
         sendButton();
     }
 }
@@ -1214,8 +1159,16 @@ void MainWindow::setupTransactionsTab() {
             QDesktopServices::openUrl(QUrl(url));
         });
 
+        // Payment Request
+        if (!memo.isEmpty() && memo.startsWith("zcash:")) {
+            menu.addAction(tr("View Payment Request"), [=] () {
+                RequestDialog::showPaymentConfirmation(this, memo);
+            });
+        }
+
+        // View Memo
         if (!memo.isEmpty()) {
-            menu.addAction(tr("View Memo"), [=] () {
+            menu.addAction(tr("View Memo"), [=] () {               
                 QMessageBox mb(QMessageBox::Information, tr("Memo"), memo, QMessageBox::Ok, this);
                 mb.setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
                 mb.exec();

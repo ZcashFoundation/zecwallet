@@ -2,6 +2,10 @@
 #include "ui_requestdialog.h"
 #include "settings.h"
 #include "addressbook.h"
+#include "mainwindow.h"
+#include "rpc.h"
+#include "settings.h"
+
 
 RequestDialog::RequestDialog(QWidget *parent) :
     QDialog(parent),
@@ -13,6 +17,51 @@ RequestDialog::RequestDialog(QWidget *parent) :
 RequestDialog::~RequestDialog()
 {
     delete ui;
+}
+
+void RequestDialog::setupDialog(QDialog* d, Ui_RequestDialog* req) {
+    req->setupUi(d);
+    Settings::saveRestore(d);
+
+    // Setup
+    req->txtMemo->setLenDisplayLabel(req->lblMemoLen);
+    req->lblAmount->setText(req->lblAmount->text() + Settings::getTokenName());
+}
+
+// Static method that shows an incoming payment request and prompts the user to pay it
+void RequestDialog::showPaymentConfirmation(MainWindow* main, QString paymentURI) {
+    PaymentURI payInfo = Settings::parseURI(paymentURI);
+    if (!payInfo.error.isEmpty()) {
+        QMessageBox::critical(main, tr("Error paying zcash URI"), 
+                tr("URI should be of the form 'zcash:<addr>?amt=x&memo=y") + "\n" + payInfo.error);
+        return;
+    }
+
+    QDialog d(main);
+    Ui_RequestDialog req;
+    setupDialog(&d, &req);    
+
+    // In the view mode, all fields are read-only
+    req.txtAmount->setReadOnly(true);
+    req.txtFrom->setReadOnly(true);
+    req.txtMemo->setReadOnly(true);
+
+    // Payment is "to"
+    req.lblAddress->setText(tr("Pay To"));
+
+    // No Addressbook
+    req.btnAddressBook->setVisible(false);
+
+    req.txtFrom->setText(payInfo.addr);
+    req.txtMemo->setPlainText(payInfo.memo);
+    req.txtAmount->setText(payInfo.amt);
+    req.txtAmountUSD->setText(Settings::getUSDFormat(req.txtAmount->text().toDouble()));
+
+    req.buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Pay"));
+
+    if (d.exec() == QDialog::Accepted) {
+        main->payZcashURI(paymentURI);
+    }
 }
 
 // Static method that shows the request dialog
@@ -55,9 +104,15 @@ void RequestDialog::showRequestZcash(MainWindow* main) {
 
     if (d.exec() == QDialog::Accepted) {
         // Construct a zcash Payment URI with the data and pay it immediately.
-        QString paymentURI = "zcash:" + AddressBook::addressFromAddressLabel(req.txtFrom->text())
+        QString memoURI = "zcash:" + main->getRPC()->getDefaultSaplingAddress()
                     + "?amt=" + Settings::getDecimalString(req.txtAmount->text().toDouble())
                     + "&memo=" + QUrl::toPercentEncoding(req.txtMemo->toPlainText());
-        main->payZcashURI(paymentURI);
+
+        QString sendURI = "zcash:" + AddressBook::addressFromAddressLabel(req.txtFrom->text()) 
+                    + "?amt=0.0001"
+                    + "&memo=" + QUrl::toPercentEncoding(memoURI);
+
+        qDebug() << "Paying " << sendURI;
+        main->payZcashURI(sendURI);
     }
 }

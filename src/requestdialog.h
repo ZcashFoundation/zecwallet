@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "mainwindow.h"
+#include "ui_requestdialog.h"
 
 namespace Ui {
 class RequestDialog;
@@ -17,7 +18,8 @@ public:
     ~RequestDialog();
 
     static void showRequestZcash(MainWindow* main);
-
+    static void showPaymentConfirmation(MainWindow* main, QString paymentURI);
+    static void setupDialog(QDialog* d, Ui_RequestDialog* req);
 private:
     Ui::RequestDialog *ui;
 };

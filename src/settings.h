@@ -13,6 +13,15 @@ struct Config {
 struct ToFields;
 struct Tx;
 
+struct PaymentURI {
+    QString addr;
+    QString amt;
+    QString memo;
+
+    // Any errors are stored here
+    QString error;
+};
+
 class Settings
 {
 public:
@@ -67,6 +76,9 @@ public:
     static const QString txidStatusMessage;
     
     static void saveRestore(QDialog* d);
+
+    static PaymentURI parseURI(QString paymentURI);
+    static QString    paymentURIPretty(PaymentURI);
 
     static bool    isZAddress(QString addr);
     static bool    isTAddress(QString addr);
