@@ -35,7 +35,7 @@
     </widget>
    </item>
    <item row="1" column="0" colspan="3">
-    <widget class="QPlainTextEdit" name="memoTxt"/>
+    <widget class="MemoEdit" name="memoTxt"/>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label">
@@ -70,6 +70,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MemoEdit</class>
+   <extends>QPlainTextEdit</extends>
+   <header>memoedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

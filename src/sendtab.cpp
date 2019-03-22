@@ -330,22 +330,8 @@ void MainWindow::memoButtonClicked(int number, bool includeReplyTo) {
     memoDialog.setupUi(&dialog);
     Settings::saveRestore(&dialog);
 
-    QObject::connect(memoDialog.memoTxt, &QPlainTextEdit::textChanged, [=] () {
-        QString txt = memoDialog.memoTxt->toPlainText();
-        memoDialog.memoSize->setText(QString::number(txt.toUtf8().size()) + "/512");
-
-        if (txt.toUtf8().size() <= 512) {
-            // Everything is fine
-            memoDialog.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
-            memoDialog.memoSize->setStyleSheet("");
-        }
-        else {
-           // Overweight
-            memoDialog.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
-            memoDialog.memoSize->setStyleSheet("color: red;");
-        }
-        
-    });
+    memoDialog.memoTxt->setLenDisplayLabel(memoDialog.memoSize);
+    memoDialog.memoTxt->setAcceptButton(memoDialog.buttonBox->button(QDialogButtonBox::Ok));
 
     auto fnAddReplyTo = [=, &dialog]() {
         QString replyTo = ui->inputsCombo->currentText();
@@ -354,11 +340,8 @@ void MainWindow::memoButtonClicked(int number, bool includeReplyTo) {
             if (replyTo.isEmpty())
                 return;
         }
-        auto curText = memoDialog.memoTxt->toPlainText();
-        if (curText.endsWith(replyTo))
-            return;
 
-        memoDialog.memoTxt->setPlainText(curText + "\n" + tr("Reply to") + ":\n" + replyTo);
+        memoDialog.memoTxt->includeReplyTo(replyTo);
 
         // MacOS has a really annoying bug where the Plaintext doesn't refresh when the content is
         // updated. So we do this ugly hack - resize the window slightly to force it to refresh
