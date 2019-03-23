@@ -124,12 +124,8 @@ void RequestDialog::showRequestZcash(MainWindow* main) {
                     + "?amt=0.0001"
                     + "&memo=" + QUrl::toPercentEncoding(memoURI);
 
-        // If the disclosed address in the memo doesn't have a balance, then we can't send the Tx from that address, 
-        QString payFrom = "";
-        if (main->getRPC()->getAllBalances()->value(req.cmbMyAddress->currentText()) > 0) {
-            payFrom = req.cmbMyAddress->currentText();
-        }
-        
-        main->payZcashURI(sendURI, payFrom);
+        // If the disclosed address in the memo doesn't have a balance, it will automatically fallback to the default
+        // sapling address
+        main->payZcashURI(sendURI, req.cmbMyAddress->currentText());
     }
 }
