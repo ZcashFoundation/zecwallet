@@ -795,8 +795,9 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
 
 
 // Pay the Zcash URI by showing a confirmation window. If the URI parameter is empty, the UI
-// will prompt for one.
-void MainWindow::payZcashURI(QString uri) {
+// will prompt for one. If the myAddr is empty, then the default from address is used to send
+// the transaction.
+void MainWindow::payZcashURI(QString uri, QString myAddr) {
     // If the Payments UI is not ready (i.e, all balances have not loaded), defer the payment URI
     if (!uiPaymentsReady) {
         qDebug() << "Payment UI not ready, waiting for UI to pay URI";
@@ -825,6 +826,10 @@ void MainWindow::payZcashURI(QString uri) {
 
     // Now, set the fields on the send tab
     removeExtraAddresses();
+    if (!myAddr.isEmpty()) {
+        ui->inputsCombo->setCurrentText(myAddr);
+    }
+
     ui->Address1->setText(paymentInfo.addr);
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText(Settings::getDecimalString(paymentInfo.amt.toDouble()));

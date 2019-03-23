@@ -6,6 +6,7 @@
 #include "rpc.h"
 #include "settings.h"
 
+#include "precompiled.h"
 
 RequestDialog::RequestDialog(QWidget *parent) :
     QDialog(parent),
@@ -19,13 +20,26 @@ RequestDialog::~RequestDialog()
     delete ui;
 }
 
-void RequestDialog::setupDialog(QDialog* d, Ui_RequestDialog* req) {
+void RequestDialog::setupDialog(MainWindow* main, QDialog* d, Ui_RequestDialog* req) {
     req->setupUi(d);
     Settings::saveRestore(d);
 
     // Setup
     req->txtMemo->setLenDisplayLabel(req->lblMemoLen);
     req->lblAmount->setText(req->lblAmount->text() + Settings::getTokenName());
+
+    if (!main || !main->getRPC() || !main->getRPC()->getAllZAddresses() || !main->getRPC()->getAllBalances())
+        return;
+
+    for (auto addr : *main->getRPC()->getAllZAddresses()) {
+        auto bal = main->getRPC()->getAllBalances()->value(addr);
+        if (bal == 0)
+            continue;
+        if (Settings::getInstance()->isSaplingAddress(addr)) {
+            req->cmbMyAddress->addItem(addr, bal);
+        }
+    }
+    req->cmbMyAddress->setCurrentText(main->getRPC()->getDefaultSaplingAddress());
 }
 
 // Static method that shows an incoming payment request and prompts the user to pay it
@@ -39,7 +53,7 @@ void RequestDialog::showPaymentConfirmation(MainWindow* main, QString paymentURI
 
     QDialog d(main);
     Ui_RequestDialog req;
-    setupDialog(&d, &req);    
+    setupDialog(main, &d, &req);    
 
     // In the view mode, all fields are read-only
     req.txtAmount->setReadOnly(true);
@@ -60,7 +74,7 @@ void RequestDialog::showPaymentConfirmation(MainWindow* main, QString paymentURI
     req.buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Pay"));
 
     if (d.exec() == QDialog::Accepted) {
-        main->payZcashURI(paymentURI);
+        main->payZcashURI(paymentURI, req.cmbMyAddress->currentText());
     }
 }
 
@@ -68,8 +82,8 @@ void RequestDialog::showPaymentConfirmation(MainWindow* main, QString paymentURI
 void RequestDialog::showRequestZcash(MainWindow* main) {
     QDialog d(main);
     Ui_RequestDialog req;
-    req.setupUi(&d);
-    Settings::saveRestore(&d);
+
+    setupDialog(main, &d, &req);
 
     // Setup the Label completer for the Address
     req.txtFrom->setCompleter(main->getLabelCompleter());
@@ -104,7 +118,7 @@ void RequestDialog::showRequestZcash(MainWindow* main) {
 
     if (d.exec() == QDialog::Accepted) {
         // Construct a zcash Payment URI with the data and pay it immediately.
-        QString memoURI = "zcash:" + main->getRPC()->getDefaultSaplingAddress()
+        QString memoURI = "zcash:" + req.cmbMyAddress->currentText()
                     + "?amt=" + Settings::getDecimalString(req.txtAmount->text().toDouble())
                     + "&memo=" + QUrl::toPercentEncoding(req.txtMemo->toPlainText());
 
@@ -113,6 +127,6 @@ void RequestDialog::showRequestZcash(MainWindow* main) {
                     + "&memo=" + QUrl::toPercentEncoding(memoURI);
 
         qDebug() << "Paying " << sendURI;
-        main->payZcashURI(sendURI);
+        main->payZcashURI(sendURI, req.cmbMyAddress->currentText());
     }
 }

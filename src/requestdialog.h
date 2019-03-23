@@ -19,7 +19,7 @@ public:
 
     static void showRequestZcash(MainWindow* main);
     static void showPaymentConfirmation(MainWindow* main, QString paymentURI);
-    static void setupDialog(QDialog* d, Ui_RequestDialog* req);
+    static void setupDialog(MainWindow* main, QDialog* d, Ui_RequestDialog* req);
 private:
     Ui::RequestDialog *ui;
 };

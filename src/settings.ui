@@ -325,16 +325,6 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_9">
-         <property name="text">
-          <string>Rescan the blockchain for any missing wallet transactions and to correct your wallet balance. This will take several hours. You need to restart ZecWallet for this to take effect</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="6" column="0">
         <widget class="QLabel" name="label_11">
          <property name="text">
@@ -342,13 +332,6 @@
          </property>
          <property name="wordWrap">
           <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QCheckBox" name="chkRescan">
-         <property name="text">
-          <string>Rescan</string>
          </property>
         </widget>
        </item>

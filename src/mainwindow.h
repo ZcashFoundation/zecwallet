@@ -54,7 +54,7 @@ public:
     void stopWebsocket();
 
     void balancesReady();
-    void payZcashURI(QString uri = "");
+    void payZcashURI(QString uri = "", QString myAddr = "");
 
     void updateLabels();
     void updateTAddrCombo(bool checked);
