@@ -14,16 +14,6 @@
    <string>Payment Request</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="15" column="2" colspan="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
    <item row="5" column="1" colspan="3">
     <widget class="QLineEdit" name="txtAmount">
      <property name="alignment">
@@ -34,46 +24,14 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="3">
-    <spacer name="horizontalSpacer_2">
+   <item row="15" column="0" colspan="4">
+    <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="1" column="1" colspan="3">
-    <widget class="QLineEdit" name="txtFrom">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-     <property name="placeholderText">
-      <string>z address</string>
-     </property>
     </widget>
    </item>
-   <item row="8" column="1" colspan="3">
-    <widget class="MemoEdit" name="txtMemo"/>
-   </item>
-   <item row="12" column="0">
+   <item row="13" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -85,16 +43,6 @@
       </size>
      </property>
     </spacer>
-   </item>
-   <item row="9" column="2" colspan="2">
-    <widget class="QLabel" name="lblMemoLen">
-     <property name="text">
-      <string notr="true">0 / 512</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
    </item>
    <item row="0" column="1" colspan="3">
     <widget class="QLabel" name="lblSaplingWarning">
@@ -109,26 +57,8 @@
      </property>
     </widget>
    </item>
-   <item row="14" column="0" colspan="4">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Memo</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="0" colspan="4">
-    <widget class="Line" name="line_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
+   <item row="8" column="1" colspan="3">
+    <widget class="MemoEdit" name="txtMemo"/>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="lblAddress">
@@ -161,20 +91,20 @@
      </item>
     </layout>
    </item>
-   <item row="6" column="1" colspan="3">
-    <widget class="QLabel" name="txtAmountUSD">
-     <property name="text">
-      <string>Amount USD</string>
+   <item row="16" column="2" colspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="lblAmount">
+   <item row="8" column="0">
+    <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Amount in </string>
+      <string>Memo</string>
      </property>
     </widget>
    </item>
@@ -185,8 +115,85 @@
      </property>
     </widget>
    </item>
+   <item row="10" column="0" colspan="4">
+    <widget class="Line" name="line_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
    <item row="11" column="1" colspan="3">
     <widget class="AddressCombo" name="cmbMyAddress"/>
+   </item>
+   <item row="9" column="2" colspan="2">
+    <widget class="QLabel" name="lblMemoLen">
+     <property name="text">
+      <string notr="true">0 / 512</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="3">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="7" column="1">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="lblAmount">
+     <property name="text">
+      <string>Amount in </string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1" colspan="3">
+    <widget class="QLabel" name="txtAmountUSD">
+     <property name="text">
+      <string>Amount USD</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="3">
+    <widget class="QLineEdit" name="txtFrom">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+     <property name="placeholderText">
+      <string>z address</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="1" colspan="3">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>The recipient will see this address in the &quot;to&quot; field when they pay your request.</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

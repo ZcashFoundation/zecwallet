@@ -33,8 +33,6 @@ void RequestDialog::setupDialog(MainWindow* main, QDialog* d, Ui_RequestDialog* 
 
     for (auto addr : *main->getRPC()->getAllZAddresses()) {
         auto bal = main->getRPC()->getAllBalances()->value(addr);
-        if (bal == 0)
-            continue;
         if (Settings::getInstance()->isSaplingAddress(addr)) {
             req->cmbMyAddress->addItem(addr, bal);
         }
@@ -126,7 +124,12 @@ void RequestDialog::showRequestZcash(MainWindow* main) {
                     + "?amt=0.0001"
                     + "&memo=" + QUrl::toPercentEncoding(memoURI);
 
-        qDebug() << "Paying " << sendURI;
-        main->payZcashURI(sendURI, req.cmbMyAddress->currentText());
+        // If the disclosed address in the memo doesn't have a balance, then we can't send the Tx from that address, 
+        QString payFrom = "";
+        if (main->getRPC()->getAllBalances()->value(req.cmbMyAddress->currentText()) > 0) {
+            payFrom = req.cmbMyAddress->currentText();
+        }
+        
+        main->payZcashURI(sendURI, payFrom);
     }
 }
