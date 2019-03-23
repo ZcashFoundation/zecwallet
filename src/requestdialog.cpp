@@ -64,6 +64,9 @@ void RequestDialog::showPaymentConfirmation(MainWindow* main, QString paymentURI
     // No Addressbook
     req.btnAddressBook->setVisible(false);
 
+    // No "address is visible" warning
+    req.lblAddressInfo->setVisible(false);
+
     req.txtFrom->setText(payInfo.addr);
     req.txtMemo->setPlainText(payInfo.memo);
     req.txtAmount->setText(payInfo.amt);

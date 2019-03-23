@@ -189,7 +189,7 @@
     </widget>
    </item>
    <item row="12" column="1" colspan="3">
-    <widget class="QLabel" name="label_4">
+    <widget class="QLabel" name="lblAddressInfo">
      <property name="text">
       <string>The recipient will see this address in the &quot;to&quot; field when they pay your request.</string>
      </property>
