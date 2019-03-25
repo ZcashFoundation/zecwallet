@@ -204,7 +204,7 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QLabel" name="label_5">
+    <widget class="QLabel" name="lblPixmap">
      <property name="text">
       <string>TextLabel</string>
      </property>
@@ -214,7 +214,7 @@
     </widget>
    </item>
    <item row="0" column="2" colspan="2">
-    <widget class="QLabel" name="label_6">
+    <widget class="QLabel" name="lblHeader">
      <property name="text">
       <string>Request payment from a Sapling address. You'll send a ZEC 0.0001 transaction to the address with a zcash payment URI. The memo will be included in the transaction when the address pays you.</string>
      </property>
