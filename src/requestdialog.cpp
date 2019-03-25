@@ -40,7 +40,7 @@ void RequestDialog::setupDialog(MainWindow* main, QDialog* d, Ui_RequestDialog* 
     req->cmbMyAddress->setCurrentText(main->getRPC()->getDefaultSaplingAddress());
 
     QIcon icon(":/icons/res/paymentreq.gif");
-    req->label_5->setPixmap(icon.pixmap(48, 48));
+    req->lblPixmap->setPixmap(icon.pixmap(48, 48));
 }
 
 // Static method that shows an incoming payment request and prompts the user to pay it
@@ -77,7 +77,7 @@ void RequestDialog::showPaymentConfirmation(MainWindow* main, QString paymentURI
 
     req.buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Pay"));
 
-    req.label_6->setText(tr("You are paying a payment request. Your address will not be visible to the person requesting this payment."));
+    req.lblHeader->setText(tr("You are paying a payment request. Your address will not be visible to the person requesting this payment."));
 
     if (d.exec() == QDialog::Accepted) {
         main->payZcashURI(paymentURI, req.cmbMyAddress->currentText());
