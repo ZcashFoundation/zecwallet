@@ -38,6 +38,9 @@ void RequestDialog::setupDialog(MainWindow* main, QDialog* d, Ui_RequestDialog* 
         }
     }
     req->cmbMyAddress->setCurrentText(main->getRPC()->getDefaultSaplingAddress());
+
+    QIcon icon(":/icons/res/paymentreq.gif");
+    req->label_5->setPixmap(icon.pixmap(48, 48));
 }
 
 // Static method that shows an incoming payment request and prompts the user to pay it
