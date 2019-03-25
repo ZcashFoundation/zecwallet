@@ -77,6 +77,8 @@ void RequestDialog::showPaymentConfirmation(MainWindow* main, QString paymentURI
 
     req.buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Pay"));
 
+    req.label_6->setText(tr("You are paying a payment request. Your address will not be visible to the person requesting this payment."));
+
     if (d.exec() == QDialog::Accepted) {
         main->payZcashURI(paymentURI, req.cmbMyAddress->currentText());
     }
