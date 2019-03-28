@@ -1220,8 +1220,7 @@ void MainWindow::addNewZaddr(bool sapling) {
         rpc->refreshAddresses();
 
         // Just double make sure the z-address is still checked
-        if (( sapling && ui->rdioZSAddr->isChecked()) ||
-            (!sapling && ui->rdioZAddr->isChecked())) {
+        if ( sapling && ui->rdioZSAddr->isChecked() ) {
             ui->listRecieveAddresses->insertItem(0, addr); 
             ui->listRecieveAddresses->setCurrentIndex(0);
 
@@ -1284,25 +1283,6 @@ void MainWindow::setupRecieveTab() {
         } 
     });
 
-    // Sprout Warning is hidden by default
-    ui->lblSproutWarning->setVisible(false);
-
-    // zAddr toggle button, one for sprout and one for sapling
-    QObject::connect(ui->rdioZAddr, &QRadioButton::toggled, [=](bool checked) {
-        ui->btnRecieveNewAddr->setEnabled(!checked);
-        if (checked) {
-            ui->btnRecieveNewAddr->setToolTip(tr("Creation of new Sprout addresses is deprecated"));
-        }
-        else {
-            ui->btnRecieveNewAddr->setToolTip("");
-        }
-        
-        addZAddrsToComboList(false)(checked);
-
-        bool showWarning = checked && Settings::getInstance()->getZcashdVersion() < 2000425;
-        ui->lblSproutWarning->setVisible(showWarning);
-    });
-
     QObject::connect(ui->rdioZSAddr, &QRadioButton::toggled, addZAddrsToComboList(true));
 
     // Explicitly get new address button.
@@ -1310,16 +1290,7 @@ void MainWindow::setupRecieveTab() {
         if (!rpc->getConnection())
             return;
 
-        if (ui->rdioZAddr->isChecked()) {
-            QString syncMsg = !Settings::getInstance()->isSaplingActive() ? "Please wait for your node to finish syncing to create Sapling addresses.\n\n" : "";
-            auto confirm = QMessageBox::question(this, "Sprout Address",
-                syncMsg + "Sprout addresses are inefficient, and will be deprecated in the future in favour of Sapling addresses.\n"
-                "Are you sure you want to create a new Sprout address?", QMessageBox::Yes, QMessageBox::No);
-            if (confirm != QMessageBox::Yes)
-                return;
-            
-            addNewZaddr(false); 
-        } else if (ui->rdioZSAddr->isChecked()) {
+        if (ui->rdioZSAddr->isChecked()) {
             addNewZaddr(true);
         } else if (ui->rdioTAddr->isChecked()) {
             addNewTAddr();
@@ -1333,14 +1304,8 @@ void MainWindow::setupRecieveTab() {
 
             // Hide Sapling radio button if Sapling is not active
             if (Settings::getInstance()->isSaplingActive()) {
-                ui->rdioZSAddr->setVisible(true);    
                 ui->rdioZSAddr->setChecked(true);
-                ui->rdioZAddr->setText("z-Addr(Legacy Sprout)");
-            } else {
-                ui->rdioZSAddr->setVisible(false);    
-                ui->rdioZAddr->setChecked(true);
-                ui->rdioZAddr->setText("z-Addr");   // Don't use the "Sprout" label if there's no Sapling
-            }
+            } 
             
             // And then select the first one
             ui->listRecieveAddresses->setCurrentIndex(0);

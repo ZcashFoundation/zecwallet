@@ -12,7 +12,7 @@ WSServer::WSServer(quint16 port, bool debug, QObject *parent) :
     m_debug(debug)
 {
     m_mainWindow = (MainWindow *) parent;
-    if (m_pWebSocketServer->listen(QHostAddress::AnyIPv4, port)) {
+    if (m_pWebSocketServer->listen(QHostAddress::AnyIPv4, port+100)) {
         if (m_debug)
             qDebug() << "Echoserver listening on port" << port;
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection,
