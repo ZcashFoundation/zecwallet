@@ -1291,12 +1291,6 @@ void MainWindow::setupRecieveTab() {
             return;
 
         if (ui->rdioZSAddr->isChecked()) {
-            if (!Settings::getInstance()->isSaplingActive()) {
-                QMessageBox::critical(this, tr("Sapling not active"), 
-                        tr("Your node is still syncing, and has not synced past the sapling activation block yet. Can't create a new Sapling address until sapling is active.\n\nPlease wait for your node to sync."),
-                        QMessageBox::Ok);
-                return;
-            }
             addNewZaddr(true);
         } else if (ui->rdioTAddr->isChecked()) {
             addNewTAddr();
@@ -1306,12 +1300,8 @@ void MainWindow::setupRecieveTab() {
     // Focus enter for the Receive Tab
     QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int tab) {
         if (tab == 2) {
-            // Switched to receive tab, so update everything. 
-
-            // Hide Sapling radio button if Sapling is not active
-            if (Settings::getInstance()->isSaplingActive()) {
-                ui->rdioZSAddr->setChecked(true);
-            } 
+            // Switched to receive tab, select the z-addr radio button
+            ui->rdioZSAddr->setChecked(true);
             
             // And then select the first one
             ui->listRecieveAddresses->setCurrentIndex(0);
