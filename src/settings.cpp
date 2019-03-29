@@ -161,10 +161,7 @@ void Settings::saveRestore(QDialog* d) {
 }
 
 QString Settings::getUSDFormat(double bal) {
-    if (!Settings::getInstance()->isTestnet() && Settings::getInstance()->getZECPrice() > 0) 
-        return "$" + QLocale(QLocale::English).toString(bal * Settings::getInstance()->getZECPrice(), 'f', 2);
-    else 
-        return QString();
+    return "$" + QLocale(QLocale::English).toString(bal * Settings::getInstance()->getZECPrice(), 'f', 2);
 }
 
 QString Settings::getDecimalString(double amt) {
@@ -287,6 +284,62 @@ bool Settings::isValidAddress(QString addr) {
 
     return  zcexp.exactMatch(addr)  || texp.exactMatch(addr) || 
             ztsexp.exactMatch(addr) || zsexp.exactMatch(addr);
+}
+
+// Get a pretty string representation of this Payment URI
+QString Settings::paymentURIPretty(PaymentURI uri) {
+    return QString() + "Payment Request\n" + "Pay: " + uri.addr + "\nAmount: " + getZECDisplayFormat(uri.amt.toDouble()) 
+        + "\nMemo:" + QUrl::fromPercentEncoding(uri.memo.toUtf8());
+}
+
+// Parse a payment URI string into its components
+PaymentURI Settings::parseURI(QString uri) {
+    PaymentURI ans;
+
+    if (!uri.startsWith("zcash:")) {
+        ans.error = "Not a zcash payment URI";
+        return ans;
+    }
+
+    uri = uri.right(uri.length() - QString("zcash:").length());
+    
+    QRegExp re("([a-zA-Z0-9]+)");
+    int pos;
+    if ( (pos = re.indexIn(uri)) == -1 ) {
+        ans.error = "Couldn't find an address";
+        return ans;
+    }
+
+    ans.addr = re.cap(1);
+    if (!Settings::isValidAddress(ans.addr)) {
+        ans.error = "Could not understand address";
+        return ans;
+    }
+    uri = uri.right(uri.length() - ans.addr.length());
+
+    if (!uri.isEmpty()) {
+        uri = uri.right(uri.length() - 1); // Eat the "?"
+
+        QStringList args = uri.split("&");
+        for (QString arg: args) {
+            QStringList kv = arg.split("=");
+            if (kv.length() != 2) {
+                ans.error = "No value argument was seen";
+                return ans;
+            }
+
+            if (kv[0].toLower() == "amt" || kv[0].toLower() == "amount") {
+                ans.amt = kv[1];
+            } else if (kv[0].toLower() == "memo" || kv[0].toLower() == "message" || kv[0].toLower() == "msg") {
+                ans.memo = QUrl::fromPercentEncoding(kv[1].toUtf8());
+            } else {
+                ans.error = "Unknown field in URI:" + kv[0];
+                return ans;
+            }
+        }
+    }
+
+    return ans;
 }
 
 const QString Settings::labelRegExp("[a-zA-Z0-9\\-_]{0,40}");

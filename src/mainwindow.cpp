@@ -16,6 +16,7 @@
 #include "turnstile.h"
 #include "senttxstore.h"
 #include "connection.h"
+#include "requestdialog.h"
 #include "websockets.h"
 
 using json = nlohmann::json;
@@ -43,6 +44,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionCheck_for_Updates, &QAction::triggered, [=] () {
         // Silent is false, so show notification even if no update was found
         rpc->checkForUpdate(false);
+    });
+
+    // Request zcash
+    QObject::connect(ui->actionRequest_zcash, &QAction::triggered, [=]() {
+        RequestDialog::showRequestZcash(this);
     });
 
     // Pay Zcash URI
@@ -789,20 +795,15 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
 
 
 // Pay the Zcash URI by showing a confirmation window. If the URI parameter is empty, the UI
-// will prompt for one.
-void MainWindow::payZcashURI(QString uri) {
+// will prompt for one. If the myAddr is empty, then the default from address is used to send
+// the transaction.
+void MainWindow::payZcashURI(QString uri, QString myAddr) {
     // If the Payments UI is not ready (i.e, all balances have not loaded), defer the payment URI
     if (!uiPaymentsReady) {
         qDebug() << "Payment UI not ready, waiting for UI to pay URI";
         pendingURIPayment = uri;
         return;
     }
-
-    // Error to display if something goes wrong.
-    auto payZcashURIError = [=] (QString errorDetail = "") {
-        QMessageBox::critical(this, tr("Error paying zcash URI"), 
-                tr("URI should be of the form 'zcash:<addr>?amt=x&memo=y") + "\n" + errorDetail);
-    };
 
     // If there was no URI passed, ask the user for one.
     if (uri.isEmpty()) {
@@ -814,70 +815,25 @@ void MainWindow::payZcashURI(QString uri) {
     if (uri.isEmpty())
         return;
 
-    // URI should be of the form zcash://address?amt=x&memo=y
-    if (!uri.startsWith("zcash:")) {
-        payZcashURIError();
-        return;
-    }
-
     // Extract the address
     qDebug() << "Recieved URI " << uri;
-    uri = uri.right(uri.length() - QString("zcash:").length());
-
-    QRegExp re("([a-zA-Z0-9]+)");
-    int pos;
-    if ( (pos = re.indexIn(uri)) == -1 ) {
-        payZcashURIError();
+    PaymentURI paymentInfo = Settings::parseURI(uri);
+    if (!paymentInfo.error.isEmpty()) {
+        QMessageBox::critical(this, tr("Error paying zcash URI"), 
+                tr("URI should be of the form 'zcash:<addr>?amt=x&memo=y") + "\n" + paymentInfo.error);
         return;
-    }
-
-    QString addr = re.cap(1);
-    if (!Settings::isValidAddress(addr)) {
-        payZcashURIError(tr("Could not understand address"));
-        return;
-    }
-    uri = uri.right(uri.length() - addr.length());
-
-    double amount = 0.0;
-    QString memo  = "";
-
-    if (!uri.isEmpty()) {
-        uri = uri.right(uri.length() - 1); // Eat the "?"
-
-        QStringList args = uri.split("&");
-        for (QString arg: args) {
-            QStringList kv = arg.split("=");
-            if (kv.length() != 2) {
-                payZcashURIError();
-                return;
-            }
-
-            if (kv[0].toLower() == "amt" || kv[0].toLower() == "amount") {
-                amount = kv[1].toDouble(); 
-            } else if (kv[0].toLower() == "memo" || kv[0].toLower() == "message" || kv[0].toLower() == "msg") {
-                memo = kv[1];
-                // Test if this is hex
-
-                QRegularExpression hexMatcher("^[0-9A-F]+$",
-                                            QRegularExpression::CaseInsensitiveOption);
-                QRegularExpressionMatch match = hexMatcher.match(memo);
-                if (match.hasMatch()) {
-                    // Encoded as hex, convert to string
-                    memo = QByteArray::fromHex(memo.toUtf8());
-                }
-            } else {
-                payZcashURIError(tr("Unknown field in URI:") + kv[0]);
-                return;
-            }
-        }
     }
 
     // Now, set the fields on the send tab
     removeExtraAddresses();
-    ui->Address1->setText(addr);
+    if (!myAddr.isEmpty()) {
+        ui->inputsCombo->setCurrentText(myAddr);
+    }
+
+    ui->Address1->setText(paymentInfo.addr);
     ui->Address1->setCursorPosition(0);
-    ui->Amount1->setText(QString::number(amount));
-    ui->MemoTxt1->setText(memo);
+    ui->Amount1->setText(Settings::getDecimalString(paymentInfo.amt.toDouble()));
+    ui->MemoTxt1->setText(paymentInfo.memo);
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);
@@ -885,7 +841,7 @@ void MainWindow::payZcashURI(QString uri) {
 
     // And click the send button if the amount is > 0, to validate everything. If everything is OK, it will show the confirm box
     // else, show the error message;
-    if (amount > 0) {
+    if (paymentInfo.amt > 0) {
         sendButton();
     }
 }
@@ -1208,8 +1164,16 @@ void MainWindow::setupTransactionsTab() {
             QDesktopServices::openUrl(QUrl(url));
         });
 
+        // Payment Request
+        if (!memo.isEmpty() && memo.startsWith("zcash:")) {
+            menu.addAction(tr("View Payment Request"), [=] () {
+                RequestDialog::showPaymentConfirmation(this, memo);
+            });
+        }
+
+        // View Memo
         if (!memo.isEmpty()) {
-            menu.addAction(tr("View Memo"), [=] () {
+            menu.addAction(tr("View Memo"), [=] () {               
                 QMessageBox mb(QMessageBox::Information, tr("Memo"), memo, QMessageBox::Ok, this);
                 mb.setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
                 mb.exec();
@@ -1256,8 +1220,7 @@ void MainWindow::addNewZaddr(bool sapling) {
         rpc->refreshAddresses();
 
         // Just double make sure the z-address is still checked
-        if (( sapling && ui->rdioZSAddr->isChecked()) ||
-            (!sapling && ui->rdioZAddr->isChecked())) {
+        if ( sapling && ui->rdioZSAddr->isChecked() ) {
             ui->listRecieveAddresses->insertItem(0, addr); 
             ui->listRecieveAddresses->setCurrentIndex(0);
 
@@ -1320,25 +1283,6 @@ void MainWindow::setupRecieveTab() {
         } 
     });
 
-    // Sprout Warning is hidden by default
-    ui->lblSproutWarning->setVisible(false);
-
-    // zAddr toggle button, one for sprout and one for sapling
-    QObject::connect(ui->rdioZAddr, &QRadioButton::toggled, [=](bool checked) {
-        ui->btnRecieveNewAddr->setEnabled(!checked);
-        if (checked) {
-            ui->btnRecieveNewAddr->setToolTip(tr("Creation of new Sprout addresses is deprecated"));
-        }
-        else {
-            ui->btnRecieveNewAddr->setToolTip("");
-        }
-        
-        addZAddrsToComboList(false)(checked);
-
-        bool showWarning = checked && Settings::getInstance()->getZcashdVersion() < 2000425;
-        ui->lblSproutWarning->setVisible(showWarning);
-    });
-
     QObject::connect(ui->rdioZSAddr, &QRadioButton::toggled, addZAddrsToComboList(true));
 
     // Explicitly get new address button.
@@ -1346,16 +1290,7 @@ void MainWindow::setupRecieveTab() {
         if (!rpc->getConnection())
             return;
 
-        if (ui->rdioZAddr->isChecked()) {
-            QString syncMsg = !Settings::getInstance()->isSaplingActive() ? "Please wait for your node to finish syncing to create Sapling addresses.\n\n" : "";
-            auto confirm = QMessageBox::question(this, "Sprout Address",
-                syncMsg + "Sprout addresses are inefficient, and will be deprecated in the future in favour of Sapling addresses.\n"
-                "Are you sure you want to create a new Sprout address?", QMessageBox::Yes, QMessageBox::No);
-            if (confirm != QMessageBox::Yes)
-                return;
-            
-            addNewZaddr(false); 
-        } else if (ui->rdioZSAddr->isChecked()) {
+        if (ui->rdioZSAddr->isChecked()) {
             addNewZaddr(true);
         } else if (ui->rdioTAddr->isChecked()) {
             addNewTAddr();
@@ -1369,14 +1304,8 @@ void MainWindow::setupRecieveTab() {
 
             // Hide Sapling radio button if Sapling is not active
             if (Settings::getInstance()->isSaplingActive()) {
-                ui->rdioZSAddr->setVisible(true);    
                 ui->rdioZSAddr->setChecked(true);
-                ui->rdioZAddr->setText("z-Addr(Legacy Sprout)");
-            } else {
-                ui->rdioZSAddr->setVisible(false);    
-                ui->rdioZAddr->setChecked(true);
-                ui->rdioZAddr->setText("z-Addr");   // Don't use the "Sprout" label if there's no Sapling
-            }
+            } 
             
             // And then select the first one
             ui->listRecieveAddresses->setCurrentIndex(0);
@@ -1504,6 +1433,9 @@ MainWindow::~MainWindow()
     delete ui;
     delete rpc;
     delete labelCompleter;
+
+    delete amtValidator;
+    delete feesValidator;
 
     delete loadingMovie;
     delete logger;

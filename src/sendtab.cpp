@@ -12,7 +12,8 @@ using json = nlohmann::json;
 
 void MainWindow::setupSendTab() {
     // Create the validator for send to/amount fields
-    auto amtValidator = new QRegExpValidator(QRegExp("[0-9]{0,8}\\.?[0-9]{0,8}"));    
+    amtValidator = new QRegExpValidator(QRegExp("[0-9]{0,8}\\.?[0-9]{0,8}"));    
+
     ui->Amount1->setValidator(amtValidator);
 
     // Send button
@@ -72,8 +73,9 @@ void MainWindow::setupSendTab() {
             ui->lblMinerFeeUSD->setText(Settings::getUSDFormat(txt.toDouble()));
         }
     });
+    
     //Fees validator
-    auto feesValidator = new QRegExpValidator(QRegExp("[0-9]{0,8}\\.?[0-9]{0,8}")); 
+    feesValidator = new QRegExpValidator(QRegExp("[0-9]{0,8}\\.?[0-9]{0,8}")); 
     ui->minerFeeAmt->setValidator(feesValidator);
 
     // Font for the first Memo label
@@ -243,8 +245,8 @@ void MainWindow::addAddressSection() {
     Amount1->setObjectName(QString("Amount") % QString::number(itemNumber));   
     Amount1->setBaseSize(QSize(200, 0));
     Amount1->setAlignment(Qt::AlignRight);    
+
     // Create the validator for send to/amount fields
-    auto amtValidator = new QRegExpValidator(QRegExp("[0-9]{0,8}\\.?[0-9]{0,8}")); 
     Amount1->setValidator(amtValidator);
     QObject::connect(Amount1, &QLineEdit::textChanged, [=] (auto text) {
         this->amountChanged(itemNumber, text);
@@ -330,22 +332,8 @@ void MainWindow::memoButtonClicked(int number, bool includeReplyTo) {
     memoDialog.setupUi(&dialog);
     Settings::saveRestore(&dialog);
 
-    QObject::connect(memoDialog.memoTxt, &QPlainTextEdit::textChanged, [=] () {
-        QString txt = memoDialog.memoTxt->toPlainText();
-        memoDialog.memoSize->setText(QString::number(txt.toUtf8().size()) + "/512");
-
-        if (txt.toUtf8().size() <= 512) {
-            // Everything is fine
-            memoDialog.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
-            memoDialog.memoSize->setStyleSheet("");
-        }
-        else {
-           // Overweight
-            memoDialog.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
-            memoDialog.memoSize->setStyleSheet("color: red;");
-        }
-        
-    });
+    memoDialog.memoTxt->setLenDisplayLabel(memoDialog.memoSize);
+    memoDialog.memoTxt->setAcceptButton(memoDialog.buttonBox->button(QDialogButtonBox::Ok));
 
     auto fnAddReplyTo = [=, &dialog]() {
         QString replyTo = ui->inputsCombo->currentText();
@@ -354,11 +342,8 @@ void MainWindow::memoButtonClicked(int number, bool includeReplyTo) {
             if (replyTo.isEmpty())
                 return;
         }
-        auto curText = memoDialog.memoTxt->toPlainText();
-        if (curText.endsWith(replyTo))
-            return;
 
-        memoDialog.memoTxt->setPlainText(curText + "\n" + tr("Reply to") + ":\n" + replyTo);
+        memoDialog.memoTxt->includeReplyTo(replyTo);
 
         // MacOS has a really annoying bug where the Plaintext doesn't refresh when the content is
         // updated. So we do this ugly hack - resize the window slightly to force it to refresh

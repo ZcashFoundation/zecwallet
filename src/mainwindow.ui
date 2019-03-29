@@ -697,13 +697,6 @@
                  </property>
                 </widget>
                </item>
-               <item>
-                <widget class="QRadioButton" name="rdioZAddr">
-                 <property name="text">
-                  <string>z-Addr(Legacy Sprout)</string>
-                 </property>
-                </widget>
-               </item>
               </layout>
              </item>
              <item>
@@ -729,28 +722,6 @@
                 </widget>
                </item>
               </layout>
-             </item>
-             <item>
-              <widget class="QLabel" name="lblSproutWarning">
-               <property name="styleSheet">
-                <string notr="true">color: red;</string>
-               </property>
-               <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;You should suspend trust in the receipt of funds to Sprout z-addresses until you upgrade to zcashd v2.0.4. See &lt;a href=&quot;https://z.cash/support/security/announcements/security-announcement-2019-03-19/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Security Announcement&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="textFormat">
-                <enum>Qt::RichText</enum>
-               </property>
-               <property name="wordWrap">
-                <bool>true</bool>
-               </property>
-               <property name="openExternalLinks">
-                <bool>true</bool>
-               </property>
-               <property name="textInteractionFlags">
-                <set>Qt::TextBrowserInteraction</set>
-               </property>
-              </widget>
              </item>
             </layout>
            </widget>
@@ -1058,6 +1029,7 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <addaction name="actionRequest_zcash"/>
     <addaction name="actionPay_URI"/>
     <addaction name="separator"/>
     <addaction name="actionImport_Private_Key"/>
@@ -1183,18 +1155,23 @@
     <string>Ctrl+M</string>
    </property>
   </action>
+  <action name="actionRequest_zcash">
+   <property name="text">
+    <string>Request zcash...</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QRCodeLabel</class>
-   <extends>QLabel</extends>
-   <header>qrcodelabel.h</header>
-  </customwidget>
-  <customwidget>
    <class>AddressCombo</class>
    <extends>QComboBox</extends>
    <header>addresscombo.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QRCodeLabel</class>
+   <extends>QLabel</extends>
+   <header>qrcodelabel.h</header>
   </customwidget>
   <customwidget>
    <class>FilledIconLabel</class>
@@ -1215,7 +1192,6 @@
   <tabstop>cancelSendButton</tabstop>
   <tabstop>rdioZSAddr</tabstop>
   <tabstop>rdioTAddr</tabstop>
-  <tabstop>rdioZAddr</tabstop>
   <tabstop>listRecieveAddresses</tabstop>
   <tabstop>btnRecieveNewAddr</tabstop>
   <tabstop>txtRecieve</tabstop>

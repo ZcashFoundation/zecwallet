@@ -42,6 +42,9 @@ public:
     void updateLabelsAutoComplete();
     RPC* getRPC() { return rpc; }
 
+    QCompleter*         getLabelCompleter() { return labelCompleter; }
+    QRegExpValidator*   getAmountValidator() { return amtValidator; }
+
     QString doSendTxValidations(Tx tx);
     void setDefaultPayFrom();
 
@@ -51,7 +54,7 @@ public:
     void stopWebsocket();
 
     void balancesReady();
-    void payZcashURI(QString uri = "");
+    void payZcashURI(QString uri = "", QString myAddr = "");
 
     void updateLabels();
     void updateTAddrCombo(bool checked);
@@ -126,8 +129,10 @@ private:
     WSServer*       wsserver = nullptr;
     WormholeClient* wormhole = nullptr;
 
-    RPC*         rpc  = nullptr;
-    QCompleter*  labelCompleter = nullptr;
+    RPC*                rpc             = nullptr;
+    QCompleter*         labelCompleter  = nullptr;
+    QRegExpValidator*   amtValidator    = nullptr;
+    QRegExpValidator*   feesValidator   = nullptr;
 
     QMovie*      loadingMovie;
 };

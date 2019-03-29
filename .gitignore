@@ -36,3 +36,4 @@ workspace.code-workspace
 *.mak
 zcashd
 IDEWorkspaceChecks.plist
+*.sln
