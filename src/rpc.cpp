@@ -966,7 +966,7 @@ void RPC::checkForUpdate(bool silent) {
     if  (conn == nullptr) 
         return noConnection();
 
-    QUrl cmcURL("https://api.github.com/repos/ZcashFoundation/zec-qt-wallet/releases");
+    QUrl cmcURL("https://api.github.com/repos/ZcashFoundation/zecwallet/releases");
 
     QNetworkRequest req;
     req.setUrl(cmcURL);
