@@ -1186,12 +1186,12 @@ Você possui fundos não confirmados ou o saldo é muito baixo para uma migraç�
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/websockets.cpp" line="638"/>
+        <location filename="../src/websockets.cpp" line="646"/>
         <source>Node is still syncing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/websockets.cpp" line="662"/>
+        <location filename="../src/websockets.cpp" line="670"/>
         <source>No sapling or transparent addresses with enough balance to spend.</source>
         <translation type="unfinished"></translation>
     </message>
