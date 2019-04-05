@@ -82,7 +82,7 @@ make
 ```
 
 ### [Troubleshooting Guide & FAQ](https://github.com/ZcashFoundation/zecwallet/wiki/Troubleshooting-&-FAQ)
-Please read the [troubleshooting guide](https://github.com/ZcashFoundation/zecwallet/wiki/Troubleshooting-&-FAQ) for common problems and solutions.
+Please read the [troubleshooting guide](https://docs.zecwallet.co/troubleshooting/) for common problems and solutions.
 For support or other questions, tweet at [@zecwallet](https://twitter.com/zecwallet) or [file an issue](https://github.com/ZcashFoundation/zecwallet/issues).
 
 _PS: ZecWallet is NOT an official wallet, and is not affiliated with the Electric Coin Company in any way._
