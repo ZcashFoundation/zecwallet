@@ -676,29 +676,34 @@ void RPC::getInfoThenRefresh(bool force) {
 void RPC::refreshAddresses() {
     if  (conn == nullptr) 
         return noConnection();
-
-    delete zaddresses;
-    zaddresses = new QList<QString>();
+    
+    auto newzaddresses = new QList<QString>();
 
     getZAddresses([=] (json reply) {
         for (auto& it : reply.get<json::array_t>()) {   
             auto addr = QString::fromStdString(it.get<json::string_t>());
-            zaddresses->push_back(addr);
+            newzaddresses->push_back(addr);
         }
+
+        delete zaddresses;
+        zaddresses = newzaddresses;
 
         // Refresh the sent and received txs from all these z-addresses
         refreshSentZTrans();
         refreshReceivedZTrans(*zaddresses);
     });
 
-    delete taddresses;
-    taddresses = new QList<QString>();
+    
+    auto newtaddresses = new QList<QString>();
     getTAddresses([=] (json reply) {
         for (auto& it : reply.get<json::array_t>()) {   
             auto addr = QString::fromStdString(it.get<json::string_t>());
             if (Settings::isTAddress(addr))
-                taddresses->push_back(addr);
+                newtaddresses->push_back(addr);
         }
+
+        delete taddresses;
+        taddresses = newtaddresses;
 
         // If there are no t Addresses, create one
         newTaddr([=] (json reply) {
