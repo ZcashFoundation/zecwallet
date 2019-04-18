@@ -116,7 +116,7 @@ QString randomPassword() {
     char* s = new char[passwordLength + 1];
 
     for (int i = 0; i < passwordLength; ++i) {
-        s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+        s[i] = alphanum[randombytes_uniform(sizeof(alphanum))];
     }
 
     s[passwordLength] = 0;
