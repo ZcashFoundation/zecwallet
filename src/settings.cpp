@@ -333,8 +333,7 @@ PaymentURI Settings::parseURI(QString uri) {
             } else if (kv[0].toLower() == "memo" || kv[0].toLower() == "message" || kv[0].toLower() == "msg") {
                 ans.memo = QUrl::fromPercentEncoding(kv[1].toUtf8());
             } else {
-                ans.error = "Unknown field in URI:" + kv[0];
-                return ans;
+                // Ignore unknown fields, since some developers use it to pass extra data.
             }
         }
     }
