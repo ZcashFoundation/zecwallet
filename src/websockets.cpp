@@ -5,6 +5,19 @@
 #include "ui_mobileappconnector.h"
 #include "version.h"
 
+// Weap the sendTextMessage to check if the connection is valid and that the parent WebServer didn't close this connection
+// for some reason.
+void ClientWebSocket::sendTextMessage(QString m) {
+    if (client) {
+        if (server && !server->isValidConnection(client)) {
+            return;
+        }
+
+        if (client->isValid())
+            client->sendTextMessage(m);
+    }
+}
+
 WSServer::WSServer(quint16 port, bool debug, QObject *parent) :
     QObject(parent),
     m_pWebSocketServer(new QWebSocketServer(QStringLiteral("Direct Connection Server"),
@@ -46,7 +59,8 @@ void WSServer::processTextMessage(QString message)
         qDebug() << "Message received:" << message;
 
     if (pClient) {
-        AppDataServer::getInstance()->processMessage(message, m_mainWindow, pClient, AppConnectionType::DIRECT);
+        std::shared_ptr<ClientWebSocket> client = std::make_shared<ClientWebSocket>(pClient, this);
+        AppDataServer::getInstance()->processMessage(message, m_mainWindow, client, AppConnectionType::DIRECT);
     }
 }
 
@@ -153,7 +167,7 @@ void WormholeClient::onConnected()
 
 void WormholeClient::onTextMessageReceived(QString message)
 {
-    AppDataServer::getInstance()->processMessage(message, parent, m_webSocket, AppConnectionType::INTERNET);
+    AppDataServer::getInstance()->processMessage(message, parent, std::make_shared<ClientWebSocket>(m_webSocket), AppConnectionType::INTERNET);
 }
 
 
@@ -508,7 +522,7 @@ QString AppDataServer::decryptMessage(QJsonDocument msg, QString secretHex, QStr
 }
 
 // Process an incoming text message. The message has to be encrypted with the secret key (or the temporary secret key)
-void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient, AppConnectionType connType) {
+void AppDataServer::processMessage(QString message, MainWindow* mainWindow, std::shared_ptr<ClientWebSocket> pClient, AppConnectionType connType) {
     auto replyWithError = [=]() {
         auto r = QJsonDocument(QJsonObject{
                     {"error", "Encryption error"},
@@ -591,7 +605,7 @@ void AppDataServer::processMessage(QString message, MainWindow* mainWindow, QWeb
 }
 
 // Decrypted method will be executed here. 
-void AppDataServer::processDecryptedMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient) {
+void AppDataServer::processDecryptedMessage(QString message, MainWindow* mainWindow, std::shared_ptr<ClientWebSocket> pClient) {
     // First, extract the command from the message
     auto msg = QJsonDocument::fromJson(message.toUtf8());
 
@@ -623,7 +637,7 @@ void AppDataServer::processDecryptedMessage(QString message, MainWindow* mainWin
 }
 
 // "sendTx" command. This method will actually send money, so be careful with everything
-void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QWebSocket* pClient) {
+void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, std::shared_ptr<ClientWebSocket> pClient) {
     auto error = [=](QString reason) {
         auto r = QJsonDocument(QJsonObject{
            {"errorCode", -1},
@@ -693,8 +707,7 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QW
                {"command", "sendTxSubmitted"},
                {"txid",  txid}
             }).toJson();
-            if (pClient->isValid())
-                pClient->sendTextMessage(encryptOutgoing(r));
+            pClient->sendTextMessage(encryptOutgoing(r));
         },
         // Errored while submitting Tx
         [=] (QString, QString errStr) {
@@ -703,8 +716,7 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QW
                {"command", "sendTxFailed"},
                {"err",  errStr}
             }).toJson();
-            if (pClient->isValid())
-                pClient->sendTextMessage(encryptOutgoing(r));
+            pClient->sendTextMessage(encryptOutgoing(r));
         }   
     );
 
@@ -717,7 +729,7 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QW
 }
 
 // "getInfo" command
-void AppDataServer::processGetInfo(QJsonObject jobj, MainWindow* mainWindow, QWebSocket* pClient) {
+void AppDataServer::processGetInfo(QJsonObject jobj, MainWindow* mainWindow, std::shared_ptr<ClientWebSocket> pClient) {
     auto connectedName = jobj["name"].toString();
     
     if (mainWindow == nullptr || mainWindow->getRPC() == nullptr ||
@@ -758,7 +770,7 @@ void AppDataServer::processGetInfo(QJsonObject jobj, MainWindow* mainWindow, QWe
     pClient->sendTextMessage(encryptOutgoing(r));
 }
 
-void AppDataServer::processGetTransactions(MainWindow* mainWindow, QWebSocket* pClient) {
+void AppDataServer::processGetTransactions(MainWindow* mainWindow, std::shared_ptr<ClientWebSocket> pClient) {
     QJsonArray txns;
     auto model = mainWindow->getRPC()->getTransactionsModel();
 

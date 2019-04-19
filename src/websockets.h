@@ -10,11 +10,28 @@
 QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 QT_FORWARD_DECLARE_CLASS(QWebSocket)
 
+class WSServer;
+
+// We're going to wrap the websocket in this class, because the underlying QWebSocket might get closed
+// or deleted while a callback is waiting to get the data back. Therefore, we write a custom "sendTextMessage"
+// class that checks all this before sending.
+class ClientWebSocket {
+public:
+    ClientWebSocket(QWebSocket* c, WSServer* s = nullptr) { client = c; server = s; }
+
+    void sendTextMessage(QString m);
+    void close(QWebSocketProtocol::CloseCode code, const QString& msg) { client->close(code, msg); }
+private:
+    QWebSocket* client;
+    WSServer*   server;
+};
+
 class WSServer : public QObject
 {
     Q_OBJECT
 public:
     explicit WSServer(quint16 port, bool debug = false, QObject *parent = nullptr);
+    bool isValidConnection(QWebSocket* c) { return m_clients.contains(c); }
     ~WSServer();
 
 Q_SIGNALS:
@@ -82,11 +99,11 @@ public:
     void          updateConnectedUI();
     void          updateUIWithNewQRCode(MainWindow* mainwindow);
 
-    void          processSendTx(QJsonObject sendTx, MainWindow* mainwindow, QWebSocket* pClient);
-    void          processMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient, AppConnectionType connType);
-    void          processGetInfo(QJsonObject jobj, MainWindow* mainWindow, QWebSocket* pClient);
-    void          processDecryptedMessage(QString message, MainWindow* mainWindow, QWebSocket* pClient);
-    void          processGetTransactions(MainWindow* mainWindow, QWebSocket* pClient);
+    void          processSendTx(QJsonObject sendTx, MainWindow* mainwindow, std::shared_ptr<ClientWebSocket> pClient);
+    void          processMessage(QString message, MainWindow* mainWindow, std::shared_ptr<ClientWebSocket> pClient, AppConnectionType connType);
+    void          processGetInfo(QJsonObject jobj, MainWindow* mainWindow, std::shared_ptr<ClientWebSocket> pClient);
+    void          processDecryptedMessage(QString message, MainWindow* mainWindow, std::shared_ptr<ClientWebSocket> pClient);
+    void          processGetTransactions(MainWindow* mainWindow, std::shared_ptr<ClientWebSocket> pClient);
 
     QString       decryptMessage(QJsonDocument msg, QString secretHex, QString lastRemoteNonceHex);
     QString       encryptOutgoing(QString msg);
