@@ -569,7 +569,11 @@ bool ConnectionLoader::verifyParams() {
  * Try to automatically detect a zcash.conf file in the correct location and load parameters
  */ 
 std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {    
-    auto confLocation = locateZcashConfFile();
+    auto confLocation = Settings::getInstance()->getZcashdConfLocation();
+
+    if (confLocation.isEmpty()) {
+        confLocation = locateZcashConfFile();
+    }
 
     if (confLocation.isNull()) {
         // No Zcash file, just return with nothing

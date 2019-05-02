@@ -159,6 +159,11 @@ public:
         QCommandLineOption noembeddedOption(QStringList() << "no-embedded", "Disable embedded zcashd");
         parser.addOption(noembeddedOption);
 
+        // Add an option to specify the conf file
+            QCommandLineOption confOption(QStringList() << "conf", "Use the zcash.conf specified instead of looking for the default one.",
+                                          "confFile");
+        parser.addOption(confOption);
+
         // Positional argument will specify a zcash payment URI
         parser.addPositionalArgument("zcashURI", "An optional zcash URI to pay");
 
@@ -215,6 +220,11 @@ public:
             Settings::getInstance()->setUseEmbedded(false);
         } else {
             Settings::getInstance()->setUseEmbedded(true);
+        }
+
+        // Check to see if a conf location was specified
+        if (parser.isSet(confOption)) {
+            Settings::getInstance()->setUsingZcashConf(parser.value(confOption));
         }
 
         w = new MainWindow();
