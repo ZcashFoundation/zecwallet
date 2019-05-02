@@ -639,6 +639,10 @@ void RPC::getInfoThenRefresh(bool force) {
                 ")";
             main->statusLabel->setText(statusText);   
 
+            // Update the balances view to show a warning if the node is still syncing
+            ui->lblSyncWarning->setVisible(isSyncing);
+            ui->lblSyncWarningReceive->setVisible(isSyncing);
+
             auto zecPrice = Settings::getUSDFormat(1);
             QString tooltip;
             if (connections > 0) {

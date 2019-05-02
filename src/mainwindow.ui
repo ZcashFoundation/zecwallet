@@ -162,6 +162,19 @@
                 </spacer>
                </item>
                <item>
+                <widget class="QLabel" name="lblSyncWarning">
+                 <property name="styleSheet">
+                  <string notr="true">color:red;</string>
+                 </property>
+                 <property name="text">
+                  <string>Your node is still syncing, balances may not be updated</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <widget class="QLabel" name="unconfirmedWarning">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -346,8 +359,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>920</width>
-                <height>301</height>
+                <width>928</width>
+                <height>353</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -820,6 +833,16 @@
                </layout>
               </item>
               <item>
+               <widget class="QLabel" name="lblSyncWarningReceive">
+                <property name="styleSheet">
+                 <string notr="true">color: red;</string>
+                </property>
+                <property name="text">
+                 <string>Your node is still syncing, balances may not be updated</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <spacer name="verticalSpacer_5">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -1022,7 +1045,7 @@
      <x>0</x>
      <y>0</y>
      <width>968</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

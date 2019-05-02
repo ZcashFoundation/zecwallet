@@ -1018,6 +1018,8 @@ void MainWindow::exportKeys(QString addr) {
 
 void MainWindow::setupBalancesTab() {
     ui->unconfirmedWarning->setVisible(false);
+    ui->lblSyncWarning->setVisible(false);
+    ui->lblSyncWarningReceive->setVisible(false);
 
     // Double click on balances table
     auto fnDoSendFrom = [=](const QString& addr, const QString& to = QString(), bool sendMax = false) {
@@ -1275,11 +1277,12 @@ void MainWindow::setupRecieveTab() {
 
     // Connect t-addr radio button
     QObject::connect(ui->rdioTAddr, &QRadioButton::toggled, [=] (bool checked) { 
+        // DEPRECATED
         // Whenever the t-address is selected, we generate a new address, because we don't
         // want to reuse t-addrs
         if (checked && this->rpc->getUTXOs() != nullptr) { 
             updateTAddrCombo(checked);
-            addNewTAddr();
+            //addNewTAddr();
         } 
     });
 
