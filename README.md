@@ -1,6 +1,5 @@
 SevenSeas desktop wallet for PirateChain ($ARRR) that runs on Linux, Windows and macOS.
 
-![Screenshot](docs/screenshot-main.png?raw=true)
 ![Screenshots](docs/screenshot-sub.png?raw=true)
 # Installation
 
