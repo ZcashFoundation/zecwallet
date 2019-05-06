@@ -195,7 +195,7 @@ QString Settings::getTokenName() {
     if (Settings::getInstance()->isTestnet()) {
         return "TAZ";
     } else {
-        return "ZEC";
+        return "ARRR";
     }
 }
 
@@ -207,7 +207,7 @@ QString Settings::getDonationAddr(bool sapling) {
             return "ztn6fYKBii4Fp4vbGhkPgrtLU4XjXp4ZBMZgShtopmDGbn1L2JLTYbBp2b7SSkNr9F3rQeNZ9idmoR7s4JCVUZ7iiM5byhF";
     else 
         if (sapling)
-            return "zs1gv64eu0v2wx7raxqxlmj354y9ycznwaau9kduljzczxztvs4qcl00kn2sjxtejvrxnkucw5xx9u";
+            return "zs1knmre6w5dyy2mjdxw2g8v93adr3fh9jtwqx76863557sjunlqq563cftxaz05saskyyn72xm2hv";
         else
             return "zcEgrceTwvoiFdEvPWcsJHAMrpLsprMF6aRJiQa3fan5ZphyXLPuHghnEPrEPRoEVzUy65GnMVyCTRdkT6BYBepnXh6NBYs";    
 }
@@ -297,7 +297,7 @@ PaymentURI Settings::parseURI(QString uri) {
     PaymentURI ans;
 
     if (!uri.startsWith("zcash:")) {
-        ans.error = "Not a zcash payment URI";
+        ans.error = "Not a Pirate payment URI";
         return ans;
     }
 

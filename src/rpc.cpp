@@ -971,7 +971,7 @@ void RPC::checkForUpdate(bool silent) {
     if  (conn == nullptr) 
         return noConnection();
 
-    QUrl cmcURL("https://api.github.com/repos/ZcashFoundation/zecwallet/releases");
+    QUrl cmcURL("https://api.github.com/repos/radix42/SevenSeas/releases");
 
     QNetworkRequest req;
     req.setUrl(cmcURL);
@@ -1017,7 +1017,7 @@ void RPC::checkForUpdate(bool silent) {
                             .arg(currentVersion.toString()),
                         QMessageBox::Yes, QMessageBox::Cancel);
                     if (ans == QMessageBox::Yes) {
-                        QDesktopServices::openUrl(QUrl("https://github.com/ZcashFoundation/zecwallet/releases"));
+                        QDesktopServices::openUrl(QUrl("https://github.com/radix42/SevenSeas/releases"));
                     } else {
                         // If the user selects cancel, don't bother them again for this version
                         s.setValue("update/lastversion", maxVersion.toString());
@@ -1112,7 +1112,7 @@ void RPC::shutdownZcashd() {
     Ui_ConnectionDialog connD;
     connD.setupUi(&d);
     connD.topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));
-    connD.status->setText(QObject::tr("Please wait for ZecWallet to exit"));
+    connD.status->setText(QObject::tr("Please wait for SevenSeas to exit"));
     connD.statusDetail->setText(QObject::tr("Waiting for zcashd to exit"));
 
     QTimer waiter(main);

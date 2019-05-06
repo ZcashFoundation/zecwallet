@@ -74,13 +74,13 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
                     main->logger->write("Couldn't start embedded zcashd for unknown reason");
                     QString explanation;
                     if (config->zcashDaemon) {
-                        explanation = QString() % QObject::tr("You have zcashd set to start as a daemon, which can cause problems "
-                            "with ZecWallet\n\n."
-                            "Please remove the following line from your zcash.conf and restart ZecWallet\n"
+                        explanation = QString() % QObject::tr("You have komodod set to start as a daemon, which can cause problems "
+                            "with SevenSeas\n\n."
+                            "Please remove the following line from your PIRATE.conf and restart SevenSeas\n"
                             "daemon=1");
                     } else {
-                        explanation = QString() % QObject::tr("Couldn't start the embedded zcashd.\n\n" 
-                            "Please try restarting.\n\nIf you previously started zcashd with custom arguments, you might need to reset zcash.conf.\n\n" 
+                        explanation = QString() % QObject::tr("Couldn't start the embedded komodod.\n\n" 
+                            "Please try restarting.\n\nIf you previously started komodod with custom arguments, you might need to  reset PIRATE.conf.\n\n" 
                             "If all else fails, please run zcashd manually.") %  
                             (ezcashd ? QObject::tr("The process returned") + ":\n\n" % ezcashd->errorString() : QString(""));
                     }
@@ -88,16 +88,16 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
                     this->showError(explanation);
                 }                
             } else {
-                // zcash.conf exists, there's no connection, and the user asked us not to start zcashd. Error!
+                // PIRATE.conf exists, there's no connection, and the user asked us not to start zcashd. Error!
                 main->logger->write("Not using embedded and couldn't connect to zcashd");
-                QString explanation = QString() % QObject::tr("Couldn't connect to zcashd configured in zcash.conf.\n\n" 
+                QString explanation = QString() % QObject::tr("Couldn't connect to zcashd configured in PIRATE.conf.\n\n" 
                                       "Not starting embedded zcashd because --no-embedded was passed");
                 this->showError(explanation);
             }
         });
     } else {
         if (Settings::getInstance()->useEmbedded()) {
-            // zcash.conf was not found, so create one
+            // PIRATE.conf was not found, so create one
             createZcashConf();
         } else {
             // Fall back to manual connect
@@ -124,7 +124,7 @@ QString randomPassword() {
 }
 
 /**
- * This will create a new zcash.conf, download Zcash parameters.
+ * This will create a new PIRATE.conf, download Zcash parameters.
  */ 
 void ConnectionLoader::createZcashConf() {
     main->logger->write("createZcashConf");
@@ -175,7 +175,7 @@ void ConnectionLoader::createZcashConf() {
 
     QFile file(confLocation);
     if (!file.open(QIODevice::ReadWrite | QIODevice::Truncate)) {
-        main->logger->write("Could not create zcash.conf, returning");
+        main->logger->write("Could not create PIRATE.conf, returning");
         return;
     }
         
@@ -194,7 +194,7 @@ void ConnectionLoader::createZcashConf() {
 
     file.close();
 
-    // Now that zcash.conf exists, try to autoconnect again
+    // Now that PIRATE.conf exists, try to autoconnect again
     this->doAutoConnect();
 }
 
@@ -330,12 +330,12 @@ bool ConnectionLoader::startEmbeddedZcashd() {
 #ifdef Q_OS_LINUX
     auto zcashdProgram = appPath.absoluteFilePath("zqw-zcashd");
     if (!QFile(zcashdProgram).exists()) {
-        zcashdProgram = appPath.absoluteFilePath("zcashd");
+        zcashdProgram = appPath.absoluteFilePath("komodod");
     }
 #elif defined(Q_OS_DARWIN)
-    auto zcashdProgram = appPath.absoluteFilePath("zcashd");
+    auto zcashdProgram = appPath.absoluteFilePath("komodod");
 #else
-    auto zcashdProgram = appPath.absoluteFilePath("zcashd.exe");
+    auto zcashdProgram = appPath.absoluteFilePath("komodod.exe");
 #endif
     
     if (!QFile(zcashdProgram).exists()) {
@@ -511,11 +511,11 @@ void ConnectionLoader::showError(QString explanation) {
 
 QString ConnectionLoader::locateZcashConfFile() {
 #ifdef Q_OS_LINUX
-    auto confLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, ".zcash/zcash.conf");
+    auto confLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, ".komodo/PIRATE/PIRATE.conf");
 #elif defined(Q_OS_DARWIN)
-    auto confLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, "Library/Application Support/Zcash/zcash.conf");
+    auto confLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, "Library/Application Support/Komodo/PIRATE/PIRATE.conf");
 #else
-    auto confLocation = QStandardPaths::locate(QStandardPaths::AppDataLocation, "../../Zcash/zcash.conf");
+    auto confLocation = QStandardPaths::locate(QStandardPaths::AppDataLocation, "../../Komodo/PIRATE/PIRATE.conf");
 #endif
 
     main->logger->write("Found zcashconf at " + QDir::cleanPath(confLocation));
@@ -524,11 +524,11 @@ QString ConnectionLoader::locateZcashConfFile() {
 
 QString ConnectionLoader::zcashConfWritableLocation() {
 #ifdef Q_OS_LINUX
-    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath(".zcash/zcash.conf");
+    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath(".komodo/PIRATE/PIRATE.conf");
 #elif defined(Q_OS_DARWIN)
-    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath("Library/Application Support/Zcash/zcash.conf");
+    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath("Library/Application Support/Zcash/PIRATE/PIRATE.conf");
 #else
-    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("../../Zcash/zcash.conf");
+    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("../../Komodo/PIRATE/PIRATE.conf");
 #endif
 
     main->logger->write("Found zcashconf at " + QDir::cleanPath(confLocation));
@@ -566,7 +566,7 @@ bool ConnectionLoader::verifyParams() {
 }
 
 /**
- * Try to automatically detect a zcash.conf file in the correct location and load parameters
+ * Try to automatically detect a PIRATE/PIRATE.conf file in the correct location and load parameters
  */ 
 std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {    
     auto confLocation = locateZcashConfFile();
@@ -625,7 +625,7 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {
     if (zcashconf->port.isEmpty()) zcashconf->port = "8232";
     file.close();
 
-    // In addition to the zcash.conf file, also double check the params. 
+    // In addition to the PIRATE/PIRATE.conf file, also double check the params. 
 
     return std::shared_ptr<ConnectionConfig>(zcashconf);
 }

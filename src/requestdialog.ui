@@ -216,7 +216,7 @@
    <item row="0" column="2" colspan="2">
     <widget class="QLabel" name="lblHeader">
      <property name="text">
-      <string>Request payment from a Sapling address. You'll send a ZEC 0.0001 transaction to the address with a zcash payment URI. The memo will be included in the transaction when the address pays you.</string>
+      <string>Request payment from a Sapling address. You'll send a ARRR 0.0001 transaction to the address with a Pirate payment URI. The memo will be included in the transaction when the address pays you.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
