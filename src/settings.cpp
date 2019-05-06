@@ -297,7 +297,7 @@ PaymentURI Settings::parseURI(QString uri) {
     PaymentURI ans;
 
     if (!uri.startsWith("zcash:")) {
-        ans.error = "Not a zcash payment URI";
+        ans.error = "Not a Pirate payment URI";
         return ans;
     }
 
