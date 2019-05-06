@@ -538,7 +538,7 @@ void MainWindow::setupSettingsModal() {
                 rpc->getConnection()->config->proxy = "proxy=127.0.0.1:9050";
 
                 QMessageBox::information(this, tr("Enable Tor"), 
-                    tr("Connection over Tor has been enabled. To use this feature, you need to restart ZecWallet."), 
+                    tr("Connection over Tor has been enabled. To use this feature, you need to restart SevenSeas."), 
                     QMessageBox::Ok);
             }
 
@@ -548,7 +548,7 @@ void MainWindow::setupSettingsModal() {
                 rpc->getConnection()->config->proxy.clear();
 
                 QMessageBox::information(this, tr("Disable Tor"),
-                    tr("Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart ZecWallet."),
+                    tr("Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart SevenSeas."),
                     QMessageBox::Ok);
             }
 
@@ -577,9 +577,9 @@ void MainWindow::setupSettingsModal() {
             }
 
             if (showRestartInfo) {
-                auto desc = tr("ZecWallet needs to restart to rescan/reindex. ZecWallet will now close, please restart ZecWallet to continue");
+                auto desc = tr("SevenSeas needs to restart to rescan/reindex. SevenSeas will now close, please restart SevenSeas to continue");
                 
-                QMessageBox::information(this, tr("Restart ZecWallet"), desc, QMessageBox::Ok);
+                QMessageBox::information(this, tr("Restart SevenSeas"), desc, QMessageBox::Ok);
                 QTimer::singleShot(1, [=]() { this->close(); });
             }
         }
@@ -609,9 +609,9 @@ void MainWindow::donate() {
                             Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText("0.01");
-    ui->MemoTxt1->setText(tr("Thanks for supporting ZecWallet!"));
+    ui->MemoTxt1->setText(tr("Thanks for supporting SevenSeas!"));
 
-    ui->statusBar->showMessage(tr("Donate 0.01 ") % Settings::getTokenName() % tr(" to support ZecWallet"));
+    ui->statusBar->showMessage(tr("Donate 0.01 ") % Settings::getTokenName() % tr(" to support SevenSeas"));
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);

@@ -195,7 +195,7 @@ QString Settings::getTokenName() {
     if (Settings::getInstance()->isTestnet()) {
         return "TAZ";
     } else {
-        return "ZEC";
+        return "ARRR";
     }
 }
 

@@ -1144,7 +1144,7 @@
   </action>
   <action name="actionPay_URI">
    <property name="text">
-    <string>Pay zcash &amp;URI...</string>
+    <string>Pay Pirate &amp;URI...</string>
    </property>
   </action>
   <action name="actionConnect_Mobile_App">
@@ -1157,7 +1157,7 @@
   </action>
   <action name="actionRequest_zcash">
    <property name="text">
-    <string>Request zcash...</string>
+    <string>Request Pirate...</string>
    </property>
   </action>
  </widget>
