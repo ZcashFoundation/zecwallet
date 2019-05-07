@@ -79,6 +79,7 @@ void RPC::setEZcashd(QProcess* p) {
     }
 }
 
+// Called when a connection to zcashd is available. 
 void RPC::setConnection(Connection* c) {
     if (c == nullptr) return;
 
@@ -87,9 +88,14 @@ void RPC::setConnection(Connection* c) {
 
     ui->statusBar->showMessage("Ready!");
 
-    refreshZECPrice();
-    // Commented for Android beta. 
-    // checkForUpdate();
+    // See if we need to remove the reindex/rescan flags from the zcash.conf file
+    auto zcashConfLocation = Settings::getInstance()->getZcashdConfLocation();
+    Settings::removeFromZcashConf(zcashConfLocation, "rescan");
+    Settings::removeFromZcashConf(zcashConfLocation, "reindex");
+
+    // Refresh the UI
+    refreshZECPrice();    
+    checkForUpdate();
 
     // Force update, because this might be coming from a settings update
     // where we need to immediately refresh
@@ -349,7 +355,7 @@ void RPC::fillTxJsonParams(json& params, Tx tx) {
         // Force it through string for rounding. Without this, decimal points beyond 8 places
         // will appear, causing an "invalid amount" error
         rec["amount"]       = Settings::getDecimalString(toAddr.amount).toStdString(); //.toDouble(); 
-        if (toAddr.addr.startsWith("z") && !toAddr.encodedMemo.trimmed().isEmpty())
+        if (Settings::isZAddress(toAddr.addr) && !toAddr.encodedMemo.trimmed().isEmpty())
             rec["memo"]     = toAddr.encodedMemo.toStdString();
 
         allRecepients.push_back(rec);
@@ -545,6 +551,7 @@ void RPC::getInfoThenRefresh(bool force) {
         static int    lastBlock = 0;
         int curBlock  = reply["blocks"].get<json::number_integer_t>();
         int version = reply["version"].get<json::number_integer_t>();
+        Settings::getInstance()->setZcashdVersion(version);
 
         if ( force || (curBlock != lastBlock) ) {
             // Something changed, so refresh everything.
@@ -632,7 +639,11 @@ void RPC::getInfoThenRefresh(bool force) {
                 ")";
             main->statusLabel->setText(statusText);   
 
-            auto zecPrice = Settings::getUSDFromZecAmount(1);
+            // Update the balances view to show a warning if the node is still syncing
+            ui->lblSyncWarning->setVisible(isSyncing);
+            ui->lblSyncWarningReceive->setVisible(isSyncing);
+
+            auto zecPrice = Settings::getUSDFormat(1);
             QString tooltip;
             if (connections > 0) {
                 tooltip = QObject::tr("Connected to zcashd");
@@ -640,7 +651,7 @@ void RPC::getInfoThenRefresh(bool force) {
             else {
                 tooltip = QObject::tr("zcashd has no peer connections");
             }
-            tooltip = tooltip % "(v " % QString::number(version) % ")";
+            tooltip = tooltip % "(v " % QString::number(Settings::getInstance()->getZcashdVersion()) % ")";
 
             if (!zecPrice.isEmpty()) {
                 tooltip = "1 ZEC = " % zecPrice % "\n" % tooltip;
@@ -669,29 +680,34 @@ void RPC::getInfoThenRefresh(bool force) {
 void RPC::refreshAddresses() {
     if  (conn == nullptr) 
         return noConnection();
-
-    delete zaddresses;
-    zaddresses = new QList<QString>();
+    
+    auto newzaddresses = new QList<QString>();
 
     getZAddresses([=] (json reply) {
         for (auto& it : reply.get<json::array_t>()) {   
             auto addr = QString::fromStdString(it.get<json::string_t>());
-            zaddresses->push_back(addr);
+            newzaddresses->push_back(addr);
         }
+
+        delete zaddresses;
+        zaddresses = newzaddresses;
 
         // Refresh the sent and received txs from all these z-addresses
         refreshSentZTrans();
         refreshReceivedZTrans(*zaddresses);
     });
 
-    delete taddresses;
-    taddresses = new QList<QString>();
+    
+    auto newtaddresses = new QList<QString>();
     getTAddresses([=] (json reply) {
         for (auto& it : reply.get<json::array_t>()) {   
             auto addr = QString::fromStdString(it.get<json::string_t>());
             if (Settings::isTAddress(addr))
-                taddresses->push_back(addr);
+                newtaddresses->push_back(addr);
         }
+
+        delete taddresses;
+        taddresses = newtaddresses;
 
         // If there are no t Addresses, create one
         newTaddr([=] (json reply) {
@@ -773,7 +789,9 @@ void RPC::refreshBalances() {
             allBalances = newBalances;
             utxos       = newUtxos;
 
-            updateUI(anyTUnconfirmed || anyZUnconfirmed);    
+            updateUI(anyTUnconfirmed || anyZUnconfirmed);
+
+            main->balancesReady();
         });        
     });
 }
@@ -958,7 +976,7 @@ void RPC::checkForUpdate(bool silent) {
     if  (conn == nullptr) 
         return noConnection();
 
-    QUrl cmcURL("https://api.github.com/repos/ZcashFoundation/zec-qt-wallet/releases");
+    QUrl cmcURL("https://api.github.com/repos/ZcashFoundation/zecwallet/releases");
 
     QNetworkRequest req;
     req.setUrl(cmcURL);
@@ -997,14 +1015,14 @@ void RPC::checkForUpdate(bool silent) {
 
                 qDebug() << "Version check: Current " << currentVersion << ", Available " << maxVersion;
 
-                if (maxVersion > currentVersion && maxVersion > maxHiddenVersion) {
+                if (maxVersion > currentVersion && (!silent || maxVersion > maxHiddenVersion)) {
                     auto ans = QMessageBox::information(main, QObject::tr("Update Available"), 
                         QObject::tr("A new release v%1 is available! You have v%2.\n\nWould you like to visit the releases page?")
                             .arg(maxVersion.toString())
                             .arg(currentVersion.toString()),
                         QMessageBox::Yes, QMessageBox::Cancel);
                     if (ans == QMessageBox::Yes) {
-                        QDesktopServices::openUrl(QUrl("https://github.com/ZcashFoundation/zec-qt-wallet/releases"));
+                        QDesktopServices::openUrl(QUrl("https://github.com/ZcashFoundation/zecwallet/releases"));
                     } else {
                         // If the user selects cancel, don't bother them again for this version
                         s.setValue("update/lastversion", maxVersion.toString());
@@ -1128,10 +1146,8 @@ void RPC::shutdownZcashd() {
     } else {
         while (waiter.isActive()) {
             QCoreApplication::processEvents();
-#ifdef _WIN32
-#else
-            std::this_thread::sleep_for(std::chrono::seconds(1));
-#endif            
+
+            QThread::sleep(1);
         }
     }
 }

@@ -1,3 +1,6 @@
+#include <singleapplication.h>
+
+#include "precompiled.h"
 #include "mainwindow.h"
 #include "rpc.h"
 #include "settings.h"
@@ -42,9 +45,7 @@ private:
 // There can be only ONE SignalHandler per process
 SignalHandler* g_handler(NULL);
 
-#ifdef _WIN32
-
-#else //_WIN32
+#ifndef _WIN32
 
 void POSIX_handleFunc(int);
 int POSIX_physicalToLogical(int);
@@ -57,18 +58,12 @@ SignalHandler::SignalHandler(int mask) : _mask(mask)
     assert(g_handler == NULL);
     g_handler = this;
 
-#ifdef _WIN32
-    
-#endif //_WIN32
-
     for (int i=0;i<numSignals;i++)
     {
         int logical = 0x1 << i;
         if (_mask & logical)
         {
-#ifdef _WIN32
-            
-#else
+#ifndef _WIN32
             int sig = POSIX_logicalToPhysical(logical);
             bool failed = signal(sig, POSIX_handleFunc) == SIG_ERR;
             assert(!failed);
@@ -82,9 +77,7 @@ SignalHandler::SignalHandler(int mask) : _mask(mask)
 
 SignalHandler::~SignalHandler()
 {
-#ifdef _WIN32
-    
-#else
+#ifndef _WIN32
     for (int i=0;i<numSignals;i++)
     {
         int logical = 0x1 << i;
@@ -97,9 +90,7 @@ SignalHandler::~SignalHandler()
 }
 
 
-#ifdef _WIN32
-
-#else
+#ifndef _WIN32
 int POSIX_logicalToPhysical(int signal)
 {
     switch (signal)
@@ -117,8 +108,7 @@ int POSIX_logicalToPhysical(int signal)
 #endif //_WIN32
 
 
-#ifdef _WIN32
-#else
+#ifndef _WIN32
 int POSIX_physicalToLogical(int signal)
 {
     switch (signal)
@@ -132,8 +122,7 @@ int POSIX_physicalToLogical(int signal)
 }
 #endif //_WIN32
 
-#ifdef _WIN32
-#else
+#ifndef _WIN32
 void POSIX_handleFunc(int signal)
 {
     if (g_handler)
@@ -155,7 +144,39 @@ public:
         QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
         QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-        QApplication a(argc, argv);
+        SingleApplication a(argc, argv, true);
+
+        // Command line parser
+        QCommandLineParser parser;
+        parser.setApplicationDescription("Shielded desktop wallet and embedded full node for Zcash");
+        parser.addHelpOption();
+
+        // A boolean option for running it headless
+        QCommandLineOption headlessOption(QStringList() << "headless", "Running it via GUI.");
+        parser.addOption(headlessOption);
+
+        // No embedded will disable the embedded zcashd node
+        QCommandLineOption noembeddedOption(QStringList() << "no-embedded", "Disable embedded zcashd");
+        parser.addOption(noembeddedOption);
+
+        // Add an option to specify the conf file
+            QCommandLineOption confOption(QStringList() << "conf", "Use the zcash.conf specified instead of looking for the default one.",
+                                          "confFile");
+        parser.addOption(confOption);
+
+        // Positional argument will specify a zcash payment URI
+        parser.addPositionalArgument("zcashURI", "An optional zcash URI to pay");
+
+        parser.process(a);
+
+        // Check for a positional argument indicating a zcash payment URI
+        if (a.isSecondary()) {
+            if (parser.positionalArguments().length() > 0) {
+                a.sendMessage(parser.positionalArguments()[0].toUtf8());    
+            }
+            a.exit( 0 );
+            return 0;            
+        } 
 
         QCoreApplication::setOrganizationName("zec-qt-wallet-org");
         QCoreApplication::setApplicationName("zec-qt-wallet");
@@ -194,28 +215,38 @@ public:
             exit(0);
         }
 
-        // Command line parser
-        QCommandLineParser parser;
-        parser.setApplicationDescription("Shielded desktop wallet and embedded full node for Zcash");
-        parser.addHelpOption();
-
-        // A boolean option for running it headless
-        QCommandLineOption headlessOption(QStringList() << "headless", "Running it via GUI.");
-        parser.addOption(headlessOption);
-
-        QCommandLineOption noembeddedOption(QStringList() << "no-embedded", "Disable embedded zcashd");
-        parser.addOption(noembeddedOption);
-
-        parser.process(a);
+        // Check for embedded option
         if (parser.isSet(noembeddedOption)) {
             Settings::getInstance()->setUseEmbedded(false);
         } else {
             Settings::getInstance()->setUseEmbedded(true);
         }
 
+        // Check to see if a conf location was specified
+        if (parser.isSet(confOption)) {
+            Settings::getInstance()->setUsingZcashConf(parser.value(confOption));
+        }
+
         w = new MainWindow();
         w->setWindowTitle("ZecWallet v" + QString(APP_VERSION));
 
+        // If there was a payment URI on the command line, pay it
+        if (parser.positionalArguments().length() > 0) {
+            w->payZcashURI(parser.positionalArguments()[0]);
+        }
+
+        // Listen for any secondary instances telling us about a zcash payment URI
+        QObject::connect(&a, &SingleApplication::receivedMessage, [=] (quint32, QByteArray msg) {
+            QString uri(msg);
+
+            // We need to execute this async, otherwise the app seems to crash for some reason.
+            QTimer::singleShot(1, [=]() { w->payZcashURI(uri); });            
+        });   
+
+        // For MacOS, we have an event filter
+        a.installEventFilter(w);
+
+        // Check if starting headless
         if (parser.isSet(headlessOption)) {
             Settings::getInstance()->setHeadless(true);
             a.setQuitOnLastWindowClosed(false);    

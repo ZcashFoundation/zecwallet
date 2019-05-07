@@ -13,6 +13,15 @@ struct Config {
 struct ToFields;
 struct Tx;
 
+struct PaymentURI {
+    QString addr;
+    QString amt;
+    QString memo;
+
+    // Any errors are stored here
+    QString error;
+};
+
 class Settings
 {
 public:
@@ -31,6 +40,9 @@ public:
     bool    isSyncing();
     void    setSyncing(bool syncing);
 
+    int     getZcashdVersion();
+    void    setZcashdVersion(int version);
+    
     void    setUseEmbedded(bool r) { _useEmbedded = r; }
     bool    useEmbedded() { return _useEmbedded; }
 
@@ -64,6 +76,9 @@ public:
     static const QString txidStatusMessage;
     
     static void saveRestore(QDialog* d);
+
+    static PaymentURI parseURI(QString paymentURI);
+    static QString    paymentURIPretty(PaymentURI);
 
     static bool    isZAddress(QString addr);
     static bool    isTAddress(QString addr);
@@ -107,6 +122,7 @@ private:
     bool    _isTestnet        = false;
     bool    _isSyncing        = false;
     int     _blockNumber      = 0;
+    int     _zcashdVersion    = 0;
     bool    _useEmbedded      = false;
     bool    _headless         = false;
     int     _peerConnections  = 0;

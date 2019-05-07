@@ -16,6 +16,7 @@
 #include "turnstile.h"
 #include "senttxstore.h"
 #include "connection.h"
+#include "requestdialog.h"
 #include "websockets.h"
 
 using json = nlohmann::json;
@@ -45,12 +46,20 @@ MainWindow::MainWindow(QWidget *parent) :
         rpc->checkForUpdate(false);
     });
 
+    // Recurring payments 
     QObject::connect(ui->action_Recurring_Payments, &QAction::triggered, [=]() {
         Recurring::getInstance()->showRecurringDialog();
     });
 
+    // Request zcash
+    QObject::connect(ui->actionRequest_zcash, &QAction::triggered, [=]() {
+        RequestDialog::showRequestZcash(this);
+    });
+
     // Pay Zcash URI
-    QObject::connect(ui->actionPay_URI, &QAction::triggered, this, &MainWindow::payZcashURI);
+    QObject::connect(ui->actionPay_URI, &QAction::triggered, [=] () {
+        payZcashURI();
+    });
 
     // Import Private Key
     QObject::connect(ui->actionImport_Private_Key, &QAction::triggered, this, &MainWindow::importPrivKey);
@@ -508,6 +517,15 @@ void MainWindow::setupSettingsModal() {
         // Connection tab by default
         settings.tabWidget->setCurrentIndex(0);
 
+        // Enable the troubleshooting options only if using embedded zcashd
+        if (!rpc->isEmbedded()) {
+            settings.chkRescan->setEnabled(false);
+            settings.chkRescan->setToolTip(tr("You're using an external zcashd. Please restart zcashd with -rescan"));
+
+            settings.chkReindex->setEnabled(false);
+            settings.chkReindex->setToolTip(tr("You're using an external zcashd. Please restart zcashd with -reindex"));
+        }
+
         if (settingsDialog.exec() == QDialog::Accepted) {
             // Custom fees
             bool customFees = settings.chkCustomFees->isChecked();
@@ -528,6 +546,7 @@ void MainWindow::setupSettingsModal() {
                     tr("Connection over Tor has been enabled. To use this feature, you need to restart ZecWallet."), 
                     QMessageBox::Ok);
             }
+
             if (isUsingTor && !settings.chkTor->isChecked()) {
                 // If "use tor" was previously checked and now is unchecked
                 Settings::removeFromZcashConf(zcashConfLocation, "proxy");
@@ -548,6 +567,25 @@ void MainWindow::setupSettingsModal() {
                 
                 auto cl = new ConnectionLoader(this, rpc);
                 cl->loadConnection();
+            }
+
+            // Check to see if rescan or reindex have been enabled
+            bool showRestartInfo = false;
+            if (settings.chkRescan->isChecked()) {
+                Settings::addToZcashConf(zcashConfLocation, "rescan=1");
+                showRestartInfo = true;
+            }
+
+            if (settings.chkReindex->isChecked()) {
+                Settings::addToZcashConf(zcashConfLocation, "reindex=1");
+                showRestartInfo = true;
+            }
+
+            if (showRestartInfo) {
+                auto desc = tr("ZecWallet needs to restart to rescan/reindex. ZecWallet will now close, please restart ZecWallet to continue");
+                
+                QMessageBox::information(this, tr("Restart ZecWallet"), desc, QMessageBox::Ok);
+                QTimer::singleShot(1, [=]() { this->close(); });
             }
         }
     });
@@ -726,90 +764,90 @@ void MainWindow::doImport(QList<QString>* keys) {
     }
 }
 
-void MainWindow::payZcashURI() {
-    // Error to display if something goes wrong.
-    auto payZcashURIError = [=] (QString errorDetail = "") {
-        QMessageBox::critical(this, tr("Error paying zcash URI"), 
-                tr("URI should be of the form 'zcash:<addr>?amt=x&memo=y") + "\n" + errorDetail);
-    };
 
-    // Read a zcash URI and pay it
-    QString uri = QInputDialog::getText(this, tr("Paste Zcash URI"),
-        "Zcash URI" + QString(" ").repeated(180));
+// Callback invoked when the RPC has finished loading all the balances, and the UI 
+// is now ready to send transactions.
+void MainWindow::balancesReady() {
+    // First-time check
+    if (uiPaymentsReady)
+        return;
 
+    uiPaymentsReady = true;
+    qDebug() << "Payment UI now ready!";
+
+    // There is a pending URI payment (from the command line, or from a secondary instance),
+    // process it.
+    if (!pendingURIPayment.isEmpty()) {
+        qDebug() << "Paying zcash URI";
+        payZcashURI(pendingURIPayment);
+        pendingURIPayment = "";
+    }
+
+}
+
+// Event filter for MacOS specific handling of payment URIs
+bool MainWindow::eventFilter(QObject *object, QEvent *event) {
+    if (event->type() == QEvent::FileOpen) {
+        QFileOpenEvent *fileEvent = static_cast<QFileOpenEvent*>(event);
+        if (!fileEvent->url().isEmpty())
+            payZcashURI(fileEvent->url().toString());
+
+        return true;
+    }
+
+    return QObject::eventFilter(object, event);
+}
+
+
+// Pay the Zcash URI by showing a confirmation window. If the URI parameter is empty, the UI
+// will prompt for one. If the myAddr is empty, then the default from address is used to send
+// the transaction.
+void MainWindow::payZcashURI(QString uri, QString myAddr) {
+    // If the Payments UI is not ready (i.e, all balances have not loaded), defer the payment URI
+    if (!uiPaymentsReady) {
+        qDebug() << "Payment UI not ready, waiting for UI to pay URI";
+        pendingURIPayment = uri;
+        return;
+    }
+
+    // If there was no URI passed, ask the user for one.
+    if (uri.isEmpty()) {
+        uri = QInputDialog::getText(this, tr("Paste Zcash URI"),
+            "Zcash URI" + QString(" ").repeated(180));
+    }
+
+    // If there's no URI, just exit
     if (uri.isEmpty())
         return;
 
-    // URI should be of the form zcash://address?amt=x&memo=y
-    if (!uri.startsWith("zcash:")) {
-        payZcashURIError();
-        return;
-    }
-
     // Extract the address
-    uri = uri.right(uri.length() - QString("zcash:").length());
-
-    QRegExp re("([a-zA-Z0-9]+)");
-    int pos;
-    if ( (pos = re.indexIn(uri)) == -1 ) {
-        payZcashURIError();
+    qDebug() << "Recieved URI " << uri;
+    PaymentURI paymentInfo = Settings::parseURI(uri);
+    if (!paymentInfo.error.isEmpty()) {
+        QMessageBox::critical(this, tr("Error paying zcash URI"), 
+                tr("URI should be of the form 'zcash:<addr>?amt=x&memo=y") + "\n" + paymentInfo.error);
         return;
-    }
-
-    QString addr = re.cap(1);
-    if (!Settings::isValidAddress(addr)) {
-        payZcashURIError(tr("Could not understand address"));
-        return;
-    }
-    uri = uri.right(uri.length() - addr.length());
-
-    double amount = 0.0;
-    QString memo  = "";
-
-    if (!uri.isEmpty()) {
-        uri = uri.right(uri.length() - 1); // Eat the "?"
-
-        QStringList args = uri.split("&");
-        for (QString arg: args) {
-            QStringList kv = arg.split("=");
-            if (kv.length() != 2) {
-                payZcashURIError();
-                return;
-            }
-
-            if (kv[0].toLower() == "amt" || kv[0].toLower() == "amount") {
-                amount = kv[1].toDouble(); 
-            } else if (kv[0].toLower() == "memo" || kv[0].toLower() == "message" || kv[0].toLower() == "msg") {
-                memo = kv[1];
-                // Test if this is hex
-
-                QRegularExpression hexMatcher("^[0-9A-F]+$",
-                                            QRegularExpression::CaseInsensitiveOption);
-                QRegularExpressionMatch match = hexMatcher.match(memo);
-                if (match.hasMatch()) {
-                    // Encoded as hex, convert to string
-                    memo = QByteArray::fromHex(memo.toUtf8());
-                }
-            } else {
-                payZcashURIError(tr("Unknown field in URI:") + kv[0]);
-                return;
-            }
-        }
     }
 
     // Now, set the fields on the send tab
     clearSendForm();
-    ui->Address1->setText(addr);
+
+    if (!myAddr.isEmpty()) {
+        ui->inputsCombo->setCurrentText(myAddr);
+    }
+
+    ui->Address1->setText(paymentInfo.addr);
     ui->Address1->setCursorPosition(0);
-    ui->Amount1->setText(QString::number(amount));
-    ui->MemoTxt1->setText(memo);
+    ui->Amount1->setText(Settings::getDecimalString(paymentInfo.amt.toDouble()));
+    ui->MemoTxt1->setText(paymentInfo.memo);
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);
+    raise();
 
     // And click the send button if the amount is > 0, to validate everything. If everything is OK, it will show the confirm box
     // else, show the error message;
-    if (amount > 0) {
+    if (paymentInfo.amt > 0) {
         sendButton();
     }
 }
@@ -986,6 +1024,8 @@ void MainWindow::exportKeys(QString addr) {
 
 void MainWindow::setupBalancesTab() {
     ui->unconfirmedWarning->setVisible(false);
+    ui->lblSyncWarning->setVisible(false);
+    ui->lblSyncWarningReceive->setVisible(false);
 
     // Double click on balances table
     auto fnDoSendFrom = [=](const QString& addr, const QString& to = QString(), bool sendMax = false) {
@@ -1048,7 +1088,7 @@ void MainWindow::setupBalancesTab() {
             fnDoSendFrom(addr);
         });
 
-        if (addr.startsWith("t")) {
+        if (Settings::isTAddress(addr)) {
             auto defaultSapling = rpc->getDefaultSaplingAddress();
             if (!defaultSapling.isEmpty()) {
                 menu.addAction(tr("Shield balance to Sapling"), [=] () {
@@ -1132,8 +1172,16 @@ void MainWindow::setupTransactionsTab() {
             QDesktopServices::openUrl(QUrl(url));
         });
 
+        // Payment Request
+        if (!memo.isEmpty() && memo.startsWith("zcash:")) {
+            menu.addAction(tr("View Payment Request"), [=] () {
+                RequestDialog::showPaymentConfirmation(this, memo);
+            });
+        }
+
+        // View Memo
         if (!memo.isEmpty()) {
-            menu.addAction(tr("View Memo"), [=] () {
+            menu.addAction(tr("View Memo"), [=] () {               
                 QMessageBox mb(QMessageBox::Information, tr("Memo"), memo, QMessageBox::Ok, this);
                 mb.setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
                 mb.exec();
@@ -1180,8 +1228,7 @@ void MainWindow::addNewZaddr(bool sapling) {
         rpc->refreshAddresses();
 
         // Just double make sure the z-address is still checked
-        if (( sapling && ui->rdioZSAddr->isChecked()) ||
-            (!sapling && ui->rdioZAddr->isChecked())) {
+        if ( sapling && ui->rdioZSAddr->isChecked() ) {
             ui->listRecieveAddresses->insertItem(0, addr); 
             ui->listRecieveAddresses->setCurrentIndex(0);
 
@@ -1204,8 +1251,10 @@ std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
             std::for_each(addrs->begin(), addrs->end(), [=] (auto addr) {
                 if ( (sapling &&  Settings::getInstance()->isSaplingAddress(addr)) ||
                     (!sapling && !Settings::getInstance()->isSaplingAddress(addr))) {
-                    auto bal = rpc->getAllBalances()->value(addr);
-                    ui->listRecieveAddresses->addItem(addr, bal);
+                        if (rpc->getAllBalances()) {
+                            auto bal = rpc->getAllBalances()->value(addr);
+                            ui->listRecieveAddresses->addItem(addr, bal);
+                        }
                 }
             }); 
 
@@ -1234,25 +1283,15 @@ void MainWindow::setupRecieveTab() {
 
     // Connect t-addr radio button
     QObject::connect(ui->rdioTAddr, &QRadioButton::toggled, [=] (bool checked) { 
+        // DEPRECATED
         // Whenever the t-address is selected, we generate a new address, because we don't
         // want to reuse t-addrs
         if (checked && this->rpc->getUTXOs() != nullptr) { 
             updateTAddrCombo(checked);
-            addNewTAddr();
+            //addNewTAddr();
         } 
     });
 
-    // zAddr toggle button, one for sprout and one for sapling
-    QObject::connect(ui->rdioZAddr, &QRadioButton::toggled, [=](bool checked) {
-        ui->btnRecieveNewAddr->setEnabled(!checked);
-        if (checked) {
-            ui->btnRecieveNewAddr->setToolTip(tr("Creation of new Sprout addresses is deprecated"));
-        }
-        else {
-            ui->btnRecieveNewAddr->setToolTip("");
-        }
-        addZAddrsToComboList(false)(checked);
-    });
     QObject::connect(ui->rdioZSAddr, &QRadioButton::toggled, addZAddrsToComboList(true));
 
     // Explicitly get new address button.
@@ -1260,16 +1299,7 @@ void MainWindow::setupRecieveTab() {
         if (!rpc->getConnection())
             return;
 
-        if (ui->rdioZAddr->isChecked()) {
-            QString syncMsg = !Settings::getInstance()->isSaplingActive() ? "Please wait for your node to finish syncing to create Sapling addresses.\n\n" : "";
-            auto confirm = QMessageBox::question(this, "Sprout Address",
-                syncMsg + "Sprout addresses are inefficient, and will be deprecated in the future in favour of Sapling addresses.\n"
-                "Are you sure you want to create a new Sprout address?", QMessageBox::Yes, QMessageBox::No);
-            if (confirm != QMessageBox::Yes)
-                return;
-            
-            addNewZaddr(false); 
-        } else if (ui->rdioZSAddr->isChecked()) {
+        if (ui->rdioZSAddr->isChecked()) {
             addNewZaddr(true);
         } else if (ui->rdioTAddr->isChecked()) {
             addNewTAddr();
@@ -1279,18 +1309,8 @@ void MainWindow::setupRecieveTab() {
     // Focus enter for the Receive Tab
     QObject::connect(ui->tabWidget, &QTabWidget::currentChanged, [=] (int tab) {
         if (tab == 2) {
-            // Switched to receive tab, so update everything. 
-
-            // Hide Sapling radio button if Sapling is not active
-            if (Settings::getInstance()->isSaplingActive()) {
-                ui->rdioZSAddr->setVisible(true);    
-                ui->rdioZSAddr->setChecked(true);
-                ui->rdioZAddr->setText("z-Addr(Legacy Sprout)");
-            } else {
-                ui->rdioZSAddr->setVisible(false);    
-                ui->rdioZAddr->setChecked(true);
-                ui->rdioZAddr->setText("z-Addr");   // Don't use the "Sprout" label if there's no Sapling
-            }
+            // Switched to receive tab, select the z-addr radio button
+            ui->rdioZSAddr->setChecked(true);
             
             // And then select the first one
             ui->listRecieveAddresses->setCurrentIndex(0);
@@ -1388,7 +1408,7 @@ void MainWindow::updateTAddrCombo(bool checked) {
 
         std::for_each(utxos->begin(), utxos->end(), [=](auto& utxo) {
             auto addr = utxo.address;
-            if (addr.startsWith("t") && ui->listRecieveAddresses->findText(addr) < 0) {
+            if (Settings::isTAddress(addr) && ui->listRecieveAddresses->findText(addr) < 0) {
                 auto bal = rpc->getAllBalances()->value(addr);
                 ui->listRecieveAddresses->addItem(addr, bal);
             }
@@ -1420,6 +1440,8 @@ MainWindow::~MainWindow()
     delete labelCompleter;
 
     delete sendTxRecurringInfo;
+    delete amtValidator;
+    delete feesValidator;
 
     delete loadingMovie;
     delete logger;

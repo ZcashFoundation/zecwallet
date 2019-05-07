@@ -44,6 +44,9 @@ public:
     void updateLabelsAutoComplete();
     RPC* getRPC() { return rpc; }
 
+    QCompleter*         getLabelCompleter() { return labelCompleter; }
+    QRegExpValidator*   getAmountValidator() { return amtValidator; }
+
     QString doSendTxValidations(Tx tx);
     void setDefaultPayFrom();
 
@@ -51,6 +54,9 @@ public:
     bool isWebsocketListening();
     void createWebsocket(QString wormholecode);
     void stopWebsocket();
+
+    void balancesReady();
+    void payZcashURI(QString uri = "", QString myAddr = "");
 
     void updateLabels();
     void updateTAddrCombo(bool checked);
@@ -79,7 +85,7 @@ private:
     void setupTurnstileDialog();
     void setupSettingsModal();
     void setupStatusBar();
-
+    
     void clearSendForm();
 
     Tx   createTxFromSendPage();
@@ -107,7 +113,6 @@ private:
     
     void donate();
     void addressBook();
-    void payZcashURI();
     void postToZBoard();
     void importPrivKey();
     void exportAllKeys();
@@ -118,12 +123,18 @@ private:
     void doImport(QList<QString>* keys);
 
     void restoreSavedStates();
+    bool eventFilter(QObject *object, QEvent *event);
+
+    bool            uiPaymentsReady    = false;
+    QString         pendingURIPayment;
 
     WSServer*       wsserver = nullptr;
     WormholeClient* wormhole = nullptr;
 
-    RPC*         rpc  = nullptr;
-    QCompleter*  labelCompleter = nullptr;
+    RPC*                rpc             = nullptr;
+    QCompleter*         labelCompleter  = nullptr;
+    QRegExpValidator*   amtValidator    = nullptr;
+    QRegExpValidator*   feesValidator   = nullptr;
 
     RecurringPaymentInfo* sendTxRecurringInfo = nullptr;
 

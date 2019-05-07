@@ -32,6 +32,7 @@
 #include <QDir>
 #include <QMenu>
 #include <QCompleter>
+#include <QPushButton>
 #include <QDateTime>
 #include <QTimer>
 #include <QSettings>
@@ -40,9 +41,11 @@
 #include <QTemporaryFile>
 #include <QErrorMessage>
 #include <QApplication>
+#include <QWindow>
 #include <QStandardPaths>
 #include <QMainWindow>
 #include <QPushButton>
+#include <QPlainTextEdit>
 #include <QLabel>
 #include <QDialog>
 #include <QInputDialog>

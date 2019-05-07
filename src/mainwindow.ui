@@ -22,7 +22,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -160,6 +160,19 @@
                   </size>
                  </property>
                 </spacer>
+               </item>
+               <item>
+                <widget class="QLabel" name="lblSyncWarning">
+                 <property name="styleSheet">
+                  <string notr="true">color:red;</string>
+                 </property>
+                 <property name="text">
+                  <string>Your node is still syncing, balances may not be updated</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
                </item>
                <item>
                 <widget class="QLabel" name="unconfirmedWarning">
@@ -697,13 +710,6 @@
                  </property>
                 </widget>
                </item>
-               <item>
-                <widget class="QRadioButton" name="rdioZAddr">
-                 <property name="text">
-                  <string>z-Addr(Legacy Sprout)</string>
-                 </property>
-                </widget>
-               </item>
               </layout>
              </item>
              <item>
@@ -825,6 +831,16 @@
                  </widget>
                 </item>
                </layout>
+              </item>
+              <item>
+               <widget class="QLabel" name="lblSyncWarningReceive">
+                <property name="styleSheet">
+                 <string notr="true">color: red;</string>
+                </property>
+                <property name="text">
+                 <string>Your node is still syncing, balances may not be updated</string>
+                </property>
+               </widget>
               </item>
               <item>
                <spacer name="verticalSpacer_5">
@@ -1036,6 +1052,7 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <addaction name="actionRequest_zcash"/>
     <addaction name="actionPay_URI"/>
     <addaction name="separator"/>
     <addaction name="actionImport_Private_Key"/>
@@ -1167,18 +1184,23 @@
     <string>&amp;Recurring Payments</string>
    </property>
   </action>
+  <action name="actionRequest_zcash">
+   <property name="text">
+    <string>Request zcash...</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QRCodeLabel</class>
-   <extends>QLabel</extends>
-   <header>qrcodelabel.h</header>
-  </customwidget>
-  <customwidget>
    <class>AddressCombo</class>
    <extends>QComboBox</extends>
    <header>addresscombo.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QRCodeLabel</class>
+   <extends>QLabel</extends>
+   <header>qrcodelabel.h</header>
   </customwidget>
   <customwidget>
    <class>FilledIconLabel</class>
@@ -1199,7 +1221,6 @@
   <tabstop>cancelSendButton</tabstop>
   <tabstop>rdioZSAddr</tabstop>
   <tabstop>rdioTAddr</tabstop>
-  <tabstop>rdioZAddr</tabstop>
   <tabstop>listRecieveAddresses</tabstop>
   <tabstop>btnRecieveNewAddr</tabstop>
   <tabstop>txtRecieve</tabstop>

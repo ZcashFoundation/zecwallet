@@ -12,6 +12,8 @@ Remove-Item -Force -ErrorAction Ignore ./artifacts/linux-deb-zecwallet-v$version
 Remove-Item -Force -ErrorAction Ignore ./artifacts/Windows-binaries-zecwallet-v$version.zip
 Remove-Item -Force -ErrorAction Ignore ./artifacts/Windows-installer-zecwallet-v$version.msi
 Remove-Item -Force -ErrorAction Ignore ./artifacts/macOS-zecwallet-v$version.dmg
+Remove-Item -Force -ErrorAction Ignore ./artifacts/signatures-v$version.tar.gz
+
 
 Remove-Item -Recurse -Force -ErrorAction Ignore ./bin
 Remove-Item -Recurse -Force -ErrorAction Ignore ./debug
@@ -37,7 +39,7 @@ Write-Host "[Building Linux + Windows]"
 Write-Host -NoNewline "Copying files.........."
 ssh $server "rm -rf /tmp/zqwbuild"
 ssh $server "mkdir /tmp/zqwbuild"
-scp -r src/ res/ ./zec-qt-wallet.pro ./application.qrc ./LICENSE ./README.md ${server}:/tmp/zqwbuild/ | Out-Null
+scp -r src/ singleapplication/ res/ ./zec-qt-wallet.pro ./application.qrc ./LICENSE ./README.md ${server}:/tmp/zqwbuild/ | Out-Null
 ssh $server "dos2unix -q /tmp/zqwbuild/src/scripts/mkrelease.sh" | Out-Null
 ssh $server "dos2unix -q /tmp/zqwbuild/src/version.h"
 Write-Host "[OK]"

@@ -78,6 +78,7 @@ public:
 
     void shutdownZcashd();
     void noConnection();
+    bool isEmbedded() { return ezcashd != nullptr; }
 
     QString getDefaultSaplingAddress();
     QString getDefaultTAddress();

@@ -55,7 +55,9 @@ SOURCES += \
     src/addresscombo.cpp \
     src/websockets.cpp \
     src/mobileappconnector.cpp \
-    src/recurring.cpp
+    src/recurring.cpp \
+    src/requestdialog.cpp \
+    src/memoedit.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -78,7 +80,9 @@ HEADERS += \
     src/addresscombo.h \ 
     src/websockets.h \
     src/mobileappconnector.h \
-    src/recurring.h
+    src/recurring.h \
+    src/requestdialog.h \
+    src/memoedit.h
 
 FORMS += \
     src/mainwindow.ui \
@@ -95,7 +99,8 @@ FORMS += \
     src/mobileappconnector.ui \
     src/createzcashconfdialog.ui \
     src/recurringdialog.ui \
-    src/newrecurring.ui
+    src/newrecurring.ui \
+    src/requestdialog.ui
 
 
 TRANSLATIONS = res/zec_qt_wallet_es.ts \
@@ -103,6 +108,11 @@ TRANSLATIONS = res/zec_qt_wallet_es.ts \
                res/zec_qt_wallet_de.ts \
                res/zec_qt_wallet_pt.ts \
                res/zec_qt_wallet_it.ts 
+
+include(singleapplication/singleapplication.pri)
+DEFINES += QAPPLICATION_CLASS=QApplication
+
+QMAKE_INFO_PLIST = res/Info.plist
 
 win32: RC_ICONS = res/icon.ico
 ICON = res/logo.icns

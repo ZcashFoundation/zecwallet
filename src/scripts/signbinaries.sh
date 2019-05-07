@@ -44,6 +44,7 @@ mv sha256sum-v$APP_VERSION.txt ../release/signatures/
 cp ../res/SIGNATURES_README ../release/signatures/README
 
 cd ../release/signatures
-tar -czf signatures-v$APP_VERSION.tar.gz *
-mv signatures-v$APP_VERSION.tar.gz ../../artifacts
+#tar -czf signatures-v$APP_VERSION.tar.gz *
+zip signatures-v$APP_VERSION.zip *
+mv signatures-v$APP_VERSION.zip ../../artifacts
 

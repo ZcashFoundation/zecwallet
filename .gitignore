@@ -34,5 +34,6 @@ workspace.code-workspace
 *.xcsettings
 .DS_Store
 *.mak
-*.plist
 zcashd
+IDEWorkspaceChecks.plist
+*.sln
