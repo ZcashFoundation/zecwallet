@@ -57,7 +57,7 @@ void SentTxStore::addToSentTx(Tx tx, QString txid) {
 
     // Also, only store outgoing txs where the from address is a z-Addr. Else, regular zcashd 
     // stores it just fine
-    if (!tx.fromAddr.startsWith("z")) 
+    if (! Settings::isZAddress(tx.fromAddr)) 
         return;
 
     QFile data(writeableFile());

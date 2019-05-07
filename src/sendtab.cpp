@@ -292,7 +292,7 @@ void MainWindow::addAddressSection() {
 
 void MainWindow::addressChanged(int itemNumber, const QString& text) {   
     auto addr = AddressBook::addressFromAddressLabel(text);
-    setMemoEnabled(itemNumber, addr.startsWith("z"));
+    setMemoEnabled(itemNumber, Settings::isZAddress(addr));
 }
 
 void MainWindow::amountChanged(int item, const QString& text) {
@@ -314,7 +314,7 @@ void MainWindow::setMemoEnabled(int number, bool enabled) {
 void MainWindow::memoButtonClicked(int number, bool includeReplyTo) {
     // Memos can only be used with zAddrs. So check that first
     auto addr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Address") + QString::number(number));
-    if (!AddressBook::addressFromAddressLabel(addr->text()).startsWith("z")) {
+    if (! Settings::isZAddress(AddressBook::addressFromAddressLabel(addr->text()))) {
         QMessageBox msg(QMessageBox::Critical, tr("Memos can only be used with z-addresses"),
         tr("The memo field can only be used with a z-address.\n") + addr->text() + tr("\ndoesn't look like a z-address"),
         QMessageBox::Ok, this);
@@ -500,7 +500,7 @@ Tx MainWindow::createTxFromSendPage() {
 
 bool MainWindow::confirmTx(Tx tx) {
     auto fnSplitAddressForWrap = [=] (const QString& a) -> QString {
-        if (!a.startsWith("z")) return a;
+        if (! Settings::isZAddress(a)) return a;
 
         auto half = a.length() / 2;
         auto splitted = a.left(half) + "\n" + a.right(a.length() - half);
@@ -566,7 +566,7 @@ bool MainWindow::confirmTx(Tx tx) {
             confirm.gridLayout->addWidget(AmtUSD, row, 2, 1, 1);            
 
             // Memo
-            if (toAddr.addr.startsWith("z") && !toAddr.txtMemo.isEmpty()) {
+            if (Settings::isZAddress(toAddr.addr) && !toAddr.txtMemo.isEmpty()) {
                 row++;
                 auto Memo = new QLabel(confirm.sendToAddrs);
                 Memo->setObjectName(QStringLiteral("Memo") % QString::number(i + 1));
