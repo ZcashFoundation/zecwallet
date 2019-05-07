@@ -1043,7 +1043,7 @@ void RPC::refreshZECPrice() {
     if  (conn == nullptr) 
         return noConnection();
 
-    QUrl cmcURL("https://api.coinmarketcap.com/v1/ticker/");
+    QUrl cmcURL("");
 
     QNetworkRequest req;
     req.setUrl(cmcURL);
