@@ -1043,7 +1043,7 @@ void RPC::refreshZECPrice() {
     if  (conn == nullptr) 
         return noConnection();
 
-    QUrl cmcURL("");
+    QUrl cmcURL("http://api1.barterdexapi.net/pirateprice.php");
 
     QNetworkRequest req;
     req.setUrl(cmcURL);
@@ -1073,15 +1073,16 @@ void RPC::refreshZECPrice() {
                 return;
             }
 
-            for (const json& item : parsed.get<json::array_t>()) {
-                if (item["symbol"].get<json::string_t>() == "ZEC") {
-                    QString price = QString::fromStdString(item["price_usd"].get<json::string_t>());
-                    qDebug() << "ZEC Price=" << price;
+	    
+            const json& item = parsed.get<json::object_t>();
+                if (item["coin"].get<json::string_t>() == "PIRATE") {
+                    QString price = QString::fromStdString(item["priceUSD"].get<json::string_t>());
+                    qDebug() << "ARRR Price=" << price;
                     Settings::getInstance()->setZECPrice(price.toDouble());
 
                     return;
                 }
-            }
+	
         } catch (...) {
             // If anything at all goes wrong, just set the price to 0 and move on.
             qDebug() << QString("Caught something nasty");
