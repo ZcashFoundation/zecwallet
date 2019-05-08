@@ -855,8 +855,8 @@ void MainWindow::importPrivKey() {
 
     pui.buttonBox->button(QDialogButtonBox::Save)->setVisible(false);
     pui.helpLbl->setText(QString() %
-                        tr("Please paste your private keys (z-Addr or t-Addr) here, one per line") % ".\n" %
-                        tr("The keys will be imported into your connected zcashd node"));  
+                        tr("Please paste your private keys here, one per line") % ".\n" %
+                        tr("The keys will be imported into your connected komodod node"));  
 
     if (d.exec() == QDialog::Accepted && !pui.privKeyTxt->toPlainText().trimmed().isEmpty()) {
         auto rawkeys = pui.privKeyTxt->toPlainText().trimmed().split("\n");
