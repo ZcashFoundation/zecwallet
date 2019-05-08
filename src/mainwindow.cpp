@@ -819,8 +819,8 @@ void MainWindow::payZcashURI(QString uri, QString myAddr) {
     qDebug() << "Recieved URI " << uri;
     PaymentURI paymentInfo = Settings::parseURI(uri);
     if (!paymentInfo.error.isEmpty()) {
-        QMessageBox::critical(this, tr("Error paying zcash URI"), 
-                tr("URI should be of the form 'zcash:<addr>?amt=x&memo=y") + "\n" + paymentInfo.error);
+        QMessageBox::critical(this, tr("Error paying pirate URI"), 
+                tr("URI should be of the form 'pirate:<addr>?amt=x&memo=y") + "\n" + paymentInfo.error);
         return;
     }
 

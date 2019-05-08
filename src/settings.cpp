@@ -296,12 +296,12 @@ QString Settings::paymentURIPretty(PaymentURI uri) {
 PaymentURI Settings::parseURI(QString uri) {
     PaymentURI ans;
 
-    if (!uri.startsWith("zcash:")) {
+    if (!uri.startsWith("pirate:")) {
         ans.error = "Not a Pirate payment URI";
         return ans;
     }
 
-    uri = uri.right(uri.length() - QString("zcash:").length());
+    uri = uri.right(uri.length() - QString("pirate:").length());
     
     QRegExp re("([a-zA-Z0-9]+)");
     int pos;
