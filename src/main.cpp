@@ -160,7 +160,7 @@ public:
         parser.addOption(noembeddedOption);
 
         // Positional argument will specify a zcash payment URI
-        parser.addPositionalArgument("zcashURI", "An optional ARRR URI to pay");
+        parser.addPositionalArgument("zcashURI", "An optional HUSH URI to pay");
 
         parser.process(a);
 
@@ -218,7 +218,7 @@ public:
         }
 
         w = new MainWindow();
-        w->setWindowTitle("SevenSeas v" + QString(APP_VERSION));
+        w->setWindowTitle("SilentDragon v" + QString(APP_VERSION));
 
         // If there was a payment URI on the command line, pay it
         if (parser.positionalArguments().length() > 0) {

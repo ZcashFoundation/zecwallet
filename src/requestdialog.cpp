@@ -47,7 +47,7 @@ void RequestDialog::setupDialog(MainWindow* main, QDialog* d, Ui_RequestDialog* 
 void RequestDialog::showPaymentConfirmation(MainWindow* main, QString paymentURI) {
     PaymentURI payInfo = Settings::parseURI(paymentURI);
     if (!payInfo.error.isEmpty()) {
-        QMessageBox::critical(main, tr("Error paying Pirate URI"), 
+        QMessageBox::critical(main, tr("Error paying HUSH URI"), 
                 tr("URI should be of the form 'pirate:<addr>?amt=x&memo=y") + "\n" + payInfo.error);
         return;
     }

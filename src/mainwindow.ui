@@ -1146,7 +1146,7 @@
   </action>
   <action name="actionPay_URI">
    <property name="text">
-    <string>Pay Pirate &amp;URI...</string>
+    <string>Pay HUSH &amp;URI...</string>
    </property>
   </action>
   <action name="actionConnect_Mobile_App">
@@ -1159,7 +1159,7 @@
   </action>
   <action name="actionRequest_zcash">
    <property name="text">
-    <string>Request Pirate...</string>
+    <string>Request HUSH...</string>
    </property>
   </action>
  </widget>

@@ -195,7 +195,7 @@ QString Settings::getTokenName() {
     if (Settings::getInstance()->isTestnet()) {
         return "TAZ";
     } else {
-        return "ARRR";
+        return "HUSH";
     }
 }
 
@@ -297,7 +297,7 @@ PaymentURI Settings::parseURI(QString uri) {
     PaymentURI ans;
 
     if (!uri.startsWith("pirate:")) {
-        ans.error = "Not a Pirate payment URI";
+        ans.error = "Not a HUSH payment URI";
         return ans;
     }
 

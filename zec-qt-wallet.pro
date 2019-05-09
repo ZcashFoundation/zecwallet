@@ -13,7 +13,7 @@ PRECOMPILED_HEADER = src/precompiled.h
 QT += widgets
 QT += websockets
 
-TARGET = sevenseas
+TARGET = silentdragon
 
 TEMPLATE = app
 

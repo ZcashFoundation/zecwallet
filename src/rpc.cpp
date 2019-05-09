@@ -971,7 +971,7 @@ void RPC::checkForUpdate(bool silent) {
     if  (conn == nullptr) 
         return noConnection();
 
-    QUrl cmcURL("https://api.github.com/repos/radix42/SevenSeas/releases");
+    QUrl cmcURL("https://api.github.com/repos/radix42/SilentDragon/releases");
 
     QNetworkRequest req;
     req.setUrl(cmcURL);
@@ -1017,7 +1017,7 @@ void RPC::checkForUpdate(bool silent) {
                             .arg(currentVersion.toString()),
                         QMessageBox::Yes, QMessageBox::Cancel);
                     if (ans == QMessageBox::Yes) {
-                        QDesktopServices::openUrl(QUrl("https://github.com/radix42/SevenSeas/releases"));
+                        QDesktopServices::openUrl(QUrl("https://github.com/radix42/SilentDragon/releases"));
                     } else {
                         // If the user selects cancel, don't bother them again for this version
                         s.setValue("update/lastversion", maxVersion.toString());
@@ -1077,7 +1077,7 @@ void RPC::refreshZECPrice() {
             const json& item = parsed.get<json::object_t>();
                 if (item["coin"].get<json::string_t>() == "PIRATE") {
                     QString price = QString::fromStdString(item["priceUSD"].get<json::string_t>());
-                    qDebug() << "ARRR Price=" << price;
+                    qDebug() << "HUSH Price=" << price;
                     Settings::getInstance()->setZECPrice(price.toDouble());
 
                     return;
@@ -1113,7 +1113,7 @@ void RPC::shutdownZcashd() {
     Ui_ConnectionDialog connD;
     connD.setupUi(&d);
     connD.topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));
-    connD.status->setText(QObject::tr("Please wait for SevenSeas to exit"));
+    connD.status->setText(QObject::tr("Please wait for SilentDragon to exit"));
     connD.statusDetail->setText(QObject::tr("Waiting for zcashd to exit"));
 
     QTimer waiter(main);

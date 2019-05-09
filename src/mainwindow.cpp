@@ -538,7 +538,7 @@ void MainWindow::setupSettingsModal() {
                 rpc->getConnection()->config->proxy = "proxy=127.0.0.1:9050";
 
                 QMessageBox::information(this, tr("Enable Tor"), 
-                    tr("Connection over Tor has been enabled. To use this feature, you need to restart SevenSeas."), 
+                    tr("Connection over Tor has been enabled. To use this feature, you need to restart SilentDragon."), 
                     QMessageBox::Ok);
             }
 
@@ -548,7 +548,7 @@ void MainWindow::setupSettingsModal() {
                 rpc->getConnection()->config->proxy.clear();
 
                 QMessageBox::information(this, tr("Disable Tor"),
-                    tr("Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart SevenSeas."),
+                    tr("Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart SilentDragon."),
                     QMessageBox::Ok);
             }
 
@@ -577,9 +577,9 @@ void MainWindow::setupSettingsModal() {
             }
 
             if (showRestartInfo) {
-                auto desc = tr("SevenSeas needs to restart to rescan/reindex. SevenSeas will now close, please restart SevenSeas to continue");
+                auto desc = tr("SilentDragon needs to restart to rescan/reindex. SilentDragon will now close, please restart SilentDragon to continue");
                 
-                QMessageBox::information(this, tr("Restart SevenSeas"), desc, QMessageBox::Ok);
+                QMessageBox::information(this, tr("Restart SilentDragon"), desc, QMessageBox::Ok);
                 QTimer::singleShot(1, [=]() { this->close(); });
             }
         }
@@ -609,9 +609,9 @@ void MainWindow::donate() {
                             Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText("0.01");
-    ui->MemoTxt1->setText(tr("Thanks for supporting SevenSeas!"));
+    ui->MemoTxt1->setText(tr("Thanks for supporting SilentDragon!"));
 
-    ui->statusBar->showMessage(tr("Donate 0.01 ") % Settings::getTokenName() % tr(" to support SevenSeas"));
+    ui->statusBar->showMessage(tr("Donate 0.01 ") % Settings::getTokenName() % tr(" to support SilentDragon"));
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);
@@ -807,8 +807,8 @@ void MainWindow::payZcashURI(QString uri, QString myAddr) {
 
     // If there was no URI passed, ask the user for one.
     if (uri.isEmpty()) {
-        uri = QInputDialog::getText(this, tr("Paste Pirate URI"),
-            "Pirate URI" + QString(" ").repeated(180));
+        uri = QInputDialog::getText(this, tr("Paste HUSH URI"),
+            "HUSH URI" + QString(" ").repeated(180));
     }
 
     // If there's no URI, just exit
