@@ -37,7 +37,6 @@ private:
     QString     currency;
     Schedule    schedule;
     int         frequency;
-    int         numPayments;
     QDateTime   startDate;
 
     struct PaymentItem {
@@ -60,14 +59,15 @@ public:
                 PaymentItem{i, QDateTime::fromSecsSinceEpoch(0), 
                 "", PaymentStatus::NOT_STARTED});
         }
-        this->numPayments = numPayments;
     }
 
     QString     getScheduleDescription() const;
     QJsonObject toJson();
 
-    QString getAmountPretty() const;
-    QString getHash() const;
+    QString   getAmountPretty() const;
+    QString   getHash() const;
+    int       getNumPendingPayments() const;
+    QDateTime getNextPayment() const;
 
     static RecurringPaymentInfo fromJson(QJsonObject j);
 };
@@ -84,7 +84,7 @@ public:
     void        readFromFile();
 
     static void         showRecurringDialog();
-    static QDateTime    getNextPaymentDate(Schedule s);
+    static QDateTime    getNextPaymentDate(Schedule s, QDateTime start = QDateTime::currentDateTime());
 
     void        addRecurringInfo(const RecurringPaymentInfo& rpi);
     void        writeToStorage();

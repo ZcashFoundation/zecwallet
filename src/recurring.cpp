@@ -28,7 +28,6 @@ RecurringPaymentInfo RecurringPaymentInfo::fromJson(QJsonObject j) {
     r.currency = j["currency"].toString();
     r.schedule = (Schedule)j["schedule"].toInt();
     r.frequency = j["frequency"].toInt();
-    r.numPayments = j["numpayments"].toInt();
     r.startDate = QDateTime::fromSecsSinceEpoch(j["startdate"].toString().toLongLong());
 
     for (auto h : j["payments"].toArray()) {
@@ -71,7 +70,6 @@ QJsonObject RecurringPaymentInfo::toJson() {
         {"currency", currency},
         {"schedule", (int)schedule},
         {"frequency", frequency},
-        {"numpayments", numPayments},
         {"startdate", QString::number(startDate.toSecsSinceEpoch())},
         {"payments", paymentsJson}
     };
@@ -86,7 +84,33 @@ QString RecurringPaymentInfo::getAmountPretty() const {
 QString RecurringPaymentInfo::getScheduleDescription() const {
     return "Pay " % getAmountPretty()
         % " every " % schedule_desc(schedule) % ", starting " % startDate.toString("yyyy-MMM-dd")
-        % ", for " % QString::number(numPayments) % " payments";
+        % ", for " % QString::number(payments.size()) % " payments";
+}
+
+/**
+ * Get the date/time when the next payment is due
+ */
+QDateTime RecurringPaymentInfo::getNextPayment() const {
+    for (auto item : payments) {
+        if (item.status == PaymentStatus::NOT_STARTED)
+            return item.date;
+    }
+
+    return QDateTime::fromSecsSinceEpoch(0);
+} 
+
+/**
+ * Counts the number of payments that haven't been started yet
+ */ 
+int RecurringPaymentInfo::getNumPendingPayments() const {
+    int count = 0;
+    for (auto item : payments) {
+        if (item.status == PaymentStatus::NOT_STARTED) {
+            count++;
+        }
+    }
+
+    return count;
 }
 
 // Returns a new Recurring payment info, created from the Tx. 
@@ -156,7 +180,7 @@ RecurringPaymentInfo* Recurring::getNewRecurringFromTx(QWidget* parent, MainWind
         ui.cmbCurrency->setCurrentText(rpi->currency);
         ui.txtAmt->setText(rpi->getAmountPretty()); 
         ui.cmbFromAddress->setCurrentText(rpi->fromAddr);
-        ui.txtNumPayments->setText(QString::number(rpi->numPayments));
+        ui.txtNumPayments->setText(QString::number(rpi->payments.size()));
         ui.cmbSchedule->setCurrentIndex(rpi->schedule);
     }
     
@@ -190,10 +214,25 @@ void Recurring::updateInfoWithTx(RecurringPaymentInfo* r, Tx tx) {
         r->currency = Settings::getTokenName();
         r->amt = tx.toAddrs[0].amount;
     }
+
+    // Make sure that the number of payments is properly listed in the array
+    assert(r->payments.size() == r->payments.size());
+
+    // Update the payment dates
+    r->payments[0].date = r->startDate;
+    r->payments[0].status = PaymentStatus::NOT_STARTED;
+    for (int i = 1; i < r->payments.size(); i++) {
+        r->payments[i].date = getNextPaymentDate(r->schedule, r->payments[i-1].date);
+        r->payments[i].status = PaymentStatus::NOT_STARTED;
+    }
 }
 
-QDateTime Recurring::getNextPaymentDate(Schedule s) {
-    auto nextDate = QDateTime::currentDateTime();
+/**
+ * Given a schedule and an optional previous date, calculate the next payment date/
+ * If there is no previous date, it is assumed to be the current DateTime
+ */ 
+QDateTime Recurring::getNextPaymentDate(Schedule s, QDateTime start) {
+    QDateTime nextDate = start;
 
     switch (s) {
     case Schedule::DAY: nextDate = nextDate.addDays(1); break;
@@ -301,13 +340,22 @@ void Recurring::showRecurringDialog() {
     auto model = new RecurringListViewModel(rd.tableView);
     rd.tableView->setModel(model);
 
+    // Restore the table column layout
+    QSettings s;
+    rd.tableView->horizontalHeader()->restoreState(s.value("recurringtablegeom").toByteArray());
+
     d.exec();
+
+    // Save the table column layout
+    s.setValue("recurringtablegeom", rd.tableView->horizontalHeader()->saveState());
+
     delete model;
 }
 
 RecurringListViewModel::RecurringListViewModel(QTableView* parent) {
     this->parent = parent;
-    headers << tr("Amount") << tr("Schedule") << tr("Payments Left") << tr("To");
+    headers << tr("Amount") << tr("Schedule") << tr("Payments Left") 
+            << tr("Next Payment") << tr("To");
 }
 
 
@@ -325,9 +373,12 @@ QVariant RecurringListViewModel::data(const QModelIndex &index, int role) const 
         switch (index.column()) {
         case 0: return rpi.getAmountPretty();
         case 1: return tr("Every ") + schedule_desc(rpi.schedule);
-        case 2: return rpi.numPayments - rpi.completedPayments; 
-        case 3: return rpi.toAddr;        
-        //case 4: return Recurring::getNextPaymentDate(rpi.)
+        case 2: return rpi.getNumPendingPayments(); 
+        case 3: { 
+            auto n = rpi.getNextPayment();
+            if (n.toSecsSinceEpoch() == 0) return tr("None"); else return n;
+        }
+        case 4: return rpi.toAddr;        
         }
     }
 
