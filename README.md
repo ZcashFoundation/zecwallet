@@ -1,4 +1,4 @@
-SevenSeas desktop wallet for PirateChain ($ARRR) that runs on Linux, Windows and macOS.
+SilentDragon desktop wallet for HUSH ($HUSH) that runs on Linux, Windows and macOS.
 
 ![Screenshots](docs/screenshot-sub.png?raw=true)
 # Installation
