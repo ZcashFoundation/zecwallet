@@ -89,6 +89,7 @@ public:
     static QDateTime    getNextPaymentDate(Schedule s, QDateTime start = QDateTime::currentDateTime());
 
     void        addRecurringInfo(const RecurringPaymentInfo& rpi);
+    void        removeRecurringInfo(QString hash);
     void        writeToStorage();
 
     bool updatePaymentItem(QString hash, int paymentNumber, QString txid, PaymentStatus status);

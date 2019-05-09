@@ -270,6 +270,16 @@ void Recurring::addRecurringInfo(const RecurringPaymentInfo& rpi) {
     writeToStorage();
 }
 
+void Recurring::removeRecurringInfo(QString hash) {
+    if (!payments.contains(hash)) {
+        return;
+    }
+    
+    payments.remove(hash);
+    
+    writeToStorage();
+}
+
 
 void Recurring::readFromFile() {
     QFile file(writeableFile());
@@ -330,7 +340,9 @@ Recurring* Recurring::getInstance() {
 // Singleton
 Recurring* Recurring::instance = nullptr;
 
-
+/**
+ * Show the list of configured recurring payments
+ */ 
 void Recurring::showRecurringDialog(MainWindow* parent) {
     Ui_RecurringDialog rd;
     QDialog d;
@@ -345,6 +357,7 @@ void Recurring::showRecurringDialog(MainWindow* parent) {
     QSettings s;
     rd.tableView->horizontalHeader()->restoreState(s.value("recurringtablegeom").toByteArray());
 
+    // Function to show the history and pending payments for a particular recurring payment
     auto showPayments = [=] (const RecurringPaymentInfo& rpi) {
         Ui_RecurringPayments p;
         QDialog d;
@@ -392,7 +405,6 @@ void Recurring::showRecurringDialog(MainWindow* parent) {
     QObject::connect(rd.btnView, &QPushButton::clicked, [=] () {
         auto selectedRows = rd.tableView->selectionModel()->selectedRows();
         if (selectedRows.size() == 1) {
-            std::cout << selectedRows[0].row() << std::endl;
             auto rpi = Recurring::getInstance()->getAsList()[selectedRows[0].row()];
             showPayments(rpi);               
         }
@@ -402,6 +414,20 @@ void Recurring::showRecurringDialog(MainWindow* parent) {
     QObject::connect(rd.tableView, &QTableView::doubleClicked, [=] (auto index) {
         auto rpi = Recurring::getInstance()->getAsList()[index.row()];
         showPayments(rpi);           
+    });
+
+    // Delete button
+    QObject::connect(rd.btnDelete, &QPushButton::clicked, [=]() {
+        auto selectedRows = rd.tableView->selectionModel()->selectedRows();
+        if (selectedRows.size() == 1) {
+            auto rpi = Recurring::getInstance()->getAsList()[selectedRows[0].row()];
+            if (QMessageBox::warning(parent, QObject::tr("Are you sure you want to delete the recurring payment?"), 
+                QObject::tr("Are you sure you want to delete the recurring payment?") + "\n" + 
+                QObject::tr("All future payments will be cancelled."),
+                QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
+                Recurring::getInstance()->removeRecurringInfo(rpi.getHash());
+                }
+        }
     });
 
     d.exec();
