@@ -17,8 +17,9 @@ QString schedule_desc(Schedule s) {
 }
 
 RecurringPaymentInfo RecurringPaymentInfo::fromJson(QJsonObject j) {
-    RecurringPaymentInfo r;
-    r.hashid = j["hash"].toString();
+
+    // We create a payment info with 0 items, and then fill them in later.
+    RecurringPaymentInfo r(0);
     r.desc = j["desc"].toString();
     r.fromAddr = j["from"].toString();
     r.toAddr = j["to"].toString();
@@ -29,41 +30,39 @@ RecurringPaymentInfo RecurringPaymentInfo::fromJson(QJsonObject j) {
     r.frequency = j["frequency"].toInt();
     r.numPayments = j["numpayments"].toInt();
     r.startDate = QDateTime::fromSecsSinceEpoch(j["startdate"].toString().toLongLong());
-    r.completedPayments = j["completed"].toInt();
 
-    r.history = QList<HistoryItem>();
-    for (auto h : j["history"].toArray()) {
-        HistoryItem item;
+    for (auto h : j["payments"].toArray()) {
+        PaymentItem item;
 
         item.paymentNumber = h.toObject()["paymentnumber"].toInt();
         item.date = QDateTime::fromSecsSinceEpoch(h.toObject()["date"].toString().toLongLong());
         item.txid = h.toObject()["txid"].toString();
-        item.status = h.toObject()["status"].toString();
+        item.status = (PaymentStatus)h.toObject()["status"].toInt();
 
-        r.history.append(item);
+        r.payments.append(item);
     }
 
     return r;
 }
 
-void RecurringPaymentInfo::updateHash() {
+QString RecurringPaymentInfo::getHash() const {
     auto val = getScheduleDescription() + fromAddr + toAddr;
-    hashid = QString(QCryptographicHash::hash(val.toUtf8(), QCryptographicHash::Sha256).toHex());
+    return QString(QCryptographicHash::hash(val.toUtf8(), 
+                    QCryptographicHash::Sha256).toHex());
 }
 
 QJsonObject RecurringPaymentInfo::toJson() {
-    QJsonArray historyJson;
-    for (auto h : history) {
-        historyJson.append(QJsonObject{
+    QJsonArray paymentsJson;
+    for (auto h : payments) {
+        paymentsJson.append(QJsonObject{
             {"paymentnumber", h.paymentNumber},
             {"date", QString::number(h.date.toSecsSinceEpoch())},
             {"txid", h.txid},
             {"status", h.status}
-            });
+        });
     }
 
     auto j = QJsonObject{
-        {"hash", hashid},
         {"desc", desc},
         {"from", fromAddr},
         {"to", toAddr},
@@ -74,18 +73,17 @@ QJsonObject RecurringPaymentInfo::toJson() {
         {"frequency", frequency},
         {"numpayments", numPayments},
         {"startdate", QString::number(startDate.toSecsSinceEpoch())},
-        {"completed", completedPayments},
-        {"history", historyJson}
+        {"payments", paymentsJson}
     };
 
     return j;
 }
 
-QString RecurringPaymentInfo::getAmountPretty() {
+QString RecurringPaymentInfo::getAmountPretty() const {
     return currency == "USD" ? Settings::getUSDFormat(amt) : Settings::getZECDisplayFormat(amt);
 }
 
-QString RecurringPaymentInfo::getScheduleDescription() {
+QString RecurringPaymentInfo::getScheduleDescription() const {
     return "Pay " % getAmountPretty()
         % " every " % schedule_desc(schedule) % ", starting " % startDate.toString("yyyy-MMM-dd")
         % ", for " % QString::number(numPayments) % " payments";
@@ -165,10 +163,10 @@ RecurringPaymentInfo* Recurring::getNewRecurringFromTx(QWidget* parent, MainWind
     ui.txtDesc->setFocus();
     if (d.exec() == QDialog::Accepted) {
         // Construct a new Object and return it
-        auto r = new RecurringPaymentInfo();
+        auto numPayments = ui.txtNumPayments->text().toInt();
+        auto r = new RecurringPaymentInfo(numPayments);
         r->desc = ui.txtDesc->text();
-        r->currency = ui.cmbCurrency->currentText();
-        r->numPayments = ui.txtNumPayments->text().toInt();
+        r->currency = ui.cmbCurrency->currentText();        
         r->schedule = (Schedule)ui.cmbSchedule->currentData().toInt();
         r->startDate = QDateTime::currentDateTime();
         
@@ -192,8 +190,6 @@ void Recurring::updateInfoWithTx(RecurringPaymentInfo* r, Tx tx) {
         r->currency = Settings::getTokenName();
         r->amt = tx.toAddrs[0].amount;
     }
-
-    r->updateHash();
 }
 
 QDateTime Recurring::getNextPaymentDate(Schedule s) {
@@ -225,11 +221,11 @@ QString Recurring::writeableFile() {
 }
 
 void Recurring::addRecurringInfo(const RecurringPaymentInfo& rpi) {
-    if (payments.contains(rpi.hashid)) {
-        payments.remove(rpi.hashid);
+    if (payments.contains(rpi.getHash())) {
+        payments.remove(rpi.getHash());
     }
     
-    payments.insert(rpi.hashid, rpi);
+    payments.insert(rpi.getHash(), rpi);
     
     writeToStorage();
 }
@@ -244,8 +240,7 @@ void Recurring::readFromFile() {
 
     for (auto k : jsondoc.array()) {
         auto p = RecurringPaymentInfo::fromJson(k.toObject());
-        p.updateHash();
-        payments.insert(p.hashid, p);
+        payments.insert(p.getHash(), p);
     }
 }
 
@@ -255,14 +250,32 @@ void Recurring::writeToStorage() {
     file.open(QIODevice::ReadWrite | QIODevice::Truncate);
 
     QJsonArray arr;
-    for (auto k : payments.keys()) {
-        arr.append(payments[k].toJson());
+    for (auto v : payments.values()) {
+        arr.append(v.toJson());
     }
 
     QTextStream out(&file);   
     out << QJsonDocument(arr).toJson();
 
     file.close();
+}
+
+/**
+ * Lookup the recurring payment info with the given hash, and update
+ * a payment made
+ **/
+bool Recurring::updatePaymentItem(QString hash, int paymentNumber, 
+                    QString txid, PaymentStatus status) {
+    if (!payments.contains(hash)) {
+        return false;
+    }
+
+    payments[hash].payments[paymentNumber].date   = QDateTime::currentDateTime();
+    payments[hash].payments[paymentNumber].txid   = txid;
+    payments[hash].payments[paymentNumber].status = status;
+
+    writeToStorage();
+    return true;
 }
 
 Recurring* Recurring::getInstance() {

@@ -5,6 +5,9 @@
 #include "settings.h"
 
 class MainWindow;
+class Recurring;
+class RecurringListViewModel;
+
 struct Tx;
 
 enum Schedule {
@@ -14,11 +17,18 @@ enum Schedule {
     YEAR
 };
 
+enum PaymentStatus {
+    NOT_STARTED = 0,
+    SKIPPED,
+    COMPLETED,
+    ERROR,
+    UNKNOWN
+};
+
 QString schedule_desc(Schedule s);
 
-struct RecurringPaymentInfo {
-    QString     hashid;
-
+class RecurringPaymentInfo {
+private:
     QString     desc;
     QString     fromAddr;
     QString     toAddr;
@@ -28,25 +38,36 @@ struct RecurringPaymentInfo {
     Schedule    schedule;
     int         frequency;
     int         numPayments;
-
     QDateTime   startDate;
-    int         completedPayments;
 
-    struct HistoryItem {
-        int         paymentNumber;
-        QDateTime   date;
-        QString     txid;
-        QString     status;
+    struct PaymentItem {
+        int           paymentNumber;
+        QDateTime     date;
+        QString       txid;
+        PaymentStatus status;
     };
 
-    QList<HistoryItem> history;
-    
-    void        updateHash();
-    QString     getScheduleDescription();
+    QList<PaymentItem> payments;
+
+friend class Recurring;    
+friend class RecurringListViewModel;
+
+public:
+    RecurringPaymentInfo(int numPayments = 0) {
+        // Initialize the payments list.
+        for (auto i = 0; i < numPayments; i++) {
+            payments.append(
+                PaymentItem{i, QDateTime::fromSecsSinceEpoch(0), 
+                "", PaymentStatus::NOT_STARTED});
+        }
+        this->numPayments = numPayments;
+    }
+
+    QString     getScheduleDescription() const;
     QJsonObject toJson();
 
-
-    QString getAmountPretty();
+    QString getAmountPretty() const;
+    QString getHash() const;
 
     static RecurringPaymentInfo fromJson(QJsonObject j);
 };
@@ -67,6 +88,8 @@ public:
 
     void        addRecurringInfo(const RecurringPaymentInfo& rpi);
     void        writeToStorage();
+
+    bool updatePaymentItem(QString hash, int paymentNumber, QString txid, PaymentStatus status);
 
     QList<RecurringPaymentInfo> getAsList() { return payments.values(); }
 private:

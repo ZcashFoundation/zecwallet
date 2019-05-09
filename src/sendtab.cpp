@@ -107,8 +107,8 @@ void MainWindow::setupSendTab() {
 
 void MainWindow::editSchedule() {
     // Open the edit schedule dialog
-    RecurringPaymentInfo* recurringInfo = Recurring::getInstance()->getNewRecurringFromTx(this, this, 
-                                                createTxFromSendPage(), this->sendTxRecurringInfo);
+    auto recurringInfo = Recurring::getInstance()->getNewRecurringFromTx(this, this, 
+                            createTxFromSendPage(), this->sendTxRecurringInfo);
     if (recurringInfo == nullptr) {
         // User pressed cancel. 
         // If there is no existing recurring info, uncheck the recurring box
@@ -416,6 +416,7 @@ void MainWindow::clearSendForm() {
     ui->chkRecurring->setCheckState(Qt::Unchecked);
     ui->btnRecurSchedule->setEnabled(false);
     ui->lblRecurDesc->setText("");
+
     delete sendTxRecurringInfo;
     sendTxRecurringInfo = nullptr;
 }
@@ -530,7 +531,6 @@ bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
     // Update the recurring info with the latest Tx
     if (rpi != nullptr) {
         Recurring::getInstance()->updateInfoWithTx(rpi, tx);
-        rpi->updateHash();
     }
 
     // Show a confirmation dialog
@@ -692,8 +692,15 @@ void MainWindow::sendButton() {
 
     // Show a dialog to confirm the Tx
     if (confirmTx(tx, sendTxRecurringInfo)) {
-        // Add it to the list
-        Recurring::getInstance()->addRecurringInfo(*sendTxRecurringInfo);
+        
+        // If this is a recurring payment, save the hash so we can 
+        // update the payment if it submits. 
+        QString recurringPaymentHash;
+        if (sendTxRecurringInfo) {
+            // Add it to the list
+            Recurring::getInstance()->addRecurringInfo(*sendTxRecurringInfo);
+            recurringPaymentHash = sendTxRecurringInfo->getHash();
+        }
 
         // Then delete the additional fields from the sendTo tab
         clearSendForm();
@@ -707,6 +714,13 @@ void MainWindow::sendButton() {
             // Accepted
             [=] (QString opid, QString txid) { 
                 ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
+
+                // If this was a recurring payment, update the payment with the info
+                if (!recurringPaymentHash.isEmpty()) {
+                    // Since this is the send button payment, this is the first payment
+                    Recurring::getInstance()->updatePaymentItem(recurringPaymentHash, 0, 
+                            txid, PaymentStatus::COMPLETED);
+                }
             },
             // Errored out
             [=] (QString opid, QString errStr) {
