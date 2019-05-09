@@ -414,7 +414,7 @@ void MainWindow::setupStatusBar() {
                     url = "https://explorer.testnet.z.cash/tx/" + txid;
                 }
                 else {
-                    url = "https://explorer.pirate.black/tx/" + txid;
+                    url = "https://explorer.myhush.org/tx/" + txid;
                 }
                 QDesktopServices::openUrl(QUrl(url));
             });
@@ -1093,7 +1093,7 @@ void MainWindow::setupBalancesTab() {
                 if (Settings::getInstance()->isTestnet()) {
                     url = "https://explorer.testnet.z.cash/address/" + addr;
                 } else {
-                    url = "https://explorer.pirate.black/address/" + addr;
+                    url = "https://explorer.myhush.org/address/" + addr;
                 }
                 QDesktopServices::openUrl(QUrl(url));
             });
@@ -1159,7 +1159,7 @@ void MainWindow::setupTransactionsTab() {
             if (Settings::getInstance()->isTestnet()) {
                 url = "https://explorer.testnet.z.cash/tx/" + txid;
             } else {
-                url = "https://explorer.pirate.black/tx/" + txid;
+                url = "https://explorer.myhush.org/tx/" + txid;
             }
             QDesktopServices::openUrl(QUrl(url));
         });
