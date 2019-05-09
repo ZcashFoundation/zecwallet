@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Recurring payments 
     QObject::connect(ui->action_Recurring_Payments, &QAction::triggered, [=]() {
-        Recurring::getInstance()->showRecurringDialog();
+        Recurring::getInstance()->showRecurringDialog(this);
     });
 
     // Request zcash

@@ -7,6 +7,7 @@
 class MainWindow;
 class Recurring;
 class RecurringListViewModel;
+class RecurringPaymentsListViewModel;
 
 struct Tx;
 
@@ -50,6 +51,7 @@ private:
 
 friend class Recurring;    
 friend class RecurringListViewModel;
+friend class RecurringPaymentsListViewModel;
 
 public:
     RecurringPaymentInfo(int numPayments = 0) {
@@ -83,7 +85,7 @@ public:
     QString     writeableFile();
     void        readFromFile();
 
-    static void         showRecurringDialog();
+    static void         showRecurringDialog(MainWindow* parent);
     static QDateTime    getNextPaymentDate(Schedule s, QDateTime start = QDateTime::currentDateTime());
 
     void        addRecurringInfo(const RecurringPaymentInfo& rpi);
@@ -100,6 +102,7 @@ private:
 };
 
 
+// Model for list of configured recurring payments
 class RecurringListViewModel : public QAbstractTableModel {
 
 public:
@@ -114,6 +117,24 @@ public:
 private:
     QTableView* parent;
     QStringList headers;
+};
+
+// Model for history of payments
+class RecurringPaymentsListViewModel : public QAbstractTableModel {
+
+public:
+    RecurringPaymentsListViewModel(QTableView* parent, RecurringPaymentInfo rpi);
+    ~RecurringPaymentsListViewModel() = default;
+
+    int      rowCount(const QModelIndex &parent) const;
+    int      columnCount(const QModelIndex &parent) const;
+    QVariant data(const QModelIndex &index, int role) const;
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+
+private:
+    QTableView* parent;
+    QStringList headers;
+    RecurringPaymentInfo rpi;
 };
 
 #endif // RECURRING_H

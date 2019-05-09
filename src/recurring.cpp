@@ -5,6 +5,7 @@
 #include "settings.h"
 #include "ui_newrecurring.h"
 #include "ui_recurringdialog.h"
+#include "ui_recurringpayments.h"
 
 QString schedule_desc(Schedule s) {
     switch (s) {
@@ -330,7 +331,7 @@ Recurring* Recurring::getInstance() {
 Recurring* Recurring::instance = nullptr;
 
 
-void Recurring::showRecurringDialog() {
+void Recurring::showRecurringDialog(MainWindow* parent) {
     Ui_RecurringDialog rd;
     QDialog d;
     
@@ -344,6 +345,65 @@ void Recurring::showRecurringDialog() {
     QSettings s;
     rd.tableView->horizontalHeader()->restoreState(s.value("recurringtablegeom").toByteArray());
 
+    auto showPayments = [=] (const RecurringPaymentInfo& rpi) {
+        Ui_RecurringPayments p;
+        QDialog d;
+
+        p.setupUi(&d);
+        Settings::saveRestore(&d);
+
+        auto model = new RecurringPaymentsListViewModel(p.tableView, rpi);
+        p.tableView->setModel(model);
+
+        p.tableView->setContextMenuPolicy(Qt::CustomContextMenu);
+        QObject::connect(p.tableView, &QTableView::customContextMenuRequested, [=] (QPoint pos) {
+            QModelIndex index = p.tableView->indexAt(pos);
+            if (index.row() < 0 || index.row() >= rpi.payments.size()) return;
+
+            int paymentNumber = index.row();
+            auto txid = rpi.payments[paymentNumber].txid;
+            QMenu menu(parent);
+            if (!txid.isEmpty()) {
+                menu.addAction(QObject::tr("View on block explorer"), [=] () {
+                    QString url;
+                    if (Settings::getInstance()->isTestnet()) {
+                        url = "https://explorer.testnet.z.cash/tx/" + txid;
+                    } else {
+                        url = "https://explorer.zcha.in/transactions/" + txid;
+                    }
+                    QDesktopServices::openUrl(QUrl(url));
+                });
+            }
+
+            menu.exec(p.tableView->viewport()->mapToGlobal(pos));
+        });
+
+        // Restore the table column layout
+        QSettings s;
+        p.tableView->horizontalHeader()->restoreState(s.value("recurringpaymentstablevgeom").toByteArray());
+    
+        d.exec();
+
+        // Save the table column layout
+        s.setValue("recurringpaymentstablevgeom", p.tableView->horizontalHeader()->saveState()); 
+    };
+
+    // View Button
+    QObject::connect(rd.btnView, &QPushButton::clicked, [=] () {
+        auto selectedRows = rd.tableView->selectionModel()->selectedRows();
+        if (selectedRows.size() == 1) {
+            std::cout << selectedRows[0].row() << std::endl;
+            auto rpi = Recurring::getInstance()->getAsList()[selectedRows[0].row()];
+            showPayments(rpi);               
+        }
+    });
+
+    // Double Click
+    QObject::connect(rd.tableView, &QTableView::doubleClicked, [=] (auto index) {
+        auto rpi = Recurring::getInstance()->getAsList()[index.row()];
+        showPayments(rpi);           
+    });
+
     d.exec();
 
     // Save the table column layout
@@ -352,6 +412,9 @@ void Recurring::showRecurringDialog() {
     delete model;
 }
 
+/**
+ * Model for  List of recurring payments
+ */ 
 RecurringListViewModel::RecurringListViewModel(QTableView* parent) {
     this->parent = parent;
     headers << tr("Amount") << tr("Schedule") << tr("Payments Left") 
@@ -398,3 +461,57 @@ QVariant RecurringListViewModel::headerData(int section, Qt::Orientation orienta
 
     return QVariant();
 }
+
+/**
+ * Model for history of payments for a single recurring payment
+ */
+RecurringPaymentsListViewModel::RecurringPaymentsListViewModel(QTableView* parent, RecurringPaymentInfo rpi) {
+    this->parent = parent;
+    this->rpi = rpi;
+    headers << tr("Date") << tr("Status") << tr("Txid");
+}
+
+
+int RecurringPaymentsListViewModel::rowCount(const QModelIndex &parent) const {
+    return rpi.payments.size();
+}
+
+int RecurringPaymentsListViewModel::columnCount(const QModelIndex &parent) const {
+    return headers.size();
+}
+
+QVariant RecurringPaymentsListViewModel::data(const QModelIndex &index, int role) const {
+    auto item = rpi.payments[index.row()];
+
+    if (role == Qt::DisplayRole) {
+        switch (index.column()) {
+            case 0: return item.date;
+            case 1: {
+                switch(item.status) {
+                    case PaymentStatus::NOT_STARTED: return tr("Not due yet");
+                    case PaymentStatus::SKIPPED:     return tr("Skipped");
+                    case PaymentStatus::COMPLETED:   return tr("Paid");
+                    case PaymentStatus::ERROR:       return tr("Error");
+                    case PaymentStatus::UNKNOWN:     return tr("Unknown");
+                }
+            }
+            case 2: return item.txid;
+        }
+    }
+
+    return QVariant();
+}
+
+QVariant RecurringPaymentsListViewModel::headerData(int section, Qt::Orientation orientation, int role) const {
+    if (role == Qt::FontRole) {
+        QFont f;
+        f.setBold(true);
+        return f;
+    }
+
+    if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
+        return headers.at(section);
+    }
+
+    return QVariant();
+} 
