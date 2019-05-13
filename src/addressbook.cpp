@@ -254,6 +254,15 @@ void AddressBook::readFromStorage() {
     QString version;
     in >> version >> allLabels; 
 
+    // Special. 
+    // Add the default ZecWallet donation address if it isn't already present
+    QList<QString> allAddresses;
+    std::transform(allLabels.begin(), allLabels.end(), 
+        std::back_inserter(allAddresses), [=] (auto i) { return i.second; });
+    if (!allAddresses.contains(Settings::getDonationAddr(true))) {
+        allLabels.append(QPair<QString, QString>("ZecWallet donation", Settings::getDonationAddr(true)));
+    }
+
     file.close();
 }
 
