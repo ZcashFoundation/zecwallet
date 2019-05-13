@@ -62,6 +62,9 @@ public:
     void updateTAddrCombo(bool checked);
     void updateFromCombo();
 
+    // Check whether the RPC is returned and payments are ready to be made
+    bool isPaymentsReady() { return uiPaymentsReady; }
+
     Ui::MainWindow*     ui;
 
     QLabel*             statusLabel;

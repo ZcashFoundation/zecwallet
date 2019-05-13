@@ -719,7 +719,7 @@ void MainWindow::sendButton() {
                 if (!recurringPaymentHash.isEmpty()) {
                     // Since this is the send button payment, this is the first payment
                     Recurring::getInstance()->updatePaymentItem(recurringPaymentHash, 0, 
-                            txid, PaymentStatus::COMPLETED);
+                            txid, "", PaymentStatus::COMPLETED);
                 }
             },
             // Errored out
@@ -728,6 +728,13 @@ void MainWindow::sendButton() {
 
                 if (!opid.isEmpty())
                     errStr = QObject::tr("The transaction with id ") % opid % QObject::tr(" failed. The error was") + ":\n\n" + errStr; 
+
+                // If this was a recurring payment, update the payment with the failure
+                if (!recurringPaymentHash.isEmpty()) {
+                    // Since this is the send button payment, this is the first payment
+                    Recurring::getInstance()->updatePaymentItem(recurringPaymentHash, 0, 
+                            "", errStr, PaymentStatus::ERROR); 
+                }                   
 
                 QMessageBox::critical(this, QObject::tr("Transaction Error"), errStr, QMessageBox::Ok);            
             }

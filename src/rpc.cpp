@@ -560,6 +560,9 @@ void RPC::getInfoThenRefresh(bool force) {
             // See if the turnstile migration has any steps that need to be done.
             turnstile->executeMigrationStep();
 
+            // See if recurring payments needs anything
+            Recurring::getInstance()->processPending(main);
+
             refreshBalances();        
             refreshAddresses(); // This calls refreshZSentTransactions() and refreshReceivedZTrans()
             refreshTransactions();
@@ -643,7 +646,7 @@ void RPC::getInfoThenRefresh(bool force) {
             ui->lblSyncWarning->setVisible(isSyncing);
             ui->lblSyncWarningReceive->setVisible(isSyncing);
 
-            auto zecPrice = Settings::getUSDFormat(1);
+            auto zecPrice = Settings::getInstance()->getUSDFromZecAmount(1);
             QString tooltip;
             if (connections > 0) {
                 tooltip = QObject::tr("Connected to zcashd");
@@ -765,9 +768,9 @@ void RPC::refreshBalances() {
         ui->balTotal      ->setText(Settings::getZECDisplayFormat(balTotal));
 
 
-        ui->balSheilded   ->setToolTip(Settings::getUSDFormat(balZ));
-        ui->balTransparent->setToolTip(Settings::getUSDFormat(balT));
-        ui->balTotal      ->setToolTip(Settings::getUSDFormat(balTotal));
+        ui->balSheilded   ->setToolTip(Settings::getZECDisplayFormat(balZ));
+        ui->balTransparent->setToolTip(Settings::getZECDisplayFormat(balT));
+        ui->balTotal      ->setToolTip(Settings::getZECDisplayFormat(balTotal));
     });
 
     // 2. Get the UTXOs

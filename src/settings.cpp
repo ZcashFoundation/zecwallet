@@ -161,7 +161,7 @@ void Settings::saveRestore(QDialog* d) {
 }
 
 QString Settings::getUSDFormat(double bal) {
-    return "$" + QLocale(QLocale::English).toString(bal * Settings::getInstance()->getZECPrice(), 'f', 2);
+    return "$" + QLocale(QLocale::English).toString(bal, 'f', 2);
 }
 
 

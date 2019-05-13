@@ -246,6 +246,11 @@ void Turnstile::executeMigrationStep() {
     if (Settings::getInstance()->isSyncing())
         return;
 
+    // Also, process payments only when the Payments UI is ready, otherwise
+    // we might mess things up
+    if (!mainwindow->isPaymentsReady())
+        return;
+
     auto plan = readMigrationPlan();
 
     //qDebug() << QString("Executing step");

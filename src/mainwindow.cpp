@@ -804,7 +804,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
 // the transaction.
 void MainWindow::payZcashURI(QString uri, QString myAddr) {
     // If the Payments UI is not ready (i.e, all balances have not loaded), defer the payment URI
-    if (!uiPaymentsReady) {
+    if (!isPaymentsReady()) {
         qDebug() << "Payment UI not ready, waiting for UI to pay URI";
         pendingURIPayment = uri;
         return;

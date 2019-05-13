@@ -44,6 +44,7 @@ private:
         int           paymentNumber;
         QDateTime     date;
         QString       txid;
+        QString       err;
         PaymentStatus status;
     };
 
@@ -59,7 +60,7 @@ public:
         for (auto i = 0; i < numPayments; i++) {
             payments.append(
                 PaymentItem{i, QDateTime::fromSecsSinceEpoch(0), 
-                "", PaymentStatus::NOT_STARTED});
+                "", "", PaymentStatus::NOT_STARTED});
         }
     }
 
@@ -83,16 +84,24 @@ public:
  
     void        updateInfoWithTx(RecurringPaymentInfo* r, Tx tx);
     QString     writeableFile();
-    void        readFromFile();
 
     static void         showRecurringDialog(MainWindow* parent);
     static QDateTime    getNextPaymentDate(Schedule s, QDateTime start = QDateTime::currentDateTime());
 
     void        addRecurringInfo(const RecurringPaymentInfo& rpi);
     void        removeRecurringInfo(QString hash);
-    void        writeToStorage();
 
-    bool updatePaymentItem(QString hash, int paymentNumber, QString txid, PaymentStatus status);
+    void        writeToStorage();
+    void        readFromStorage();
+
+    // Worker method that goes through all pending recurring payments to see if any 
+    // need to be processed.
+    void        processPending(MainWindow* main);
+
+    // Execute a Tx
+    void        doSendTx(MainWindow* rpc, Tx tx, std::function<void(QString, QString)> cb);
+
+    bool updatePaymentItem(QString hash, int paymentNumber, QString txid, QString err, PaymentStatus status);
 
     QList<RecurringPaymentInfo> getAsList() { return payments.values(); }
 private:
