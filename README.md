@@ -1,6 +1,6 @@
 SilentDragon desktop wallet for HUSH ($HUSH) that runs on Linux, Windows and macOS.
 
-![Screenshots](docs/screenshot-sub.png?raw=true)
+![Screenshots](silentdragon.png?raw=true)
 # Installation
 
 Head over to the releases page and grab the latest installers or binary. https://github.com/MyHush/SilentDragon/releases
