@@ -642,29 +642,29 @@ void RPC::getInfoThenRefresh(bool force) {
             auto zecPrice = Settings::getUSDFormat(1);
             QString tooltip;
             if (connections > 0) {
-                tooltip = QObject::tr("Connected to zcashd");
+                tooltip = QObject::tr("Connected to hushd");
             }
             else {
-                tooltip = QObject::tr("zcashd has no peer connections");
+                tooltip = QObject::tr("hushd has no peer connections! Network issues?");
             }
             tooltip = tooltip % "(v " % QString::number(Settings::getInstance()->getZcashdVersion()) % ")";
 
             if (!zecPrice.isEmpty()) {
-                tooltip = "1 ZEC = " % zecPrice % "\n" % tooltip;
+                tooltip = "1 HUSH = " % zecPrice % "\n" % tooltip;
             }
             main->statusLabel->setToolTip(tooltip);
             main->statusIcon->setToolTip(tooltip);
         });
 
     }, [=](QNetworkReply* reply, const json&) {
-        // zcashd has probably disappeared.
+        // hushd has probably disappeared.
         this->noConnection();
 
         // Prevent multiple dialog boxes, because these are called async
         static bool shown = false;
         if (!shown && prevCallSucceeded) { // show error only first time
             shown = true;
-            QMessageBox::critical(main, QObject::tr("Connection Error"), QObject::tr("There was an error connecting to zcashd. The error was") + ": \n\n"
+            QMessageBox::critical(main, QObject::tr("Connection Error"), QObject::tr("There was an error connecting to hushd. The error was") + ": \n\n"
                 + reply->errorString(), QMessageBox::StandardButton::Ok);
             shown = false;
         }
@@ -1043,11 +1043,9 @@ void RPC::refreshZECPrice() {
     if  (conn == nullptr) 
         return noConnection();
 
-    QUrl cmcURL("http://api1.barterdexapi.net/pirateprice.php");
-
+    QUrl cmcURL("https://api.coingecko.com/api/v3/simple/price?ids=hush&vs_currencies=btc%2Cusd%2Ceur&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true");
     QNetworkRequest req;
     req.setUrl(cmcURL);
-    
     QNetworkReply *reply = conn->restclient->get(req);
 
     QObject::connect(reply, &QNetworkReply::finished, [=] {
@@ -1063,26 +1061,24 @@ void RPC::refreshZECPrice() {
                 }
                 Settings::getInstance()->setZECPrice(0);
                 return;
-            } 
+            }
 
             auto all = reply->readAll();
-            
             auto parsed = json::parse(all, nullptr, false);
             if (parsed.is_discarded()) {
                 Settings::getInstance()->setZECPrice(0);
                 return;
             }
 
-	    
             const json& item = parsed.get<json::object_t>();
-                if (item["coin"].get<json::string_t>() == "PIRATE") {
-                    QString price = QString::fromStdString(item["priceUSD"].get<json::string_t>());
-                    qDebug() << "HUSH Price=" << price;
-                    Settings::getInstance()->setZECPrice(price.toDouble());
+            if (item["hush"]) {
+                // TODO: support BTC/EUR prices as well
+                QString price = QString::fromStdString(item["hush"]["usd"].get<json::string_t>());
+                qDebug() << "HUSH = $" << price;
+                Settings::getInstance()->setZECPrice(price.toDouble());
 
-                    return;
-                }
-	
+                return;
+            }
         } catch (...) {
             // If anything at all goes wrong, just set the price to 0 and move on.
             qDebug() << QString("Caught something nasty");
@@ -1114,7 +1110,7 @@ void RPC::shutdownZcashd() {
     connD.setupUi(&d);
     connD.topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));
     connD.status->setText(QObject::tr("Please wait for SilentDragon to exit"));
-    connD.statusDetail->setText(QObject::tr("Waiting for zcashd to exit"));
+    connD.statusDetail->setText(QObject::tr("Waiting for hushd to exit"));
 
     QTimer waiter(main);
 
