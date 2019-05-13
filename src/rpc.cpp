@@ -1063,6 +1063,7 @@ void RPC::refreshZECPrice() {
                 return;
             }
 
+            qDebug() << "No network errors\n";
             auto all = reply->readAll();
             auto parsed = json::parse(all, nullptr, false);
             if (parsed.is_discarded()) {
@@ -1072,6 +1073,7 @@ void RPC::refreshZECPrice() {
 
             const json& item = parsed.get<json::object_t>();
             if (item["hush"]) {
+                qDebug() << "Found hush key in price json\n";
                 // TODO: support BTC/EUR prices as well
                 QString price = QString::fromStdString(item["hush"]["usd"].get<json::string_t>());
                 qDebug() << "HUSH = $" << price;
