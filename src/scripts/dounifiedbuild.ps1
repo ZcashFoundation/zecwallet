@@ -62,7 +62,7 @@ ssh $winserver "New-Item zqwbuild -itemtype directory" | Out-Null
 # So, we'll ssh to windows, and execute an scp command to pull files from here to there.
 # Same while copying the built msi. A straight scp pull from windows to here doesn't work,
 # so we ssh to windows, and then scp push the file to here.
-$myhostname = (hostname) | Out-String -NoNewline
+$myhostname = (ipconfig getifaddr en0) | Out-String -NoNewline
 # Powershell seems not to be able to remove this directory for some reason!
 # Remove-Item -Path /tmp/zqwbuild -Recurse -ErrorAction Ignore | Out-Null
 bash "rm -rf /tmp/zqwbuild" 2>&1 | Out-Null
