@@ -60,7 +60,7 @@ make
 ./SilentDragon.app/Contents/MacOS/SilentDragon
 ```
 
-### [Troubleshooting Guide & FAQ](https://github.com/MyHush/SilentDragon/wiki/Troubleshooting-&-FAQ)
-Please read the [troubleshooting guide](https://docs.SilentDragon.co/troubleshooting/) for common problems and solutions.
-For support or other questions, tweet at [@SilentDragon](https://twitter.com/SilentDragon) or [file an issue](https://github.com/MyHush/SilentDragon/issues).
+### Support
+
+For support or other questions, Join [Discord](https://myhush.org/discord), or tweet at [@MyHushTeam](https://twitter.com/MyHushTeam) or [file an issue](https://github.com/MyHush/SilentDragon/issues).
 
