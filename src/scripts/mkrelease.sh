@@ -43,7 +43,7 @@ fi
 
 echo -n "Version files.........."
 # Replace the version number in the .pro file so it gets picked up everywhere
-sed -i "s/${PREV_VERSION}/${APP_VERSION}/g" zec-qt-wallet.pro > /dev/null
+sed -i "s/${PREV_VERSION}/${APP_VERSION}/g" silentdragon.pro > /dev/null
 
 # Also update it in the README.md
 sed -i "s/${PREV_VERSION}/${APP_VERSION}/g" README.md > /dev/null
@@ -60,7 +60,7 @@ echo "[Building on" `lsb_release -r`"]"
 
 echo -n "Configuring............"
 QT_STATIC=$QT_STATIC bash src/scripts/dotranslations.sh >/dev/null
-$QT_STATIC/bin/qmake zec-qt-wallet.pro -spec linux-clang CONFIG+=release > /dev/null
+$QT_STATIC/bin/qmake silentdragon.pro -spec linux-clang CONFIG+=release > /dev/null
 echo "[OK]"
 
 
@@ -163,7 +163,7 @@ make clean  > /dev/null
 rm -f zec-qt-wallet-mingw.pro
 rm -rf release/
 #Mingw seems to have trouble with precompiled headers, so strip that option from the .pro file
-cat zec-qt-wallet.pro | sed "s/precompile_header/release/g" | sed "s/PRECOMPILED_HEADER.*//g" > zec-qt-wallet-mingw.pro
+cat silentdragon.pro | sed "s/precompile_header/release/g" | sed "s/PRECOMPILED_HEADER.*//g" > zec-qt-wallet-mingw.pro
 echo "[OK]"
 
 

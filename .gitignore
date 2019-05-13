@@ -20,7 +20,7 @@ zec-qt-wallet-mingw*
 zec-qt-wallet.vcxproj*
 zecwallet.vcxproj*
 zec-qt-wallet.sln
-zec-qt-wallet.pro.user
+silentdragon.pro.user
 Makefile
 Makefile.*
 qrc_application.cpp

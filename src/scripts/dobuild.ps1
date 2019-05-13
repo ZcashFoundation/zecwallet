@@ -26,7 +26,7 @@ Write-Host "[Building Linux + Windows]"
 Write-Host -NoNewline "Copying files.........."
 ssh $server "rm -rf /tmp/zqwbuild"
 ssh $server "mkdir /tmp/zqwbuild"
-scp -r src/ res/ ./zec-qt-wallet.pro ./application.qrc ./LICENSE ./README.md ${server}:/tmp/zqwbuild/ | Out-Null
+scp -r src/ res/ ./silentdragon.pro ./application.qrc ./LICENSE ./README.md ${server}:/tmp/zqwbuild/ | Out-Null
 ssh $server "dos2unix -q /tmp/zqwbuild/src/scripts/mkrelease.sh" | Out-Null
 ssh $server "dos2unix -q /tmp/zqwbuild/src/version.h"
 Write-Host "[OK]"
