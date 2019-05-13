@@ -783,6 +783,8 @@ void MainWindow::balancesReady() {
         pendingURIPayment = "";
     }
 
+    // Execute any pending Recurring payments
+    Recurring::getInstance()->processPending(this);
 }
 
 // Event filter for MacOS specific handling of payment URIs

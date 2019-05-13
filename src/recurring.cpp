@@ -6,6 +6,7 @@
 #include "ui_newrecurring.h"
 #include "ui_recurringdialog.h"
 #include "ui_recurringpayments.h"
+#include "ui_recurringmultiple.h"
 
 QString schedule_desc(Schedule s) {
     switch (s) {
@@ -136,8 +137,7 @@ RecurringPaymentInfo* Recurring::getNewRecurringFromTx(QWidget* parent, MainWind
         ui.lblTo->setText(tx.toAddrs[0].addr);
 
         // Default is USD
-        ui.txtAmt->setText(Settings::getUSDFromZecAmount(tx.toAddrs[0].amount));
-        ui.txtAmt->setEnabled(false);
+        ui.lblAmt->setText(Settings::getUSDFromZecAmount(tx.toAddrs[0].amount));
 
         ui.txtMemo->setPlainText(tx.toAddrs[0].txtMemo);
         ui.txtMemo->setEnabled(false);
@@ -149,10 +149,10 @@ RecurringPaymentInfo* Recurring::getNewRecurringFromTx(QWidget* parent, MainWind
             return;
 
         if (c == "USD") {
-            ui.txtAmt->setText(Settings::getUSDFromZecAmount(tx.toAddrs[0].amount));
+            ui.lblAmt->setText(Settings::getUSDFromZecAmount(tx.toAddrs[0].amount));
         }
         else {
-            ui.txtAmt->setText(Settings::getDecimalString(tx.toAddrs[0].amount));
+            ui.lblAmt->setText(Settings::getDecimalString(tx.toAddrs[0].amount));
         }
     });
 
@@ -174,7 +174,7 @@ RecurringPaymentInfo* Recurring::getNewRecurringFromTx(QWidget* parent, MainWind
         ui.txtMemo->setPlainText(rpi->memo);
         
         ui.cmbCurrency->setCurrentText(rpi->currency);
-        ui.txtAmt->setText(rpi->getAmountPretty()); 
+        ui.lblAmt->setText(rpi->getAmountPretty()); 
         ui.lblFrom->setText(rpi->fromAddr);
         ui.txtNumPayments->setText(QString::number(rpi->payments.size()));
         ui.cmbSchedule->setCurrentIndex(rpi->schedule);
@@ -235,8 +235,8 @@ QDateTime Recurring::getNextPaymentDate(Schedule s, QDateTime start) {
     case Schedule::WEEK: nextDate = nextDate.addDays(7); break;
     case Schedule::MONTH: nextDate = nextDate.addMonths(1); break;
     // TODO: For teesting only
-    //case Schedule::YEAR: nextDate = nextDate.addSecs(60); break;
-    case Schedule::YEAR: nextDate = nextDate.addYears(1); break;
+    case Schedule::YEAR: nextDate = nextDate.addSecs(5); break;
+    //case Schedule::YEAR: nextDate = nextDate.addYears(1); break;
     }
 
     return nextDate;
@@ -352,6 +352,9 @@ Recurring* Recurring::instance = nullptr;
 void Recurring::processPending(MainWindow* main) {
     qDebug() << "Processing payments";
 
+    if (!main->isPaymentsReady())
+        return;
+
     // For each recurring payment
     for (auto rpi: payments.values()) {
         // Collect all pending payments that are past due
@@ -401,8 +404,61 @@ void Recurring::processPending(MainWindow* main) {
                     updatePaymentItem(rpi.getHash(), pi.paymentNumber, "", err, PaymentStatus::ERROR);
                 }
             });
+        } else if (pending.size() > 1) {
+            // There are multiple pending payments. Ask the user what they want to do with it
+            // Options are: Pay latest one, Pay all or Pay none.
+            processMultiplePending(rpi, main);
         }
     }
+}
+
+/**
+ * Called when a particular RecurringPaymentInfo has more than one pending payment to be processed.
+ * We will ask the user what he wants to do.
+ */ 
+void Recurring::processMultiplePending(RecurringPaymentInfo rpi, MainWindow* main) {
+    Ui_RecurringPending ui;
+    QDialog d(main);
+    ui.setupUi(&d);
+    Settings::saveRestore(&d);
+
+    // Fill the UI
+    ui.lblDesc->setText    (rpi.desc);
+    ui.lblTo->setText      (rpi.toAddr);
+    ui.lblSchedule->setText(rpi.getScheduleDescription());
+
+    // Mark all the outstanding ones as pending, so it shows in the table correctly.
+    for (auto& pi: rpi.payments) {
+        if (pi.status == PaymentStatus::NOT_STARTED && 
+            pi.date <= QDateTime::currentDateTime()) {
+                pi.status = PaymentStatus::PENDING;
+            }
+    }
+
+    auto model = new RecurringPaymentsListViewModel(ui.tblPending, rpi);
+    ui.tblPending->setModel(model);
+
+    // Select none by default
+    ui.rNone->setChecked(true);
+
+
+    // Restore the table column layout
+    QSettings s;
+    ui.tblPending->horizontalHeader()->restoreState(s.value("recurringmultipaymentstablevgeom").toByteArray());
+
+    bool cancelled = (d.exec() == QDialog::Rejected);
+
+    if (cancelled || ui.rNone->isChecked()) {
+        // Update the status to skip all the pending payments
+        for (auto& pi: rpi.payments) {
+            if (pi.status == PaymentStatus::PENDING) {
+                updatePaymentItem(rpi.getHash(), pi.paymentNumber, "", "", PaymentStatus::SKIPPED);
+            }
+        }
+    }
+
+    // Save the table column layout
+    s.setValue("recurringmultipaymentstablevgeom", ui.tblPending->horizontalHeader()->saveState()); 
 }
 
 /**
@@ -553,7 +609,7 @@ QVariant RecurringListViewModel::data(const QModelIndex &index, int role) const 
         switch (index.column()) {
         case 0: return rpi.getAmountPretty();
         case 1: return tr("Every ") + schedule_desc(rpi.schedule);
-        case 2: return rpi.getNumPendingPayments() + " of " + rpi.payments.size(); 
+        case 2: return QString::number(rpi.getNumPendingPayments()) + " of " + QString::number(rpi.payments.size());
         case 3: { 
             auto n = rpi.getNextPayment();
             if (n.toSecsSinceEpoch() == 0) return tr("None"); else return n;
@@ -606,6 +662,7 @@ QVariant RecurringPaymentsListViewModel::data(const QModelIndex &index, int role
             case 1: {
                 switch(item.status) {
                     case PaymentStatus::NOT_STARTED: return tr("Not due yet");
+                    case PaymentStatus::PENDING:     return tr("Pending");
                     case PaymentStatus::SKIPPED:     return tr("Skipped");
                     case PaymentStatus::COMPLETED:   return tr("Paid");
                     case PaymentStatus::ERROR:       return tr("Error");

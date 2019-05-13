@@ -101,7 +101,8 @@ FORMS += \
     src/createzcashconfdialog.ui \
     src/recurringdialog.ui \
     src/newrecurring.ui \
-    src/requestdialog.ui
+    src/requestdialog.ui \
+    src/recurringmultiple.ui
 
 
 TRANSLATIONS = res/zec_qt_wallet_es.ts \

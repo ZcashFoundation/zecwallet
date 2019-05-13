@@ -20,6 +20,7 @@ enum Schedule {
 
 enum PaymentStatus {
     NOT_STARTED = 0,
+    PENDING,
     SKIPPED,
     COMPLETED,
     ERROR,
@@ -97,6 +98,8 @@ public:
     // Worker method that goes through all pending recurring payments to see if any 
     // need to be processed.
     void        processPending(MainWindow* main);
+    // If multiple are pending, we need to ask the user
+    void        processMultiplePending(RecurringPaymentInfo rpi, MainWindow* main);
 
     // Execute a Tx
     void        doSendTx(MainWindow* rpc, Tx tx, std::function<void(QString, QString)> cb);

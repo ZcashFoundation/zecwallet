@@ -24,12 +24,9 @@
    <item row="3" column="2">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QLineEdit" name="txtAmt">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+      <widget class="QLabel" name="lblAmt">
+       <property name="text">
+        <string notr="true">&lt;Amount&gt;</string>
        </property>
       </widget>
      </item>
@@ -61,7 +58,7 @@
    <item row="1" column="2">
     <widget class="QLabel" name="lblFrom">
      <property name="text">
-      <string/>
+      <string notr="true"/>
      </property>
     </widget>
    </item>
@@ -159,7 +156,7 @@
    <item row="8" column="2">
     <widget class="QLabel" name="lblNextPayment">
      <property name="text">
-      <string>TextLabel</string>
+      <string notr="true"/>
      </property>
     </widget>
    </item>
@@ -193,7 +190,7 @@
    <item row="2" column="2">
     <widget class="QLabel" name="lblTo">
      <property name="text">
-      <string/>
+      <string notr="true"/>
      </property>
     </widget>
    </item>
@@ -201,7 +198,6 @@
  </widget>
  <tabstops>
   <tabstop>txtDesc</tabstop>
-  <tabstop>txtAmt</tabstop>
   <tabstop>cmbCurrency</tabstop>
   <tabstop>cmbSchedule</tabstop>
   <tabstop>txtNumPayments</tabstop>

@@ -106,6 +106,13 @@ void MainWindow::setupSendTab() {
 }
 
 void MainWindow::editSchedule() {
+    // Check to see that recurring payments are not selected when there are 2 or more addresses
+    if (ui->sendToWidgets->children().size()-1 > 2) {
+        QMessageBox::critical(this, tr("Cannot support multiple addresses"), 
+            tr("Recurring payments doesn't currently support multiple addresses"), QMessageBox::Ok);
+        return;
+    }
+
     // Open the edit schedule dialog
     auto recurringInfo = Recurring::getInstance()->getNewRecurringFromTx(this, this, 
                             createTxFromSendPage(), this->sendTxRecurringInfo);
@@ -691,8 +698,7 @@ void MainWindow::sendButton() {
     }
 
     // Show a dialog to confirm the Tx
-    if (confirmTx(tx, sendTxRecurringInfo)) {
-        
+    if (confirmTx(tx, sendTxRecurringInfo)) {        
         // If this is a recurring payment, save the hash so we can 
         // update the payment if it submits. 
         QString recurringPaymentHash;
