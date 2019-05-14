@@ -302,6 +302,14 @@ void MainWindow::addAddressSection() {
 
     ui->sendToLayout->insertWidget(itemNumber-1, verticalGroupBox);         
 
+    // Disable recurring payments if a address section is added, since recurring payments
+    // aren't supported for more than 1 address
+    delete sendTxRecurringInfo;
+    sendTxRecurringInfo = nullptr;
+    ui->lblRecurDesc->setText("");
+    ui->chkRecurring->setChecked(false);    
+    ui->chkRecurring->setEnabled(false);
+
     // Set focus into the address
     Address1->setFocus();
 
@@ -420,6 +428,7 @@ void MainWindow::clearSendForm() {
     }    
 
     // Reset the recurring button
+    ui->chkRecurring->setEnabled(true);
     ui->chkRecurring->setCheckState(Qt::Unchecked);
     ui->btnRecurSchedule->setEnabled(false);
     ui->lblRecurDesc->setText("");
@@ -654,8 +663,8 @@ bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
         }
     }
 
-    // Recurring payment info
-    if (rpi == nullptr) {
+    // Recurring payment info, show only if there is exactly one destination address
+    if (rpi == nullptr || tx.toAddrs.size() != 1) {
         confirm.grpRecurring->setVisible(false);
     }
     else {
@@ -702,7 +711,9 @@ void MainWindow::sendButton() {
         // If this is a recurring payment, save the hash so we can 
         // update the payment if it submits. 
         QString recurringPaymentHash;
-        if (sendTxRecurringInfo) {
+
+        // Recurring payments are enabled only if there is exactly 1 destination address.
+        if (sendTxRecurringInfo && tx.toAddrs.size() == 1) {
             // Add it to the list
             Recurring::getInstance()->addRecurringInfo(*sendTxRecurringInfo);
             recurringPaymentHash = sendTxRecurringInfo->getHash();

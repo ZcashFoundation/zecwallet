@@ -244,15 +244,15 @@ AddressBook::AddressBook() {
 void AddressBook::readFromStorage() {
     QFile file(AddressBook::writeableFile());
 
-    if (!file.exists()) {
-        return;
-    }
+    if (file.exists()) {
+        allLabels.clear();
+        file.open(QIODevice::ReadOnly);
+        QDataStream in(&file);    // read the data serialized from the file
+        QString version;
+        in >> version >> allLabels; 
 
-    allLabels.clear();
-    file.open(QIODevice::ReadOnly);
-    QDataStream in(&file);    // read the data serialized from the file
-    QString version;
-    in >> version >> allLabels; 
+        file.close();
+    }
 
     // Special. 
     // Add the default ZecWallet donation address if it isn't already present
@@ -262,8 +262,6 @@ void AddressBook::readFromStorage() {
     if (!allAddresses.contains(Settings::getDonationAddr(true))) {
         allLabels.append(QPair<QString, QString>("ZecWallet donation", Settings::getDonationAddr(true)));
     }
-
-    file.close();
 }
 
 void AddressBook::writeToStorage() {
