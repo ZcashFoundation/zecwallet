@@ -636,7 +636,7 @@ void RPC::getInfoThenRefresh(bool force) {
                 (Settings::getInstance()->isTestnet() ? QObject::tr("testnet:") : "") %
                 QString::number(blockNumber) %
                 (isSyncing ? ("/" % QString::number(progress*100, 'f', 2) % "%") : QString()) %
-                ")";
+                ") HUSH=$" % QString::number( (double) Settings::getInstance()->getZECPrice() );
             main->statusLabel->setText(statusText);   
 
             auto zecPrice = Settings::getUSDFormat(1);
@@ -1003,7 +1003,6 @@ void RPC::checkForUpdate(bool silent) {
                 }
 
                 auto currentVersion = QVersionNumber::fromString(APP_VERSION);
-                
                 // Get the max version that the user has hidden updates for
                 QSettings s;
                 auto maxHiddenVersion = QVersionNumber::fromString(s.value("update/lastversion", "0.0.0").toString());
@@ -1037,11 +1036,12 @@ void RPC::checkForUpdate(bool silent) {
     });
 }
 
-// Get the ZEC->USD price from coinmarketcap using their API
+// Get the HUSH prices
 void RPC::refreshZECPrice() {
-    if  (conn == nullptr) 
+    if  (conn == nullptr)
         return noConnection();
 
+    // TODO: use/render all this data
     QUrl cmcURL("https://api.coingecko.com/api/v3/simple/price?ids=hush&vs_currencies=btc%2Cusd%2Ceur&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true");
     QNetworkRequest req;
     req.setUrl(cmcURL);
@@ -1054,7 +1054,7 @@ void RPC::refreshZECPrice() {
             if (reply->error() != QNetworkReply::NoError) {
                 auto parsed = json::parse(reply->readAll(), nullptr, false);
                 if (!parsed.is_discarded() && !parsed["error"]["message"].is_null()) {
-                    qDebug() << QString::fromStdString(parsed["error"]["message"]);    
+                    qDebug() << QString::fromStdString(parsed["error"]["message"]);
                 } else {
                     qDebug() << reply->errorString();
                 }
@@ -1062,7 +1062,7 @@ void RPC::refreshZECPrice() {
                 return;
             }
 
-            qDebug() << "No network errors\n";
+            qDebug() << "No network errors";
             auto all = reply->readAll();
             auto parsed = json::parse(all, nullptr, false);
             if (parsed.is_discarded()) {
@@ -1070,19 +1070,25 @@ void RPC::refreshZECPrice() {
                 return;
             }
 
-            const json& item = parsed.get<json::object_t>();
-            if (item["hush"]) {
-                qDebug() << "Found hush key in price json\n";
+            qDebug() << "Parsed JSON";
+
+            const json& item  = parsed.get<json::object_t>();
+            const json& hush  = item["hush"].get<json::object_t>();
+
+            if (hush["usd"] >= 0) {
+                qDebug() << "Found hush key in price json";
                 // TODO: support BTC/EUR prices as well
-                QString price = QString::fromStdString(item["hush"]["usd"].get<json::string_t>());
-                qDebug() << "HUSH = $" << price;
-                Settings::getInstance()->setZECPrice(price.toDouble());
+                //QString price = QString::fromStdString(hush["usd"].get<json::string_t>());
+                qDebug() << "HUSH = $" << QString::number((double)hush["usd"]);
+                Settings::getInstance()->setZECPrice( hush["usd"] );
 
                 return;
+            } else {
+                qDebug() << "No hush key found in JSON! API might be down or we are rate-limited\n";
             }
-        } catch (...) {
+        } catch (const std::exception& e) {
             // If anything at all goes wrong, just set the price to 0 and move on.
-            qDebug() << QString("Caught something nasty");
+            qDebug() << QString("Caught something nasty: ") << e.what();
         }
 
         // If nothing, then set the price to 0;
