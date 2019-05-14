@@ -100,6 +100,8 @@ public:
     void        processPending(MainWindow* main);
     // If multiple are pending, we need to ask the user
     void        processMultiplePending(RecurringPaymentInfo rpi, MainWindow* main);
+    // Execute a particular payment item
+    void        executeRecurringPayment(MainWindow *, RecurringPaymentInfo rpi, int paymentNumber);
 
     // Execute a Tx
     void        doSendTx(MainWindow* rpc, Tx tx, std::function<void(QString, QString)> cb);
