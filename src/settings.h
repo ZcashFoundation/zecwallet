@@ -84,7 +84,9 @@ public:
     static bool    isTAddress(QString addr);
 
     static QString getDecimalString(double amt);
-    static QString getUSDFormat(double bal);
+    static QString getUSDFormat(double usdAmt);
+
+    static QString getUSDFromZecAmount(double bal);
     static QString getZECDisplayFormat(double bal);
     static QString getZECUSDDisplayFormat(double bal);
 

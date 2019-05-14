@@ -161,8 +161,14 @@ void Settings::saveRestore(QDialog* d) {
 }
 
 QString Settings::getUSDFormat(double bal) {
-    return "$" + QLocale(QLocale::English).toString(bal * Settings::getInstance()->getZECPrice(), 'f', 2);
+    return "$" + QLocale(QLocale::English).toString(bal, 'f', 2);
 }
+
+
+QString Settings::getUSDFromZecAmount(double bal) {
+    return getUSDFormat(bal * Settings::getInstance()->getZECPrice());
+}
+
 
 QString Settings::getDecimalString(double amt) {
     QString f = QString::number(amt, 'f', 8);
@@ -182,9 +188,9 @@ QString Settings::getZECDisplayFormat(double bal) {
 }
 
 QString Settings::getZECUSDDisplayFormat(double bal) {
-    auto usdFormat = getUSDFormat(bal);
+    auto usdFormat = getUSDFromZecAmount(bal);
     if (!usdFormat.isEmpty())
-        return getZECDisplayFormat(bal) % " (" % getUSDFormat(bal) % ")";
+        return getZECDisplayFormat(bal) % " (" % usdFormat % ")";
     else
         return getZECDisplayFormat(bal);
 }

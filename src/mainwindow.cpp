@@ -46,6 +46,11 @@ MainWindow::MainWindow(QWidget *parent) :
         rpc->checkForUpdate(false);
     });
 
+    // Recurring payments 
+    QObject::connect(ui->action_Recurring_Payments, &QAction::triggered, [=]() {
+        Recurring::getInstance()->showRecurringDialog(this);
+    });
+
     // Request zcash
     QObject::connect(ui->actionRequest_zcash, &QAction::triggered, [=]() {
         RequestDialog::showRequestZcash(this);
@@ -603,7 +608,7 @@ void MainWindow::addressBook() {
 
 void MainWindow::donate() {
     // Set up a donation to me :)
-    removeExtraAddresses();
+    clearSendForm();
 
     ui->Address1->setText(Settings::getDonationAddr(
                             Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
@@ -778,6 +783,8 @@ void MainWindow::balancesReady() {
         pendingURIPayment = "";
     }
 
+    // Execute any pending Recurring payments
+    Recurring::getInstance()->processPending(this);
 }
 
 // Event filter for MacOS specific handling of payment URIs
@@ -799,7 +806,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
 // the transaction.
 void MainWindow::payZcashURI(QString uri, QString myAddr) {
     // If the Payments UI is not ready (i.e, all balances have not loaded), defer the payment URI
-    if (!uiPaymentsReady) {
+    if (!isPaymentsReady()) {
         qDebug() << "Payment UI not ready, waiting for UI to pay URI";
         pendingURIPayment = uri;
         return;
@@ -825,7 +832,8 @@ void MainWindow::payZcashURI(QString uri, QString myAddr) {
     }
 
     // Now, set the fields on the send tab
-    removeExtraAddresses();
+    clearSendForm();
+
     if (!myAddr.isEmpty()) {
         ui->inputsCombo->setCurrentText(myAddr);
     }
@@ -1035,7 +1043,7 @@ void MainWindow::setupBalancesTab() {
         // If there's a to address, add that as well
         if (!to.isEmpty()) {
             // Remember to clear any existing address fields, because we are creating a new transaction.
-            this->removeExtraAddresses();
+            this->clearSendForm();
             ui->Address1->setText(to);
         }
 
@@ -1433,6 +1441,7 @@ MainWindow::~MainWindow()
     delete rpc;
     delete labelCompleter;
 
+    delete sendTxRecurringInfo;
     delete amtValidator;
     delete feesValidator;
 

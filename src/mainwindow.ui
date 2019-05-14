@@ -1086,6 +1086,7 @@
     </property>
     <addaction name="action_Address_Book"/>
     <addaction name="actionSettings"/>
+    <addaction name="action_Recurring_Payments"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menu_Edit"/>
@@ -1176,6 +1177,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+M</string>
+   </property>
+  </action>
+  <action name="action_Recurring_Payments">
+   <property name="text">
+    <string>&amp;Recurring Payments</string>
    </property>
   </action>
   <action name="actionRequest_zcash">
