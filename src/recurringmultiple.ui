@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>866</width>
-    <height>542</height>
+    <width>883</width>
+    <height>801</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,7 +48,7 @@
    <item row="9" column="0" colspan="2">
     <widget class="QRadioButton" name="rAll">
      <property name="text">
-      <string>Pay All</string>
+      <string>Pay All in 1 Tx</string>
      </property>
     </widget>
    </item>
@@ -65,7 +65,7 @@
    <item row="11" column="0" colspan="2">
     <widget class="QRadioButton" name="rLast">
      <property name="text">
-      <string>Pay Latest</string>
+      <string>Pay Latest Only</string>
      </property>
     </widget>
    </item>
@@ -93,7 +93,10 @@
    <item row="10" column="0" colspan="2">
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>All pending payments will be processed and sent</string>
+      <string>All pending payments collected, added up and paid in a single transaction</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

@@ -372,7 +372,7 @@ void Recurring::processPending(MainWindow* main) {
         // If there is only 1 pending payment, then we don't have to do anything special.
         // Just process it
         if (pending.size() == 1) {
-            executeRecurringPayment(main, rpi, 0);
+            executeRecurringPayment(main, rpi, {0});
         } else if (pending.size() > 1) {
             // There are multiple pending payments. Ask the user what they want to do with it
             // Options are: Pay latest one, Pay all or Pay none.
@@ -410,7 +410,6 @@ void Recurring::processMultiplePending(RecurringPaymentInfo rpi, MainWindow* mai
     // Select none by default
     ui.rNone->setChecked(true);
 
-
     // Restore the table column layout
     QSettings s;
     ui.tblPending->horizontalHeader()->restoreState(s.value("recurringmultipaymentstablevgeom").toByteArray());
@@ -427,36 +426,49 @@ void Recurring::processMultiplePending(RecurringPaymentInfo rpi, MainWindow* mai
     } else if (ui.rLast->isChecked()) {
         // Update the status for all except the last to skipped
         // First, collect all the payments
-        QList<RecurringPaymentInfo::PaymentItem *> pendingPayments;
+        QList<int> pendingPayments;
         for (int i=0; i < rpi.payments.size(); i++) {
             if (rpi.payments[i].status == PaymentStatus::PENDING) {
-                pendingPayments.append(&(rpi.payments[i]));
+                pendingPayments.append(rpi.payments[i].paymentNumber);
             }
         }
 
         // Update the status for all but the last one
         for (int i=0; i < pendingPayments.size()-1; i++) {
-            updatePaymentItem(rpi.getHash(), pendingPayments[i]->paymentNumber, "", "", PaymentStatus::SKIPPED);
+            updatePaymentItem(rpi.getHash(), pendingPayments[i], "", "", PaymentStatus::SKIPPED);
         }
 
         // Then execute the last one. The function will update the status
-        executeRecurringPayment(main, rpi, pendingPayments.last()->paymentNumber);
-    } 
+        executeRecurringPayment(main, rpi, {pendingPayments.last()});
+    } else if (ui.rAll->isChecked()) {
+        // Pay all of them, in a single transaction
+        QList<int> pendingPayments;
+        for (int i=0; i < rpi.payments.size(); i++) {
+            if (rpi.payments[i].status == PaymentStatus::PENDING) {
+                pendingPayments.append(rpi.payments[i].paymentNumber);
+            }
+        }
+
+        // Execute all of them, and then update the status
+        executeRecurringPayment(main, rpi, pendingPayments);
+    }
 
     // Save the table column layout
     s.setValue("recurringmultipaymentstablevgeom", ui.tblPending->horizontalHeader()->saveState()); 
 }
 
-void Recurring::executeRecurringPayment(MainWindow* main, RecurringPaymentInfo rpi, int paymentNumber) {
+void Recurring::executeRecurringPayment(MainWindow* main, RecurringPaymentInfo rpi, QList<int> paymentNumbers) {
     // Amount is in USD or ZEC?
     auto amt = rpi.amt;
     if (rpi.currency == "USD") {
         // If there is no price, then fail the payment
         if (Settings::getInstance()->getZECPrice() == 0) {
-            updatePaymentItem(rpi.getHash(), paymentNumber, 
-            "", QObject::tr("No ZEC price was available to convert from USD"),
-            PaymentStatus::ERROR);
-                return;
+            for (auto paymentNumber: paymentNumbers) {
+                updatePaymentItem(rpi.getHash(), paymentNumber, 
+                    "", QObject::tr("No ZEC price was available to convert from USD"),
+                    PaymentStatus::ERROR);
+            }
+            return;
         }
         
         // Translate it into ZEC
@@ -467,15 +479,24 @@ void Recurring::executeRecurringPayment(MainWindow* main, RecurringPaymentInfo r
     Tx tx;
     tx.fromAddr = rpi.fromAddr;
     tx.fee      = Settings::getMinerFee();
-    tx.toAddrs  = { ToFields { rpi.toAddr, amt, rpi.memo, rpi.memo.toUtf8().toHex() } };
+    
+    // If this is a multiple payment, we'll add up all the amounts
+    if (paymentNumbers.size() > 1)
+        amt *= paymentNumbers.size();
+
+    tx.toAddrs.append(ToFields { rpi.toAddr, amt, rpi.memo, rpi.memo.toUtf8().toHex() });
 
     doSendTx(main, tx, [=] (QString txid, QString err) {
         if (err.isEmpty()) {
             // Success, update the rpi
-            updatePaymentItem(rpi.getHash(), paymentNumber, txid, "", PaymentStatus::COMPLETED);
+            for (int paymentNumber: paymentNumbers) {
+                updatePaymentItem(rpi.getHash(), paymentNumber, txid, "", PaymentStatus::COMPLETED);
+            }            
         } else {
             // Errored out. Bummer.
-            updatePaymentItem(rpi.getHash(), paymentNumber, "", err, PaymentStatus::ERROR);
+            for (int paymentNumber: paymentNumbers) {
+                updatePaymentItem(rpi.getHash(), paymentNumber, "", err, PaymentStatus::ERROR);
+            }
         }
     });
 }
@@ -504,6 +525,9 @@ void Recurring::doSendTx(MainWindow* mainwindow, Tx tx, std::function<void(QStri
 void Recurring::showRecurringDialog(MainWindow* parent) {
     // Make sure only 1 is showing at a time
     static bool isDialogOpen = false;
+
+    if (isDialogOpen)
+        return;
 
     Ui_RecurringDialog rd;
     QDialog d(parent);
