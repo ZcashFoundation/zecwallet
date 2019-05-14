@@ -443,11 +443,11 @@ void MainWindow::clearSendForm() {
 
     // Reset the recurring button
     if (Settings::getInstance()->isTestnet()) {
-        ui->chkRecurring->setEnabled(true);
-        ui->chkRecurring->setCheckState(Qt::Unchecked);
-        ui->btnRecurSchedule->setEnabled(false);        
+        ui->chkRecurring->setEnabled(true);        
     } 
 
+    ui->chkRecurring->setCheckState(Qt::Unchecked);
+    ui->btnRecurSchedule->setEnabled(false);
     ui->lblRecurDesc->setText("");
     delete sendTxRecurringInfo;
     sendTxRecurringInfo = nullptr;
@@ -745,7 +745,7 @@ void MainWindow::sendButton() {
                 ui->statusBar->showMessage(tr("Computing Tx: ") % opid);
             },
             // Accepted
-            [=] (QString opid, QString txid) { 
+            [=] (QString, QString txid) { 
                 ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
 
                 // If this was a recurring payment, update the payment with the info

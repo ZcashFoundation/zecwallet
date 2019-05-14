@@ -13,7 +13,7 @@ QString schedule_desc(Schedule s) {
     case Schedule::DAY: return "day";
     case Schedule::WEEK: return "week";
     case Schedule::MONTH: return "month";
-    case Schedule::YEAR: return "year";
+    case Schedule::YEAR: return "5 mins";
     default: return "none";
     }
 }
@@ -118,7 +118,7 @@ int RecurringPaymentInfo::getNumPendingPayments() const {
 
 // Returns a new Recurring payment info, created from the Tx. 
 // The caller needs to take ownership of the returned object.
-RecurringPaymentInfo* Recurring::getNewRecurringFromTx(QWidget* parent, MainWindow* main, Tx tx, RecurringPaymentInfo* rpi) {
+RecurringPaymentInfo* Recurring::getNewRecurringFromTx(QWidget* parent, MainWindow*, Tx tx, RecurringPaymentInfo* rpi) {
     Ui_newRecurringDialog ui;
     QDialog d(parent);
     ui.setupUi(&d);
@@ -158,7 +158,8 @@ RecurringPaymentInfo* Recurring::getNewRecurringFromTx(QWidget* parent, MainWind
         ui.cmbSchedule->addItem("Every " + schedule_desc((Schedule)i), QVariant(i));
     }
 
-    QObject::connect(ui.cmbSchedule, QOverload<int>::of(&QComboBox::currentIndexChanged), [&](int) {
+    QObject::connect(ui.cmbSchedule, QOverload<int>::of(&QComboBox::currentIndexChanged), [&](int i) {
+        qDebug() << "schedule is " << i << " current data is " << ui.cmbSchedule->currentData().toInt();
         ui.lblNextPayment->setText(getNextPaymentDate((Schedule)ui.cmbSchedule->currentData().toInt()).toString("yyyy-MMM-dd"));
     });
     ui.lblNextPayment->setText(getNextPaymentDate((Schedule)ui.cmbSchedule->currentData().toInt()).toString("yyyy-MMM-dd"));
@@ -175,7 +176,7 @@ RecurringPaymentInfo* Recurring::getNewRecurringFromTx(QWidget* parent, MainWind
         ui.lblAmt->setText(rpi->getAmountPretty()); 
         ui.lblFrom->setText(rpi->fromAddr);
         ui.txtNumPayments->setText(QString::number(rpi->payments.size()));
-        ui.cmbSchedule->setCurrentIndex(rpi->schedule);
+        ui.cmbSchedule->setCurrentIndex(rpi->schedule - 1); // indexes start from 0
     }
     
     ui.txtDesc->setFocus();
@@ -232,8 +233,8 @@ QDateTime Recurring::getNextPaymentDate(Schedule s, QDateTime start) {
     case Schedule::DAY: nextDate = nextDate.addDays(1); break;
     case Schedule::WEEK: nextDate = nextDate.addDays(7); break;
     case Schedule::MONTH: nextDate = nextDate.addMonths(1); break;
-    // TODO: For teesting only
-    case Schedule::YEAR: nextDate = nextDate.addSecs(5); break;
+    // TODO: For testing only, year means 5 mins
+    case Schedule::YEAR: nextDate = nextDate.addSecs(60 * 5); break;
     //case Schedule::YEAR: nextDate = nextDate.addYears(1); break;
     }
 
@@ -370,7 +371,7 @@ void Recurring::processPending(MainWindow* main) {
         // If there is only 1 pending payment, then we don't have to do anything special.
         // Just process it
         if (pending.size() == 1) {
-            executeRecurringPayment(main, rpi, {0});
+            executeRecurringPayment(main, rpi, { pending.first().paymentNumber });
         } else if (pending.size() > 1) {
             // There are multiple pending payments. Ask the user what they want to do with it
             // Options are: Pay latest one, Pay all or Pay none.
@@ -484,6 +485,14 @@ void Recurring::executeRecurringPayment(MainWindow* main, RecurringPaymentInfo r
 
     tx.toAddrs.append(ToFields { rpi.toAddr, amt, rpi.memo, rpi.memo.toUtf8().toHex() });
 
+    // To prevent some weird race conditions, we immediately mark the payment as paid.
+    // If something goes wrong, we'll get the error callback below, and the status will be 
+    // updated. If it succeeds, we'll once again update the status with the txid
+    for (int paymentNumber: paymentNumbers) {
+        updatePaymentItem(rpi.getHash(), paymentNumber, "", "", PaymentStatus::COMPLETED);
+    }            
+
+    // Send it off to the RPC
     doSendTx(main, tx, [=] (QString txid, QString err) {
         if (err.isEmpty()) {
             // Success, update the rpi
@@ -602,7 +611,7 @@ void Recurring::showRecurringDialog(MainWindow* parent) {
     });
 
     // Double Click
-    QObject::connect(rd.tableView, &QTableView::doubleClicked, [=, &d] (auto index) {
+    QObject::connect(rd.tableView, &QTableView::doubleClicked, [=] (auto index) {
         auto rpi = Recurring::getInstance()->getAsList()[index.row()];
         showPayments(rpi);           
     });
@@ -641,11 +650,11 @@ RecurringListViewModel::RecurringListViewModel(QTableView* parent) {
 }
 
 
-int RecurringListViewModel::rowCount(const QModelIndex &parent) const {
+int RecurringListViewModel::rowCount(const QModelIndex&) const {
     return Recurring::getInstance()->getAsList().size();
 }
 
-int RecurringListViewModel::columnCount(const QModelIndex &parent) const {
+int RecurringListViewModel::columnCount(const QModelIndex&) const {
     return headers.size();
 }
 
@@ -691,11 +700,11 @@ RecurringPaymentsListViewModel::RecurringPaymentsListViewModel(QTableView* paren
 }
 
 
-int RecurringPaymentsListViewModel::rowCount(const QModelIndex &parent) const {
+int RecurringPaymentsListViewModel::rowCount(const QModelIndex&) const {
     return rpi.payments.size();
 }
 
-int RecurringPaymentsListViewModel::columnCount(const QModelIndex &parent) const {
+int RecurringPaymentsListViewModel::columnCount(const QModelIndex&) const {
     return headers.size();
 }
 
