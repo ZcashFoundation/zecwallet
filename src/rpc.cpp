@@ -971,7 +971,7 @@ void RPC::checkForUpdate(bool silent) {
     if  (conn == nullptr) 
         return noConnection();
 
-    QUrl cmcURL("https://api.github.com/repos/radix42/SilentDragon/releases");
+    QUrl cmcURL("https://api.github.com/repos/MyHush/SilentDragon/releases");
 
     QNetworkRequest req;
     req.setUrl(cmcURL);
@@ -1017,7 +1017,7 @@ void RPC::checkForUpdate(bool silent) {
                             .arg(currentVersion.toString()),
                         QMessageBox::Yes, QMessageBox::Cancel);
                     if (ans == QMessageBox::Yes) {
-                        QDesktopServices::openUrl(QUrl("https://github.com/radix42/SilentDragon/releases"));
+                        QDesktopServices::openUrl(QUrl("https://github.com/MyHush/SilentDragon/releases"));
                     } else {
                         // If the user selects cancel, don't bother them again for this version
                         s.setValue("update/lastversion", maxVersion.toString());
@@ -1030,11 +1030,10 @@ void RPC::checkForUpdate(bool silent) {
                     }
                 } 
             }
-        }
-        catch (...) {
+        } catch (const std::exception& e) {
             // If anything at all goes wrong, just set the price to 0 and move on.
-            qDebug() << QString("Caught something nasty");
-        }       
+            qDebug() << QString("Caught something nasty: ") << e.what();
+        }
     });
 }
 
