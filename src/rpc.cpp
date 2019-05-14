@@ -557,15 +557,15 @@ void RPC::getInfoThenRefresh(bool force) {
         int version = reply["version"].get<json::number_integer_t>();
         Settings::getInstance()->setZcashdVersion(version);
 
+        // See if recurring payments needs anything
+        Recurring::getInstance()->processPending(main);
+
         if ( force || (curBlock != lastBlock) ) {
             // Something changed, so refresh everything.
             lastBlock = curBlock;
 
             // See if the turnstile migration has any steps that need to be done.
             turnstile->executeMigrationStep();
-
-            // See if recurring payments needs anything
-            Recurring::getInstance()->processPending(main);
 
             refreshBalances();        
             refreshAddresses(); // This calls refreshZSentTransactions() and refreshReceivedZTrans()
