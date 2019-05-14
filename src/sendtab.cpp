@@ -105,7 +105,21 @@ void MainWindow::setupSendTab() {
     clearSendForm();
 }
 
+void MainWindow::disableRecurring() {
+    if (!Settings::getInstance()->isTestnet()) {
+        ui->chkRecurring->setEnabled(false);
+        ui->btnRecurSchedule->setEnabled(false);
+    }
+}
+
 void MainWindow::editSchedule() {
+    // Only on testnet for now
+    if (!Settings::getInstance()->isTestnet()) {
+        QMessageBox::critical(this, "Not Supported yet", 
+            "Recurring payments are only supported on Testnet for now.", QMessageBox::Ok);
+        return;
+    }
+
     // Check to see that recurring payments are not selected when there are 2 or more addresses
     if (ui->sendToWidgets->children().size()-1 > 2) {
         QMessageBox::critical(this, tr("Cannot support multiple addresses"), 
@@ -428,11 +442,13 @@ void MainWindow::clearSendForm() {
     }    
 
     // Reset the recurring button
-    ui->chkRecurring->setEnabled(true);
-    ui->chkRecurring->setCheckState(Qt::Unchecked);
-    ui->btnRecurSchedule->setEnabled(false);
-    ui->lblRecurDesc->setText("");
+    if (Settings::getInstance()->isTestnet()) {
+        ui->chkRecurring->setEnabled(true);
+        ui->chkRecurring->setCheckState(Qt::Unchecked);
+        ui->btnRecurSchedule->setEnabled(false);        
+    } 
 
+    ui->lblRecurDesc->setText("");
     delete sendTxRecurringInfo;
     sendTxRecurringInfo = nullptr;
 }

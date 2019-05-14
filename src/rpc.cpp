@@ -544,6 +544,10 @@ void RPC::getInfoThenRefresh(bool force) {
             Settings::getInstance()->setTestnet(reply["testnet"].get<json::boolean_t>());
         };
 
+        // Recurring pamynets are testnet only
+        if (!Settings::getInstance()->isTestnet())
+            main->disableRecurring();
+
         // Connected, so display checkmark.
         QIcon i(":/icons/res/connected.gif");
         main->statusIcon->setPixmap(i.pixmap(16, 16));
