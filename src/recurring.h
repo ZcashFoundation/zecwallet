@@ -38,7 +38,6 @@ private:
     QString     memo;
     QString     currency;
     Schedule    schedule;
-    int         frequency;
     QDateTime   startDate;
 
     struct PaymentItem {

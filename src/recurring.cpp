@@ -29,7 +29,6 @@ RecurringPaymentInfo RecurringPaymentInfo::fromJson(QJsonObject j) {
     r.memo = j["memo"].toString();
     r.currency = j["currency"].toString();
     r.schedule = (Schedule)j["schedule"].toInt();
-    r.frequency = j["frequency"].toInt();
     r.startDate = QDateTime::fromSecsSinceEpoch(j["startdate"].toString().toLongLong());
 
     for (auto h : j["payments"].toArray()) {
@@ -74,7 +73,6 @@ QJsonObject RecurringPaymentInfo::toJson() {
         {"memo", memo},
         {"currency", currency},
         {"schedule", (int)schedule},
-        {"frequency", frequency},
         {"startdate", QString::number(startDate.toSecsSinceEpoch())},
         {"payments", paymentsJson}
     };
