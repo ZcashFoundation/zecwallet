@@ -349,7 +349,9 @@ Recurring* Recurring::instance = nullptr;
  * Main worker method that will go over all the recurring paymets and process any pending ones
  */
 void Recurring::processPending(MainWindow* main) {
-    qDebug() << "Processing payments";
+    // Refuse to run on mainnet
+    if (!Settings::getInstance()->isTestnet())
+        return;
 
     if (!main->isPaymentsReady())
         return;
