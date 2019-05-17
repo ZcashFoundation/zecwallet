@@ -550,7 +550,8 @@ void RPC::getInfoThenRefresh(bool force) {
 
         static int    lastBlock = 0;
         int curBlock  = reply["blocks"].get<json::number_integer_t>();
-        int version = reply["version"].get<json::number_integer_t>();
+        int version   = reply["version"].get<json::number_integer_t>();
+        int notarized = reply["notarized"].get<json::number_integer_t>();
         Settings::getInstance()->setZcashdVersion(version);
 
         if ( force || (curBlock != lastBlock) ) {
@@ -636,7 +637,9 @@ void RPC::getInfoThenRefresh(bool force) {
                 (Settings::getInstance()->isTestnet() ? QObject::tr("testnet:") : "") %
                 QString::number(blockNumber) %
                 (isSyncing ? ("/" % QString::number(progress*100, 'f', 2) % "%") : QString()) %
-                ") HUSH=$" % QString::number( (double) Settings::getInstance()->getZECPrice() );
+                ") " %
+                " Notarized: " % QString::number(notarized) %
+                " HUSH/USD=$" % QString::number( (double) Settings::getInstance()->getZECPrice() );
             main->statusLabel->setText(statusText);   
 
             auto zecPrice = Settings::getUSDFormat(1);

@@ -1110,7 +1110,7 @@ void MainWindow::setupBalancesTab() {
 }
 
 void MainWindow::setupZcashdTab() {    
-    ui->zcashdlogo->setBasePixmap(QPixmap(":/img/res/zcashdlogo.gif"));
+    ui->hushlogo->setBasePixmap(QPixmap(":/img/res/zcashdlogo.gif"));
 }
 
 void MainWindow::setupTransactionsTab() {

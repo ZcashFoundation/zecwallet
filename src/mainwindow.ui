@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ZecWallet</string>
+   <string>SilentDragon</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../application.qrc">
@@ -875,13 +875,13 @@
       </widget>
       <widget class="QWidget" name="tab_5">
        <attribute name="title">
-        <string>zcashd</string>
+        <string>hushd</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_7">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_14">
           <item>
-           <widget class="FilledIconLabel" name="zcashdlogo">
+           <widget class="FilledIconLabel" name="hushlogo">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
