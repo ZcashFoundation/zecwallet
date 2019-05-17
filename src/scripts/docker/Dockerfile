@@ -28,6 +28,8 @@ RUN cd /opt &&  \
 
 # Get and build MXE
 RUN cd /opt && \
+    git clone https://github.com/mxe/mxe.git && \
+    cd /opt/mxe && \
     make -j$(nproc) MXE_TARGETS=x86_64-w64-mingw32.static qtbase qtwebsockets 
 
 ENV PATH="/opt/mxe/usr/bin:${PATH}"
