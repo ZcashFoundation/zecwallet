@@ -8,7 +8,7 @@ RUN apt-get -y update && apt-get install -y \
     libfreetype6 libgl1-mesa-glx libglib2.0-0 \
     libx11-6 libx11-xcb1 \
     g++ build-essential cmake wget git \
-    software-properties-common # for add-apt-repository \
+    software-properties-common  \
     autoconf automake autopoint bison flex gperf libtool libtool-bin intltool lzip python ruby unzip p7zip-full libgdk-pixbuf2.0-dev libltdl-dev 
 
 # Get OpenSSL
