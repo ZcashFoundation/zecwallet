@@ -437,7 +437,7 @@ void Turnstile::showZcashdMigration(MainWindow* parent) {
 
 MigrationTxns::MigrationTxns(QTableView *parent, QList<QString> txids)
      : QAbstractTableModel(parent) {
-    headers << tr("Txid");
+    headers << tr("Migration Txids");
     this->txids = txids;
 }
 
