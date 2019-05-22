@@ -268,8 +268,10 @@ void MainWindow::turnstileProgress() {
 
 void MainWindow::turnstileDoMigration(QString fromAddr) {
     // Return if there is no connection
-    if (rpc->getAllZAddresses() == nullptr)
+    if (rpc->getAllZAddresses() == nullptr || rpc->getAllBalances() == nullptr) {
+        QMessageBox::information(this, tr("Not yet ready"), tr("zcashd is not yet ready. Please wait for the UI to load"), QMessageBox::Ok);
         return;
+    }
 
     // If a migration is already in progress, show the progress dialog instead
     if (rpc->getTurnstile()->isMigrationPresent()) {
@@ -288,7 +290,7 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
     auto fnGetAllSproutBalance = [=] () {
         double bal = 0;
         for (auto addr : *rpc->getAllZAddresses()) {
-            if (Settings::getInstance()->isSproutAddress(addr)) {
+            if (Settings::getInstance()->isSproutAddress(addr) && rpc->getAllBalances()) {
                 bal += rpc->getAllBalances()->value(addr);
             }
         }

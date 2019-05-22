@@ -402,6 +402,10 @@ void Turnstile::showZcashdMigration(MainWindow* parent) {
         QMenu menu(parent);
         QString txid = model.getTxid(index.row());
 
+        menu.addAction("Copy txid", [=]() {
+            QGuiApplication::clipboard()->setText(txid);
+        });
+
         menu.addAction(QObject::tr("View on block explorer"), [=] () {
             QString url;
             if (Settings::getInstance()->isTestnet()) {
@@ -411,6 +415,8 @@ void Turnstile::showZcashdMigration(MainWindow* parent) {
             }
             QDesktopServices::openUrl(QUrl(url));
         });
+
+        menu.exec(md.tblTxids->viewport()->mapToGlobal(pos));
     });
 
     auto* status = parent->getRPC()->getMigrationStatus();
