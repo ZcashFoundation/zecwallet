@@ -86,6 +86,7 @@ HEADERS += \
 
 FORMS += \
     src/mainwindow.ui \
+    src/migration.ui \
     src/recurringpayments.ui \
     src/settings.ui \
     src/about.ui \

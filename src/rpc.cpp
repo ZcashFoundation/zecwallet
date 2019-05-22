@@ -52,6 +52,9 @@ RPC::RPC(MainWindow* main) {
     txTimer->start(Settings::updateSpeed);  
 
     usedAddresses = new QMap<QString, bool>();
+
+    // Initialize the migration status to unavailable.
+    this->migrationStatus.available = false;
 }
 
 RPC::~RPC() {
@@ -568,8 +571,9 @@ void RPC::getInfoThenRefresh(bool force) {
             turnstile->executeMigrationStep();
 
             refreshBalances();        
-            refreshAddresses(); // This calls refreshZSentTransactions() and refreshReceivedZTrans()
+            refreshAddresses();     // This calls refreshZSentTransactions() and refreshReceivedZTrans()
             refreshTransactions();
+            refreshMigration();     // Sapling turnstile migration status.
         }
 
         int connections = reply["connections"].get<json::number_integer_t>();
@@ -754,6 +758,49 @@ bool RPC::processUnspent(const json& reply, QMap<QString, double>* balancesMap, 
     }
     return anyUnconfirmed;
 };
+
+/**
+ * Refresh the turnstile migration status
+ */
+void RPC::refreshMigration() {
+    // Turnstile migration is only supported in zcashd v2.0.5 and above
+    if (Settings::getInstance()->getZcashdVersion() < 2000552)
+        return;
+
+    json payload = {
+        {"jsonrpc", "1.0"},
+        {"id", "someid"},
+        {"method", "z_getmigrationstatus"},
+    };
+    
+    conn->doRPCWithDefaultErrorHandling(payload, [=](json reply) {
+        this->migrationStatus.available = true;
+        this->migrationStatus.enabled   = reply["enabled"].get<json::boolean_t>();
+        this->migrationStatus.saplingAddress = QString::fromStdString(reply["destination_address"]);
+        this->migrationStatus.unmigrated = QString::fromStdString(reply["unmigrated_amount"]).toDouble();
+        this->migrationStatus.migrated = QString::fromStdString(reply["finalized_migrated_amount"]).toDouble();
+
+        this->migrationStatus.txids.empty();
+        for (auto& it : reply["migration_txids"].get<json::array_t>()) {
+            this->migrationStatus.txids.push_back(QString::fromStdString(it.get<json::string_t>()));
+        }
+    });
+}
+
+void RPC::setMigrationStatus(bool enabled) {
+    json payload = {
+        {"jsonrpc", "1.0"},
+        {"id", "someid"},
+        {"method", "z_setmigration"},
+        {"params", {enabled}}  
+    };
+
+    conn->doRPCWithDefaultErrorHandling(payload, [=](json) {
+        // Ignore return value.
+    });
+}
+
+
 
 void RPC::refreshBalances() {    
     if  (conn == nullptr) 

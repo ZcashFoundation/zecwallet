@@ -381,11 +381,17 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
 void MainWindow::setupTurnstileDialog() {        
     // Turnstile migration
     QObject::connect(ui->actionTurnstile_Migration, &QAction::triggered, [=] () {
-        // If there is current migration that is present, show the progress button
-        if (rpc->getTurnstile()->isMigrationPresent())
-            turnstileProgress();
-        else    
-            turnstileDoMigration();        
+        // If the underlying zcashd has support for the migration, use that. 
+        // Else, show the ZecWallet turnstile tool
+        if (rpc->getMigrationStatus()->available) {
+            Turnstile::showZcashdMigration(this);
+        } else {
+            // If there is current migration that is present, show the progress button
+            if (rpc->getTurnstile()->isMigrationPresent())
+                turnstileProgress();
+            else    
+                turnstileDoMigration();        
+        }
     });
 
 }

@@ -31,6 +31,15 @@ struct WatchedTx {
     std::function<void(QString, QString)> error;
 };
 
+struct MigrationStatus {
+    bool            available;     // Whether the underlying zcashd supports migration?
+    bool            enabled;
+    QString         saplingAddress;
+    double          unmigrated;
+    double          migrated;
+    QList<QString>  txids;
+};
+
 class RPC
 {
 public:
@@ -88,10 +97,14 @@ public:
     Turnstile*  getTurnstile()  { return turnstile; }
     Connection* getConnection() { return conn; }
 
+    const MigrationStatus*      getMigrationStatus() { return &migrationStatus; }
+    void                        setMigrationStatus(bool enabled);
+
 private:
     void refreshBalances();
 
     void refreshTransactions();    
+    void refreshMigration();
     void refreshSentZTrans();
     void refreshReceivedZTrans(QList<QString> zaddresses);
 
@@ -107,6 +120,7 @@ private:
     void getTransactions        (const std::function<void(json)>& cb);
     void getZAddresses          (const std::function<void(json)>& cb);
     void getTAddresses          (const std::function<void(json)>& cb);
+
 
     Connection*                 conn                        = nullptr;
     QProcess*                   ezcashd                     = nullptr;
@@ -129,6 +143,9 @@ private:
     Ui::MainWindow*             ui;
     MainWindow*                 main;
     Turnstile*                  turnstile;
+
+    // Sapling turnstile migration status (for the zcashd v2.0.5 tool)
+    MigrationStatus             migrationStatus;
 
     // Current balance in the UI. If this number updates, then refresh the UI
     QString                     currentBalance;
