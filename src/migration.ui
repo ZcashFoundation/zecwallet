@@ -37,13 +37,6 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
-       <widget class="QLabel" name="lblUnMigrated">
-        <property name="text">
-         <string notr="true">TextLabel</string>
-        </property>
-       </widget>
-      </item>
       <item row="4" column="1" colspan="2">
        <widget class="QTableView" name="tblTxids">
         <attribute name="horizontalHeaderStretchLastSection">
@@ -51,17 +44,24 @@
         </attribute>
        </widget>
       </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Unmigrated Amount</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="2">
-       <widget class="QLabel" name="lblMigrated">
+       <widget class="QLabel" name="lblUnMigrated">
         <property name="text">
          <string notr="true">TextLabel</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="label_2">
+      <item row="2" column="2">
+       <widget class="QLabel" name="lblMigrated">
         <property name="text">
-         <string>Unmigrated Amount</string>
+         <string notr="true">TextLabel</string>
         </property>
        </widget>
       </item>
