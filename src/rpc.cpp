@@ -780,10 +780,11 @@ void RPC::refreshMigration() {
         this->migrationStatus.unmigrated = QString::fromStdString(reply["unmigrated_amount"]).toDouble();
         this->migrationStatus.migrated = QString::fromStdString(reply["finalized_migrated_amount"]).toDouble();
 
-        this->migrationStatus.txids.empty();
+        QList<QString> ids;
         for (auto& it : reply["migration_txids"].get<json::array_t>()) {
-            this->migrationStatus.txids.push_back(QString::fromStdString(it.get<json::string_t>()));
+            ids.push_back(QString::fromStdString(it.get<json::string_t>()));
         }
+        this->migrationStatus.txids = ids;
     });
 }
 
