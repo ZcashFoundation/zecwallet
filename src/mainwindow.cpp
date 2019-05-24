@@ -1080,7 +1080,7 @@ void MainWindow::setupBalancesTab() {
             fnDoSendFrom(addr);
         });
 
-        if (addr.startsWith("t")) {
+        if (addr.startsWith("R")) {
             auto defaultSapling = rpc->getDefaultSaplingAddress();
             if (!defaultSapling.isEmpty()) {
                 menu.addAction(tr("Shield balance to Sapling"), [=] () {
@@ -1399,7 +1399,7 @@ void MainWindow::updateTAddrCombo(bool checked) {
 
         std::for_each(utxos->begin(), utxos->end(), [=](auto& utxo) {
             auto addr = utxo.address;
-            if (addr.startsWith("t") && ui->listRecieveAddresses->findText(addr) < 0) {
+            if (addr.startsWith("R") && ui->listRecieveAddresses->findText(addr) < 0) {
                 auto bal = rpc->getAllBalances()->value(addr);
                 ui->listRecieveAddresses->addItem(addr, bal);
             }
