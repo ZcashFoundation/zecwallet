@@ -552,12 +552,24 @@ Tx MainWindow::createTxFromSendPage() {
 }
 
 bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
-    auto fnSplitAddressForWrap = [=] (const QString& a) -> QString {
-        if (! Settings::isZAddress(a)) return a;
 
-        auto half = a.length() / 2;
-        auto splitted = a.left(half) + "\n" + a.right(a.length() - half);
-        return splitted;
+    // Function to split the address to make it easier to read. 
+    // Split it into chunks of 4 chars. 
+    auto fnSplitAddressForWrap = [=] (const QString& a) -> QString {
+        QStringList ans;
+        static int splitSize = 8;
+
+        for (int i=0; i < a.length(); i+= splitSize) {
+            ans << a.mid(i, splitSize);
+        }
+
+        return ans.join(" ");
+
+        // if (! Settings::isZAddress(a)) return a;
+
+        // auto half = a.length() / 2;
+        // auto splitted = a.left(half) + "\n" + a.right(a.length() - half);
+        // return splitted;
     };
 
     // Update the recurring info with the latest Tx
@@ -569,6 +581,8 @@ bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
     QDialog d(this);
     Ui_confirm confirm;
     confirm.setupUi(&d);
+
+    const QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
 
     // Remove all existing address/amt qlabels on the confirm dialog.
     int totalConfirmAddrItems = confirm.sendToAddrs->children().size();
@@ -605,6 +619,7 @@ bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
             Addr->setObjectName(QString("Addr") % QString::number(i + 1));
             Addr->setWordWrap(true);
             Addr->setText(fnSplitAddressForWrap(toAddr.addr));
+            Addr->setFont(fixedFont);
             confirm.gridLayout->addWidget(Addr, row, 0, 1, 1);
 
             // Amount (ZEC)
@@ -696,6 +711,7 @@ bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
 
     // And FromAddress in the confirm dialog 
     confirm.sendFrom->setText(fnSplitAddressForWrap(tx.fromAddr));
+    confirm.sendFrom->setFont(fixedFont);    
     QString tooltip = tr("Current balance      : ") +
         Settings::getZECUSDDisplayFormat(rpc->getAllBalances()->value(tx.fromAddr));
     tooltip += "\n" + tr("Balance after this Tx: ") +
