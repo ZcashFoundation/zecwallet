@@ -284,7 +284,7 @@
        <item row="1" column="0">
         <widget class="QLabel" name="label_9">
          <property name="text">
-          <string>Rescan the blockchain for any missing wallet transactions and to correct your wallet balance. This may take several hours. You need to restart ZecWallet for this to take effect</string>
+          <string>Rescan the blockchain for any missing wallet transactions and to correct your wallet balance. This may take several hours. You need to restart SilentDragon for this to take effect</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -328,7 +328,7 @@
        <item row="6" column="0">
         <widget class="QLabel" name="label_11">
          <property name="text">
-          <string>Rebuild the entire blockchain from the genesis block, by rescanning all the block files. This may take several hours to days, depending on your hardware. You need to restart ZecWallet for this to take effect</string>
+          <string>Rebuild the entire blockchain from the genesis block, by rescanning all the block files. This may take several hours to days, depending on your hardware. You need to restart SilentDragon for this to take effect</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>

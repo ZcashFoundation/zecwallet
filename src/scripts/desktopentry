@@ -1,13 +1,13 @@
 [Desktop Entry]
-Name=ZecWallet
-Comment=Full node and wallet for Zcash
+Name=SilentDragon
+Comment=Full node and wallet for Hush
 GenericName=Wallet
-Exec=/usr/local/bin/zecwallet %u
-Icon=zecwallet.xpm
+Exec=/usr/local/bin/silentdragon %u
+Icon=silentdragon.xpm
 Type=Application
 StartupNotify=true
-StartupWMClass=zecwallet
+StartupWMClass=silentdragon
 Categories=Utility;
 MimeType=x-scheme-handler/zcash;
-Keywords=zecwallet;
+Keywords=silentdragon;
 
