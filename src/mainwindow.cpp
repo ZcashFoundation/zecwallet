@@ -1418,11 +1418,16 @@ void MainWindow::updateTAddrCombo(bool checked) {
         auto utxos = this->rpc->getUTXOs();
         ui->listRecieveAddresses->clear();
 
-        std::for_each(utxos->begin(), utxos->end(), [=](auto& utxo) {
+        // Maintain a set of addresses so we don't duplicate any.
+        QSet<QString> addrs;
+
+        std::for_each(utxos->begin(), utxos->end(), [=, &addrs](auto& utxo) {
             auto addr = utxo.address;
-            if (Settings::isTAddress(addr) && ui->listRecieveAddresses->findText(addr) < 0) {
+            if (Settings::isTAddress(addr) && !addrs.contains(addr)) {
                 auto bal = rpc->getAllBalances()->value(addr);
                 ui->listRecieveAddresses->addItem(addr, bal);
+
+                addrs.insert(addr);
             }
         });
     }
