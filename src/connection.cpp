@@ -622,7 +622,7 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {
     }
 
     // If rpcport is not in the file, and it was not set by the testnet=1 flag, then go to default
-    if (zcashconf->port.isEmpty()) zcashconf->port = "8232";
+    if (zcashconf->port.isEmpty()) zcashconf->port = "18031";
     file.close();
 
     // In addition to the HUSH3/HUSH3.conf file, also double check the params. 
