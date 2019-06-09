@@ -178,14 +178,16 @@ void ConnectionLoader::createZcashConf() {
         main->logger->write("Could not create HUSH3.conf, returning");
         return;
     }
-        
-    QTextStream out(&file); 
-    
+
+    QTextStream out(&file);
+
     out << "server=1\n";
-    //out << "addnode=mainnet.z.cash\n";
     out << "rpcuser=hush\n";
-    // TODO: set indexes and ports
     out << "rpcpassword=" % randomPassword() << "\n";
+    out << "txindex=1\n";
+    out << "rpcworkqueue=256\n";
+    out << "rpcallowip=127.0.0.1\n";
+
     if (!datadir.isEmpty()) {
         out << "datadir=" % datadir % "\n";
     }
@@ -519,7 +521,7 @@ QString ConnectionLoader::locateZcashConfFile() {
     auto confLocation = QStandardPaths::locate(QStandardPaths::AppDataLocation, "../../Komodo/HUSH3/HUSH3.conf");
 #endif
 
-    main->logger->write("Found zcashconf at " + QDir::cleanPath(confLocation));
+    main->logger->write("Found HUSH3.conf at " + QDir::cleanPath(confLocation));
     return QDir::cleanPath(confLocation);
 }
 
@@ -532,7 +534,7 @@ QString ConnectionLoader::zcashConfWritableLocation() {
     auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("../../Komodo/HUSH3/HUSH3.conf");
 #endif
 
-    main->logger->write("Found zcashconf at " + QDir::cleanPath(confLocation));
+    main->logger->write("Found HUSH3.conf at " + QDir::cleanPath(confLocation));
     return QDir::cleanPath(confLocation);
 }
 
