@@ -182,8 +182,9 @@ void ConnectionLoader::createZcashConf() {
     QTextStream out(&file); 
     
     out << "server=1\n";
-    out << "addnode=mainnet.z.cash\n";
-    out << "rpcuser=zec-qt-wallet\n";
+    //out << "addnode=mainnet.z.cash\n";
+    out << "rpcuser=hush\n";
+    // TODO: set indexes and ports
     out << "rpcpassword=" % randomPassword() << "\n";
     if (!datadir.isEmpty()) {
         out << "datadir=" % datadir % "\n";
