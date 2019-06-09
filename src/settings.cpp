@@ -192,7 +192,7 @@ const QString Settings::txidStatusMessage = QString(QObject::tr("Tx submitted (r
 
 QString Settings::getTokenName() {
     if (Settings::getInstance()->isTestnet()) {
-        return "TAZ";
+        return "HUSHT";
     } else {
         return "HUSH";
     }
