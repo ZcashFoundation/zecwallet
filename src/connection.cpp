@@ -88,10 +88,10 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
                     this->showError(explanation);
                 }                
             } else {
-                // HUSH3.conf exists, there's no connection, and the user asked us not to start zcashd. Error!
-                main->logger->write("Not using embedded and couldn't connect to zcashd");
-                QString explanation = QString() % QObject::tr("Couldn't connect to zcashd configured in HUSH3.conf.\n\n" 
-                                      "Not starting embedded zcashd because --no-embedded was passed");
+                // HUSH3.conf exists, there's no connection, and the user asked us not to start hushd. Error!
+                main->logger->write("Not using embedded and couldn't connect to hushd");
+                QString explanation = QString() % QObject::tr("Couldn't connect to hushd configured in HUSH3.conf.\n\n" 
+                                      "Not starting embedded hushd because --no-embedded was passed");
                 this->showError(explanation);
             }
         });
@@ -311,7 +311,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     if (!Settings::getInstance()->useEmbedded()) 
         return false;
     
-    main->logger->write("Trying to start embedded zcashd");
+    main->logger->write("Trying to start embedded hushd");
 
     // Static because it needs to survive even after this method returns.
     static QString processStdErrOutput;
@@ -319,7 +319,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     if (ezcashd != nullptr) {
         if (ezcashd->state() == QProcess::NotRunning) {
             if (!processStdErrOutput.isEmpty()) {
-                QMessageBox::critical(main, QObject::tr("zcashd error"), "zcashd said: " + processStdErrOutput, 
+                QMessageBox::critical(main, QObject::tr("hushd error"), "hushd said: " + processStdErrOutput, 
                                       QMessageBox::Ok);
             }
             return false;
@@ -363,7 +363,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
 
     QObject::connect(ezcashd, &QProcess::readyReadStandardError, [=]() {
         auto output = ezcashd->readAllStandardError();
-       main->logger->write("zcashd stderr:" + output);
+        main->logger->write("hushd stderr:" + output);
         processStdErrOutput.append(output);
     });
 
@@ -373,7 +373,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     ezcashd->start(zcashdProgram);
 #else
     ezcashd->setWorkingDirectory(appPath.absolutePath());
-    ezcashd->start("zcashd.exe");
+    ezcashd->start("komodo.exe");
 #endif // Q_OS_LINUX
 
 
@@ -398,7 +398,7 @@ void ConnectionLoader::doManualConnect() {
     auto connection = makeConnection(config);
     refreshZcashdState(connection, [=] () {
         QString explanation = QString()
-                % QObject::tr("Could not connect to zcashd configured in settings.\n\n" 
+                % QObject::tr("Could not connect to hushd configured in settings.\n\n" 
                 "Please set the host/port and user/password in the Edit->Settings menu.");
 
         showError(explanation);
@@ -446,7 +446,7 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
         [=] (auto) {
             // Success, hide the dialog if it was shown. 
             d->hide();
-            main->logger->write("zcashd is online.");
+            main->logger->write("hushd is online.");
             this->doRPCSetConnection(connection);
         },
         [=] (auto reply, auto res) {            
@@ -460,7 +460,7 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
                 main->logger->write("Authentication failed");
                 QString explanation = QString() % 
                         QObject::tr("Authentication failed. The username / password you specified was "
-                        "not accepted by zcashd. Try changing it in the Edit->Settings menu");
+                        "not accepted by hushd. Try changing it in the Edit->Settings menu");
 
                 this->showError(explanation);
             } else if (err == QNetworkReply::NetworkError::InternalServerError && 
@@ -474,8 +474,8 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
                     if (dots > 3)
                         dots = 0;
                 }
-                this->showInformation(QObject::tr("Your zcashd is starting up. Please wait."), status);
-                main->logger->write("Waiting for zcashd to come online.");
+                this->showInformation(QObject::tr("Your hushd is starting up. Please wait."), status);
+                main->logger->write("Waiting for hushd to come online.");
                 // Refresh after one second
                 QTimer::singleShot(1000, [=]() { this->refreshZcashdState(connection, refused); });
             }
@@ -529,7 +529,7 @@ QString ConnectionLoader::zcashConfWritableLocation() {
 #ifdef Q_OS_LINUX
     auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath(".komodo/HUSH3/HUSH3.conf");
 #elif defined(Q_OS_DARWIN)
-    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath("Library/Application Support/Zcash/HUSH3/HUSH3.conf");
+    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath("Library/Application Support/Komodo/HUSH3/HUSH3.conf");
 #else
     auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("../../Komodo/HUSH3/HUSH3.conf");
 #endif
