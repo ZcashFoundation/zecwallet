@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>513</width>
-    <height>201</height>
+    <height>513</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,7 +55,7 @@
    <item>
     <widget class="QLabel" name="status">
      <property name="text">
-      <string>Starting Up</string>
+      <string>The Dragon Awakens...</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
