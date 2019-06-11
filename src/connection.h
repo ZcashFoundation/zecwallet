@@ -164,6 +164,7 @@ public:
 
             // If all responses have arrived, return
             if (responses->size() == totalSize) {
+
                 waitTimer->stop();
                 
                 cb(responses);

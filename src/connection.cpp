@@ -18,11 +18,13 @@ ConnectionLoader::ConnectionLoader(MainWindow* main, RPC* rpc) {
     connD->setupUi(d);
     QPixmap logo(":/img/res/logobig.gif");
     connD->topIcon->setBasePixmap(logo.scaled(512, 512, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    main->logger->write("set topIcon");
 }
 
-ConnectionLoader::~ConnectionLoader() {    
+ConnectionLoader::~ConnectionLoader() {
     delete d;
     delete connD;
+    main->logger->write("ConnectionLoader done");
 }
 
 void ConnectionLoader::loadConnection() {
@@ -331,7 +333,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     // Finally, start zcashd    
     QDir appPath(QCoreApplication::applicationDirPath());
 #ifdef Q_OS_LINUX
-    auto zcashdProgram = appPath.absoluteFilePath("zqw-zcashd");
+    auto zcashdProgram = appPath.absoluteFilePath("komodod");
     if (!QFile(zcashdProgram).exists()) {
         zcashdProgram = appPath.absoluteFilePath("komodod");
     }
@@ -437,6 +439,8 @@ Connection* ConnectionLoader::makeConnection(std::shared_ptr<ConnectionConfig> c
 }
 
 void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<void(void)> refused) {
+    main->logger->write("refreshZcashdState");
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -491,7 +495,7 @@ void ConnectionLoader::showInformation(QString info, QString detail) {
     }
     
     if (rescanCount > 10) {
-        detail = detail + "\n" + QObject::tr("This may take several hours");
+        detail = detail + "\n" + QObject::tr("This may take several hours, grab some popcorn");
     }
 
     connD->status->setText(info);
@@ -561,6 +565,7 @@ bool ConnectionLoader::verifyParams() {
 
     if (!QFile(paramsDir.filePath("sapling-output.params")).exists()) return false;
     if (!QFile(paramsDir.filePath("sapling-spend.params")).exists()) return false;
+    //TODO: sprout probably not needed
     if (!QFile(paramsDir.filePath("sprout-proving.key")).exists()) return false;
     if (!QFile(paramsDir.filePath("sprout-verifying.key")).exists()) return false;
     if (!QFile(paramsDir.filePath("sprout-groth16.params")).exists()) return false;
