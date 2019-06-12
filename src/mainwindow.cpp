@@ -99,8 +99,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->setCurrentIndex(0);
 
     // The zcashd tab is hidden by default, and only later added in if the embedded zcashd is started
-    zcashdtab = ui->tabWidget->widget(4);
-    ui->tabWidget->removeTab(4);
+    //zcashdtab = ui->tabWidget->widget(4);
+    //ui->tabWidget->removeTab(4);
 
     setupSendTab();
     setupTransactionsTab();
@@ -1091,7 +1091,8 @@ void MainWindow::setupBalancesTab() {
             menu.addAction(tr("View on block explorer"), [=] () {
                 QString url;
                 if (Settings::getInstance()->isTestnet()) {
-                    url = "https://explorer.testnet.z.cash/address/" + addr;
+                    //TODO
+                    url = "https://explorer.testnet.myhush.org/address/" + addr;
                 } else {
                     url = "https://explorer.myhush.org/address/" + addr;
                 }
