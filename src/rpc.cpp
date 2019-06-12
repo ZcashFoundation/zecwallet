@@ -549,10 +549,13 @@ void RPC::getInfoThenRefresh(bool force) {
         main->statusIcon->setPixmap(i.pixmap(16, 16));
 
         static int    lastBlock = 0;
-        int curBlock  = reply["blocks"].get<json::number_integer_t>();
-        int version   = reply["version"].get<json::number_integer_t>();
-        int notarized = reply["notarized"].get<json::number_integer_t>();
+        int curBlock    = reply["blocks"].get<json::number_integer_t>();
+        int version     = reply["version"].get<json::number_integer_t>();
+        int notarized   = reply["notarized"].get<json::number_integer_t>();
+        QString ntzhash = QString::fromStdString( reply["notarizedhash"].get<json::string_t>() );
         Settings::getInstance()->setZcashdVersion(version);
+
+        ui->notarizedhashvalue->setText( ntzhash );
 
         if ( force || (curBlock != lastBlock) ) {
             // Something changed, so refresh everything.
