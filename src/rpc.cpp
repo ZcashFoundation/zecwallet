@@ -576,23 +576,21 @@ void RPC::getInfoThenRefresh(bool force) {
         }
 
         // Get network sol/s
-        if (ezcashd) {
-            json payload = {
-                {"jsonrpc", "1.0"},
-                {"id", "someid"},
-                {"method", "getnetworksolps"}
-            };
+        json payload = {
+            {"jsonrpc", "1.0"},
+            {"id", "someid"},
+            {"method", "getnetworksolps"}
+        };
 
-            conn->doRPCIgnoreError(payload, [=](const json& reply) {
-                qint64 solrate = reply.get<json::number_unsigned_t>();
+        conn->doRPCIgnoreError(payload, [=](const json& reply) {
+            qint64 solrate = reply.get<json::number_unsigned_t>();
 
-                ui->numconnections->setText(QString::number(connections));
-                ui->solrate->setText(QString::number(solrate) % " Sol/s");
-            });
-        } 
+            ui->numconnections->setText(QString::number(connections));
+            ui->solrate->setText(QString::number(solrate) % " Sol/s");
+        });
 
         // Call to see if the blockchain is syncing. 
-        json payload = {
+        payload = {
             {"jsonrpc", "1.0"},
             {"id", "someid"},
             {"method", "getblockchaininfo"}
@@ -612,22 +610,20 @@ void RPC::getInfoThenRefresh(bool force) {
             Settings::getInstance()->setBlockNumber(blockNumber);
 
             // Update zcashd tab if it exists
-            if (ezcashd) {
-                if (isSyncing) {
-                    QString txt = QString::number(blockNumber);
-                    if (estimatedheight > 0) {
-                        txt = txt % " / ~" % QString::number(estimatedheight);
-                        // If estimated height is available, then use the download blocks 
-                        // as the progress instead of verification progress.
-                        progress = (double)blockNumber / (double)estimatedheight;
-                    }
-                    txt = txt %  " ( " % QString::number(progress * 100, 'f', 2) % "% )";
-                    ui->blockheight->setText(txt);
-                    ui->heightLabel->setText(QObject::tr("Downloading blocks"));
-                } else {
-                    ui->blockheight->setText(QString::number(blockNumber));
-                    ui->heightLabel->setText(QObject::tr("Block height"));
+            if (isSyncing) {
+                QString txt = QString::number(blockNumber);
+                if (estimatedheight > 0) {
+                    txt = txt % " / ~" % QString::number(estimatedheight);
+                    // If estimated height is available, then use the download blocks 
+                    // as the progress instead of verification progress.
+                    progress = (double)blockNumber / (double)estimatedheight;
                 }
+                txt = txt %  " ( " % QString::number(progress * 100, 'f', 2) % "% )";
+                ui->blockheight->setText(txt);
+                ui->heightLabel->setText(QObject::tr("Downloading blocks"));
+            } else {
+                ui->blockheight->setText(QString::number(blockNumber));
+                ui->heightLabel->setText(QObject::tr("Block height"));
             }
 
             // Update the status bar
