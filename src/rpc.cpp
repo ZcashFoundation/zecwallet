@@ -39,6 +39,7 @@ RPC::RPC(MainWindow* main) {
     // Set up a timer to refresh the UI every few seconds
     timer = new QTimer(main);
     QObject::connect(timer, &QTimer::timeout, [=]() {
+        //qDebug() << "Refreshing main UI";
         refresh();
     });
     timer->start(Settings::updateSpeed);    
@@ -46,6 +47,7 @@ RPC::RPC(MainWindow* main) {
     // Set up the timer to watch for tx status
     txTimer = new QTimer(main);
     QObject::connect(txTimer, &QTimer::timeout, [=]() {
+        //qDebug() << "Watching tx status";
         watchTxStatus();
     });
     // Start at every 10s. When an operation is pending, this will change to every second
@@ -79,14 +81,14 @@ void RPC::setEZcashd(QProcess* p) {
     }
 }
 
-// Called when a connection to zcashd is available. 
+// Called when a connection to hushd is available. 
 void RPC::setConnection(Connection* c) {
     if (c == nullptr) return;
 
     delete conn;
     this->conn = c;
 
-    ui->statusBar->showMessage("Ready!");
+    ui->statusBar->showMessage("Ready! Thank you for helping secure the Hush network by running a full node.");
 
     // See if we need to remove the reindex/rescan flags from the zcash.conf file
     auto zcashConfLocation = Settings::getInstance()->getZcashdConfLocation();
@@ -94,7 +96,7 @@ void RPC::setConnection(Connection* c) {
     Settings::removeFromZcashConf(zcashConfLocation, "reindex");
 
     // Refresh the UI
-    refreshZECPrice();    
+    refreshZECPrice();
     checkForUpdate();
 
     // Force update, because this might be coming from a settings update
@@ -527,6 +529,9 @@ void RPC::refresh(bool force) {
 
 
 void RPC::getInfoThenRefresh(bool force) {
+
+    //qDebug() << "getinfo";
+
     if  (conn == nullptr) 
         return noConnection();
 
@@ -552,10 +557,14 @@ void RPC::getInfoThenRefresh(bool force) {
         int curBlock    = reply["blocks"].get<json::number_integer_t>();
         int version     = reply["version"].get<json::number_integer_t>();
         int notarized   = reply["notarized"].get<json::number_integer_t>();
+        int lag         = curBlock - notarized;
         QString ntzhash = QString::fromStdString( reply["notarizedhash"].get<json::string_t>() );
+        QString ntztxid = QString::fromStdString( reply["notarizedtxid"].get<json::string_t>() );
         Settings::getInstance()->setZcashdVersion(version);
 
         ui->notarizedhashvalue->setText( ntzhash );
+        ui->notarizedtxidvalue->setText( ntztxid );
+        ui->lagvalue->setText( QString::number(lag) );
 
         if ( force || (curBlock != lastBlock) ) {
             // Something changed, so refresh everything.
@@ -970,6 +979,8 @@ void RPC::watchTxStatus() {
 }
 
 void RPC::checkForUpdate(bool silent) {
+    qDebug() << "checking for updates";
+
     if  (conn == nullptr) 
         return noConnection();
 
@@ -977,7 +988,6 @@ void RPC::checkForUpdate(bool silent) {
 
     QNetworkRequest req;
     req.setUrl(cmcURL);
-    
     QNetworkReply *reply = conn->restclient->get(req);
 
     QObject::connect(reply, &QNetworkReply::finished, [=] {
