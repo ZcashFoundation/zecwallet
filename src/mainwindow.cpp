@@ -1103,6 +1103,12 @@ void MainWindow::setupBalancesTab() {
                 url = "https://dexstats.info/assetviewer.php?address=" + addr;
                 QDesktopServices::openUrl(QUrl(url));
             });
+
+            menu.addAction(tr("Convert Address"), [=] () {
+                QString url;
+                url = "https://dexstats.info/addressconverter.php?fromcoin=HUSH3&address=" + addr;
+                QDesktopServices::openUrl(QUrl(url));
+            });
         }
 
         //TODO: No sprout UTXOs on the Hush chain, should we remove all turnstile code?
