@@ -1097,8 +1097,15 @@ void MainWindow::setupBalancesTab() {
                 }
                 QDesktopServices::openUrl(QUrl(url));
             });
+
+            menu.addAction(tr("Address Asset Viewer"), [=] () {
+                QString url;
+                url = "https://dexstats.info/assetviewer.php?address=" + addr;
+                QDesktopServices::openUrl(QUrl(url));
+            });
         }
 
+        //TODO: No sprout UTXOs on the Hush chain, should we remove all turnstile code?
         if (Settings::getInstance()->isSproutAddress(addr)) {
             menu.addAction(tr("Migrate to Sapling"), [=] () {
                 this->turnstileDoMigration(addr);
