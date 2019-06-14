@@ -30,7 +30,7 @@
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
-       <string>zcashd connection</string>
+       <string>hushd connection</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>

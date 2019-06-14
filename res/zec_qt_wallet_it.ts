@@ -249,8 +249,8 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="878"/>
-        <source>zcashd</source>
-        <translation>zcashd</translation>
+        <source>hushd</source>
+        <translation>hushd</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="908"/>
@@ -454,17 +454,17 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="479"/>
-        <source>Tor configuration is available only when running an embedded zcashd.</source>
+        <source>Tor configuration is available only when running an embedded hushd.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="518"/>
-        <source>You&apos;re using an external zcashd. Please restart zcashd with -rescan</source>
+        <source>You&apos;re using an external hushd. Please restart hushd with -rescan</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="521"/>
-        <source>You&apos;re using an external zcashd. Please restart zcashd with -reindex</source>
+        <source>You&apos;re using an external hushd. Please restart hushd with -reindex</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -519,9 +519,9 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="859"/>
-        <source>The keys will be imported into your connected zcashd node</source>
+        <source>The keys will be imported into your connected hushd node</source>
         <translatorcomment>check</translatorcomment>
-        <translation>Le chiavi saranno importate nel tuo nodo zcashd</translation>
+        <translation>Le chiavi saranno importate nel tuo nodo hushd</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="899"/>
@@ -545,8 +545,8 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="923"/>
-        <source>You need to back it up from the machine zcashd is running on</source>
-        <translation>È necessario eseguire il backup dalla macchina su cui zcashd è in esecuzione</translation>
+        <source>You need to back it up from the machine hushd is running on</source>
+        <translation>È necessario eseguire il backup dalla macchina su cui hushd è in esecuzione</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="927"/>
@@ -820,52 +820,52 @@ doesn&apos;t look like a z-address</source>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="52"/>
-        <source>Starting embedded zcashd</source>
+        <source>Starting embedded hushd</source>
         <translatorcomment>check</translatorcomment>
-        <translation>Avvio demone zcashd</translation>
+        <translation>Avvio demone hushd</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="62"/>
-        <source>zcashd is set to run as daemon</source>
-        <translation>zcashd è impostato per essere eseguito come un demone</translation>
+        <source>hushd is set to run as daemon</source>
+        <translation>hushd è impostato per essere eseguito come un demone</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="62"/>
-        <source>Waiting for zcashd</source>
-        <translation>In attesa di zcashd</translation>
+        <source>Waiting for hushd</source>
+        <translation>In attesa di hushd</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="77"/>
-        <source>You have zcashd set to start as a daemon, which can cause problems with ZecWallet
+        <source>You have hushd set to start as a daemon, which can cause problems with ZecWallet
 
 .Please remove the following line from your zcash.conf and restart ZecWallet
 daemon=1</source>
-        <translatorcomment>Hai zcashd impostato per l&apos;avvio come daemon, che può causare problemi con ZecWallet</translatorcomment>
+        <translatorcomment>Hai hushd impostato per l&apos;avvio come daemon, che può causare problemi con ZecWallet</translatorcomment>
         <translation>YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="82"/>
-        <source>Couldn&apos;t start the embedded zcashd.
+        <source>Couldn&apos;t start the embedded hushd.
 
 Please try restarting.
 
-If you previously started zcashd with custom arguments, you might need to reset zcash.conf.
+If you previously started hushd with custom arguments, you might need to reset zcash.conf.
 
-If all else fails, please run zcashd manually.</source>
+If all else fails, please run hushd manually.</source>
         <translatorcomment>check</translatorcomment>
-        <translation>Impossibile avviare zcashd integrato
+        <translation>Impossibile avviare hushd integrato
 Per favore prova a riavviare.
-Se hai precedentemente avviato zcashd con parametri personalizzati, potresti dover reimpostare lo zcash.conf
-Se tutto il resto fallisce, si prega di eseguire manualmente zcashd.</translation>
+Se hai precedentemente avviato hushd con parametri personalizzati, potresti dover reimpostare lo zcash.conf
+Se tutto il resto fallisce, si prega di eseguire manualmente hushd.</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="93"/>
-        <source>Couldn&apos;t connect to zcashd configured in zcash.conf.
+        <source>Couldn&apos;t connect to hushd configured in zcash.conf.
 
-Not starting embedded zcashd because --no-embedded was passed</source>
+Not starting embedded hushd because --no-embedded was passed</source>
         <translatorcomment>Check</translatorcomment>
-        <translation>Impossibile connettersi a zcashd come configurato nello zcash.conf.
-Non è stato avviato zcashd integrato perché è stato passato il comando --no-embedded</translation>
+        <translation>Impossibile connettersi a hushd come configurato nello zcash.conf.
+Non è stato avviato hushd integrato perché è stato passato il comando --no-embedded</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="146"/>
@@ -946,18 +946,18 @@ Non è stato avviato zcashd integrato perché è stato passato il comando --no-e
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="645"/>
-        <source>Connected to zcashd</source>
-        <translation>Connesso a zcashd</translation>
+        <source>Connected to hushd</source>
+        <translation>Connesso a hushd</translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="648"/>
-        <source>zcashd has no peer connections</source>
+        <source>hushd has no peer connections</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="667"/>
-        <source>There was an error connecting to zcashd. The error was</source>
-        <translation>Si è verificato un errore durante la connessione a zcashd. L&apos;errore era</translation>
+        <source>There was an error connecting to hushd. The error was</source>
+        <translation>Si è verificato un errore durante la connessione a hushd. L&apos;errore era</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="730"/>
@@ -1022,9 +1022,9 @@ Would you like to visit the releases page?</source>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="1111"/>
-        <source>Waiting for zcashd to exit</source>
+        <source>Waiting for hushd to exit</source>
         <translatorcomment>vedi appunto precedente</translatorcomment>
-        <translation>Attendere l&apos;uscita di zcashd</translation>
+        <translation>Attendere l&apos;uscita di hushd</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="295"/>
@@ -1033,8 +1033,8 @@ Would you like to visit the releases page?</source>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="319"/>
-        <source>zcashd error</source>
-        <translation>zcashd errore</translation>
+        <source>hushd error</source>
+        <translation>hushd errore</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="386"/>
@@ -1046,22 +1046,22 @@ Impostare host/porta e utente/password nel menu Modifica-&gt; Impostazioni.</tra
     </message>
     <message>
         <location filename="../src/connection.cpp" line="398"/>
-        <source>Could not connect to zcashd configured in settings.
+        <source>Could not connect to hushd configured in settings.
 
 Please set the host/port and user/password in the Edit-&gt;Settings menu.</source>
-        <translation>Impossibile connettersi a zcashd configurato nelle impostazioni.
+        <translation>Impossibile connettersi a hushd configurato nelle impostazioni.
 
 Impostare host/porta e utente/password nel menu Modifica-&gt; Impostazioni.</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="459"/>
-        <source>Authentication failed. The username / password you specified was not accepted by zcashd. Try changing it in the Edit-&gt;Settings menu</source>
-        <translation>Autenticazione fallita. Il nome utente/password che hai specificato non sono stati accettati da zcashd. Prova a cambiarlo nel menu Modifica-&gt; Impostazioni</translation>
+        <source>Authentication failed. The username / password you specified was not accepted by hushd. Try changing it in the Edit-&gt;Settings menu</source>
+        <translation>Autenticazione fallita. Il nome utente/password che hai specificato non sono stati accettati da hushd. Prova a cambiarlo nel menu Modifica-&gt; Impostazioni</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="474"/>
-        <source>Your zcashd is starting up. Please wait.</source>
-        <translation>Il tuo zcashd si sta avviando. Attendere prego.</translation>
+        <source>Your hushd is starting up. Please wait.</source>
+        <translation>Il tuo hushd si sta avviando. Attendere prego.</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="491"/>
@@ -1331,8 +1331,8 @@ Avete fondi non confermati o il saldo è troppo basso per una migrazione automat
     </message>
     <message>
         <location filename="../src/settings.ui" line="33"/>
-        <source>zcashd connection</source>
-        <translation>Connessione zcashd</translation>
+        <source>hushd connection</source>
+        <translation>Connessione hushd</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="62"/>
@@ -1569,7 +1569,7 @@ Avete fondi non confermati o il saldo è troppo basso per una migrazione automat
     </message>
     <message>
         <location filename="../src/confirm.ui" line="155"/>
-        <source>zcashd doesn&apos;t seem to have any peers. You might not be connected to the internet, so this Transaction might not work.</source>
+        <source>hushd doesn&apos;t seem to have any peers. You might not be connected to the internet, so this Transaction might not work.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
