@@ -8,6 +8,6 @@ Type=Application
 StartupNotify=true
 StartupWMClass=silentdragon
 Categories=Utility;
-MimeType=x-scheme-handler/zcash;
+MimeType=x-scheme-handler/hush;
 Keywords=silentdragon;
 
