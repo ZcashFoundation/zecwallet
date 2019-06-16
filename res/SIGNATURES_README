@@ -1,4 +1,4 @@
-This directory contains the hashes and signatures for ZecWallet
+This directory contains the hashes and signatures for SilentDargon
 
 Verify the hashes by running:
 sha256sum -c sha256sum-vX.Y.Z.txt
