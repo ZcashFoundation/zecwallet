@@ -560,11 +560,13 @@ void RPC::getInfoThenRefresh(bool force) {
         int lag         = curBlock - notarized;
         QString ntzhash = QString::fromStdString( reply["notarizedhash"].get<json::string_t>() );
         QString ntztxid = QString::fromStdString( reply["notarizedtxid"].get<json::string_t>() );
+        QString kmdver  = QString::fromStdString( reply["KMDversion"].get<json::string_t>() );
         Settings::getInstance()->setZcashdVersion(version);
 
         ui->notarizedhashvalue->setText( ntzhash );
         ui->notarizedtxidvalue->setText( ntztxid );
         ui->lagvalue->setText( QString::number(lag) );
+        ui->kmdversion->setText( kmdver );
 
         if ( force || (curBlock != lastBlock) ) {
             // Something changed, so refresh everything.

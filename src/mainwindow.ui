@@ -1037,6 +1037,28 @@
               </widget>
              </item>
 
+             <item row="10" column="0">
+              <widget class="QLabel" name="kmdversionlabel">
+               <property name="text">
+                <string>KMD Version</string>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="2">
+              <widget class="QLabel" name="kmdversion">
+               <property name="text">
+                <string>Loading...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="1">
+              <widget class="QLabel" name="kmdversionpacer">
+               <property name="text">
+                <string>|</string>
+               </property>
+              </widget>
+             </item>
+
 
              <item row="3" column="2">
               <widget class="QLabel" name="solrate">
