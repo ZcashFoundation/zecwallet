@@ -880,7 +880,7 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_7">
            <item>
-                <widget class="QLabel" name="MemoText">
+                <widget class="QLabel" name="ChatLabeL">
                 <property name="font">
                     <font>
                     <pointsize>10</pointsize>
