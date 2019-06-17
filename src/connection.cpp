@@ -186,6 +186,7 @@ void ConnectionLoader::createZcashConf() {
     out << "server=1\n";
     out << "rpcuser=hush\n";
     out << "rpcpassword=" % randomPassword() << "\n";
+    out << "rpcport=18031\n";
     out << "txindex=1\n";
     out << "rpcworkqueue=256\n";
     out << "rpcallowip=127.0.0.1\n";
