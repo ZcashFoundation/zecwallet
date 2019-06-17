@@ -333,34 +333,35 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     // Finally, start zcashd    
     QDir appPath(QCoreApplication::applicationDirPath());
 #ifdef Q_OS_LINUX
-    auto zcashdProgram = appPath.absoluteFilePath("komodod");
+    auto zcashdProgram = appPath.absoluteFilePath("hushd");
     if (!QFile(zcashdProgram).exists()) {
-        zcashdProgram = appPath.absoluteFilePath("komodod");
+        zcashdProgram = appPath.absoluteFilePath("hushd");
     }
 #elif defined(Q_OS_DARWIN)
-    auto zcashdProgram = appPath.absoluteFilePath("komodod");
+    auto zcashdProgram = appPath.absoluteFilePath("hushd");
 #else
-    auto zcashdProgram = appPath.absoluteFilePath("komodod.exe");
+    //TODO: Not Linux + not darwin DOES NOT EQUAL windows!!!
+    auto zcashdProgram = appPath.absoluteFilePath("hushd");
 #endif
     
     if (!QFile(zcashdProgram).exists()) {
-        qDebug() << "Can't find zcashd at " << zcashdProgram;
-        main->logger->write("Can't find zcashd at " + zcashdProgram); 
+        qDebug() << "Can't find hushd at " << zcashdProgram;
+        main->logger->write("Can't find hushd at " + zcashdProgram); 
         return false;
     }
 
     ezcashd = new QProcess(main);    
     QObject::connect(ezcashd, &QProcess::started, [=] () {
-        //qDebug() << "zcashd started";
+        qDebug() << "Embedded hushd started";
     });
 
     QObject::connect(ezcashd, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                         [=](int, QProcess::ExitStatus) {
-        //qDebug() << "zcashd finished with code " << exitCode << "," << exitStatus;    
+        //qDebug() << "hushd finished with code " << exitCode << "," << exitStatus;    
     });
 
     QObject::connect(ezcashd, &QProcess::errorOccurred, [&] (auto) {
-        //qDebug() << "Couldn't start zcashd: " << error;
+        //qDebug() << "Couldn't start hushd: " << error;
     });
 
     QObject::connect(ezcashd, &QProcess::readyReadStandardError, [=]() {
@@ -375,7 +376,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     ezcashd->start(zcashdProgram);
 #else
     ezcashd->setWorkingDirectory(appPath.absolutePath());
-    ezcashd->start("komodo.exe");
+    ezcashd->start(zcashdProgram);
 #endif // Q_OS_LINUX
 
 
