@@ -73,7 +73,7 @@ RPC::~RPC() {
     delete conn;
 }
 
-void RPC::setEZcashd(QProcess* p) {
+void RPC::setEZcashd(std::shared_ptr<QProcess> p) {
     ezcashd = p;
 
     if (ezcashd && ui->tabWidget->widget(4) == nullptr) {
@@ -1140,7 +1140,8 @@ void RPC::shutdownZcashd() {
         waitCount++;
 
         if ((ezcashd->atEnd() && ezcashd->processId() == 0) ||
-            waitCount > 30 || 
+            ezcashd->state() == QProcess::NotRunning ||
+            waitCount > 30 ||
             conn->config->zcashDaemon)  {   // If zcashd is daemon, then we don't have to do anything else
             qDebug() << "Ended";
             waiter.stop();

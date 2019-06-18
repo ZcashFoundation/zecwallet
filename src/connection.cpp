@@ -178,6 +178,9 @@ void ConnectionLoader::createZcashConf() {
     QFile file(confLocation);
     if (!file.open(QIODevice::ReadWrite | QIODevice::Truncate)) {
         main->logger->write("Could not create HUSH3.conf, returning");
+
+        QString explanation = QString() % QObject::tr("Could not create HUSH3.conf.");
+        this->showError(explanation);
         return;
     }
 
@@ -342,6 +345,8 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     }
 #elif defined(Q_OS_DARWIN)
     auto zcashdProgram = appPath.absoluteFilePath("hushd");
+#elif defined(Q_OS_WIN64)
+    auto zcashdProgram = appPath.absoluteFilePath("hushd.bat");
 #else
     //TODO: Not Linux + not darwin DOES NOT EQUAL windows!!!
     auto zcashdProgram = appPath.absoluteFilePath("hushd");
@@ -353,23 +358,25 @@ bool ConnectionLoader::startEmbeddedZcashd() {
         return false;
     }
 
-    ezcashd = new QProcess(main);    
-    QObject::connect(ezcashd, &QProcess::started, [=] () {
+    ezcashd = std::shared_ptr<QProcess>(new QProcess(main));
+    QObject::connect(ezcashd.get(), &QProcess::started, [=] () {
         qDebug() << "Embedded hushd started";
     });
 
-    QObject::connect(ezcashd, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-                        [=](int, QProcess::ExitStatus) {
-        //qDebug() << "hushd finished with code " << exitCode << "," << exitStatus;    
+    QObject::connect(ezcashd.get(), QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+                        [=](int exitCode, QProcess::ExitStatus exitStatus) {
+        qDebug() << "hushd finished with code " << exitCode << "," << exitStatus;
     });
 
-    QObject::connect(ezcashd, &QProcess::errorOccurred, [&] (auto) {
-        //qDebug() << "Couldn't start hushd: " << error;
+    QObject::connect(ezcashd.get(), &QProcess::errorOccurred, [&] (QProcess::ProcessError error) {
+        qDebug() << "Couldn't start hushd: " << error;
     });
 
-    QObject::connect(ezcashd, &QProcess::readyReadStandardError, [=]() {
-        auto output = ezcashd->readAllStandardError();
-        main->logger->write("hushd stderr:" + output);
+    std::weak_ptr<QProcess> weak_obj(ezcashd);
+    auto ptr_main(main);
+    QObject::connect(ezcashd.get(), &QProcess::readyReadStandardError, [weak_obj, ptr_main]() {
+        auto output = weak_obj.lock()->readAllStandardError();
+        ptr_main->logger->write("hushd stderr:" + output);
         processStdErrOutput.append(output);
     });
 
