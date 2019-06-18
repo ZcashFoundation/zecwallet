@@ -1125,6 +1125,7 @@ void RPC::shutdownZcashd() {
     conn->shutdown();
 
     QDialog d(main);
+    d.setWindowFlags(d.windowFlags() & ~(Qt::WindowCloseButtonHint | Qt::WindowContextHelpButtonHint));
     Ui_ConnectionDialog connD;
     connD.setupUi(&d);
     connD.topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));

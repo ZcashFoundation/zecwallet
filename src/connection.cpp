@@ -14,6 +14,7 @@ ConnectionLoader::ConnectionLoader(MainWindow* main, RPC* rpc) {
     this->rpc  = rpc;
 
     d = new QDialog(main);
+    d->setWindowFlags(d->windowFlags() & ~(Qt::WindowCloseButtonHint | Qt::WindowContextHelpButtonHint));
     connD = new Ui_ConnectionDialog();
     connD->setupUi(d);
     QPixmap logo(":/img/res/logobig.gif");
@@ -459,10 +460,10 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
     };
     connection->doRPC(payload,
         [=] (auto) {
-            // Success, hide the dialog if it was shown. 
-            d->hide();
+            // Success
             main->logger->write("hushd is online.");
-            this->doRPCSetConnection(connection);
+            // Delay 1 second to ensure loading (splash) is seen at least 1 second.
+            QTimer::singleShot(1000, [=]() { this->doRPCSetConnection(connection); });
         },
         [=] (auto reply, auto res) {            
             // Failed, see what it is. 
