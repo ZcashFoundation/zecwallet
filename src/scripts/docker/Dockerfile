@@ -42,4 +42,14 @@ RUN cd /opt && \
     cd /opt/mxe && \
     make -j$(nproc) MXE_TARGETS=x86_64-w64-mingw32.static qtbase qtwebsockets 
 
+# Add rust
+RUN curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain 1.32.0  -y 
+RUN echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
+RUN ~/.cargo/bin/rustup target add x86_64-pc-windows-gnu
+
+# Append the linker to the cargo config for Windows cross compile
+RUN echo "[target.x86_64-pc-windows-gnu]" >> ~/.cargo/config && \
+    echo "linker = 'x86_64-w64-mingw32.static-gcc'" >> ~/.cargo/config
+
+ENV CC_x86_64_pc_windows_gnu="x86_64-w64-mingw32.static-gcc"
 ENV PATH="/opt/mxe/usr/bin:${PATH}"
