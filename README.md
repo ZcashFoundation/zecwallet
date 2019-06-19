@@ -17,11 +17,11 @@ Pass `--no-embedded` to disable the embedded hushd and force SilentDragon to con
 ## Compiling from source
 SilentDragon is written in C++ 14, and can be compiled with g++/clang++/visual c++. It also depends on Qt5, which you can get from [here](https://www.qt.io/download). Note that if you are compiling from source, you won't get the embedded hushd by default. You can either run an external hushd, or compile hushd as well. 
 
-See detailed build instructions [on the wiki](https://github.com/MyHush/SilentDragon/wiki/Compiling-from-source-code)
 
 ### Building on Linux
 
 ```
+sudo apt-get install qt5-default qt5-qmake libqt5websockets5-dev
 git clone https://github.com/MyHush/SilentDragon.git
 cd SilentDragon
 qmake silentdragon.pro CONFIG+=debug
