@@ -27,7 +27,7 @@ cd SilentDragon
 qmake silentdragon.pro CONFIG+=debug
 make -j$(nproc)
 
-./SilentDragon
+./silentdragon
 ```
 
 ### Building on Windows
@@ -59,6 +59,21 @@ make
 
 ./SilentDragon.app/Contents/MacOS/SilentDragon
 ```
+
+### Emulating the embedded node
+
+In binary releases, SilentDragon will use node binaries in the current directory to sync a node from scratch.
+It does not attempt to download them, it bundles them. To simulate this from a developer setup, you can symlink
+these four files in your Git repo:
+
+```
+    ln -s ../hush3/src/hushd
+    ln -s ../hush3/src/hush-cli
+    ln -s ../hush3/src/komodod
+    ln -s ../hush3/src/komodo-cli
+```
+
+The above assumes silentdragon and hush3 git repos are in the same directory. File names on Windows will need to be tweaked.
 
 ### Support
 
