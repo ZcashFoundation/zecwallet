@@ -1191,7 +1191,7 @@
   </action>
   <action name="actionDonate">
    <property name="text">
-    <string>&amp;Donate</string>
+    <string>&amp;Send Duke Feedback</string>
    </property>
   </action>
   <action name="actionCheck_for_Updates">

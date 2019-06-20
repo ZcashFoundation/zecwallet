@@ -601,16 +601,14 @@ void MainWindow::addressBook() {
 
 
 void MainWindow::donate() {
-    // Set up a donation to me :)
     removeExtraAddresses();
 
-    ui->Address1->setText(Settings::getDonationAddr(
-                            Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
+    ui->Address1->setText(Settings::getDonationAddr(true));
     ui->Address1->setCursorPosition(0);
-    ui->Amount1->setText("0.01");
-    ui->MemoTxt1->setText(tr("Thanks for supporting SilentDragon!"));
+    ui->Amount1->setText("0.00");
+    ui->MemoTxt1->setText(tr("Some feedback about SilentDragon or Hush..."));
 
-    ui->statusBar->showMessage(tr("Donate 0.01 ") % Settings::getTokenName() % tr(" to support SilentDragon"));
+    ui->statusBar->showMessage(tr("Send Duke some private and shielded feedback about ") % Settings::getTokenName() % tr(" or SilentDragon"));
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);
@@ -855,7 +853,7 @@ void MainWindow::importPrivKey() {
     pui.buttonBox->button(QDialogButtonBox::Save)->setVisible(false);
     pui.helpLbl->setText(QString() %
                         tr("Please paste your private keys here, one per line") % ".\n" %
-                        tr("The keys will be imported into your connected komodod node"));  
+                        tr("The keys will be imported into your connected Hush node"));  
 
     if (d.exec() == QDialog::Accepted && !pui.privKeyTxt->toPlainText().trimmed().isEmpty()) {
         auto rawkeys = pui.privKeyTxt->toPlainText().trimmed().split("\n");
@@ -876,7 +874,7 @@ void MainWindow::importPrivKey() {
 
         // Show the dialog that keys will be imported. 
         QMessageBox::information(this,
-            "Imported", tr("The keys were imported. It may take several minutes to rescan the blockchain. Until then, functionality may be limited"),
+            "Imported", tr("The keys were imported! It may take several minutes to rescan the blockchain. Until then, functionality may be limited"),
             QMessageBox::Ok);
     }
 }
@@ -967,7 +965,7 @@ void MainWindow::exportKeys(QString addr) {
     // Wire up save button
     QObject::connect(pui.buttonBox->button(QDialogButtonBox::Save), &QPushButton::clicked, [=] () {
         QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
-                           allKeys ? "zcash-all-privatekeys.txt" : "zcash-privatekey.txt");
+                           allKeys ? "hush-all-privatekeys.txt" : "hush-privatekey.txt");
         QFile file(fileName);
         if (!file.open(QIODevice::WriteOnly)) {
             QMessageBox::information(this, tr("Unable to open file"), file.errorString());
