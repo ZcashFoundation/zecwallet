@@ -38,8 +38,8 @@ public:
     ~RPC();
 
     void setConnection(Connection* c);
-    void setEZcashd(QProcess* p);
-    const QProcess* getEZcashD() { return ezcashd; }
+    void setEZcashd(std::shared_ptr<QProcess> p);
+    const QProcess* getEZcashD() { return ezcashd.get(); }
 
     void refresh(bool force = false);
 
@@ -109,7 +109,7 @@ private:
     void getTAddresses          (const std::function<void(json)>& cb);
 
     Connection*                 conn                        = nullptr;
-    QProcess*                   ezcashd                     = nullptr;
+    std::shared_ptr<QProcess>   ezcashd                     = nullptr;
 
     QList<UnspentOutput>*       utxos                       = nullptr;
     QMap<QString, double>*      allBalances                 = nullptr;

@@ -64,7 +64,7 @@ private:
 
     void doRPCSetConnection(Connection* conn);
 
-    QProcess*               ezcashd  = nullptr;
+    std::shared_ptr<QProcess> ezcashd;
 
     QDialog*                d;
     Ui_ConnectionDialog*    connD;

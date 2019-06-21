@@ -73,7 +73,7 @@ RPC::~RPC() {
     delete conn;
 }
 
-void RPC::setEZcashd(QProcess* p) {
+void RPC::setEZcashd(std::shared_ptr<QProcess> p) {
     ezcashd = p;
 
     if (ezcashd && ui->tabWidget->widget(4) == nullptr) {
@@ -1127,6 +1127,7 @@ void RPC::shutdownZcashd() {
     conn->shutdown();
 
     QDialog d(main);
+    d.setWindowFlags(d.windowFlags() & ~(Qt::WindowCloseButtonHint | Qt::WindowContextHelpButtonHint));
     Ui_ConnectionDialog connD;
     connD.setupUi(&d);
     connD.topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));
@@ -1142,7 +1143,8 @@ void RPC::shutdownZcashd() {
         waitCount++;
 
         if ((ezcashd->atEnd() && ezcashd->processId() == 0) ||
-            waitCount > 30 || 
+            ezcashd->state() == QProcess::NotRunning ||
+            waitCount > 30 ||
             conn->config->zcashDaemon)  {   // If zcashd is daemon, then we don't have to do anything else
             qDebug() << "Ended";
             waiter.stop();
