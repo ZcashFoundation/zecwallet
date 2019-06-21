@@ -1060,6 +1060,29 @@
              </item>
 
 
+             <item row="11" column="0">
+              <widget class="QLabel" name="protocolversionlabel">
+               <property name="text">
+                <string>Protocol Version</string>
+               </property>
+              </widget>
+             </item>
+             <item row="11" column="2">
+              <widget class="QLabel" name="protocolversion">
+               <property name="text">
+                <string>Loading...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="11" column="1">
+              <widget class="QLabel" name="protocolversionspacer">
+               <property name="text">
+                <string>|</string>
+               </property>
+              </widget>
+             </item>
+
+
              <item row="3" column="2">
               <widget class="QLabel" name="solrate">
                <property name="text">

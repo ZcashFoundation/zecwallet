@@ -553,20 +553,23 @@ void RPC::getInfoThenRefresh(bool force) {
         QIcon i(":/icons/res/connected.gif");
         main->statusIcon->setPixmap(i.pixmap(16, 16));
 
-        static int    lastBlock = 0;
-        int curBlock    = reply["blocks"].get<json::number_integer_t>();
-        int version     = reply["version"].get<json::number_integer_t>();
-        int notarized   = reply["notarized"].get<json::number_integer_t>();
-        int lag         = curBlock - notarized;
-        QString ntzhash = QString::fromStdString( reply["notarizedhash"].get<json::string_t>() );
-        QString ntztxid = QString::fromStdString( reply["notarizedtxid"].get<json::string_t>() );
-        QString kmdver  = QString::fromStdString( reply["KMDversion"].get<json::string_t>() );
+        static int lastBlock    = 0;
+        int curBlock            = reply["blocks"].get<json::number_integer_t>();
+        int version             = reply["version"].get<json::number_integer_t>();
+        int notarized           = reply["notarized"].get<json::number_integer_t>();
+        int protocolversion     = reply["protocolversion"].get<json::number_integer_t>();
+        int lag                 = curBlock - notarized;
+        QString ntzhash         = QString::fromStdString( reply["notarizedhash"].get<json::string_t>() );
+        QString ntztxid         = QString::fromStdString( reply["notarizedtxid"].get<json::string_t>() );
+        QString kmdver          = QString::fromStdString( reply["KMDversion"].get<json::string_t>() );
+
         Settings::getInstance()->setZcashdVersion(version);
 
         ui->notarizedhashvalue->setText( ntzhash );
         ui->notarizedtxidvalue->setText( ntztxid );
         ui->lagvalue->setText( QString::number(lag) );
         ui->kmdversion->setText( kmdver );
+        ui->protocolversion->setText( QString::number(protocolversion) );
 
         if ( force || (curBlock != lastBlock) ) {
             // Something changed, so refresh everything.
