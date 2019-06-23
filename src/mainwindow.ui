@@ -148,6 +148,47 @@
                  </item>
                 </layout>
                </item>
+
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_99">
+                 <item>
+                  <widget class="QLabel" name="label_99">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string></string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="balUSDTotal">
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+
                <item>
                 <spacer name="verticalSpacer">
                  <property name="orientation">
@@ -1082,6 +1123,73 @@
               </widget>
              </item>
 
+
+             <item row="12" column="0">
+              <widget class="QLabel" name="versionlabel">
+               <property name="text">
+                <string>Version</string>
+               </property>
+              </widget>
+             </item>
+             <item row="12" column="2">
+              <widget class="QLabel" name="version">
+               <property name="text">
+                <string>Loading...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="12" column="1">
+              <widget class="QLabel" name="versionspacer">
+               <property name="text">
+                <string>|</string>
+               </property>
+              </widget>
+             </item>
+
+             <item row="13" column="0">
+              <widget class="QLabel" name="p2pportlabel">
+               <property name="text">
+                <string>P2P Port</string>
+               </property>
+              </widget>
+             </item>
+             <item row="13" column="2">
+              <widget class="QLabel" name="p2pport">
+               <property name="text">
+                <string>Loading...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="13" column="1">
+              <widget class="QLabel" name="p2pportspacer">
+               <property name="text">
+                <string>|</string>
+               </property>
+              </widget>
+             </item>
+
+
+             <item row="14" column="0">
+              <widget class="QLabel" name="rpcportlabel">
+               <property name="text">
+                <string>RPC Port</string>
+               </property>
+              </widget>
+             </item>
+             <item row="14" column="2">
+              <widget class="QLabel" name="rpcport">
+               <property name="text">
+                <string>Loading...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="14" column="1">
+              <widget class="QLabel" name="rpcportspacer">
+               <property name="text">
+                <string>|</string>
+               </property>
+              </widget>
+             </item>
 
              <item row="3" column="2">
               <widget class="QLabel" name="solrate">

@@ -454,7 +454,7 @@ Tx MainWindow::createTxFromSendPage() {
         addr = AddressBook::addressFromAddressLabel(addr);
         
         // If address is sprout, then we can't send change to sapling, because of turnstile.
-        sendChangeToSapling = sendChangeToSapling && !Settings::getInstance()->isSproutAddress(addr);
+        //sendChangeToSapling = sendChangeToSapling && !Settings::getInstance()->isSproutAddress(addr);
 
         double  amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1))->text().trimmed().toDouble();        
         totalAmt += amt;
@@ -473,6 +473,7 @@ Tx MainWindow::createTxFromSendPage() {
     if (Settings::getInstance()->getAutoShield() && sendChangeToSapling) {
         auto saplingAddr = std::find_if(rpc->getAllZAddresses()->begin(), rpc->getAllZAddresses()->end(), [=](auto i) -> bool { 
             // We're finding a sapling address that is not one of the To addresses, because zcash doesn't allow duplicated addresses
+	    // TODO: Should we disable this in Hush? What are the privacy and chain analysis considerations?
             bool isSapling = Settings::getInstance()->isSaplingAddress(i); 
             if (!isSapling) return false;
 
@@ -685,6 +686,7 @@ void MainWindow::sendButton() {
 }
 
 QString MainWindow::doSendTxValidations(Tx tx) {
+    //TODO: Feedback fromAddr is empty for some reason
     if (!Settings::isValidAddress(tx.fromAddr)) return QString(tr("From Address is Invalid"));    
 
     for (auto toAddr : tx.toAddrs) {

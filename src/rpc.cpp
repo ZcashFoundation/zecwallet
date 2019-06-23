@@ -398,6 +398,7 @@ void RPC::noConnection() {
     ui->balSheilded->setText("");
     ui->balTransparent->setText("");
     ui->balTotal->setText("");
+    ui->balUSDTotal->setText("");
 
     ui->balSheilded->setToolTip("");
     ui->balTransparent->setToolTip("");
@@ -556,6 +557,8 @@ void RPC::getInfoThenRefresh(bool force) {
         static int lastBlock    = 0;
         int curBlock            = reply["blocks"].get<json::number_integer_t>();
         int version             = reply["version"].get<json::number_integer_t>();
+        int p2pport             = reply["p2pport"].get<json::number_integer_t>();
+        int rpcport             = reply["rpcport"].get<json::number_integer_t>();
         int notarized           = reply["notarized"].get<json::number_integer_t>();
         int protocolversion     = reply["protocolversion"].get<json::number_integer_t>();
         int lag                 = curBlock - notarized;
@@ -568,8 +571,11 @@ void RPC::getInfoThenRefresh(bool force) {
         ui->notarizedhashvalue->setText( ntzhash );
         ui->notarizedtxidvalue->setText( ntztxid );
         ui->lagvalue->setText( QString::number(lag) );
+	ui->version->setText( QString::number(version) );
         ui->kmdversion->setText( kmdver );
         ui->protocolversion->setText( QString::number(protocolversion) );
+	ui->p2pport->setText( QString::number(p2pport) );
+	ui->rpcport->setText( QString::number(rpcport) );
 
         if ( force || (curBlock != lastBlock) ) {
             // Something changed, so refresh everything.
@@ -779,6 +785,9 @@ void RPC::refreshBalances() {
         ui->balSheilded   ->setToolTip(Settings::getUSDFormat(balZ));
         ui->balTransparent->setToolTip(Settings::getUSDFormat(balT));
         ui->balTotal      ->setToolTip(Settings::getUSDFormat(balTotal));
+
+        ui->balUSDTotal   ->setText(Settings::getUSDFormat(balTotal));
+        ui->balUSDTotal   ->setToolTip(Settings::getUSDFormat(balTotal));
     });
 
     // 2. Get the UTXOs

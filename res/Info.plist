@@ -29,10 +29,10 @@
     <array>
         <dict>
             <key>CFBundleURLName</key>
-            <string>zcash URI</string>
+            <string>hush URI</string>
             <key>CFBundleURLSchemes</key>
             <array>
-                <string>zcash</string>
+                <string>hush</string>
             </array>
         </dict>
     </array>
