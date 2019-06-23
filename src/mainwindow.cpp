@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
         rpc->checkForUpdate(false);
     });
 
-    // Request zcash
+    // Request hush
     QObject::connect(ui->actionRequest_zcash, &QAction::triggered, [=]() {
         RequestDialog::showRequestZcash(this);
     });
@@ -101,6 +101,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // The zcashd tab is hidden by default, and only later added in if the embedded zcashd is started
     //zcashdtab = ui->tabWidget->widget(4);
     //ui->tabWidget->removeTab(4);
+    // TODO: setting to decide whether to auto-close embedded hushd when closing SilentDragon
 
     setupSendTab();
     setupTransactionsTab();
@@ -770,7 +771,7 @@ void MainWindow::balancesReady() {
     // There is a pending URI payment (from the command line, or from a secondary instance),
     // process it.
     if (!pendingURIPayment.isEmpty()) {
-        qDebug() << "Paying zcash URI";
+        qDebug() << "Paying hush URI";
         payZcashURI(pendingURIPayment);
         pendingURIPayment = "";
     }
@@ -1168,7 +1169,7 @@ void MainWindow::setupTransactionsTab() {
         menu.addAction(tr("View on block explorer"), [=] () {
             QString url;
             if (Settings::getInstance()->isTestnet()) {
-                url = "https://explorer.testnet.z.cash/tx/" + txid;
+                url = "https://explorer.testnet.myhush.org/tx/" + txid;
             } else {
                 url = "https://explorer.myhush.org/tx/" + txid;
             }
@@ -1176,7 +1177,7 @@ void MainWindow::setupTransactionsTab() {
         });
 
         // Payment Request
-        if (!memo.isEmpty() && memo.startsWith("zcash:")) {
+        if (!memo.isEmpty() && memo.startsWith("hush:")) {
             menu.addAction(tr("View Payment Request"), [=] () {
                 RequestDialog::showPaymentConfirmation(this, memo);
             });
