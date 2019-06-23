@@ -721,7 +721,7 @@
                <item>
                 <widget class="QRadioButton" name="rdioZSAddr">
                  <property name="text">
-                  <string>z-Addr</string>
+                  <string>Shielded Address (Private, Anonymous)</string>
                  </property>
                 </widget>
                </item>
@@ -734,7 +734,7 @@
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>t-Addr</string>
+                  <string>Transparent Address (Public, Metadata-Leaking)</string>
                  </property>
                 </widget>
                </item>
