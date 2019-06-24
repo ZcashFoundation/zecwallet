@@ -103,6 +103,8 @@ void SentTxStore::addToSentTx(Tx tx, QString txid) {
     txItem["txid"]      = txid;
     txItem["amount"]    = -totalAmount;
     txItem["fee"]       = -tx.fee;
+    // TODO: store all outgoing memos
+    txItem["memo"]      = tx.toAddrs[0].txtMemo;
     list.append(txItem);
 
     jsonDoc.setArray(list);
