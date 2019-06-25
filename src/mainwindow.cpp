@@ -37,8 +37,12 @@ MainWindow::MainWindow(QWidget *parent) :
     // Set up exit action
     QObject::connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
 
-    // Set up donate action
+    // Set up feedback action
     QObject::connect(ui->actionDonate, &QAction::triggered, this, &MainWindow::donate);
+
+    QObject::connect(ui->actionDiscord, &QAction::triggered, this, &MainWindow::discord);
+
+    QObject::connect(ui->actionWebsite, &QAction::triggered, this, &MainWindow::website);
 
     // Set up check for updates action
     QObject::connect(ui->actionCheck_for_Updates, &QAction::triggered, [=] () {
@@ -600,6 +604,15 @@ void MainWindow::addressBook() {
     AddressBook::open(this);
 }
 
+void MainWindow::discord() {
+    QString url = "https://myhush.org/discord/";
+    QDesktopServices::openUrl(QUrl(url));
+}
+
+void MainWindow::website() {
+    QString url = "https://myhush.org";
+    QDesktopServices::openUrl(QUrl(url));
+}
 
 void MainWindow::donate() {
     removeExtraAddresses();

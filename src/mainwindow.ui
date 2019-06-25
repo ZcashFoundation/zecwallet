@@ -1290,6 +1290,8 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="actionDonate"/>
+    <addaction name="actionDiscord"/>
+    <addaction name="actionWebsite"/>
     <addaction name="actionCheck_for_Updates"/>
     <addaction name="actionAbout"/>
    </widget>
@@ -1335,6 +1337,16 @@
   <action name="actionDonate">
    <property name="text">
     <string>&amp;Send Duke Feedback</string>
+   </property>
+  </action>
+  <action name="actionDiscord">
+   <property name="text">
+    <string>&amp;Hush Discord</string>
+   </property>
+  </action>
+  <action name="actionWebsite">
+   <property name="text">
+    <string>&amp;Hush Website</string>
    </property>
   </action>
   <action name="actionCheck_for_Updates">
