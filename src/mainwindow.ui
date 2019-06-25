@@ -915,38 +915,6 @@
        </layout>
       </widget>
 
-      <widget class="QWidget" name="chat_tab">
-       <attribute name="title">
-        <string>Chat</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_7">
-           <item>
-                <widget class="QLabel" name="ChatLabeL">
-                <property name="font">
-                    <font>
-                    <pointsize>10</pointsize>
-                    </font>
-                </property>
-                <property name="text">Welcome To The Future -- Duke
-                    <string/>
-                </property>
-                <property name="wordWrap">
-                    <bool>true</bool>
-                </property>
-                </widget>
-           </item>
-           <item>
-                <widget class="QPlainTextEdit" name="MemoTextEdit">
-                <property name="font">
-                    <font>
-                    <pointsize>12</pointsize>
-                    </font>
-                </property>
-                </widget>
-           </item>
-
-       </layout>
-      </widget>
 
       <widget class="QWidget" name="tab_5">
        <attribute name="title">
