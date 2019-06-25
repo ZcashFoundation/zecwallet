@@ -612,6 +612,19 @@ void RPC::getInfoThenRefresh(bool force) {
             ui->solrate->setText(QString::number(solrate) % " Sol/s");
         });
 
+        // Get network info
+        payload = {
+            {"jsonrpc", "1.0"},
+            {"id", "someid"},
+            {"method", "getnetworkinfo"}
+        };
+
+        conn->doRPCIgnoreError(payload, [=](const json& reply) {
+            QString clientname    = QString::fromStdString( reply["subversion"].get<json::string_t>() );
+
+            ui->clientname->setText(clientname);
+        });
+
         // Call to see if the blockchain is syncing. 
         payload = {
             {"jsonrpc", "1.0"},
@@ -621,6 +634,7 @@ void RPC::getInfoThenRefresh(bool force) {
 
         conn->doRPCIgnoreError(payload, [=](const json& reply) {
             auto progress    = reply["verificationprogress"].get<double>();
+	    // TODO: use getinfo.synced
             bool isSyncing   = progress < 0.9999; // 99.99%
             int  blockNumber = reply["blocks"].get<json::number_unsigned_t>();
 
