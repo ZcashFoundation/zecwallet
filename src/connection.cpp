@@ -77,13 +77,13 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
                     main->logger->write("Couldn't start embedded hushd for unknown reason");
                     QString explanation;
                     if (config->zcashDaemon) {
-                        explanation = QString() % QObject::tr("You have komodod set to start as a daemon, which can cause problems "
+                        explanation = QString() % QObject::tr("You have hushd set to start as a daemon, which can cause problems "
                             "with SilentDragon\n\n."
                             "Please remove the following line from your HUSH3.conf and restart SilentDragon\n"
                             "daemon=1");
                     } else {
                         explanation = QString() % QObject::tr("Couldn't start the embedded hushd.\n\n" 
-                            "Please try restarting.\n\nIf you previously started komodod with custom arguments, you might need to  reset HUSH3.conf.\n\n" 
+                            "Please try restarting.\n\nIf you previously started hushd with custom arguments, you might need to  reset HUSH3.conf.\n\n" 
                             "If all else fails, please run hushd manually.") %  
                             (ezcashd ? QObject::tr("The process returned") + ":\n\n" % ezcashd->errorString() : QString(""));
                     }
@@ -337,7 +337,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
         }        
     }
 
-    // Finally, start zcashd    
+    // Finally, start hushd
     QDir appPath(QCoreApplication::applicationDirPath());
 #ifdef Q_OS_LINUX
     auto zcashdProgram = appPath.absoluteFilePath("hushd");
