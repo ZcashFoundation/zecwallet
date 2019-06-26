@@ -562,6 +562,9 @@ void RPC::getInfoThenRefresh(bool force) {
         int notarized           = reply["notarized"].get<json::number_integer_t>();
         int protocolversion     = reply["protocolversion"].get<json::number_integer_t>();
         int lag                 = curBlock - notarized;
+        int blocks_until_halving= 340000 - curBlock;
+        char halving_days[8];
+        sprintf(halving_days, "%.2f", (double) (blocks_until_halving * 150) / (60*60*24) );
         QString ntzhash         = QString::fromStdString( reply["notarizedhash"].get<json::string_t>() );
         QString ntztxid         = QString::fromStdString( reply["notarizedtxid"].get<json::string_t>() );
         QString kmdver          = QString::fromStdString( reply["KMDversion"].get<json::string_t>() );
@@ -571,11 +574,12 @@ void RPC::getInfoThenRefresh(bool force) {
         ui->notarizedhashvalue->setText( ntzhash );
         ui->notarizedtxidvalue->setText( ntztxid );
         ui->lagvalue->setText( QString::number(lag) );
-	ui->version->setText( QString::number(version) );
+        ui->version->setText( QString::number(version) );
         ui->kmdversion->setText( kmdver );
         ui->protocolversion->setText( QString::number(protocolversion) );
-	ui->p2pport->setText( QString::number(p2pport) );
-	ui->rpcport->setText( QString::number(rpcport) );
+        ui->p2pport->setText( QString::number(p2pport) );
+        ui->rpcport->setText( QString::number(rpcport) );
+        ui->halving->setText( QString::number(blocks_until_halving) % " blocks, " % QString::fromStdString(halving_days)  % " days" );
 
         if ( force || (curBlock != lastBlock) ) {
             // Something changed, so refresh everything.
