@@ -673,7 +673,7 @@ void RPC::getInfoThenRefresh(bool force) {
             tooltip = tooltip % "(v " % QString::number(Settings::getInstance()->getZcashdVersion()) % ")";
 
             if (!zecPrice.isEmpty()) {
-                tooltip = "1 ZEC = " % zecPrice % "\n" % tooltip;
+                tooltip = "1 " % Settings::getTokenName() % " = " % zecPrice % "\n" % tooltip;
             }
             main->statusLabel->setToolTip(tooltip);
             main->statusIcon->setToolTip(tooltip);
@@ -1142,9 +1142,9 @@ void RPC::refreshZECPrice() {
             }
 
             for (const json& item : parsed.get<json::array_t>()) {
-                if (item["symbol"].get<json::string_t>() == "ZEC") {
+                if (item["symbol"].get<json::string_t>() == Settings::getTokenName().toStdString()) {
                     QString price = QString::fromStdString(item["price_usd"].get<json::string_t>());
-                    qDebug() << "ZEC Price=" << price;
+                    qDebug() << Settings::getTokenName() << " Price=" << price;
                     Settings::getInstance()->setZECPrice(price.toDouble());
 
                     return;
