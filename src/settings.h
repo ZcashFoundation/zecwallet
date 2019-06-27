@@ -77,6 +77,9 @@ public:
     
     static void saveRestore(QDialog* d);
 
+    static void openAddressInExplorer(QString address);
+    static void openTxInExplorer(QString txid);
+
     static PaymentURI parseURI(QString paymentURI);
     static QString    paymentURIPretty(PaymentURI);
 
