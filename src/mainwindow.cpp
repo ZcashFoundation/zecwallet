@@ -1411,6 +1411,18 @@ void MainWindow::updateTAddrCombo(bool checked) {
                 addrs.insert(addr);
             }
         });
+        
+        auto allTaddrs = this->rpc->getAllTAddresses();
+        QSet<QString> labels;
+        for (auto p : AddressBook::getInstance()->getAllAddressLabels()) {
+            labels.insert(p.second);
+        }
+        std::for_each(allTaddrs->begin(), allTaddrs->end(), [=] (auto& taddr) {
+            // If the address is in the address book, add it. 
+            if (labels.contains(taddr) && !addrs.contains(taddr)) {
+                ui->listRecieveAddresses->addItem(taddr, 0);
+            }
+        });
     }
 };
 
