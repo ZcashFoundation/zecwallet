@@ -221,7 +221,6 @@ void ConnectionLoader::downloadParams(std::function<void(void)> cb) {
 
     downloadQueue->enqueue(QUrl("https://z.cash/downloads/sapling-output.params"));
     downloadQueue->enqueue(QUrl("https://z.cash/downloads/sapling-spend.params"));
-    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-groth16.params"));
 
     doNextDownload(cb);    
 }
@@ -579,7 +578,6 @@ bool ConnectionLoader::verifyParams() {
 
     if (!QFile(paramsDir.filePath("sapling-output.params")).exists()) return false;
     if (!QFile(paramsDir.filePath("sapling-spend.params")).exists()) return false;
-    if (!QFile(paramsDir.filePath("sprout-groth16.params")).exists()) return false;
 
     qDebug() << "All param files found!";
 
