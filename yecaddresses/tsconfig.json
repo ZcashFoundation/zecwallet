@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "allowJs": true,
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "outDir": "dist",
+    "lib": ["es2017", "dom"],
+    "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "removeComments": true,
+    "esModuleInterop": true,
+  },
+  "exclude": ["node_modules", "dist"]
+}
