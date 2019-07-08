@@ -1263,6 +1263,8 @@ void MainWindow::setupReceiveTab() {
     auto addNewTAddr = [=] () {
         rpc->newTaddr([=] (json reply) {
             QString addr = QString::fromStdString(reply.get<json::string_t>());
+            // Make sure the RPC class reloads the t-addrs for future use
+            rpc->refreshAddresses();
 
             // Just double make sure the t-address is still checked
             if (ui->rdioTAddr->isChecked()) {
