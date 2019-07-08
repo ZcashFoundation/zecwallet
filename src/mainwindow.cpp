@@ -109,7 +109,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setupSendTab();
     setupTransactionsTab();
-    setupRecieveTab();
+    setupReceiveTab();
     setupBalancesTab();
     setupTurnstileDialog();
     setupZcashdTab();
@@ -826,7 +826,7 @@ void MainWindow::payZcashURI(QString uri, QString myAddr) {
         return;
 
     // Extract the address
-    qDebug() << "Recieved URI " << uri;
+    qDebug() << "Received URI " << uri;
     PaymentURI paymentInfo = Settings::parseURI(uri);
     if (!paymentInfo.error.isEmpty()) {
         QMessageBox::critical(this, tr("Error paying zcash URI"), 
@@ -1222,8 +1222,8 @@ void MainWindow::addNewZaddr(bool sapling) {
 
         // Just double make sure the z-address is still checked
         if ( sapling && ui->rdioZSAddr->isChecked() ) {
-            ui->listRecieveAddresses->insertItem(0, addr); 
-            ui->listRecieveAddresses->setCurrentIndex(0);
+            ui->listReceiveAddresses->insertItem(0, addr); 
+            ui->listReceiveAddresses->setCurrentIndex(0);
 
             ui->statusBar->showMessage(QString::fromStdString("Created new zAddr") %
                                        (sapling ? "(Sapling)" : "(Sprout)"), 
@@ -1239,14 +1239,14 @@ std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
     return [=] (bool checked) { 
         if (checked && this->rpc->getAllZAddresses() != nullptr) { 
             auto addrs = this->rpc->getAllZAddresses();
-            ui->listRecieveAddresses->clear();
+            ui->listReceiveAddresses->clear();
 
             std::for_each(addrs->begin(), addrs->end(), [=] (auto addr) {
                 if ( (sapling &&  Settings::getInstance()->isSaplingAddress(addr)) ||
                     (!sapling && !Settings::getInstance()->isSaplingAddress(addr))) {
                         if (rpc->getAllBalances()) {
                             auto bal = rpc->getAllBalances()->value(addr);
-                            ui->listRecieveAddresses->addItem(addr, bal);
+                            ui->listReceiveAddresses->addItem(addr, bal);
                         }
                 }
             }); 
@@ -1259,15 +1259,15 @@ std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
     };
 }
 
-void MainWindow::setupRecieveTab() {
+void MainWindow::setupReceiveTab() {
     auto addNewTAddr = [=] () {
         rpc->newTaddr([=] (json reply) {
             QString addr = QString::fromStdString(reply.get<json::string_t>());
 
             // Just double make sure the t-address is still checked
             if (ui->rdioTAddr->isChecked()) {
-                ui->listRecieveAddresses->insertItem(0, addr);
-                ui->listRecieveAddresses->setCurrentIndex(0);
+                ui->listReceiveAddresses->insertItem(0, addr);
+                ui->listReceiveAddresses->setCurrentIndex(0);
 
                 ui->statusBar->showMessage(tr("Created new t-Addr"), 10 * 1000);
             }
@@ -1288,7 +1288,7 @@ void MainWindow::setupRecieveTab() {
     QObject::connect(ui->rdioZSAddr, &QRadioButton::toggled, addZAddrsToComboList(true));
 
     // Explicitly get new address button.
-    QObject::connect(ui->btnRecieveNewAddr, &QPushButton::clicked, [=] () {
+    QObject::connect(ui->btnReceiveNewAddr, &QPushButton::clicked, [=] () {
         if (!rpc->getConnection())
             return;
 
@@ -1306,7 +1306,7 @@ void MainWindow::setupRecieveTab() {
             ui->rdioZSAddr->setChecked(true);
             
             // And then select the first one
-            ui->listRecieveAddresses->setCurrentIndex(0);
+            ui->listReceiveAddresses->setCurrentIndex(0);
         }
     });
 
@@ -1315,15 +1315,15 @@ void MainWindow::setupRecieveTab() {
     ui->rcvLabel->setValidator(v);
 
     // Select item in address list
-    QObject::connect(ui->listRecieveAddresses, 
+    QObject::connect(ui->listReceiveAddresses, 
         QOverload<int>::of(&QComboBox::currentIndexChanged), [=] (int index) {
-        QString addr = ui->listRecieveAddresses->itemText(index);
+        QString addr = ui->listReceiveAddresses->itemText(index);
         if (addr.isEmpty()) {
             // Draw empty stuff
 
             ui->rcvLabel->clear();
             ui->rcvBal->clear();
-            ui->txtRecieve->clear();
+            ui->txtReceive->clear();
             ui->qrcodeDisplay->clear();
             return;
         }
@@ -1338,7 +1338,7 @@ void MainWindow::setupRecieveTab() {
         
         ui->rcvLabel->setText(label);
         ui->rcvBal->setText(Settings::getZECUSDDisplayFormat(rpc->getAllBalances()->value(addr)));
-        ui->txtRecieve->setPlainText(addr);       
+        ui->txtReceive->setPlainText(addr);       
         ui->qrcodeDisplay->setQrcodeString(addr);
         if (rpc->getUsedAddresses()->value(addr, false)) {
             ui->rcvBal->setToolTip(tr("Address has been previously used"));
@@ -1350,7 +1350,7 @@ void MainWindow::setupRecieveTab() {
 
     // Receive tab add/update label
     QObject::connect(ui->rcvUpdateLabel, &QPushButton::clicked, [=]() {
-        QString addr = ui->listRecieveAddresses->currentText();
+        QString addr = ui->listReceiveAddresses->currentText();
         if (addr.isEmpty())
             return;
 
@@ -1384,9 +1384,9 @@ void MainWindow::setupRecieveTab() {
         }
     });
 
-    // Recieve Export Key
+    // Receive Export Key
     QObject::connect(ui->exportKey, &QPushButton::clicked, [=]() {
-        QString addr = ui->listRecieveAddresses->currentText();
+        QString addr = ui->listReceiveAddresses->currentText();
         if (addr.isEmpty())
             return;
 
@@ -1397,7 +1397,7 @@ void MainWindow::setupRecieveTab() {
 void MainWindow::updateTAddrCombo(bool checked) {
     if (checked) {
         auto utxos = this->rpc->getUTXOs();
-        ui->listRecieveAddresses->clear();
+        ui->listReceiveAddresses->clear();
 
         // Maintain a set of addresses so we don't duplicate any.
         QSet<QString> addrs;
@@ -1406,7 +1406,7 @@ void MainWindow::updateTAddrCombo(bool checked) {
             auto addr = utxo.address;
             if (Settings::isTAddress(addr) && !addrs.contains(addr)) {
                 auto bal = rpc->getAllBalances()->value(addr);
-                ui->listRecieveAddresses->addItem(addr, bal);
+                ui->listReceiveAddresses->addItem(addr, bal);
 
                 addrs.insert(addr);
             }
@@ -1420,7 +1420,7 @@ void MainWindow::updateTAddrCombo(bool checked) {
         std::for_each(allTaddrs->begin(), allTaddrs->end(), [=] (auto& taddr) {
             // If the address is in the address book, add it. 
             if (labels.contains(taddr) && !addrs.contains(taddr)) {
-                ui->listRecieveAddresses->addItem(taddr, 0);
+                ui->listReceiveAddresses->addItem(taddr, 0);
             }
         });
     }

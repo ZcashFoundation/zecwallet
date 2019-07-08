@@ -84,7 +84,7 @@ private:
 
     void setupSendTab();
     void setupTransactionsTab();
-    void setupRecieveTab();
+    void setupReceiveTab();
     void setupBalancesTab();
     void setupZcashdTab();
 
