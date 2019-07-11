@@ -52,6 +52,8 @@ public:
 
     // Get an address's first label
     QString getLabelForAddress(QString address);
+    // Get a Label's address
+    QString getAddressForLabel(QString label);
 private:
     AddressBook();
 

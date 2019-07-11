@@ -122,14 +122,32 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
     // Add new address button
     QObject::connect(ab.addNew, &QPushButton::clicked, [&] () {
         auto addr = ab.addr->text().trimmed();
-        if (!addr.isEmpty() && !ab.label->text().isEmpty()) {
-            // Test if address is valid.
-            if (!Settings::isValidAddress(addr)) {
-                QMessageBox::critical(parent, QObject::tr("Address Format Error"), addr + QObject::tr(" doesn't seem to be a valid Zcash address."), QMessageBox::Ok);
-            } else {
-                model.addNewLabel(ab.label->text(), ab.addr->text());
-            }
+        QString newLabel = ab.label->text();
+
+        if (addr.isEmpty() || newLabel.isEmpty()) {
+            QMessageBox::critical(parent, QObject::tr("Address or Label Error"), 
+                QObject::tr("Address or Label cannot be empty"), QMessageBox::Ok);
+            return;
         }
+        // Test if address is valid.
+        if (!Settings::isValidAddress(addr)) {
+            QMessageBox::critical(parent, QObject::tr("Address Format Error"), 
+                QObject::tr("%1 doesn't seem to be a valid Zcash address.")
+                    .arg(addr), 
+                QMessageBox::Ok);
+            return;
+        } 
+
+        // Don't allow duplicate address labels.                 
+        if (!getInstance()->getAddressForLabel(newLabel).isEmpty()) {
+            QMessageBox::critical(parent, QObject::tr("Label Error"), 
+                QObject::tr("The label '%1' already exists. Please remove the existing label.")
+                    .arg(newLabel), 
+                QMessageBox::Ok);
+            return;
+        } 
+    
+        model.addNewLabel(newLabel, ab.addr->text());
     });
 
     // Import Button
@@ -339,6 +357,16 @@ QString AddressBook::getLabelForAddress(QString addr) {
     for (auto i : allLabels) {
         if (i.second == addr)
             return i.first;
+    }
+
+    return "";
+}
+
+// Get the address for a label
+QString AddressBook::getAddressForLabel(QString label) {
+    for (auto i: allLabels) {
+        if (i.first == label)
+            return i.second;
     }
 
     return "";
