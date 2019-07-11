@@ -727,12 +727,6 @@ void RPC::refreshAddresses() {
 
         delete taddresses;
         taddresses = newtaddresses;
-
-        // If there are no t Addresses, create one
-        newTaddr([=] (json reply) {
-            // What if taddress gets deleted before this executes?
-            taddresses->append(QString::fromStdString(reply.get<json::string_t>()));
-        });
     });
 }
 
