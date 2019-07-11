@@ -138,7 +138,7 @@ class Application : public SignalHandler
 public:
     Application() : SignalHandler(SignalHandler::SIG_INT), w(nullptr) {}
 
-    ~Application() { delete w; }
+    ~Application() {}
 
     int main(int argc, char *argv[]) {
         QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
