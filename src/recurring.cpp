@@ -724,6 +724,7 @@ QVariant RecurringPaymentsListViewModel::data(const QModelIndex &index, int role
                     case PaymentStatus::COMPLETED:   return tr("Paid");
                     case PaymentStatus::ERROR:       return tr("Error");
                     case PaymentStatus::UNKNOWN:     return tr("Unknown");
+                    default:                         return tr("Unknown");
                 }
             }
             case 2: return item.txid;
