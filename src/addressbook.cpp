@@ -217,7 +217,7 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
 
     if (d.exec() == QDialog::Accepted && target != nullptr) {
         auto selection = ab.addresses->selectionModel();
-        if (selection->hasSelection()) {
+        if (selection && selection->hasSelection() && selection->selectedRows().size() > 0) {
             auto item = model.itemAt(selection->selectedRows().at(0).row());
             fnSetTargetLabelAddr(target, item.first, item.second);
         }
