@@ -40,6 +40,11 @@ MainWindow::MainWindow(QWidget *parent) :
     // Set up donate action
     QObject::connect(ui->actionDonate, &QAction::triggered, this, &MainWindow::donate);
 
+    // File a bug
+    QObject::connect(ui->actionFile_a_bug, &QAction::triggered, [=]() {
+        QDesktopServices::openUrl(QUrl("https://github.com/zcashfoundation/zecwallet/issues/new"));
+    });
+
     // Set up check for updates action
     QObject::connect(ui->actionCheck_for_Updates, &QAction::triggered, [=] () {
         // Silent is false, so show notification even if no update was found

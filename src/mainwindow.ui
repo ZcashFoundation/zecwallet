@@ -359,8 +359,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>928</width>
-                <height>353</height>
+                <width>920</width>
+                <height>324</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -1045,7 +1045,7 @@
      <x>0</x>
      <y>0</y>
      <width>968</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1069,6 +1069,7 @@
     </property>
     <addaction name="actionDonate"/>
     <addaction name="actionCheck_for_Updates"/>
+    <addaction name="actionFile_a_bug"/>
     <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuApps">
@@ -1187,6 +1188,11 @@
   <action name="actionRequest_zcash">
    <property name="text">
     <string>Request zcash...</string>
+   </property>
+  </action>
+  <action name="actionFile_a_bug">
+   <property name="text">
+    <string>File a bug...</string>
    </property>
   </action>
  </widget>
