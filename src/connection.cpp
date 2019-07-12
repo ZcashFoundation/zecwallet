@@ -168,6 +168,10 @@ void ConnectionLoader::createZcashConf() {
     if (d.exec() == QDialog::Accepted) {
         datadir = ui.lblDirName->text();
         useTor = ui.chkUseTor->isChecked();
+        if (!ui.chkAllowInternet->isChecked()) {
+            Settings::getInstance()->setAllowFetchPrices(false);
+            Settings::getInstance()->setCheckForUpdates(false);
+        }
     }
 
     main->logger->write("Creating file " + confLocation);

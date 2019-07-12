@@ -480,6 +480,12 @@ void MainWindow::setupSettingsModal() {
         // Auto shielding
         settings.chkAutoShield->setChecked(Settings::getInstance()->getAutoShield());
 
+        // Check for updates
+        settings.chkCheckUpdates->setChecked(Settings::getInstance()->getCheckForUpdates());
+
+        // Fetch prices
+        settings.chkFetchPrices->setChecked(Settings::getInstance()->getAllowFetchPrices());
+
         // Use Tor
         bool isUsingTor = false;
         if (rpc->getConnection() != nullptr) {
@@ -544,6 +550,12 @@ void MainWindow::setupSettingsModal() {
 
             // Auto shield
             Settings::getInstance()->setAutoShield(settings.chkAutoShield->isChecked());
+
+            // Check for updates
+            Settings::getInstance()->setCheckForUpdates(settings.chkCheckUpdates->isChecked());
+
+            // Allow fetching prices
+            Settings::getInstance()->setAllowFetchPrices(settings.chkFetchPrices->isChecked());
 
             if (!isUsingTor && settings.chkTor->isChecked()) {
                 // If "use tor" was previously unchecked and now checked

@@ -32,7 +32,8 @@ RPC::RPC(MainWindow* main) {
     // Set up timer to refresh Price
     priceTimer = new QTimer(main);
     QObject::connect(priceTimer, &QTimer::timeout, [=]() {
-        refreshZECPrice();
+        if (Settings::getInstance()->getAllowFetchPrices())
+            refreshZECPrice();
     });
     priceTimer->start(Settings::priceRefreshSpeed);  // Every hour
 
@@ -96,9 +97,13 @@ void RPC::setConnection(Connection* c) {
     Settings::removeFromZcashConf(zcashConfLocation, "rescan");
     Settings::removeFromZcashConf(zcashConfLocation, "reindex");
 
-    // Refresh the UI
-    refreshZECPrice();    
-    checkForUpdate();
+    // If we're allowed to get the Zec Price, get the prices
+    if (Settings::getInstance()->getAllowFetchPrices())
+        refreshZECPrice();
+
+    // If we're allowed to check for updates, check for a new release
+    if (Settings::getInstance()->getCheckForUpdates())
+        checkForUpdate();
 
     // Force update, because this might be coming from a settings update
     // where we need to immediately refresh
