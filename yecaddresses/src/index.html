@@ -12,11 +12,81 @@
 
   <meta name="description" content="<%= htmlWebpackPlugin.options.title %>">
 
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+ 
+  <style>
+    .address {
+      word-wrap: anywhere;
+      font-family: monospace;
+    }
+  </style>
+
 </head>
 
 <body>
-  <div> You have successfully started your Typescript application using Webpack. Open your console to see your printed message from the index.ts file </div>
-  <p>By <a href="https://twitter.com/renaudin_yann">@renaudin_yann</a> </p>
+  <div class="container">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" style="text-align: center">
+            <p>Zcash and YCash Address Converter</p>
+          </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+              <li>
+                <a href="#">
+                  <p>Version 1.0. Copyright &copy; 2019 ZecWallet</p>
+                </a>
+              </li>
+            </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="row">
+      <div class="col-sm-6 col-sm-offset-3">
+          <div style="text-align: center">
+            <h3>Enter a Zcash or Ycash address</h3>
+          </div>
+          <input type="text" placeholder="address" id="input_address" style="width: 100%">
+          <p></p>
+          <div style="text-align: center">
+              <button type="button" class="btn btn-success" id="convert_button">Convert</button>
+          </div>
+      </div>
+    </div>
+
+    <br/>
+
+    <div class="row">
+      <div class="col-sm-4 col-sm-offset-1">
+        <div style="text-align: center">
+          <h3>ZCash Address</h3>
+        </div>
+        <hr/>
+        <p id="zcash_address" class="address"></p>
+        <div style="text-align: center">
+          <canvas id="zcash_address_canvas"></canvas>
+        </div>
+      </div>
+
+      <div class="col-sm-4 col-sm-offset-3">
+        <div style="text-align: center">
+          <h3>YCash Address</h3>
+        </div>
+        <hr/>
+        <p id="ycash_address" class="address"></p>
+        <div style="text-align: center">
+          <canvas id="ycash_address_canvas"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
