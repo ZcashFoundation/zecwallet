@@ -60,6 +60,12 @@ public:
 
     bool    getAllowCustomFees();
     void    setAllowCustomFees(bool allow);
+
+    bool    getAllowFetchPrices();
+    void    setAllowFetchPrices(bool allow);
+
+    bool    getCheckForUpdates();
+    void    setCheckForUpdates(bool allow);
             
     bool    isSaplingActive();
 

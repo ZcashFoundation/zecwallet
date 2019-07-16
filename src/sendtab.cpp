@@ -107,8 +107,11 @@ void MainWindow::setupSendTab() {
 
 void MainWindow::disableRecurring() {
     if (!Settings::getInstance()->isTestnet()) {
+        ui->chkRecurring->setVisible(false);
         ui->chkRecurring->setEnabled(false);
+        ui->btnRecurSchedule->setVisible(false);
         ui->btnRecurSchedule->setEnabled(false);
+        ui->action_Recurring_Payments->setVisible(false);
     }
 }
 

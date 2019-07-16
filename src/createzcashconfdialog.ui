@@ -99,17 +99,24 @@
       <string/>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string notr="true"/>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Allow connections to the internet to check for updates, get ZEC/USD prices etc...</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QCheckBox" name="chkCustomDatadir">
         <property name="text">
          <string>Use custom datadir</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Please choose a directory to store your wallet.dat and blockchain</string>
         </property>
        </widget>
       </item>
@@ -144,24 +151,41 @@
         </item>
        </layout>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_4">
+      <item row="8" column="0">
+       <widget class="QLabel" name="label_5">
         <property name="text">
-         <string notr="true"/>
+         <string>Please note that you'll need to already have a Tor service configured on port 9050</string>
         </property>
        </widget>
       </item>
       <item row="4" column="0">
+       <widget class="QCheckBox" name="chkAllowInternet">
+        <property name="text">
+         <string>Connect to the internet for updates and price feeds</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Please choose a directory to store your wallet.dat and blockchain</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
        <widget class="QCheckBox" name="chkUseTor">
         <property name="text">
          <string>Connect over Tor</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="label_5">
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>Please note that you'll need to already have a Tor service configured on port 9050</string>
+         <string/>
         </property>
        </widget>
       </item>

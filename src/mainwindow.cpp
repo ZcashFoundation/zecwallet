@@ -40,6 +40,11 @@ MainWindow::MainWindow(QWidget *parent) :
     // Set up donate action
     QObject::connect(ui->actionDonate, &QAction::triggered, this, &MainWindow::donate);
 
+    // File a bug
+    QObject::connect(ui->actionFile_a_bug, &QAction::triggered, [=]() {
+        QDesktopServices::openUrl(QUrl("https://github.com/zcashfoundation/zecwallet/issues/new"));
+    });
+
     // Set up check for updates action
     QObject::connect(ui->actionCheck_for_Updates, &QAction::triggered, [=] () {
         // Silent is false, so show notification even if no update was found
@@ -475,6 +480,12 @@ void MainWindow::setupSettingsModal() {
         // Auto shielding
         settings.chkAutoShield->setChecked(Settings::getInstance()->getAutoShield());
 
+        // Check for updates
+        settings.chkCheckUpdates->setChecked(Settings::getInstance()->getCheckForUpdates());
+
+        // Fetch prices
+        settings.chkFetchPrices->setChecked(Settings::getInstance()->getAllowFetchPrices());
+
         // Use Tor
         bool isUsingTor = false;
         if (rpc->getConnection() != nullptr) {
@@ -539,6 +550,12 @@ void MainWindow::setupSettingsModal() {
 
             // Auto shield
             Settings::getInstance()->setAutoShield(settings.chkAutoShield->isChecked());
+
+            // Check for updates
+            Settings::getInstance()->setCheckForUpdates(settings.chkCheckUpdates->isChecked());
+
+            // Allow fetching prices
+            Settings::getInstance()->setAllowFetchPrices(settings.chkFetchPrices->isChecked());
 
             if (!isUsingTor && settings.chkTor->isChecked()) {
                 // If "use tor" was previously unchecked and now checked
