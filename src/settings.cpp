@@ -163,9 +163,9 @@ void Settings::saveRestore(QDialog* d) {
 void Settings::openAddressInExplorer(QString address) {
     QString url;
     if (Settings::getInstance()->isTestnet()) {
-        url = "https://explorer.testnet.z.cash/address/" + address;
+        url = "https://chain.so/address/ZECTEST/" + address;
     } else {
-        url = "https://explorer.zcha.in/accounts/" + address;
+        url = "https://chain.so/address/ZEC/" + address;
     }
     QDesktopServices::openUrl(QUrl(url));
 }
@@ -173,10 +173,10 @@ void Settings::openAddressInExplorer(QString address) {
 void Settings::openTxInExplorer(QString txid) {
     QString url;
     if (Settings::getInstance()->isTestnet()) {
-        url = "https://explorer.testnet.z.cash/tx/" + txid;
+        url = "https://chain.so/tx/ZECTEST/" + txid;
     }
     else {
-        url = "https://explorer.zcha.in/transactions/" + txid;
+        url = "https://chain.so/tx/ZEC/" + txid;
     }
     QDesktopServices::openUrl(QUrl(url));
 }
