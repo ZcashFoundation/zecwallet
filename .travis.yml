@@ -18,10 +18,10 @@ script:
  - qmake -v
  - clang++ -v
  - g++-8 -v
- - qmake silentdragon.pro CONFIG+=release -spec linux-clang
+ - qmake safecoinwallet.pro CONFIG+=release -spec linux-clang
  - make CC=clang CXX=clang++ -j2
  - make distclean
- - qmake silentdragon.pro CONFIG+=release -spec linux-g++
+ - qmake safecoinwallet.pro CONFIG+=release -spec linux-g++
  - res/libsodium/buildlibsodium.sh
  - make CC=gcc-8 CXX=g++-8 -j2
  

@@ -106,8 +106,11 @@ void Settings::setBlockNumber(int number) {
     this->_blockNumber = number;
 }
 
+// TODOOOOOOOO
+
 bool Settings::isSaplingActive() {
-    return  (isTestnet() && getBlockNumber() > 0) || (!isTestnet() && getBlockNumber() > 0);
+    return  (isTestnet() && getBlockNumber() > 0) ||
+			(!isTestnet() && getBlockNumber() > 547422);
 }
 
 double Settings::getZECPrice() { 
@@ -192,9 +195,9 @@ const QString Settings::txidStatusMessage = QString(QObject::tr("Tx submitted (r
 
 QString Settings::getTokenName() {
     if (Settings::getInstance()->isTestnet()) {
-        return "HUSHT";
+        return "SAFET";
     } else {
-        return "HUSH";
+        return "SAFE";
     }
 }
 
@@ -202,7 +205,7 @@ QString Settings::getDonationAddr(bool sapling) {
     if (Settings::getInstance()->isTestnet())  {
 	    return "ztestsaplingXXX";
     }
-    return "zs1aq4xnrkjlnxx0zesqye7jz3dfrf3rjh7q5z6u8l6mwyqqaam3gx3j2fkqakp33v93yavq46j83q";
+    return "RtU6tF2d1YE6hw9DHMAyNRb2uUk4PwSCZr";
 }
 
 bool Settings::addToZcashConf(QString confLocation, QString line) {
@@ -288,12 +291,12 @@ QString Settings::paymentURIPretty(PaymentURI uri) {
 PaymentURI Settings::parseURI(QString uri) {
     PaymentURI ans;
 
-    if (!uri.startsWith("hush:")) {
-        ans.error = "Not a HUSH payment URI";
+    if (!uri.startsWith("safecoin:")) {
+        ans.error = "Not a Safecoin payment URI";
         return ans;
     }
 
-    uri = uri.right(uri.length() - QString("hush:").length());
+    uri = uri.right(uri.length() - QString("safecoin:").length());
     
     QRegExp re("([a-zA-Z0-9]+)");
     int pos;

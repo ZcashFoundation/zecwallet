@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Configure HUSH3.conf</string>
+   <string>Configure safecoin.conf</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="1">
@@ -83,7 +83,7 @@
    <item row="2" column="1">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Your Hush node will be configured for you automatically</string>
+      <string>Your Safecoin node will be configured for you automatically</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

@@ -139,7 +139,7 @@ void TxTableModel::updateAllData() {
     if (role == Qt::ToolTipRole) {
         switch (index.column()) {
         case 0: { 
-                    if (dat.memo.startsWith("hush:")) {
+                    if (dat.memo.startsWith("safecoin:")) {
                         return Settings::paymentURIPretty(Settings::parseURI(dat.memo));
                     } else {
                         return modeldata->at(index.row()).type + 
@@ -161,7 +161,7 @@ void TxTableModel::updateAllData() {
     if (role == Qt::DecorationRole && index.column() == 0) {
         if (!dat.memo.isEmpty()) {
             // If the memo is a Payment URI, then show a payment request icon
-            if (dat.memo.startsWith("hush:")) {
+            if (dat.memo.startsWith("safecoin:")) {
                 QIcon icon(":/icons/res/paymentreq.gif");
                 return QVariant(icon.pixmap(16, 16));
             } else {

@@ -77,18 +77,18 @@ void RPC::setEZcashd(std::shared_ptr<QProcess> p) {
     ezcashd = p;
 
     if (ezcashd && ui->tabWidget->widget(4) == nullptr) {
-        ui->tabWidget->addTab(main->zcashdtab, "zcashd");
+        ui->tabWidget->addTab(main->zcashdtab, "safecoind");
     }
 }
 
-// Called when a connection to hushd is available. 
+// Called when a connection to safecoind is available. 
 void RPC::setConnection(Connection* c) {
     if (c == nullptr) return;
 
     delete conn;
     this->conn = c;
 
-    ui->statusBar->showMessage("Ready! Thank you for helping secure the Hush network by running a full node.");
+    ui->statusBar->showMessage("Ready! Thank you for helping secure the Safecoin network by running a full node.");
 
     // See if we need to remove the reindex/rescan flags from the zcash.conf file
     auto zcashConfLocation = Settings::getInstance()->getZcashdConfLocation();
@@ -520,7 +520,7 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
     );
 } 
 
-/// This will refresh all the balance data from zcashd
+/// This will refresh all the balance data from safecoind
 void RPC::refresh(bool force) {
     if  (conn == nullptr) 
         return noConnection();
@@ -567,7 +567,7 @@ void RPC::getInfoThenRefresh(bool force) {
         sprintf(halving_days, "%.2f", (double) (blocks_until_halving * 150) / (60*60*24) );
         QString ntzhash         = QString::fromStdString( reply["notarizedhash"].get<json::string_t>() );
         QString ntztxid         = QString::fromStdString( reply["notarizedtxid"].get<json::string_t>() );
-        QString kmdver          = QString::fromStdString( reply["KMDversion"].get<json::string_t>() );
+        QString safever          = QString::fromStdString( reply["SAFEversion"].get<json::string_t>() );
 
         Settings::getInstance()->setZcashdVersion(version);
 
@@ -575,7 +575,7 @@ void RPC::getInfoThenRefresh(bool force) {
         ui->notarizedtxidvalue->setText( ntztxid );
         ui->lagvalue->setText( QString::number(lag) );
         ui->version->setText( QString::number(version) );
-        ui->kmdversion->setText( kmdver );
+        ui->safeversion->setText( safever );
         ui->protocolversion->setText( QString::number(protocolversion) );
         ui->p2pport->setText( QString::number(p2pport) );
         ui->rpcport->setText( QString::number(rpcport) );
@@ -650,7 +650,7 @@ void RPC::getInfoThenRefresh(bool force) {
             Settings::getInstance()->setSyncing(isSyncing);
             Settings::getInstance()->setBlockNumber(blockNumber);
 
-            // Update zcashd tab if it exists
+            // Update safecoind tab if it exists
             if (isSyncing) {
                 QString txt = QString::number(blockNumber);
                 if (estimatedheight > 0) {
@@ -676,35 +676,35 @@ void RPC::getInfoThenRefresh(bool force) {
                 (isSyncing ? ("/" % QString::number(progress*100, 'f', 2) % "%") : QString()) %
                 ") " %
                 " Notarized: " % QString::number(notarized) %
-                " HUSH/USD=$" % QString::number( (double) Settings::getInstance()->getZECPrice() );
+                " SAFE/USD=$" % QString::number( (double) Settings::getInstance()->getZECPrice() );
             main->statusLabel->setText(statusText);   
 
             auto zecPrice = Settings::getUSDFormat(1);
             QString tooltip;
             if (connections > 0) {
-                tooltip = QObject::tr("Connected to hushd");
+                tooltip = QObject::tr("Connected to safecoind");
             }
             else {
-                tooltip = QObject::tr("hushd has no peer connections! Network issues?");
+                tooltip = QObject::tr("safecoind has no peer connections! Network issues?");
             }
             tooltip = tooltip % "(v " % QString::number(Settings::getInstance()->getZcashdVersion()) % ")";
 
             if (!zecPrice.isEmpty()) {
-                tooltip = "1 HUSH = " % zecPrice % "\n" % tooltip;
+                tooltip = "1 SAFE = " % zecPrice % "\n" % tooltip;
             }
             main->statusLabel->setToolTip(tooltip);
             main->statusIcon->setToolTip(tooltip);
         });
 
     }, [=](QNetworkReply* reply, const json&) {
-        // hushd has probably disappeared.
+        // safecoind has probably disappeared.
         this->noConnection();
 
         // Prevent multiple dialog boxes, because these are called async
         static bool shown = false;
         if (!shown && prevCallSucceeded) { // show error only first time
             shown = true;
-            QMessageBox::critical(main, QObject::tr("Connection Error"), QObject::tr("There was an error connecting to hushd. The error was") + ": \n\n"
+            QMessageBox::critical(main, QObject::tr("Connection Error"), QObject::tr("There was an error connecting to safecoind. The error was") + ": \n\n"
                 + reply->errorString(), QMessageBox::StandardButton::Ok);
             shown = false;
         }
@@ -1016,7 +1016,7 @@ void RPC::checkForUpdate(bool silent) {
     if  (conn == nullptr) 
         return noConnection();
 
-    QUrl cmcURL("https://api.github.com/repos/MyHush/SilentDragon/releases");
+    QUrl cmcURL("https://api.github.com/repos/Fair-Exchange/safecoin-qt-wallet/releases");
 
     QNetworkRequest req;
     req.setUrl(cmcURL);
@@ -1060,7 +1060,7 @@ void RPC::checkForUpdate(bool silent) {
                             .arg(currentVersion.toString()),
                         QMessageBox::Yes, QMessageBox::Cancel);
                     if (ans == QMessageBox::Yes) {
-                        QDesktopServices::openUrl(QUrl("https://github.com/MyHush/SilentDragon/releases"));
+                        QDesktopServices::openUrl(QUrl("https://github.com/Fair-Exchange/safecoin-qt-wallet/releases"));
                     } else {
                         // If the user selects cancel, don't bother them again for this version
                         s.setValue("update/lastversion", maxVersion.toString());
@@ -1080,15 +1080,16 @@ void RPC::checkForUpdate(bool silent) {
     });
 }
 
-// Get the HUSH prices
+// Get the ZEC->USD price from coinmarketcap using their API
 void RPC::refreshZECPrice() {
-    if  (conn == nullptr)
+    if  (conn == nullptr) 
         return noConnection();
 
-    // TODO: use/render all this data
-    QUrl cmcURL("https://api.coingecko.com/api/v3/simple/price?ids=hush&vs_currencies=btc%2Cusd%2Ceur&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true");
+    QUrl cmcURL("https://api.coinmarketcap.com/v1/ticker/");
+
     QNetworkRequest req;
     req.setUrl(cmcURL);
+    
     QNetworkReply *reply = conn->restclient->get(req);
 
     QObject::connect(reply, &QNetworkReply::finished, [=] {
@@ -1098,41 +1099,34 @@ void RPC::refreshZECPrice() {
             if (reply->error() != QNetworkReply::NoError) {
                 auto parsed = json::parse(reply->readAll(), nullptr, false);
                 if (!parsed.is_discarded() && !parsed["error"]["message"].is_null()) {
-                    qDebug() << QString::fromStdString(parsed["error"]["message"]);
+                    qDebug() << QString::fromStdString(parsed["error"]["message"]);    
                 } else {
                     qDebug() << reply->errorString();
                 }
                 Settings::getInstance()->setZECPrice(0);
                 return;
-            }
+            } 
 
-            qDebug() << "No network errors";
             auto all = reply->readAll();
+            
             auto parsed = json::parse(all, nullptr, false);
             if (parsed.is_discarded()) {
                 Settings::getInstance()->setZECPrice(0);
                 return;
             }
 
-            qDebug() << "Parsed JSON";
+            for (const json& item : parsed.get<json::array_t>()) {
+                if (item["symbol"].get<json::string_t>() == Settings::getTokenName().toStdString()) {
+                    QString price = QString::fromStdString(item["price_usd"].get<json::string_t>());
+                    qDebug() << Settings::getTokenName() << " Price=" << price;
+                    Settings::getInstance()->setZECPrice(price.toDouble());
 
-            const json& item  = parsed.get<json::object_t>();
-            const json& hush  = item["hush"].get<json::object_t>();
-
-            if (hush["usd"] >= 0) {
-                qDebug() << "Found hush key in price json";
-                // TODO: support BTC/EUR prices as well
-                //QString price = QString::fromStdString(hush["usd"].get<json::string_t>());
-                qDebug() << "HUSH = $" << QString::number((double)hush["usd"]);
-                Settings::getInstance()->setZECPrice( hush["usd"] );
-
-                return;
-            } else {
-                qDebug() << "No hush key found in JSON! API might be down or we are rate-limited\n";
+                    return;
+                }
             }
-        } catch (const std::exception& e) {
+        } catch (...) {
             // If anything at all goes wrong, just set the price to 0 and move on.
-            qDebug() << QString("Caught something nasty: ") << e.what();
+            qDebug() << QString("Caught something nasty");
         }
 
         // If nothing, then set the price to 0;
@@ -1141,9 +1135,9 @@ void RPC::refreshZECPrice() {
 }
 
 void RPC::shutdownZcashd() {
-    // Shutdown embedded zcashd if it was started
+    // Shutdown embedded safecoind if it was started
     if (ezcashd == nullptr || ezcashd->processId() == 0 || conn == nullptr) {
-        // No zcashd running internally, just return
+        // No safecoind running internally, just return
         return;
     }
 
@@ -1161,8 +1155,8 @@ void RPC::shutdownZcashd() {
     Ui_ConnectionDialog connD;
     connD.setupUi(&d);
     connD.topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));
-    connD.status->setText(QObject::tr("Please wait for SilentDragon to exit"));
-    connD.statusDetail->setText(QObject::tr("Waiting for hushd to exit"));
+    connD.status->setText(QObject::tr("Please wait for SafecoinWallet to exit"));
+    connD.statusDetail->setText(QObject::tr("Waiting for safecoind to exit"));
 
     QTimer waiter(main);
 
@@ -1175,7 +1169,7 @@ void RPC::shutdownZcashd() {
         if ((ezcashd->atEnd() && ezcashd->processId() == 0) ||
             ezcashd->state() == QProcess::NotRunning ||
             waitCount > 30 ||
-            conn->config->zcashDaemon)  {   // If zcashd is daemon, then we don't have to do anything else
+            conn->config->zcashDaemon)  {   // If safecoind is daemon, then we don't have to do anything else
             qDebug() << "Ended";
             waiter.stop();
             QTimer::singleShot(1000, [&]() { d.accept(); });

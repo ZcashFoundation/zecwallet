@@ -6,7 +6,7 @@ if [ -z $QT_STATIC ]; then
 fi
 
 rm -f res/*.qm
-$QT_STATIC/bin/lrelease silentdragon.pro
+$QT_STATIC/bin/lrelease safecoinwallet.pro
 
 # Then update the qt base translations. First, get all languages
 ls res/*.qm | awk -F '[_.]' '{print $4}' | while read -r language ; do 

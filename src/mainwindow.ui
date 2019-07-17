@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>SilentDragon</string>
+   <string>SafecoinWallet</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../application.qrc">
@@ -924,7 +924,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_14">
           <item>
-           <widget class="FilledIconLabel" name="hushlogo">
+           <widget class="FilledIconLabel" name="safecoinlogo">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
@@ -1047,21 +1047,21 @@
              </item>
 
              <item row="10" column="0">
-              <widget class="QLabel" name="kmdversionlabel">
+              <widget class="QLabel" name="safeversionlabel">
                <property name="text">
-                <string>KMD Version</string>
+                <string>SAFE Version</string>
                </property>
               </widget>
              </item>
              <item row="10" column="2">
-              <widget class="QLabel" name="kmdversion">
+              <widget class="QLabel" name="safeversion">
                <property name="text">
                 <string>Loading...</string>
                </property>
               </widget>
              </item>
              <item row="10" column="1">
-              <widget class="QLabel" name="kmdversionspacer">
+              <widget class="QLabel" name="safeversionspacer">
                <property name="text">
                 <string>|</string>
                </property>
@@ -1358,7 +1358,7 @@
   </action>
   <action name="actionDonate">
    <property name="text">
-    <string>&amp;Send Duke Feedback</string>
+    <string>&amp;Send OleksandrBlack Feedback</string>
    </property>
   </action>
   <action name="actionDiscord">

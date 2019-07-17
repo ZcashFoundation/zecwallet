@@ -3,13 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleExecutable</key>
-	<string>SilentDragon</string>
+	<string>SafecoinWallet</string>
 	<key>CFBundleGetInfoString</key>
 	<string>Created by Qt/QMake</string>
 	<key>CFBundleIconFile</key>
 	<string>logo.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.myhush.silentdragon</string>
+	<string>org.safecoin.safecoinwallet</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>

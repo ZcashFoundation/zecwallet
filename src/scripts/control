@@ -1,9 +1,9 @@
-Package: silentdragon
+Package: safecoinwallet
 Version: RELEASE_VERSION
 Section: base
 Priority: optional
 Architecture: amd64
-Maintainer: Duke Leto <duke@leto.net>
-Description: SilentDragon is a full node and UI wallet for Hush.
- SilentDragon is a full node and UI wallet for Hush. It comes with 
- full support for shielded addresses and many apps for Hush.
+Maintainer: Duke Leto <duke@leto.net> and Safecoin DEV TEAM <inbox@safecoin.org>
+Description: SafecoinWallet is a full node and UI wallet for Safecoin.
+ SafecoinWallet is a full node and UI wallet for Safecoin. It comes with 
+ full support for shielded addresses and many apps for Safecoin.

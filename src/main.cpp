@@ -148,7 +148,7 @@ public:
 
         // Command line parser
         QCommandLineParser parser;
-        parser.setApplicationDescription("Shielded desktop wallet and embedded full node for Hush");
+        parser.setApplicationDescription("Shielded desktop wallet and embedded full node for Safecoin");
         parser.addHelpOption();
 
         // A boolean option for running it headless
@@ -156,11 +156,11 @@ public:
         parser.addOption(headlessOption);
 
         // No embedded will disable the embedded zcashd node
-        QCommandLineOption noembeddedOption(QStringList() << "no-embedded", "Disable embedded hushd");
+        QCommandLineOption noembeddedOption(QStringList() << "no-embedded", "Disable embedded safecoind");
         parser.addOption(noembeddedOption);
 
         // Positional argument will specify a zcash payment URI
-        parser.addPositionalArgument("hushURI", "An optional HUSH URI to pay");
+        parser.addPositionalArgument("safecoinURI", "An optional Safecoin URI to pay");
 
         parser.process(a);
 
@@ -173,8 +173,8 @@ public:
             return 0;            
         } 
 
-        QCoreApplication::setOrganizationName("Hush");
-        QCoreApplication::setApplicationName("SilentDragon");
+        QCoreApplication::setOrganizationName("Safecoin");
+        QCoreApplication::setApplicationName("SafecoinWallet");
 
         QString locale = QLocale::system().name();
         locale.truncate(locale.lastIndexOf('_'));   // Get the language code
