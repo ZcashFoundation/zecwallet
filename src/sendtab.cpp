@@ -559,6 +559,9 @@ bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
     // Function to split the address to make it easier to read. 
     // Split it into chunks of 4 chars. 
     auto fnSplitAddressForWrap = [=] (const QString& a) -> QString {
+        if (Settings::isTAddress(a))
+            return a;
+
         QStringList ans;
         static int splitSize = 8;
 
