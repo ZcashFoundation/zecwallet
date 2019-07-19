@@ -183,6 +183,7 @@ public:
 
         QString locale = QLocale::system().name();
         locale.truncate(locale.lastIndexOf('_'));   // Get the language code
+        // locale = "zh";
         qDebug() << "Loading locale " << locale;
         
         QTranslator translator;
