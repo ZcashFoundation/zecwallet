@@ -473,7 +473,7 @@ Tx MainWindow::createTxFromSendPage() {
     if (Settings::getInstance()->getAutoShield() && sendChangeToSapling) {
         auto saplingAddr = std::find_if(rpc->getAllZAddresses()->begin(), rpc->getAllZAddresses()->end(), [=](auto i) -> bool { 
             // We're finding a sapling address that is not one of the To addresses, because zcash doesn't allow duplicated addresses
-	    // TODO: Should we disable this in Hush? What are the privacy and chain analysis considerations?
+	    // TODO: Should we disable this in Safecoin? What are the privacy and chain analysis considerations?
             bool isSapling = Settings::getInstance()->isSaplingAddress(i); 
             if (!isSapling) return false;
 
@@ -551,7 +551,7 @@ bool MainWindow::confirmTx(Tx tx) {
             Addr->setText(fnSplitAddressForWrap(toAddr.addr));
             confirm.gridLayout->addWidget(Addr, row, 0, 1, 1);
 
-            // Amount (HUSH)
+            // Amount (SAFE)
             auto Amt = new QLabel(confirm.sendToAddrs);
             Amt->setObjectName(QString("Amt") % QString::number(i + 1));
             Amt->setText(Settings::getZECDisplayFormat(toAddr.amount));

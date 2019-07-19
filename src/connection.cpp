@@ -78,8 +78,8 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
                     QString explanation;
                     if (config->zcashDaemon) {
                         explanation = QString() % QObject::tr("You have safecoind set to start as a daemon, which can cause problems "
-                            "with SilentDragon\n\n."
-                            "Please remove the following line from your safecoin.conf and restart SilentDragon\n"
+                            "with SafecoinWallet\n\n."
+                            "Please remove the following line from your safecoin.conf and restart SafecoinWallet\n"
                             "daemon=1");
                     } else {
                         explanation = QString() % QObject::tr("Couldn't start the embedded safecoind.\n\n" 

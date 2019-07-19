@@ -918,7 +918,7 @@
 
       <widget class="QWidget" name="tab_5">
        <attribute name="title">
-        <string>hushd</string>
+        <string>safecoind</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_7">
         <item>
@@ -1363,12 +1363,12 @@
   </action>
   <action name="actionDiscord">
    <property name="text">
-    <string>&amp;Hush Discord</string>
+    <string>&amp;Safecoin Discord</string>
    </property>
   </action>
   <action name="actionWebsite">
    <property name="text">
-    <string>&amp;Hush Website</string>
+    <string>&amp;Safecoin Website</string>
    </property>
   </action>
   <action name="actionCheck_for_Updates">
@@ -1422,7 +1422,7 @@
   </action>
   <action name="actionPay_URI">
    <property name="text">
-    <string>Pay HUSH &amp;URI...</string>
+    <string>Pay SAFE &amp;URI...</string>
    </property>
   </action>
   <action name="actionConnect_Mobile_App">
@@ -1435,7 +1435,7 @@
   </action>
   <action name="actionRequest_zcash">
    <property name="text">
-    <string>Request HUSH...</string>
+    <string>Request SAFE...</string>
    </property>
   </action>
  </widget>

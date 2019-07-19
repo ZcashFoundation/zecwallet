@@ -10,7 +10,7 @@ safecoinwallet needs a Safecoin full node running safecoind. If you already have
 
 If you don't have one, safecoinwallet will start its embedded safecoind node. 
 
-Additionally, if this is the first time you're running safecoinwallet or a safecoind daemon, safecoinwallet will download the zcash params (~1.7 GB) and configure `HUSH3.conf` for you. 
+Additionally, if this is the first time you're running safecoinwallet or a safecoind daemon, safecoinwallet will download the zcash params (~1.7 GB) and configure `safecoin.conf` for you. 
 
 Pass `--no-embedded` to disable the embedded safecoind and force safecoinwallet to connect to an external node.
 
@@ -67,11 +67,11 @@ It does not attempt to download them, it bundles them. To simulate this from a d
 these four files in your Git repo:
 
 ```
-    ln -s ../hush3/src/safecoind
-    ln -s ../hush3/src/safecoin-cli
+    ln -s ../safecoin/src/safecoind
+    ln -s ../safecoin/src/safecoin-cli
 ```
 
-The above assumes safecoinwallet and hush3 git repos are in the same directory. File names on Windows will need to be tweaked.
+The above assumes safecoinwallet and safecoin git repos are in the same directory. File names on Windows will need to be tweaked.
 
 ### Support
 

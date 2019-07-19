@@ -17,7 +17,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string notr="true">SilentDragon</string>
+      <string notr="true">SafecoinWallet</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
