@@ -74,7 +74,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="170"/>
-        <location filename="../src/mainwindow.ui" line="841"/>
+        <location filename="../src/mainwindow.ui" line="848"/>
         <source>Your node is still syncing, balances may not be updated</source>
         <translation type="unfinished"></translation>
     </message>
@@ -117,7 +117,7 @@
     <message>
         <location filename="../src/mainwindow.ui" line="378"/>
         <location filename="../src/mainwindow.ui" line="385"/>
-        <location filename="../src/mainwindow.ui" line="826"/>
+        <location filename="../src/mainwindow.ui" line="833"/>
         <location filename="../src/sendtab.cpp" line="248"/>
         <location filename="../src/sendtab.cpp" line="253"/>
         <source>Address</source>
@@ -172,7 +172,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="595"/>
-        <location filename="../src/sendtab.cpp" line="673"/>
+        <location filename="../src/sendtab.cpp" line="677"/>
         <source>Miner Fee</source>
         <translatorcomment>I replaced this with &quot;transaction fee&quot; which sounds much better in French.. I hope it&apos;s correct too.. </translatorcomment>
         <translation>Frais de transaction</translation>
@@ -216,27 +216,27 @@
         <translation>Nouvelle Adresse</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="751"/>
+        <location filename="../src/mainwindow.ui" line="758"/>
         <source>Label</source>
         <translation>Etiquette</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="758"/>
+        <location filename="../src/mainwindow.ui" line="765"/>
         <source>Update Label</source>
         <translation>Mettre à jour l&apos;étiquette</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="772"/>
+        <location filename="../src/mainwindow.ui" line="779"/>
         <source>Address balance</source>
         <translation>Solde de l&apos;adresse</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="782"/>
+        <location filename="../src/mainwindow.ui" line="789"/>
         <source>Optional</source>
         <translation>Optionnel</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="804"/>
+        <location filename="../src/mainwindow.ui" line="811"/>
         <source>Export Private Key</source>
         <translation>Exporter la clef privée</translation>
     </message>
@@ -250,178 +250,183 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="884"/>
+        <location filename="../src/mainwindow.ui" line="740"/>
+        <source>View All Addresses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="891"/>
         <source>Transactions</source>
         <translation>Transactions</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="901"/>
+        <location filename="../src/mainwindow.ui" line="908"/>
         <source>zcashd</source>
         <translation>zcashd</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="931"/>
+        <location filename="../src/mainwindow.ui" line="938"/>
         <source>You are currently not mining</source>
         <translation>Vous ne minez pas à présent</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="951"/>
-        <location filename="../src/mainwindow.ui" line="965"/>
-        <location filename="../src/mainwindow.ui" line="986"/>
+        <location filename="../src/mainwindow.ui" line="958"/>
+        <location filename="../src/mainwindow.ui" line="972"/>
+        <location filename="../src/mainwindow.ui" line="993"/>
         <location filename="../src/mainwindow.cpp" line="983"/>
         <source>Loading...</source>
         <translation>Chargement...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="958"/>
+        <location filename="../src/mainwindow.ui" line="965"/>
         <source>Block height</source>
         <translation>Hauteur de block</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="972"/>
+        <location filename="../src/mainwindow.ui" line="979"/>
         <source>Network solution rate</source>
         <translation>Taux de solution du réseau</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="979"/>
+        <location filename="../src/mainwindow.ui" line="986"/>
         <source>Connections</source>
         <translation>Connections</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1013"/>
         <location filename="../src/mainwindow.ui" line="1020"/>
         <location filename="../src/mainwindow.ui" line="1027"/>
+        <location filename="../src/mainwindow.ui" line="1034"/>
         <source>|</source>
         <translation>|</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1053"/>
+        <location filename="../src/mainwindow.ui" line="1060"/>
         <source>&amp;File</source>
         <translation>&amp;Fichier</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1068"/>
+        <location filename="../src/mainwindow.ui" line="1075"/>
         <source>&amp;Help</source>
         <translation>&amp;Aide</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1077"/>
+        <location filename="../src/mainwindow.ui" line="1084"/>
         <source>&amp;Apps</source>
         <translation>&amp;Applications</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1086"/>
+        <location filename="../src/mainwindow.ui" line="1093"/>
         <source>&amp;Edit</source>
         <translation>&amp;Edition</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1100"/>
+        <location filename="../src/mainwindow.ui" line="1107"/>
         <source>E&amp;xit</source>
         <translation>Q&amp;uiter</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1105"/>
+        <location filename="../src/mainwindow.ui" line="1112"/>
         <source>&amp;About</source>
         <translation>&amp;À propos</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1110"/>
+        <location filename="../src/mainwindow.ui" line="1117"/>
         <source>&amp;Settings</source>
         <translation>&amp;Préférences</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1113"/>
+        <location filename="../src/mainwindow.ui" line="1120"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1118"/>
+        <location filename="../src/mainwindow.ui" line="1125"/>
         <source>&amp;Donate</source>
         <translation>&amp;Faire un don</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1123"/>
+        <location filename="../src/mainwindow.ui" line="1130"/>
         <source>Check github.com for &amp;updates</source>
         <translation>Vérifier &amp;github.com pour des mises à jour</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1128"/>
+        <location filename="../src/mainwindow.ui" line="1135"/>
         <source>Sapling &amp;turnstile</source>
         <translation>Sapling &amp;turnstile</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1131"/>
+        <location filename="../src/mainwindow.ui" line="1138"/>
         <source>Ctrl+A, Ctrl+T</source>
         <translation>Ctrl+A, Ctrl+T</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1136"/>
+        <location filename="../src/mainwindow.ui" line="1143"/>
         <source>&amp;Import private key</source>
         <translation>&amp;Importer une clef privée</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1141"/>
+        <location filename="../src/mainwindow.ui" line="1148"/>
         <source>&amp;Export all private keys</source>
         <translation>&amp;Exporter toutes les clefs privées</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1146"/>
+        <location filename="../src/mainwindow.ui" line="1153"/>
         <source>&amp;z-board.net</source>
         <translation>&amp;z-board.net</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1149"/>
+        <location filename="../src/mainwindow.ui" line="1156"/>
         <source>Ctrl+A, Ctrl+Z</source>
         <translation>Ctrl+A, Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1154"/>
+        <location filename="../src/mainwindow.ui" line="1161"/>
         <source>Address &amp;book</source>
         <translation>Carnet &amp;d&apos;adresse</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1157"/>
+        <location filename="../src/mainwindow.ui" line="1164"/>
         <source>Ctrl+B</source>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1162"/>
+        <location filename="../src/mainwindow.ui" line="1169"/>
         <source>&amp;Backup wallet.dat</source>
         <translation>&amp;Sauvegarder &quot;wallet.dat&quot;</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1167"/>
+        <location filename="../src/mainwindow.ui" line="1174"/>
         <location filename="../src/mainwindow.cpp" line="921"/>
         <source>Export transactions</source>
         <translation>Exporter les transactions</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1172"/>
+        <location filename="../src/mainwindow.ui" line="1179"/>
         <source>Pay zcash &amp;URI...</source>
         <translation>PAyer une URI zcash</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1177"/>
+        <location filename="../src/mainwindow.ui" line="1184"/>
         <source>Connect mobile &amp;app</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1180"/>
+        <location filename="../src/mainwindow.ui" line="1187"/>
         <source>Ctrl+M</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1185"/>
+        <location filename="../src/mainwindow.ui" line="1192"/>
         <source>&amp;Recurring Payments</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1190"/>
+        <location filename="../src/mainwindow.ui" line="1197"/>
         <source>Request zcash...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1195"/>
+        <location filename="../src/mainwindow.ui" line="1202"/>
         <source>File a bug...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -487,7 +492,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="746"/>
-        <location filename="../src/sendtab.cpp" line="764"/>
+        <location filename="../src/sendtab.cpp" line="768"/>
         <source>Computing Tx: </source>
         <translation>Calcul de la transaction en cours: </translation>
     </message>
@@ -679,12 +684,12 @@
         <translation>Nouvelle Adresse-t créée</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1363"/>
+        <location filename="../src/mainwindow.cpp" line="1368"/>
         <source>Address has been previously used</source>
         <translation>L&apos;adresse a été utilisée précédemment.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1365"/>
+        <location filename="../src/mainwindow.cpp" line="1370"/>
         <source>Address is unused</source>
         <translation>L&apos;adresse est inutilisée.</translation>
     </message>
@@ -737,37 +742,37 @@ Cette adresse ne semble pas être de type adresse-z</translation>
         <translation>Changer de </translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="718"/>
+        <location filename="../src/sendtab.cpp" line="722"/>
         <source>Current balance      : </source>
         <translation>Solde actuel      :</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="720"/>
+        <location filename="../src/sendtab.cpp" line="724"/>
         <source>Balance after this Tx: </source>
         <translation>Solde après cette Tx:</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="735"/>
+        <location filename="../src/sendtab.cpp" line="739"/>
         <source>Transaction Error</source>
         <translation>Erreur de transaction</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="798"/>
+        <location filename="../src/sendtab.cpp" line="802"/>
         <source>From Address is Invalid</source>
         <translation>L&apos;adresse de l&apos;émetteur est invalide</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="803"/>
+        <location filename="../src/sendtab.cpp" line="807"/>
         <source>Recipient Address </source>
         <translation>Adresse du destinataire </translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="803"/>
+        <location filename="../src/sendtab.cpp" line="807"/>
         <source> is Invalid</source>
         <translation> est invalide</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="809"/>
+        <location filename="../src/sendtab.cpp" line="813"/>
         <source>Amount &apos;%1&apos; is invalid!</source>
         <translation>Le montant &apos;%1&apos; est invalide.</translation>
     </message>
@@ -892,9 +897,13 @@ Cette adresse ne semble pas être de type adresse-z</translation>
 <context>
     <name>PrivKey</name>
     <message>
-        <location filename="../src/privkey.ui" line="14"/>
         <source>Private Key</source>
-        <translation>Clef privée</translation>
+        <translation type="vanished">Clef privée</translation>
+    </message>
+    <message>
+        <location filename="../src/privkey.ui" line="14"/>
+        <source>Private Keys</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1047,14 +1056,14 @@ Not starting embedded zcashd because --no-embedded was passed</source>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="755"/>
-        <location filename="../src/sendtab.cpp" line="782"/>
+        <location filename="../src/sendtab.cpp" line="786"/>
         <location filename="../src/turnstile.cpp" line="374"/>
         <source>The transaction with id </source>
         <translation>La transaction avec ID </translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="755"/>
-        <location filename="../src/sendtab.cpp" line="782"/>
+        <location filename="../src/sendtab.cpp" line="786"/>
         <location filename="../src/turnstile.cpp" line="374"/>
         <source> failed. The error was</source>
         <translation> a échoué. L&apos;erreur était</translation>
@@ -1062,7 +1071,7 @@ Not starting embedded zcashd because --no-embedded was passed</source>
     <message>
         <location filename="../src/mainwindow.cpp" line="752"/>
         <location filename="../src/recurring.cpp" line="525"/>
-        <location filename="../src/sendtab.cpp" line="779"/>
+        <location filename="../src/sendtab.cpp" line="783"/>
         <location filename="../src/turnstile.cpp" line="371"/>
         <source> failed</source>
         <translation> a échoué</translation>
@@ -1070,7 +1079,7 @@ Not starting embedded zcashd because --no-embedded was passed</source>
     <message>
         <location filename="../src/mainwindow.cpp" line="752"/>
         <location filename="../src/recurring.cpp" line="525"/>
-        <location filename="../src/sendtab.cpp" line="779"/>
+        <location filename="../src/sendtab.cpp" line="783"/>
         <location filename="../src/turnstile.cpp" line="371"/>
         <source> Tx </source>
         <translation> Tx </translation>
@@ -1164,7 +1173,7 @@ Veuillez configurer l&apos;hôte/port et utilisateur/mot de passe dans le menu E
     <message>
         <location filename="../src/connection.cpp" line="750"/>
         <location filename="../src/mainwindow.cpp" line="757"/>
-        <location filename="../src/sendtab.cpp" line="791"/>
+        <location filename="../src/sendtab.cpp" line="795"/>
         <location filename="../src/turnstile.cpp" line="376"/>
         <source>Transaction Error</source>
         <translation>Erreur de transaction</translation>
