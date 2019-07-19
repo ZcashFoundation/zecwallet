@@ -584,6 +584,7 @@ bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
     QDialog d(this);
     Ui_confirm confirm;
     confirm.setupUi(&d);
+    Settings::saveRestore(&d);
 
     const QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
 
