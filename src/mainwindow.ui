@@ -360,7 +360,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>920</width>
-                <height>324</height>
+                <height>301</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -734,6 +734,13 @@
                  </property>
                 </widget>
                </item>
+               <item>
+                <widget class="QPushButton" name="btnViewAllAddresses">
+                 <property name="text">
+                  <string>View All Addresses</string>
+                 </property>
+                </widget>
+               </item>
               </layout>
              </item>
             </layout>
@@ -1045,7 +1052,7 @@
      <x>0</x>
      <y>0</y>
      <width>968</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

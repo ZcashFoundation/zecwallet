@@ -1295,14 +1295,18 @@ void MainWindow::setupReceiveTab() {
 
     // Connect t-addr radio button
     QObject::connect(ui->rdioTAddr, &QRadioButton::toggled, [=] (bool checked) { 
-        // DEPRECATED
         // Whenever the t-address is selected, we generate a new address, because we don't
         // want to reuse t-addrs
         if (checked && this->rpc->getUTXOs() != nullptr) { 
             updateTAddrCombo(checked);
-            //addNewTAddr();
         } 
+
+        // Toggle the "View all addresses" button as well
+        ui->btnViewAllAddresses->setVisible(checked);
     });
+
+    // View all addresses goes to "View all private keys"
+    QObject::connect(ui->btnViewAllAddresses, &QPushButton::clicked, this, &MainWindow::exportAllKeys);
 
     QObject::connect(ui->rdioZSAddr, &QRadioButton::toggled, addZAddrsToComboList(true));
 
@@ -1323,6 +1327,7 @@ void MainWindow::setupReceiveTab() {
         if (tab == 2) {
             // Switched to receive tab, select the z-addr radio button
             ui->rdioZSAddr->setChecked(true);
+            ui->btnViewAllAddresses->setVisible(false);
             
             // And then select the first one
             ui->listReceiveAddresses->setCurrentIndex(0);
