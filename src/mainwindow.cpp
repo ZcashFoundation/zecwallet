@@ -427,15 +427,15 @@ void MainWindow::setupStatusBar() {
 
         if (!msg.isEmpty() && msg.startsWith(Settings::txidStatusMessage)) {
             auto txid = msg.split(":")[1].trimmed();
-            menu.addAction("Copy txid", [=]() {
+            menu.addAction(tr("Copy txid"), [=]() {
                 QGuiApplication::clipboard()->setText(txid);
             });
-            menu.addAction("View tx on block explorer", [=]() {
+            menu.addAction(tr("View tx on block explorer"), [=]() {
                 Settings::openTxInExplorer(txid);
             });
         }
 
-        menu.addAction("Refresh", [=]() {
+        menu.addAction(tr("Refresh"), [=]() {
             rpc->refresh(true);
         });
         QPoint gpos(mapToGlobal(pos).x(), mapToGlobal(pos).y() + this->height() - ui->statusBar->height());
@@ -982,7 +982,7 @@ void MainWindow::exportKeys(QString addr) {
 
     Settings::saveRestore(&d);
 
-    pui.privKeyTxt->setPlainText(tr("Loading..."));
+    pui.privKeyTxt->setPlainText(tr("This might take several minutes. Loading..."));
     pui.privKeyTxt->setReadOnly(true);
     pui.privKeyTxt->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
 
@@ -1322,22 +1322,26 @@ void MainWindow::setupReceiveTab() {
         ViewAllAddressesModel model(viewaddrs.tblAddresses, *getRPC()->getAllTAddresses(), getRPC());
         viewaddrs.tblAddresses->setModel(&model);
 
+        QObject::connect(viewaddrs.btnExportAll, &QPushButton::clicked,  this, &MainWindow::exportAllKeys);
+
         viewaddrs.tblAddresses->setContextMenuPolicy(Qt::CustomContextMenu);
         QObject::connect(viewaddrs.tblAddresses, &QTableView::customContextMenuRequested, [=] (QPoint pos) {
             QModelIndex index = viewaddrs.tblAddresses->indexAt(pos);
             if (index.row() < 0) return;
 
             index = index.sibling(index.row(), 0);
+            QString addr = viewaddrs.tblAddresses->model()->data(index).toString();
 
             QMenu menu(this);
-            menu.addAction(tr("Export Private Key"), [=] () {
-                QString addr = viewaddrs.tblAddresses->model()->data(index).toString();
+            menu.addAction(tr("Export Private Key"), [=] () {                
                 if (addr.isEmpty())
                     return;
 
                 this->exportKeys(addr);
             });
-
+            menu.addAction(tr("Copy Address"), [=]() {
+                QGuiApplication::clipboard()->setText(addr);
+            });
             menu.exec(viewaddrs.tblAddresses->viewport()->mapToGlobal(pos));
         });
 
