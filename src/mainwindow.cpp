@@ -1309,12 +1309,17 @@ void MainWindow::setupReceiveTab() {
 
     // View all addresses goes to "View all private keys"
     QObject::connect(ui->btnViewAllAddresses, &QPushButton::clicked, [=] () {
+        // If there's no RPC, return
+        if (!getRPC())
+            return;
+
         QDialog d(this);
         Ui_ViewAddressesDialog viewaddrs;
         viewaddrs.setupUi(&d);
         Settings::saveRestore(&d);
+        Settings::saveRestoreTableHeader(viewaddrs.tblAddresses, &d, "viewalladdressestable");
 
-        ViewAllAddressesModel model(viewaddrs.tblAddresses, *getRPC()->getAllTAddresses());
+        ViewAllAddressesModel model(viewaddrs.tblAddresses, *getRPC()->getAllTAddresses(), getRPC());
         viewaddrs.tblAddresses->setModel(&model);
 
         viewaddrs.tblAddresses->setContextMenuPolicy(Qt::CustomContextMenu);

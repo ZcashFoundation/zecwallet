@@ -82,6 +82,7 @@ public:
     static const QString txidStatusMessage;
     
     static void saveRestore(QDialog* d);
+    static void saveRestoreTableHeader(QTableView* table, QDialog* d, QString tablename) ;
 
     static void openAddressInExplorer(QString address);
     static void openTxInExplorer(QString txid);

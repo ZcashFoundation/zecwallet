@@ -2,11 +2,12 @@
 #define VIEWALLADDRESSES_H
 
 #include "precompiled.h"
+#include "rpc.h"
 
 class ViewAllAddressesModel : public QAbstractTableModel {
 
 public:
-    ViewAllAddressesModel(QTableView* parent, QList<QString> taddrs);
+    ViewAllAddressesModel(QTableView* parent, QList<QString> taddrs, RPC* rpc);
     ~ViewAllAddressesModel() = default;
 
     int      rowCount(const QModelIndex &parent) const;
@@ -17,6 +18,7 @@ public:
 private:
     QList<QString> addresses;
     QStringList headers;    
+    RPC* rpc;
 };
 
 #endif
