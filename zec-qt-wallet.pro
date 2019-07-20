@@ -57,7 +57,8 @@ SOURCES += \
     src/mobileappconnector.cpp \
     src/recurring.cpp \
     src/requestdialog.cpp \
-    src/memoedit.cpp
+    src/memoedit.cpp \
+    src/viewalladdresses.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -82,7 +83,8 @@ HEADERS += \
     src/mobileappconnector.h \
     src/recurring.h \
     src/requestdialog.h \
-    src/memoedit.h
+    src/memoedit.h \
+    src/viewalladdresses.h
 
 FORMS += \
     src/mainwindow.ui \
@@ -95,6 +97,7 @@ FORMS += \
     src/turnstileprogress.ui \
     src/privkey.ui \
     src/memodialog.ui \ 
+    src/viewalladdresses.ui \
     src/connection.ui \
     src/zboard.ui \
     src/addressbook.ui \

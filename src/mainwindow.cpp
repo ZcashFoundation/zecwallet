@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "addressbook.h"
+#include "viewalladdresses.h"
 #include "ui_mainwindow.h"
 #include "ui_mobileappconnector.h"
 #include "ui_addressbook.h"
@@ -9,6 +10,7 @@
 #include "ui_settings.h"
 #include "ui_turnstile.h"
 #include "ui_turnstileprogress.h"
+#include "ui_viewalladdresses.h"
 #include "rpc.h"
 #include "balancestablemodel.h"
 #include "settings.h"
@@ -1306,7 +1308,36 @@ void MainWindow::setupReceiveTab() {
     });
 
     // View all addresses goes to "View all private keys"
-    QObject::connect(ui->btnViewAllAddresses, &QPushButton::clicked, this, &MainWindow::exportAllKeys);
+    QObject::connect(ui->btnViewAllAddresses, &QPushButton::clicked, [=] () {
+        QDialog d(this);
+        Ui_ViewAddressesDialog viewaddrs;
+        viewaddrs.setupUi(&d);
+        Settings::saveRestore(&d);
+
+        ViewAllAddressesModel model(viewaddrs.tblAddresses, *getRPC()->getAllTAddresses());
+        viewaddrs.tblAddresses->setModel(&model);
+
+        viewaddrs.tblAddresses->setContextMenuPolicy(Qt::CustomContextMenu);
+        QObject::connect(viewaddrs.tblAddresses, &QTableView::customContextMenuRequested, [=] (QPoint pos) {
+            QModelIndex index = viewaddrs.tblAddresses->indexAt(pos);
+            if (index.row() < 0) return;
+
+            index = index.sibling(index.row(), 0);
+
+            QMenu menu(this);
+            menu.addAction(tr("Export Private Key"), [=] () {
+                QString addr = viewaddrs.tblAddresses->model()->data(index).toString();
+                if (addr.isEmpty())
+                    return;
+
+                this->exportKeys(addr);
+            });
+
+            menu.exec(viewaddrs.tblAddresses->viewport()->mapToGlobal(pos));
+        });
+
+        d.exec();
+    });
 
     QObject::connect(ui->rdioZSAddr, &QRadioButton::toggled, addZAddrsToComboList(true));
 
