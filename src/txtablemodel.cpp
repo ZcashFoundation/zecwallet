@@ -106,9 +106,10 @@ void TxTableModel::updateAllData() {
  {
      // Align column 5 (amount) right
     if (role == Qt::TextAlignmentRole && index.column() >= 3) return QVariant(Qt::AlignRight | Qt::AlignVCenter);
-    
+
+    auto dat = modeldata->at(index.row());
     if (role == Qt::ForegroundRole) {
-        if (modeldata->at(index.row()).confirmations == 0) {
+        if (dat.confirmations <= 0) {
             QBrush b;
             b.setColor(Qt::red);
             return b;
@@ -120,7 +121,6 @@ void TxTableModel::updateAllData() {
         return b;        
     }
 
-    auto dat = modeldata->at(index.row());
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
         case 0: return dat.type;

@@ -19,7 +19,7 @@ struct TransactionItem {
     QString         address;
     QString         txid;
     double          amount;
-    unsigned long   confirmations;
+    long   confirmations;
     QString         fromAddr;
     QString         memo;
 };
