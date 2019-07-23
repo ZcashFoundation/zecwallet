@@ -1423,9 +1423,11 @@ void MainWindow::updateTAddrCombo(bool checked) {
         auto utxos = this->rpc->getUTXOs();
         ui->listReceiveAddresses->clear();
 
-        // Maintain a set of addresses so we don't duplicate any.
+        // Maintain a set of addresses so we don't duplicate any, because we'll be adding
+        // t addresses multiple times
         QSet<QString> addrs;
 
+        // 1. Add all t addresses that have a balance
         std::for_each(utxos->begin(), utxos->end(), [=, &addrs](auto& utxo) {
             auto addr = utxo.address;
             if (Settings::isTAddress(addr) && !addrs.contains(addr)) {
@@ -1436,17 +1438,30 @@ void MainWindow::updateTAddrCombo(bool checked) {
             }
         });
         
+        // 2. Add all t addresses that have a label
         auto allTaddrs = this->rpc->getAllTAddresses();
         QSet<QString> labels;
         for (auto p : AddressBook::getInstance()->getAllAddressLabels()) {
             labels.insert(p.second);
         }
-        std::for_each(allTaddrs->begin(), allTaddrs->end(), [=] (auto& taddr) {
+        std::for_each(allTaddrs->begin(), allTaddrs->end(), [=, &addrs] (auto& taddr) {
             // If the address is in the address book, add it. 
             if (labels.contains(taddr) && !addrs.contains(taddr)) {
+                addrs.insert(taddr);
                 ui->listReceiveAddresses->addItem(taddr, 0);
             }
         });
+
+        // 3. Add all t-addresses. We won't add more than 20 total t-addresses,
+        // since it will overwhelm the dropdown
+        for (int i=0; addrs.size() < 20 && i < allTaddrs->size(); i++) {
+            auto addr = allTaddrs->at(i);
+            if (!addrs.contains(addr))  {
+                addrs.insert(addr);
+                // Balance is zero since it has not been previously added
+                ui->listReceiveAddresses->addItem(addr, 0);
+            }
+        }
     }
 };
 
