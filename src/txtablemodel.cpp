@@ -104,8 +104,10 @@ void TxTableModel::updateAllData() {
 
  QVariant TxTableModel::data(const QModelIndex &index, int role) const
  {
-     // Align column 5 (amount) right
-    if (role == Qt::TextAlignmentRole && index.column() >= 3) return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+     // Align column 4,5 (confirmations, amount) right
+    if (role == Qt::TextAlignmentRole && 
+         (index.column() == 3 || index.column() == 4)) 
+        return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 
     auto dat = modeldata->at(index.row());
     if (role == Qt::ForegroundRole) {
@@ -185,7 +187,8 @@ void TxTableModel::updateAllData() {
 
  QVariant TxTableModel::headerData(int section, Qt::Orientation orientation, int role) const
  {
-     if (role == Qt::TextAlignmentRole && section == 4) return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+     if (role == Qt::TextAlignmentRole && (section == 3 || section == 4))
+        return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 
      if (role == Qt::FontRole) {
          QFont f;
