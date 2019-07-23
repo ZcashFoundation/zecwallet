@@ -176,6 +176,14 @@ void Settings::saveRestore(QDialog* d) {
     });
 }
 
+void Settings::saveRestoreTableHeader(QTableView* table, QDialog* d, QString tablename) {
+    table->horizontalHeader()->restoreState(QSettings().value(tablename).toByteArray());
+
+    QObject::connect(d, &QDialog::finished, [=](auto) {
+        QSettings().setValue(tablename, table->horizontalHeader()->saveState());
+    });
+}
+
 void Settings::openAddressInExplorer(QString address) {
     QString url;
     if (Settings::getInstance()->isTestnet()) {

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "addressbook.h"
+#include "viewalladdresses.h"
 #include "ui_mainwindow.h"
 #include "ui_mobileappconnector.h"
 #include "ui_addressbook.h"
@@ -9,6 +10,7 @@
 #include "ui_settings.h"
 #include "ui_turnstile.h"
 #include "ui_turnstileprogress.h"
+#include "ui_viewalladdresses.h"
 #include "rpc.h"
 #include "balancestablemodel.h"
 #include "settings.h"
@@ -425,15 +427,15 @@ void MainWindow::setupStatusBar() {
 
         if (!msg.isEmpty() && msg.startsWith(Settings::txidStatusMessage)) {
             auto txid = msg.split(":")[1].trimmed();
-            menu.addAction("Copy txid", [=]() {
+            menu.addAction(tr("Copy txid"), [=]() {
                 QGuiApplication::clipboard()->setText(txid);
             });
-            menu.addAction("View tx on block explorer", [=]() {
+            menu.addAction(tr("View tx on block explorer"), [=]() {
                 Settings::openTxInExplorer(txid);
             });
         }
 
-        menu.addAction("Refresh", [=]() {
+        menu.addAction(tr("Refresh"), [=]() {
             rpc->refresh(true);
         });
         QPoint gpos(mapToGlobal(pos).x(), mapToGlobal(pos).y() + this->height() - ui->statusBar->height());
@@ -980,7 +982,7 @@ void MainWindow::exportKeys(QString addr) {
 
     Settings::saveRestore(&d);
 
-    pui.privKeyTxt->setPlainText(tr("Loading..."));
+    pui.privKeyTxt->setPlainText(tr("This might take several minutes. Loading..."));
     pui.privKeyTxt->setReadOnly(true);
     pui.privKeyTxt->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
 
@@ -1306,7 +1308,45 @@ void MainWindow::setupReceiveTab() {
     });
 
     // View all addresses goes to "View all private keys"
-    QObject::connect(ui->btnViewAllAddresses, &QPushButton::clicked, this, &MainWindow::exportAllKeys);
+    QObject::connect(ui->btnViewAllAddresses, &QPushButton::clicked, [=] () {
+        // If there's no RPC, return
+        if (!getRPC())
+            return;
+
+        QDialog d(this);
+        Ui_ViewAddressesDialog viewaddrs;
+        viewaddrs.setupUi(&d);
+        Settings::saveRestore(&d);
+        Settings::saveRestoreTableHeader(viewaddrs.tblAddresses, &d, "viewalladdressestable");
+
+        ViewAllAddressesModel model(viewaddrs.tblAddresses, *getRPC()->getAllTAddresses(), getRPC());
+        viewaddrs.tblAddresses->setModel(&model);
+
+        QObject::connect(viewaddrs.btnExportAll, &QPushButton::clicked,  this, &MainWindow::exportAllKeys);
+
+        viewaddrs.tblAddresses->setContextMenuPolicy(Qt::CustomContextMenu);
+        QObject::connect(viewaddrs.tblAddresses, &QTableView::customContextMenuRequested, [=] (QPoint pos) {
+            QModelIndex index = viewaddrs.tblAddresses->indexAt(pos);
+            if (index.row() < 0) return;
+
+            index = index.sibling(index.row(), 0);
+            QString addr = viewaddrs.tblAddresses->model()->data(index).toString();
+
+            QMenu menu(this);
+            menu.addAction(tr("Export Private Key"), [=] () {                
+                if (addr.isEmpty())
+                    return;
+
+                this->exportKeys(addr);
+            });
+            menu.addAction(tr("Copy Address"), [=]() {
+                QGuiApplication::clipboard()->setText(addr);
+            });
+            menu.exec(viewaddrs.tblAddresses->viewport()->mapToGlobal(pos));
+        });
+
+        d.exec();
+    });
 
     QObject::connect(ui->rdioZSAddr, &QRadioButton::toggled, addZAddrsToComboList(true));
 
@@ -1423,9 +1463,11 @@ void MainWindow::updateTAddrCombo(bool checked) {
         auto utxos = this->rpc->getUTXOs();
         ui->listReceiveAddresses->clear();
 
-        // Maintain a set of addresses so we don't duplicate any.
+        // Maintain a set of addresses so we don't duplicate any, because we'll be adding
+        // t addresses multiple times
         QSet<QString> addrs;
 
+        // 1. Add all t addresses that have a balance
         std::for_each(utxos->begin(), utxos->end(), [=, &addrs](auto& utxo) {
             auto addr = utxo.address;
             if (Settings::isTAddress(addr) && !addrs.contains(addr)) {
@@ -1436,17 +1478,30 @@ void MainWindow::updateTAddrCombo(bool checked) {
             }
         });
         
+        // 2. Add all t addresses that have a label
         auto allTaddrs = this->rpc->getAllTAddresses();
         QSet<QString> labels;
         for (auto p : AddressBook::getInstance()->getAllAddressLabels()) {
             labels.insert(p.second);
         }
-        std::for_each(allTaddrs->begin(), allTaddrs->end(), [=] (auto& taddr) {
+        std::for_each(allTaddrs->begin(), allTaddrs->end(), [=, &addrs] (auto& taddr) {
             // If the address is in the address book, add it. 
             if (labels.contains(taddr) && !addrs.contains(taddr)) {
+                addrs.insert(taddr);
                 ui->listReceiveAddresses->addItem(taddr, 0);
             }
         });
+
+        // 3. Add all t-addresses. We won't add more than 20 total t-addresses,
+        // since it will overwhelm the dropdown
+        for (int i=0; addrs.size() < 20 && i < allTaddrs->size(); i++) {
+            auto addr = allTaddrs->at(i);
+            if (!addrs.contains(addr))  {
+                addrs.insert(addr);
+                // Balance is zero since it has not been previously added
+                ui->listReceiveAddresses->addItem(addr, 0);
+            }
+        }
     }
 };
 
