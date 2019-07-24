@@ -58,6 +58,8 @@ public:
     void balancesReady();
     void payZcashURI(QString uri = "", QString myAddr = "");
 
+    void validateAddress();
+
     void updateLabels();
     void updateTAddrCombo(bool checked);
     void updateFromCombo();

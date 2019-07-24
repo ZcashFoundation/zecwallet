@@ -84,6 +84,7 @@ public:
     void getTPrivKey(QString addr, const std::function<void(json)>& cb);
     void importZPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb);
     void importTPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb);
+    void validateAddress(QString address, const std::function<void(json)>& cb);
 
     void shutdownZcashd();
     void noConnection();
@@ -120,7 +121,6 @@ private:
     void getTransactions        (const std::function<void(json)>& cb);
     void getZAddresses          (const std::function<void(json)>& cb);
     void getTAddresses          (const std::function<void(json)>& cb);
-
 
     Connection*                 conn                        = nullptr;
     QProcess*                   ezcashd                     = nullptr;
