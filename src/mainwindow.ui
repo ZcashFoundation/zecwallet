@@ -1084,6 +1084,7 @@
      <string>&amp;Apps</string>
     </property>
     <addaction name="actionConnect_Mobile_App"/>
+    <addaction name="actionValidate_Address"/>
     <addaction name="separator"/>
     <addaction name="actionz_board_net"/>
     <addaction name="actionTurnstile_Migration"/>
@@ -1200,6 +1201,11 @@
   <action name="actionFile_a_bug">
    <property name="text">
     <string>File a bug...</string>
+   </property>
+  </action>
+  <action name="actionValidate_Address">
+   <property name="text">
+    <string>Validate Address</string>
    </property>
   </action>
  </widget>

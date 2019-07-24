@@ -53,6 +53,7 @@ SOURCES += \
     src/addressbook.cpp \
     src/logger.cpp \
     src/addresscombo.cpp \
+    src/validateaddress.cpp \
     src/websockets.cpp \
     src/mobileappconnector.cpp \
     src/recurring.cpp \
@@ -78,13 +79,14 @@ HEADERS += \
     src/fillediconlabel.h \
     src/addressbook.h \
     src/logger.h \
-    src/addresscombo.h \ 
+    src/addresscombo.h \
+    src/validateaddress.h \
     src/websockets.h \
     src/mobileappconnector.h \
     src/recurring.h \
     src/requestdialog.h \
     src/memoedit.h \
-    src/viewalladdresses.h
+    src/viewalladdresses.h 
 
 FORMS += \
     src/mainwindow.ui \
@@ -97,6 +99,7 @@ FORMS += \
     src/turnstileprogress.ui \
     src/privkey.ui \
     src/memodialog.ui \ 
+    src/validateaddress.ui \
     src/viewalladdresses.ui \
     src/connection.ui \
     src/zboard.ui \
