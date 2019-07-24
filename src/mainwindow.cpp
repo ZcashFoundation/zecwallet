@@ -1502,6 +1502,16 @@ void MainWindow::updateTAddrCombo(bool checked) {
                 ui->listReceiveAddresses->addItem(addr, 0);
             }
         }
+
+        // 4. Add a last, disabled item if there are remaining items
+        if (allTaddrs->size() > addrs.size()) {
+            auto num = QString::number(allTaddrs->size() - addrs.size());
+            ui->listReceiveAddresses->addItem("-- " + num + " more --", 0);
+
+            QStandardItemModel* model = qobject_cast<QStandardItemModel*>(ui->listReceiveAddresses->model());
+            QStandardItem* item =  model->findItems("--", Qt::MatchStartsWith)[0];
+            item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+        }
     }
 };
 
