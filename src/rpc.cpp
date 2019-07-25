@@ -27,19 +27,18 @@ RPC::RPC(MainWindow* main) {
     // Setup transactions table model
     transactionsTableModel = new TxTableModel(ui->transactionsTable);
     main->ui->transactionsTable->setModel(transactionsTableModel);
-    main->ui->transactionsTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
-
+    
     // Set up timer to refresh Price
     priceTimer = new QTimer(main);
     QObject::connect(priceTimer, &QTimer::timeout, [=]() {
-        refreshZECPrice();
+        if (Settings::getInstance()->getAllowFetchPrices())
+            refreshZECPrice();
     });
     priceTimer->start(Settings::priceRefreshSpeed);  // Every hour
 
     // Set up a timer to refresh the UI every few seconds
     timer = new QTimer(main);
     QObject::connect(timer, &QTimer::timeout, [=]() {
-        //qDebug() << "Refreshing main UI";
         refresh();
     });
     timer->start(Settings::updateSpeed);    
@@ -47,13 +46,15 @@ RPC::RPC(MainWindow* main) {
     // Set up the timer to watch for tx status
     txTimer = new QTimer(main);
     QObject::connect(txTimer, &QTimer::timeout, [=]() {
-        //qDebug() << "Watching tx status";
         watchTxStatus();
     });
     // Start at every 10s. When an operation is pending, this will change to every second
     txTimer->start(Settings::updateSpeed);  
 
     usedAddresses = new QMap<QString, bool>();
+
+    // Initialize the migration status to unavailable.
+    this->migrationStatus.available = false;
 }
 
 RPC::~RPC() {
@@ -73,7 +74,7 @@ RPC::~RPC() {
     delete conn;
 }
 
-void RPC::setEZcashd(std::shared_ptr<QProcess> p) {
+void RPC::setEZcashd(QProcess* p) {
     ezcashd = p;
 
     if (ezcashd && ui->tabWidget->widget(4) == nullptr) {
@@ -90,14 +91,18 @@ void RPC::setConnection(Connection* c) {
 
     ui->statusBar->showMessage("Ready! Thank you for helping secure the Safecoin network by running a full node.");
 
-    // See if we need to remove the reindex/rescan flags from the zcash.conf file
+    // See if we need to remove the reindex/rescan flags from the safecoin.conf file
     auto zcashConfLocation = Settings::getInstance()->getZcashdConfLocation();
     Settings::removeFromZcashConf(zcashConfLocation, "rescan");
     Settings::removeFromZcashConf(zcashConfLocation, "reindex");
 
-    // Refresh the UI
-    refreshZECPrice();
-    checkForUpdate();
+    // If we're allowed to get the Zec Price, get the prices
+    if (Settings::getInstance()->getAllowFetchPrices())
+        refreshZECPrice();
+
+    // If we're allowed to check for updates, check for a new release
+    if (Settings::getInstance()->getCheckForUpdates())
+        checkForUpdate();
 
     // Force update, because this might be coming from a settings update
     // where we need to immediately refresh
@@ -213,6 +218,18 @@ void RPC::importTPrivKey(QString addr, bool rescan, const std::function<void(jso
     conn->doRPCWithDefaultErrorHandling(payload, cb);
 }
 
+void RPC::validateAddress(QString address, const std::function<void(json)>& cb) {
+    QString method = address.startsWith("z") ? "z_validateaddress" : "validateaddress";
+
+    json payload = {
+        {"jsonrpc", "1.0"},
+        {"id", "someid"},
+        {"method", method.toStdString() },
+        {"params", { address.toStdString() } },
+    };
+    
+    conn->doRPCWithDefaultErrorHandling(payload, cb);
+}
 
 void RPC::getBalance(const std::function<void(json)>& cb) {
     json payload = {
@@ -357,7 +374,7 @@ void RPC::fillTxJsonParams(json& params, Tx tx) {
         // Force it through string for rounding. Without this, decimal points beyond 8 places
         // will appear, causing an "invalid amount" error
         rec["amount"]       = Settings::getDecimalString(toAddr.amount).toStdString(); //.toDouble(); 
-        if (toAddr.addr.startsWith("z") && !toAddr.encodedMemo.trimmed().isEmpty())
+        if (Settings::isZAddress(toAddr.addr) && !toAddr.encodedMemo.trimmed().isEmpty())
             rec["memo"]     = toAddr.encodedMemo.toStdString();
 
         allRecepients.push_back(rec);
@@ -398,7 +415,6 @@ void RPC::noConnection() {
     ui->balSheilded->setText("");
     ui->balTransparent->setText("");
     ui->balTotal->setText("");
-    ui->balUSDTotal->setText("");
 
     ui->balSheilded->setToolTip("");
     ui->balTransparent->setToolTip("");
@@ -501,7 +517,7 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
                             }
                             
                             auto amount        = i["amount"].get<json::number_float_t>();
-                            auto confirmations = (unsigned long)txidInfo["confirmations"].get<json::number_unsigned_t>();                            
+                            auto confirmations = static_cast<long>(txidInfo["confirmations"].get<json::number_integer_t>());
 
                             TransactionItem tx{ QString("receive"), timestamp, zaddr, txid, amount, 
                                                 confirmations, "", memos.value(zaddr + txid, "") };
@@ -530,9 +546,6 @@ void RPC::refresh(bool force) {
 
 
 void RPC::getInfoThenRefresh(bool force) {
-
-    //qDebug() << "getinfo";
-
     if  (conn == nullptr) 
         return noConnection();
 
@@ -550,36 +563,35 @@ void RPC::getInfoThenRefresh(bool force) {
             Settings::getInstance()->setTestnet(reply["testnet"].get<json::boolean_t>());
         };
 
+        // Recurring pamynets are testnet only
+        if (!Settings::getInstance()->isTestnet())
+            main->disableRecurring();
+
         // Connected, so display checkmark.
         QIcon i(":/icons/res/connected.gif");
         main->statusIcon->setPixmap(i.pixmap(16, 16));
 
-        static int lastBlock    = 0;
-        int curBlock            = reply["blocks"].get<json::number_integer_t>();
-        int version             = reply["version"].get<json::number_integer_t>();
+        static int    lastBlock = 0;
+        int curBlock  = reply["blocks"].get<json::number_integer_t>();
+        int version = reply["version"].get<json::number_integer_t>();
         int p2pport             = reply["p2pport"].get<json::number_integer_t>();
         int rpcport             = reply["rpcport"].get<json::number_integer_t>();
-        int notarized           = reply["notarized"].get<json::number_integer_t>();
         int protocolversion     = reply["protocolversion"].get<json::number_integer_t>();
-        int lag                 = curBlock - notarized;
-        int blocks_until_halving= 340000 - curBlock;
-        char halving_days[8];
-        sprintf(halving_days, "%.2f", (double) (blocks_until_halving * 150) / (60*60*24) );
-        QString ntzhash         = QString::fromStdString( reply["notarizedhash"].get<json::string_t>() );
-        QString ntztxid         = QString::fromStdString( reply["notarizedtxid"].get<json::string_t>() );
+        // QString ntzhash         = QString::fromStdString( reply["notarizedhash"].get<json::string_t>() );
+        // QString ntztxid         = QString::fromStdString( reply["notarizedtxid"].get<json::string_t>() );
         QString safever          = QString::fromStdString( reply["SAFEversion"].get<json::string_t>() );
-
         Settings::getInstance()->setZcashdVersion(version);
 
-        ui->notarizedhashvalue->setText( ntzhash );
-        ui->notarizedtxidvalue->setText( ntztxid );
-        ui->lagvalue->setText( QString::number(lag) );
+        // ui->notarizedhashvalue->setText( ntzhash );
+        // ui->notarizedtxidvalue->setText( ntztxid );
         ui->version->setText( QString::number(version) );
         ui->safeversion->setText( safever );
         ui->protocolversion->setText( QString::number(protocolversion) );
         ui->p2pport->setText( QString::number(p2pport) );
         ui->rpcport->setText( QString::number(rpcport) );
-        ui->halving->setText( QString::number(blocks_until_halving) % " blocks, " % QString::fromStdString(halving_days)  % " days" );
+
+        // See if recurring payments needs anything
+        Recurring::getInstance()->processPending(main);
 
         if ( force || (curBlock != lastBlock) ) {
             // Something changed, so refresh everything.
@@ -589,8 +601,9 @@ void RPC::getInfoThenRefresh(bool force) {
             turnstile->executeMigrationStep();
 
             refreshBalances();        
-            refreshAddresses(); // This calls refreshZSentTransactions() and refreshReceivedZTrans()
+            refreshAddresses();     // This calls refreshZSentTransactions() and refreshReceivedZTrans()
             refreshTransactions();
+            refreshMigration();     // Sapling turnstile migration status.
         }
 
         int connections = reply["connections"].get<json::number_integer_t>();
@@ -603,34 +616,23 @@ void RPC::getInfoThenRefresh(bool force) {
         }
 
         // Get network sol/s
-        json payload = {
-            {"jsonrpc", "1.0"},
-            {"id", "someid"},
-            {"method", "getnetworksolps"}
-        };
+        if (ezcashd) {
+            json payload = {
+                {"jsonrpc", "1.0"},
+                {"id", "someid"},
+                {"method", "getnetworksolps"}
+            };
 
-        conn->doRPCIgnoreError(payload, [=](const json& reply) {
-            qint64 solrate = reply.get<json::number_unsigned_t>();
+            conn->doRPCIgnoreError(payload, [=](const json& reply) {
+                qint64 solrate = reply.get<json::number_unsigned_t>();
 
-            ui->numconnections->setText(QString::number(connections));
-            ui->solrate->setText(QString::number(solrate) % " Sol/s");
-        });
-
-        // Get network info
-        payload = {
-            {"jsonrpc", "1.0"},
-            {"id", "someid"},
-            {"method", "getnetworkinfo"}
-        };
-
-        conn->doRPCIgnoreError(payload, [=](const json& reply) {
-            QString clientname    = QString::fromStdString( reply["subversion"].get<json::string_t>() );
-
-            ui->clientname->setText(clientname);
-        });
+                ui->numconnections->setText(QString::number(connections));
+                ui->solrate->setText(QString::number(solrate) % " Sol/s");
+            });
+        } 
 
         // Call to see if the blockchain is syncing. 
-        payload = {
+        json payload = {
             {"jsonrpc", "1.0"},
             {"id", "someid"},
             {"method", "getblockchaininfo"}
@@ -638,7 +640,6 @@ void RPC::getInfoThenRefresh(bool force) {
 
         conn->doRPCIgnoreError(payload, [=](const json& reply) {
             auto progress    = reply["verificationprogress"].get<double>();
-	    // TODO: use getinfo.synced
             bool isSyncing   = progress < 0.9999; // 99.99%
             int  blockNumber = reply["blocks"].get<json::number_unsigned_t>();
 
@@ -651,20 +652,30 @@ void RPC::getInfoThenRefresh(bool force) {
             Settings::getInstance()->setBlockNumber(blockNumber);
 
             // Update safecoind tab if it exists
-            if (isSyncing) {
-                QString txt = QString::number(blockNumber);
-                if (estimatedheight > 0) {
-                    txt = txt % " / ~" % QString::number(estimatedheight);
-                    // If estimated height is available, then use the download blocks 
-                    // as the progress instead of verification progress.
-                    progress = (double)blockNumber / (double)estimatedheight;
+            if (ezcashd) {
+                if (isSyncing) {
+                    QString txt = QString::number(blockNumber);
+                    if (estimatedheight > 0) {
+                        txt = txt % " / ~" % QString::number(estimatedheight);
+                        // If estimated height is available, then use the download blocks 
+                        // as the progress instead of verification progress.
+                        progress = (double)blockNumber / (double)estimatedheight;
+                    }
+                    txt = txt %  " ( " % QString::number(progress * 100, 'f', 2) % "% )";
+                    ui->blockheight->setText(txt);
+                    ui->heightLabel->setText(QObject::tr("Downloading blocks"));
+                } else {
+                    // If syncing is finished, we may have to remove the ibdskiptxverification
+                    // flag from safecoin.conf
+                    if (getConnection() != nullptr && getConnection()->config->skiptxverification) {
+                        getConnection()->config->skiptxverification = false;
+                        Settings::removeFromZcashConf(Settings::getInstance()->getZcashdConfLocation(), 
+                                                        "ibdskiptxverification");
+                    }
+
+                    ui->blockheight->setText(QString::number(blockNumber));
+                    ui->heightLabel->setText(QObject::tr("Block height"));
                 }
-                txt = txt %  " ( " % QString::number(progress * 100, 'f', 2) % "% )";
-                ui->blockheight->setText(txt);
-                ui->heightLabel->setText(QObject::tr("Downloading blocks"));
-            } else {
-                ui->blockheight->setText(QString::number(blockNumber));
-                ui->heightLabel->setText(QObject::tr("Block height"));
             }
 
             // Update the status bar
@@ -674,23 +685,25 @@ void RPC::getInfoThenRefresh(bool force) {
                 (Settings::getInstance()->isTestnet() ? QObject::tr("testnet:") : "") %
                 QString::number(blockNumber) %
                 (isSyncing ? ("/" % QString::number(progress*100, 'f', 2) % "%") : QString()) %
-                ") " %
-                " Notarized: " % QString::number(notarized) %
-                " SAFE/USD=$" % QString::number( (double) Settings::getInstance()->getZECPrice() );
+                ")";
             main->statusLabel->setText(statusText);   
 
-            auto zecPrice = Settings::getUSDFormat(1);
+            // Update the balances view to show a warning if the node is still syncing
+            ui->lblSyncWarning->setVisible(isSyncing);
+            ui->lblSyncWarningReceive->setVisible(isSyncing);
+
+            auto zecPrice = Settings::getInstance()->getUSDFromZecAmount(1);
             QString tooltip;
             if (connections > 0) {
                 tooltip = QObject::tr("Connected to safecoind");
             }
             else {
-                tooltip = QObject::tr("safecoind has no peer connections! Network issues?");
+                tooltip = QObject::tr("safecoind has no peer connections");
             }
             tooltip = tooltip % "(v " % QString::number(Settings::getInstance()->getZcashdVersion()) % ")";
 
             if (!zecPrice.isEmpty()) {
-                tooltip = "1 SAFE = " % zecPrice % "\n" % tooltip;
+                tooltip = "1 " % Settings::getTokenName() % " = " % zecPrice % "\n" % tooltip;
             }
             main->statusLabel->setToolTip(tooltip);
             main->statusIcon->setToolTip(tooltip);
@@ -744,12 +757,6 @@ void RPC::refreshAddresses() {
 
         delete taddresses;
         taddresses = newtaddresses;
-
-        // If there are no t Addresses, create one
-        newTaddr([=] (json reply) {
-            // What if taddress gets deleted before this executes?
-            taddresses->append(QString::fromStdString(reply.get<json::string_t>()));
-        });
     });
 }
 
@@ -784,6 +791,50 @@ bool RPC::processUnspent(const json& reply, QMap<QString, double>* balancesMap, 
     return anyUnconfirmed;
 };
 
+/**
+ * Refresh the turnstile migration status
+ */
+void RPC::refreshMigration() {
+    // Turnstile migration is only supported in safecoind v2.0.5 and above
+    if (Settings::getInstance()->getZcashdVersion() < 2000552)
+        return;
+
+    json payload = {
+        {"jsonrpc", "1.0"},
+        {"id", "someid"},
+        {"method", "z_getmigrationstatus"},
+    };
+    
+    conn->doRPCWithDefaultErrorHandling(payload, [=](json reply) {
+        this->migrationStatus.available = true;
+        this->migrationStatus.enabled   = reply["enabled"].get<json::boolean_t>();
+        this->migrationStatus.saplingAddress = QString::fromStdString(reply["destination_address"]);
+        this->migrationStatus.unmigrated = QString::fromStdString(reply["unmigrated_amount"]).toDouble();
+        this->migrationStatus.migrated = QString::fromStdString(reply["finalized_migrated_amount"]).toDouble();
+
+        QList<QString> ids;
+        for (auto& it : reply["migration_txids"].get<json::array_t>()) {
+            ids.push_back(QString::fromStdString(it.get<json::string_t>()));
+        }
+        this->migrationStatus.txids = ids;
+    });
+}
+
+void RPC::setMigrationStatus(bool enabled) {
+    json payload = {
+        {"jsonrpc", "1.0"},
+        {"id", "someid"},
+        {"method", "z_setmigration"},
+        {"params", {enabled}}  
+    };
+
+    conn->doRPCWithDefaultErrorHandling(payload, [=](json) {
+        // Ignore return value.
+    });
+}
+
+
+
 void RPC::refreshBalances() {    
     if  (conn == nullptr) 
         return noConnection();
@@ -800,12 +851,10 @@ void RPC::refreshBalances() {
         ui->balTransparent->setText(Settings::getZECDisplayFormat(balT));
         ui->balTotal      ->setText(Settings::getZECDisplayFormat(balTotal));
 
-        ui->balSheilded   ->setToolTip(Settings::getUSDFormat(balZ));
-        ui->balTransparent->setToolTip(Settings::getUSDFormat(balT));
-        ui->balTotal      ->setToolTip(Settings::getUSDFormat(balTotal));
 
-        ui->balUSDTotal   ->setText(Settings::getUSDFormat(balTotal));
-        ui->balUSDTotal   ->setToolTip(Settings::getUSDFormat(balTotal));
+        ui->balSheilded   ->setToolTip(Settings::getZECDisplayFormat(balZ));
+        ui->balTransparent->setToolTip(Settings::getZECDisplayFormat(balT));
+        ui->balTotal      ->setToolTip(Settings::getZECDisplayFormat(balTotal));
     });
 
     // 2. Get the UTXOs
@@ -855,7 +904,7 @@ void RPC::refreshTransactions() {
                 address,
                 QString::fromStdString(it["txid"]),
                 it["amount"].get<json::number_float_t>() + fee,
-                (unsigned long)it["confirmations"].get<json::number_unsigned_t>(),
+                static_cast<long>(it["confirmations"].get<json::number_unsigned_t>()),
                 "", "" };
 
             txdata.push_back(tx);
@@ -912,7 +961,7 @@ void RPC::refreshSentZTrans() {
                     continue;
                 auto error = j["confirmations"].is_null();
                 if (!error)
-                    sentTx.confirmations = j["confirmations"].get<json::number_unsigned_t>();
+                    sentTx.confirmations = j["confirmations"].get<json::number_integer_t>();
             }
             
             transactionsTableModel->addZSentData(newSentZTxs);
@@ -1011,15 +1060,14 @@ void RPC::watchTxStatus() {
 }
 
 void RPC::checkForUpdate(bool silent) {
-    qDebug() << "checking for updates";
-
     if  (conn == nullptr) 
         return noConnection();
 
-    QUrl cmcURL("https://api.github.com/repos/Fair-Exchange/safecoin-qt-wallet/releases");
+    QUrl cmcURL("https://api.github.com/repos/Fair-Exchange/safecoinwallet/releases");
 
     QNetworkRequest req;
     req.setUrl(cmcURL);
+    
     QNetworkReply *reply = conn->restclient->get(req);
 
     QObject::connect(reply, &QNetworkReply::finished, [=] {
@@ -1047,6 +1095,7 @@ void RPC::checkForUpdate(bool silent) {
                 }
 
                 auto currentVersion = QVersionNumber::fromString(APP_VERSION);
+                
                 // Get the max version that the user has hidden updates for
                 QSettings s;
                 auto maxHiddenVersion = QVersionNumber::fromString(s.value("update/lastversion", "0.0.0").toString());
@@ -1060,7 +1109,7 @@ void RPC::checkForUpdate(bool silent) {
                             .arg(currentVersion.toString()),
                         QMessageBox::Yes, QMessageBox::Cancel);
                     if (ans == QMessageBox::Yes) {
-                        QDesktopServices::openUrl(QUrl("https://github.com/Fair-Exchange/safecoin-qt-wallet/releases"));
+                        QDesktopServices::openUrl(QUrl("https://github.com/Fair-Exchange/safecoinwallet/releases"));
                     } else {
                         // If the user selects cancel, don't bother them again for this version
                         s.setValue("update/lastversion", maxVersion.toString());
@@ -1073,10 +1122,11 @@ void RPC::checkForUpdate(bool silent) {
                     }
                 } 
             }
-        } catch (const std::exception& e) {
-            // If anything at all goes wrong, just set the price to 0 and move on.
-            qDebug() << QString("Caught something nasty: ") << e.what();
         }
+        catch (...) {
+            // If anything at all goes wrong, just set the price to 0 and move on.
+            qDebug() << QString("Caught something nasty");
+        }       
     });
 }
 
@@ -1151,7 +1201,6 @@ void RPC::shutdownZcashd() {
     conn->shutdown();
 
     QDialog d(main);
-    d.setWindowFlags(d.windowFlags() & ~(Qt::WindowCloseButtonHint | Qt::WindowContextHelpButtonHint));
     Ui_ConnectionDialog connD;
     connD.setupUi(&d);
     connD.topIcon->setBasePixmap(QIcon(":/icons/res/icon.ico").pixmap(256, 256));
@@ -1167,8 +1216,7 @@ void RPC::shutdownZcashd() {
         waitCount++;
 
         if ((ezcashd->atEnd() && ezcashd->processId() == 0) ||
-            ezcashd->state() == QProcess::NotRunning ||
-            waitCount > 30 ||
+            waitCount > 30 || 
             conn->config->zcashDaemon)  {   // If safecoind is daemon, then we don't have to do anything else
             qDebug() << "Ended";
             waiter.stop();
@@ -1179,7 +1227,7 @@ void RPC::shutdownZcashd() {
     });
     waiter.start(1000);
 
-    // Wait for the zcash process to exit.
+    // Wait for the safecoin process to exit.
     if (!Settings::getInstance()->isHeadless()) {
         d.exec(); 
     } else {

@@ -60,6 +60,12 @@ public:
 
     bool    getAllowCustomFees();
     void    setAllowCustomFees(bool allow);
+
+    bool    getAllowFetchPrices();
+    void    setAllowFetchPrices(bool allow);
+
+    bool    getCheckForUpdates();
+    void    setCheckForUpdates(bool allow);
             
     bool    isSaplingActive();
 
@@ -76,6 +82,10 @@ public:
     static const QString txidStatusMessage;
     
     static void saveRestore(QDialog* d);
+    static void saveRestoreTableHeader(QTableView* table, QDialog* d, QString tablename) ;
+
+    static void openAddressInExplorer(QString address);
+    static void openTxInExplorer(QString txid);
 
     static PaymentURI parseURI(QString paymentURI);
     static QString    paymentURIPretty(PaymentURI);
@@ -84,7 +94,9 @@ public:
     static bool    isTAddress(QString addr);
 
     static QString getDecimalString(double amt);
-    static QString getUSDFormat(double bal);
+    static QString getUSDFormat(double usdAmt);
+
+    static QString getUSDFromZecAmount(double bal);
     static QString getZECDisplayFormat(double bal);
     static QString getZECUSDDisplayFormat(double bal);
 

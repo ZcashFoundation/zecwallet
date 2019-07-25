@@ -14,18 +14,15 @@ ConnectionLoader::ConnectionLoader(MainWindow* main, RPC* rpc) {
     this->rpc  = rpc;
 
     d = new QDialog(main);
-    d->setWindowFlags(d->windowFlags() & ~(Qt::WindowCloseButtonHint | Qt::WindowContextHelpButtonHint));
     connD = new Ui_ConnectionDialog();
     connD->setupUi(d);
     QPixmap logo(":/img/res/logobig.gif");
-    connD->topIcon->setBasePixmap(logo.scaled(512, 512, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    main->logger->write("set topIcon");
+    connD->topIcon->setBasePixmap(logo.scaled(256, 256, Qt::KeepAspectRatio, Qt::SmoothTransformation));
 }
 
-ConnectionLoader::~ConnectionLoader() {
+ConnectionLoader::~ConnectionLoader() {    
     delete d;
     delete connD;
-    main->logger->write("ConnectionLoader done");
 }
 
 void ConnectionLoader::loadConnection() {
@@ -41,7 +38,7 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
         return;
     }
 
-    // Priority 2: Try to connect to detect zcash.conf and connect to it.
+    // Priority 2: Try to connect to detect safecoin.conf and connect to it.
     auto config = autoDetectZcashConf();
     main->logger->write(QObject::tr("Attempting autoconnect"));
 
@@ -49,12 +46,12 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
         auto connection = makeConnection(config);
 
         refreshZcashdState(connection, [=] () {
-            // Refused connection. So try and start embedded zcashd
+            // Refused connection. So try and start embedded safecoind
             if (Settings::getInstance()->useEmbedded()) {
                 if (tryEzcashdStart) {
                     this->showInformation(QObject::tr("Starting embedded safecoind"));
                     if (this->startEmbeddedZcashd()) {
-                        // Embedded zcashd started up. Wait a second and then refresh the connection
+                        // Embedded safecoind started up. Wait a second and then refresh the connection
                         main->logger->write("Embedded safecoind started up, trying autoconnect in 1 sec");
                         QTimer::singleShot(1000, [=]() { doAutoConnect(); } );
                     } else {
@@ -63,12 +60,12 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
                             // to let it start up. 
                             main->logger->write("safecoind is daemon=1. Waiting for it to start up");
                             this->showInformation(QObject::tr("safecoind is set to run as daemon"), QObject::tr("Waiting for safecoind"));
-                            QTimer::singleShot(5000, [=]() { doAutoConnect(/* don't attempt to start esafecoind */ false); });
+                            QTimer::singleShot(5000, [=]() { doAutoConnect(/* don't attempt to start ezcashd */ false); });
                         } else {
                             // Something is wrong. 
                             // We're going to attempt to connect to the one in the background one last time
                             // and see if that works, else throw an error
-                            main->logger->write("Unknown problem while trying to start safecoind!");
+                            main->logger->write("Unknown problem while trying to start safecoind");
                             QTimer::singleShot(2000, [=]() { doAutoConnect(/* don't attempt to start ezcashd */ false); });
                         }
                     }
@@ -83,7 +80,7 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
                             "daemon=1");
                     } else {
                         explanation = QString() % QObject::tr("Couldn't start the embedded safecoind.\n\n" 
-                            "Please try restarting.\n\nIf you previously started safecoind with custom arguments, you might need to  reset safecoin.conf.\n\n" 
+                            "Please try restarting.\n\nIf you previously started safecoind with custom arguments, you might need to reset safecoin.conf.\n\n" 
                             "If all else fails, please run safecoind manually.") %  
                             (ezcashd ? QObject::tr("The process returned") + ":\n\n" % ezcashd->errorString() : QString(""));
                     }
@@ -127,7 +124,7 @@ QString randomPassword() {
 }
 
 /**
- * This will create a new safecoin.conf, download Zcash parameters.
+ * This will create a new safecoin.conf, download Safecoin parameters.
  */ 
 void ConnectionLoader::createZcashConf() {
     main->logger->write("createZcashConf");
@@ -139,8 +136,8 @@ void ConnectionLoader::createZcashConf() {
     Ui_createZcashConf ui;
     ui.setupUi(&d);
 
-    QPixmap logo(":/img/res/zcashdlogo.gif");
-    ui.lblTopIcon->setBasePixmap(logo.scaled(512,512, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    QPixmap logo(":/img/res/safecoindlogo.gif");
+    ui.lblTopIcon->setBasePixmap(logo.scaled(256, 256, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     ui.btnPickDir->setEnabled(false);
 
     ui.grpAdvanced->setVisible(false);
@@ -171,6 +168,10 @@ void ConnectionLoader::createZcashConf() {
     if (d.exec() == QDialog::Accepted) {
         datadir = ui.lblDirName->text();
         useTor = ui.chkUseTor->isChecked();
+        if (!ui.chkAllowInternet->isChecked()) {
+            Settings::getInstance()->setAllowFetchPrices(false);
+            Settings::getInstance()->setCheckForUpdates(false);
+        }
     }
 
     main->logger->write("Creating file " + confLocation);
@@ -179,14 +180,11 @@ void ConnectionLoader::createZcashConf() {
     QFile file(confLocation);
     if (!file.open(QIODevice::ReadWrite | QIODevice::Truncate)) {
         main->logger->write("Could not create safecoin.conf, returning");
-
-        QString explanation = QString() % QObject::tr("Could not create safecoin.conf.");
-        this->showError(explanation);
         return;
     }
-
-    QTextStream out(&file);
-
+        
+    QTextStream out(&file); 
+    
     out << "# Autogenerated by SafecoinWallet\n";
     out << "server=1\n";
     out << "rpcuser=safecoin\n";
@@ -199,9 +197,12 @@ void ConnectionLoader::createZcashConf() {
     out << "rpcworkqueue=256\n";
     out << "rpcallowip=127.0.0.1\n";
 
+    // Datadir override 
     if (!datadir.isEmpty()) {
         out << "datadir=" % datadir % "\n";
     }
+
+    // Tor override
     if (useTor) {
         out << "proxy=127.0.0.1:9050\n";
     }
@@ -218,9 +219,12 @@ void ConnectionLoader::downloadParams(std::function<void(void)> cb) {
     // Add all the files to the download queue
     downloadQueue = new QQueue<QUrl>();
     client = new QNetworkAccessManager(main);   
-
+    
     downloadQueue->enqueue(QUrl("https://z.cash/downloads/sapling-output.params"));
-    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sapling-spend.params"));
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sapling-spend.params"));    
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-proving.key"));
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-verifying.key"));
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-groth16.params"));
 
     doNextDownload(cb);    
 }
@@ -336,7 +340,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
         }        
     }
 
-    // Finally, start safecoind
+    // Finally, start safecoind    
     QDir appPath(QCoreApplication::applicationDirPath());
 #ifdef Q_OS_LINUX
     auto zcashdProgram = appPath.absoluteFilePath("safecoind");
@@ -345,11 +349,8 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     }
 #elif defined(Q_OS_DARWIN)
     auto zcashdProgram = appPath.absoluteFilePath("safecoind");
-#elif defined(Q_OS_WIN64)
-    auto zcashdProgram = appPath.absoluteFilePath("safecoind.bat");
 #else
-    //TODO: Not Linux + not darwin DOES NOT EQUAL windows!!!
-    auto zcashdProgram = appPath.absoluteFilePath("safecoind");
+    auto zcashdProgram = appPath.absoluteFilePath("safecoind.exe");
 #endif
     
     if (!QFile(zcashdProgram).exists()) {
@@ -358,25 +359,23 @@ bool ConnectionLoader::startEmbeddedZcashd() {
         return false;
     }
 
-    ezcashd = std::shared_ptr<QProcess>(new QProcess(main));
-    QObject::connect(ezcashd.get(), &QProcess::started, [=] () {
-        qDebug() << "Embedded safecoind started";
+    ezcashd = new QProcess(main);    
+    QObject::connect(ezcashd, &QProcess::started, [=] () {
+        //qDebug() << "safecoind started";
     });
 
-    QObject::connect(ezcashd.get(), QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-                        [=](int exitCode, QProcess::ExitStatus exitStatus) {
-        qDebug() << "safecoind finished with code " << exitCode << "," << exitStatus;
+    QObject::connect(ezcashd, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+                        [=](int, QProcess::ExitStatus) {
+        //qDebug() << "safecoind finished with code " << exitCode << "," << exitStatus;    
     });
 
-    QObject::connect(ezcashd.get(), &QProcess::errorOccurred, [&] (QProcess::ProcessError error) {
-        qDebug() << "Couldn't start safecoind: " << error;
+    QObject::connect(ezcashd, &QProcess::errorOccurred, [&] (auto) {
+        //qDebug() << "Couldn't start safecoind: " << error;
     });
 
-    std::weak_ptr<QProcess> weak_obj(ezcashd);
-    auto ptr_main(main);
-    QObject::connect(ezcashd.get(), &QProcess::readyReadStandardError, [weak_obj, ptr_main]() {
-        auto output = weak_obj.lock()->readAllStandardError();
-        ptr_main->logger->write("safecoind stderr:" + output);
+    QObject::connect(ezcashd, &QProcess::readyReadStandardError, [=]() {
+        auto output = ezcashd->readAllStandardError();
+       main->logger->write("safecoind stderr:" + output);
         processStdErrOutput.append(output);
     });
 
@@ -386,7 +385,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     ezcashd->start(zcashdProgram);
 #else
     ezcashd->setWorkingDirectory(appPath.absolutePath());
-    ezcashd->start(zcashdProgram);
+    ezcashd->start("safecoind.exe");
 #endif // Q_OS_LINUX
 
 
@@ -450,8 +449,6 @@ Connection* ConnectionLoader::makeConnection(std::shared_ptr<ConnectionConfig> c
 }
 
 void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<void(void)> refused) {
-    main->logger->write("refreshZcashdState");
-
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -459,10 +456,10 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
     };
     connection->doRPC(payload,
         [=] (auto) {
-            // Success
+            // Success, hide the dialog if it was shown. 
+            d->hide();
             main->logger->write("safecoind is online.");
-            // Delay 1 second to ensure loading (splash) is seen at least 1 second.
-            QTimer::singleShot(1000, [=]() { this->doRPCSetConnection(connection); });
+            this->doRPCSetConnection(connection);
         },
         [=] (auto reply, auto res) {            
             // Failed, see what it is. 
@@ -506,7 +503,7 @@ void ConnectionLoader::showInformation(QString info, QString detail) {
     }
     
     if (rescanCount > 10) {
-        detail = detail + "\n" + QObject::tr("This may take several hours, grab some popcorn");
+        detail = detail + "\n" + QObject::tr("This may take several hours");
     }
 
     connD->status->setText(info);
@@ -574,24 +571,27 @@ QString ConnectionLoader::zcashParamsDir() {
 bool ConnectionLoader::verifyParams() {
     QDir paramsDir(zcashParamsDir());
 
-    qDebug() << "Verifying param files exist";
-
     if (!QFile(paramsDir.filePath("sapling-output.params")).exists()) return false;
     if (!QFile(paramsDir.filePath("sapling-spend.params")).exists()) return false;
-
-    qDebug() << "All param files found!";
+    if (!QFile(paramsDir.filePath("sprout-proving.key")).exists()) return false;
+    if (!QFile(paramsDir.filePath("sprout-verifying.key")).exists()) return false;
+    if (!QFile(paramsDir.filePath("sprout-groth16.params")).exists()) return false;
 
     return true;
 }
 
 /**
- * Try to automatically detect a Safecoin/safecoin.conf file in the correct location and load parameters
+ * Try to automatically detect a safecoin.conf file in the correct location and load parameters
  */ 
 std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {    
-    auto confLocation = locateZcashConfFile();
+    auto confLocation = Settings::getInstance()->getZcashdConfLocation();
+
+    if (confLocation.isEmpty()) {
+        confLocation = locateZcashConfFile();
+    }
 
     if (confLocation.isNull()) {
-        // No Zcash file, just return with nothing
+        // No Safecoin file, just return with nothing
         return nullptr;
     }
 
@@ -644,13 +644,13 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {
     if (zcashconf->port.isEmpty()) zcashconf->port = "8770";
     file.close();
 
-    // In addition to the Safecoin/safecoin.conf file, also double check the params. 
+    // In addition to the safecoin.conf file, also double check the params. 
 
     return std::shared_ptr<ConnectionConfig>(zcashconf);
 }
 
 /**
- * Load connection settings from the UI, which indicates an unknown, external zcashd
+ * Load connection settings from the UI, which indicates an unknown, external safecoind
  */ 
 std::shared_ptr<ConnectionConfig> ConnectionLoader::loadFromSettings() {
     // Load from the QT Settings. 
@@ -664,7 +664,7 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::loadFromSettings() {
     if (username.isEmpty() || password.isEmpty())
         return nullptr;
 
-    auto uiConfig = new ConnectionConfig{ host, port, username, password, false, false, "", "", ConnectionType::UISettingsZCashD};
+    auto uiConfig = new ConnectionConfig{ host, port, username, password, false, false, false, "", "", ConnectionType::UISettingsZCashD};
 
     return std::shared_ptr<ConnectionConfig>(uiConfig);
 }

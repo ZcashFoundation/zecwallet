@@ -58,7 +58,7 @@ bool Settings::isSaplingAddress(QString addr) {
         return false;
 
     return ( isTestnet() && addr.startsWith("ztestsapling")) ||
-           (!isTestnet() && addr.startsWith("zs1"));
+           (!isTestnet() && addr.startsWith("zs"));
 }
 
 bool Settings::isSproutAddress(QString addr) {
@@ -126,6 +126,22 @@ void Settings::setAutoShield(bool allow) {
     QSettings().setValue("options/autoshield", allow);
 }
 
+bool Settings::getCheckForUpdates() {
+    return QSettings().value("options/allowcheckupdates", true).toBool();
+}
+
+void Settings::setCheckForUpdates(bool allow) {
+     QSettings().setValue("options/allowcheckupdates", allow);
+}
+
+bool Settings::getAllowFetchPrices() {
+    return QSettings().value("options/allowfetchprices", true).toBool();
+}
+
+void Settings::setAllowFetchPrices(bool allow) {
+     QSettings().setValue("options/allowfetchprices", allow);
+}
+
 bool Settings::getAllowCustomFees() {
     // Load from the QT Settings. 
     return QSettings().value("options/customfees", false).toBool();
@@ -162,9 +178,45 @@ void Settings::saveRestore(QDialog* d) {
     });
 }
 
-QString Settings::getUSDFormat(double bal) {
-    return "$" + QLocale(QLocale::English).toString(bal * Settings::getInstance()->getZECPrice(), 'f', 2);
+void Settings::saveRestoreTableHeader(QTableView* table, QDialog* d, QString tablename) {
+    table->horizontalHeader()->restoreState(QSettings().value(tablename).toByteArray());
+    table->horizontalHeader()->setStretchLastSection(true);
+
+    QObject::connect(d, &QDialog::finished, [=](auto) {
+        QSettings().setValue(tablename, table->horizontalHeader()->saveState());
+    });
 }
+
+void Settings::openAddressInExplorer(QString address) {
+    QString url;
+    if (Settings::getInstance()->isTestnet()) {
+        url = "https://testnet.safecoin.org/address/" + address;
+    } else {
+        url = "https://explorer.safecoin.org/address/" + address;
+    }
+    QDesktopServices::openUrl(QUrl(url));
+}
+
+void Settings::openTxInExplorer(QString txid) {
+    QString url;
+    if (Settings::getInstance()->isTestnet()) {
+        url = "https://testnet.safecoin.org/tx/" + txid;
+    }
+    else {
+        url = "https://explorer.safecoin.org/tx/" + txid;
+    }
+    QDesktopServices::openUrl(QUrl(url));
+}
+
+QString Settings::getUSDFormat(double bal) {
+    return "$" + QLocale(QLocale::English).toString(bal, 'f', 2);
+}
+
+
+QString Settings::getUSDFromZecAmount(double bal) {
+    return getUSDFormat(bal * Settings::getInstance()->getZECPrice());
+}
+
 
 QString Settings::getDecimalString(double amt) {
     QString f = QString::number(amt, 'f', 8);
@@ -184,9 +236,9 @@ QString Settings::getZECDisplayFormat(double bal) {
 }
 
 QString Settings::getZECUSDDisplayFormat(double bal) {
-    auto usdFormat = getUSDFormat(bal);
+    auto usdFormat = getUSDFromZecAmount(bal);
     if (!usdFormat.isEmpty())
-        return getZECDisplayFormat(bal) % " (" % getUSDFormat(bal) % ")";
+        return getZECDisplayFormat(bal) % " (" % usdFormat % ")";
     else
         return getZECDisplayFormat(bal);
 }
@@ -206,7 +258,6 @@ QString Settings::getDonationAddr(bool sapling) {
 	    return "ztestsaplingXXX";
     }
     return "RtU6tF2d1YE6hw9DHMAyNRb2uUk4PwSCZr";
-}
 
 bool Settings::addToZcashConf(QString confLocation, QString line) {
     QFile file(confLocation);
@@ -278,7 +329,8 @@ bool Settings::isValidAddress(QString addr) {
     QRegExp texp("^R[a-z0-9]{33}$", Qt::CaseInsensitive);
     //qDebug() << "isValidAddress(" << addr << ")";
 
-    return  texp.exactMatch(addr) || ztsexp.exactMatch(addr) || zsexp.exactMatch(addr);
+    return  zcexp.exactMatch(addr)  || texp.exactMatch(addr) || 
+            ztsexp.exactMatch(addr) || zsexp.exactMatch(addr);
 }
 
 // Get a pretty string representation of this Payment URI
@@ -292,7 +344,7 @@ PaymentURI Settings::parseURI(QString uri) {
     PaymentURI ans;
 
     if (!uri.startsWith("safecoin:")) {
-        ans.error = "Not a Safecoin payment URI";
+        ans.error = "Not a safecoin payment URI";
         return ans;
     }
 

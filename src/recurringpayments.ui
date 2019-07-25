@@ -1,41 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>PrivKey</class>
- <widget class="QDialog" name="PrivKey">
+ <class>RecurringPayments</class>
+ <widget class="QDialog" name="RecurringPayments">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>461</width>
-    <height>389</height>
+    <width>577</width>
+    <height>704</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Private Keys</string>
+   <string>Payments</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
-    <widget class="QPlainTextEdit" name="privKeyTxt">
-     <property name="plainText">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
+   <item row="0" column="1">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Vertical</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Ok|QDialogButtonBox::Save</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="QLabel" name="helpLbl">
-     <property name="text">
-      <string notr="true">TextLabel</string>
+    <widget class="QTableView" name="tableView">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
      </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderStretchLastSection">
+      <bool>false</bool>
+     </attribute>
     </widget>
    </item>
   </layout>
@@ -45,7 +47,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>PrivKey</receiver>
+   <receiver>RecurringPayments</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -61,7 +63,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>PrivKey</receiver>
+   <receiver>RecurringPayments</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

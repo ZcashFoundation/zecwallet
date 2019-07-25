@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="es_ES">
+<TS version="2.1" language="zh_CN">
 <context>
     <name>AddressBookModel</name>
     <message>
         <location filename="../src/addressbook.cpp" line="11"/>
         <source>Label</source>
-        <translation type="unfinished">Etiqueta</translation>
+        <translation>标签</translation>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="11"/>
         <source>Address</source>
-        <translation type="unfinished">Dirección</translation>
+        <translation>地址</translation>
     </message>
 </context>
 <context>
@@ -19,12 +19,12 @@
     <message>
         <location filename="../src/balancestablemodel.cpp" line="122"/>
         <source>Address</source>
-        <translation>Dirección</translation>
+        <translation>地址</translation>
     </message>
     <message>
         <location filename="../src/balancestablemodel.cpp" line="123"/>
         <source>Amount</source>
-        <translation>Monto</translation>
+        <translation>金额</translation>
     </message>
 </context>
 <context>
@@ -32,12 +32,12 @@
     <message>
         <location filename="../src/connection.ui" line="17"/>
         <source>ZecWallet</source>
-        <translation>ZecWallet</translation>
+        <translation>ZEC钱包</translation>
     </message>
     <message>
         <location filename="../src/connection.ui" line="58"/>
         <source>Starting Up</source>
-        <translation>Empezando</translation>
+        <translation>启动中</translation>
     </message>
 </context>
 <context>
@@ -45,68 +45,74 @@
     <message>
         <location filename="../src/mainwindow.ui" line="14"/>
         <source>ZecWallet</source>
-        <translation>ZecWallet</translation>
+        <translation>ZEC钱包</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="29"/>
         <source>Balance</source>
-        <translation>Saldo</translation>
+        <translation>余额</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="43"/>
         <source>Summary</source>
-        <translation>Vista general</translation>
+        <translation>概要</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="62"/>
         <source>Shielded</source>
-        <translation>Protegido</translation>
+        <translation>隐蔽余额</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="89"/>
         <source>Transparent</source>
-        <translation>Transparente</translation>
+        <translation>非隐蔽余额</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="129"/>
         <source>Total</source>
-        <translation>Total</translation>
+        <translation>所有余额</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="170"/>
+        <location filename="../src/mainwindow.ui" line="848"/>
+        <source>Your node is still syncing, balances may not be updated</source>
+        <translation>您的节点仍在同步，余额可能没有更新</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="189"/>
         <source>Some transactions are not yet confirmed</source>
-        <translation>Algunas transacciones aún no estan confirmadas</translation>
+        <translation>部分交易尚未得到确认</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="207"/>
         <source>Address Balances</source>
-        <translation>Saldo De Direcciones</translation>
+        <translation>地址余额</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="256"/>
         <location filename="../src/mainwindow.ui" line="648"/>
         <source>Send</source>
-        <translation>Envía</translation>
+        <translation>发送</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="265"/>
         <source>From</source>
-        <translation>Desde</translation>
+        <translation>从</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="283"/>
         <source>Address Balance</source>
-        <translation>Saldo De Dirección</translation>
+        <translation>地址余额</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="331"/>
         <source>Send To</source>
-        <translation>Enviar a</translation>
+        <translation>发送给</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="370"/>
         <source>Recipient</source>
-        <translation>Destinatario</translation>
+        <translation>接收者</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="378"/>
@@ -115,13 +121,13 @@
         <location filename="../src/sendtab.cpp" line="248"/>
         <location filename="../src/sendtab.cpp" line="253"/>
         <source>Address</source>
-        <translation>Dirección</translation>
+        <translation>地址</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="392"/>
         <location filename="../src/sendtab.cpp" line="263"/>
         <source>Address Book</source>
-        <translation>Directorio</translation>
+        <translation>地址薄</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="403"/>
@@ -129,12 +135,12 @@
         <location filename="../src/sendtab.cpp" line="276"/>
         <location filename="../src/sendtab.cpp" line="280"/>
         <source>Amount</source>
-        <translation>Monto</translation>
+        <translation>金额</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="433"/>
         <source>Max Available</source>
-        <translation>Máximo Disponible</translation>
+        <translation>最大可发送金额</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="459"/>
@@ -142,33 +148,33 @@
         <location filename="../src/mainwindow.cpp" line="1195"/>
         <location filename="../src/sendtab.cpp" line="302"/>
         <source>Memo</source>
-        <translation>Memo</translation>
+        <translation>备注</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="507"/>
         <source>Add Recipient</source>
-        <translation>Agregar Destinatario</translation>
+        <translation>添加接收者</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="551"/>
         <source>Recurring payment</source>
-        <translation type="unfinished"></translation>
+        <translation>循环支付</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="558"/>
         <source>Every month, starting 12-May-2012, for 6 payments</source>
-        <translation type="unfinished"></translation>
+        <translation>从2012年5月12日开始，每月支付6次</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="565"/>
         <source>Edit Schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑计划</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="595"/>
         <location filename="../src/sendtab.cpp" line="677"/>
         <source>Miner Fee</source>
-        <translation>Cuota Minera</translation>
+        <translation>矿工费用</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="608"/>
@@ -178,71 +184,32 @@
     <message>
         <location filename="../src/mainwindow.ui" line="664"/>
         <source>Cancel</source>
-        <translation>Cancelar</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="674"/>
         <source>Receive</source>
-        <translation>Recibir</translation>
+        <translation>接收</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="682"/>
         <source>Address Type</source>
-        <translation>Tipo De Dirección</translation>
-    </message>
-    <message>
-        <source>z-Addr(Sapling)</source>
-        <translation type="vanished">z-Addr(Sapling)</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.ui" line="709"/>
-        <source>t-Addr</source>
-        <translation>t-Addr</translation>
-    </message>
-    <message>
-        <source>z-Addr(Sprout)</source>
-        <translation type="vanished">z-Addr(Sprout)</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.ui" line="733"/>
-        <source>New Address</source>
-        <translation>Nueva Dirección</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.ui" line="758"/>
-        <source>Label</source>
-        <translation>Etiqueta</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.ui" line="765"/>
-        <source>Update Label</source>
-        <translation>Actualizar Etiqueta</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.ui" line="779"/>
-        <source>Address balance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.ui" line="789"/>
-        <source>Optional</source>
-        <translation>Opcional</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.ui" line="811"/>
-        <source>Export Private Key</source>
-        <translation>Exportar Clave Privada</translation>
+        <translation>地址类型</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="696"/>
         <source>z-Addr</source>
-        <translation type="unfinished"></translation>
+        <translation>隐蔽地址(z-Addr)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="170"/>
-        <location filename="../src/mainwindow.ui" line="848"/>
-        <source>Your node is still syncing, balances may not be updated</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/mainwindow.ui" line="709"/>
+        <source>t-Addr</source>
+        <translation>非隐蔽地址(t-Addr)</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="733"/>
+        <source>New Address</source>
+        <translation>创建新地址</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="740"/>
@@ -250,19 +217,44 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/mainwindow.ui" line="758"/>
+        <source>Label</source>
+        <translation>标签</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="765"/>
+        <source>Update Label</source>
+        <translation>更新标签</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="779"/>
+        <source>Address balance</source>
+        <translation>地址余额</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="789"/>
+        <source>Optional</source>
+        <translation>可选</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="811"/>
+        <source>Export Private Key</source>
+        <translation>导出私钥</translation>
+    </message>
+    <message>
         <location filename="../src/mainwindow.ui" line="891"/>
         <source>Transactions</source>
-        <translation>Transacciones</translation>
+        <translation>交易</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="908"/>
         <source>zcashd</source>
-        <translation>zcashd</translation>
+        <translation>节点</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="938"/>
         <source>You are currently not mining</source>
-        <translation>Actualmente no estas minando</translation>
+        <translation>您目前没有在挖矿</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="958"/>
@@ -270,22 +262,22 @@
         <location filename="../src/mainwindow.ui" line="993"/>
         <location filename="../src/mainwindow.cpp" line="983"/>
         <source>Loading...</source>
-        <translation>Cargando...</translation>
+        <translation>加载中...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="965"/>
         <source>Block height</source>
-        <translation>Altura del bloque</translation>
+        <translation>区块高度</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="979"/>
         <source>Network solution rate</source>
-        <translation>Rapidez de solución de red</translation>
+        <translation>全网算力</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="986"/>
         <source>Connections</source>
-        <translation>Conexiones</translation>
+        <translation>连接数</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1020"/>
@@ -297,37 +289,37 @@
     <message>
         <location filename="../src/mainwindow.ui" line="1060"/>
         <source>&amp;File</source>
-        <translation>&amp;Archivo</translation>
+        <translation>&amp;文件</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1075"/>
         <source>&amp;Help</source>
-        <translation>&amp;Ayuda</translation>
+        <translation>&amp;帮助</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1084"/>
         <source>&amp;Apps</source>
-        <translation>&amp;Apps</translation>
+        <translation>&amp;应用</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1093"/>
         <source>&amp;Edit</source>
-        <translation>&amp;Editar</translation>
+        <translation>&amp;编辑</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1107"/>
         <source>E&amp;xit</source>
-        <translation>Salir</translation>
+        <translation>&amp;退出</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1112"/>
         <source>&amp;About</source>
-        <translation>&amp;Acerca de</translation>
+        <translation>&amp;关于</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1117"/>
         <source>&amp;Settings</source>
-        <translation>&amp;Configuración</translation>
+        <translation>&amp;设置</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1120"/>
@@ -337,17 +329,17 @@
     <message>
         <location filename="../src/mainwindow.ui" line="1125"/>
         <source>&amp;Donate</source>
-        <translation>&amp;Donar</translation>
+        <translation>&amp;捐赠</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1130"/>
         <source>Check github.com for &amp;updates</source>
-        <translation>Consulte las actualizaciones en github.com</translation>
+        <translation>检查github.com获取和&amp;更新</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1135"/>
         <source>Sapling &amp;turnstile</source>
-        <translation>Sapling &amp;turnstile</translation>
+        <translation>树苗&amp;十字旋转门</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1138"/>
@@ -357,17 +349,17 @@
     <message>
         <location filename="../src/mainwindow.ui" line="1143"/>
         <source>&amp;Import private key</source>
-        <translation>Importar clave privada</translation>
+        <translation>&amp;导入私钥</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1148"/>
         <source>&amp;Export all private keys</source>
-        <translation>Exportar todas las claves privadas</translation>
+        <translation>&amp;导出所有私钥</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1153"/>
         <source>&amp;z-board.net</source>
-        <translation>z-board.net</translation>
+        <translation>&amp;z-board.net</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1156"/>
@@ -377,7 +369,7 @@
     <message>
         <location filename="../src/mainwindow.ui" line="1161"/>
         <source>Address &amp;book</source>
-        <translation>Directorio</translation>
+        <translation>&amp;地址簿</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1164"/>
@@ -387,375 +379,377 @@
     <message>
         <location filename="../src/mainwindow.ui" line="1169"/>
         <source>&amp;Backup wallet.dat</source>
-        <translation>Respaldar wallet.dat</translation>
+        <translation>&amp;备份 wallet.dat</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1174"/>
         <location filename="../src/mainwindow.cpp" line="921"/>
         <source>Export transactions</source>
-        <translation type="unfinished"></translation>
+        <translation>导出交易</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1179"/>
         <source>Pay zcash &amp;URI...</source>
-        <translation type="unfinished"></translation>
+        <translation>支付zcash &amp;URI ...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1184"/>
         <source>Connect mobile &amp;app</source>
-        <translation type="unfinished"></translation>
+        <translation>连接移动&amp;App</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1187"/>
         <source>Ctrl+M</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1192"/>
         <source>&amp;Recurring Payments</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;定期付款</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1197"/>
         <source>Request zcash...</source>
-        <translation type="unfinished"></translation>
+        <translation>请求 zcash...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1202"/>
         <source>File a bug...</source>
-        <translation type="unfinished"></translation>
+        <translation>提交错误...</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="277"/>
+        <source>Not yet ready</source>
+        <translation>尚未准备好</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="277"/>
+        <source>zcashd is not yet ready. Please wait for the UI to load</source>
+        <translation>zcashd尚未准备好。 请等待UI加载</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="498"/>
         <source>Tor configuration is available only when running an embedded zcashd.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tor配置仅在运行嵌入的zcashd时可用。</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="537"/>
         <source>You&apos;re using an external zcashd. Please restart zcashd with -rescan</source>
-        <translation type="unfinished"></translation>
+        <translation>你正在使用外部zcashd。 请使用-rescan参数重新启动zcashd</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="540"/>
         <source>You&apos;re using an external zcashd. Please restart zcashd with -reindex</source>
-        <translation type="unfinished"></translation>
+        <translation>你正在使用外部zcashd。 请使用-reindex重新启动zcashd</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="565"/>
         <source>Enable Tor</source>
-        <translation type="unfinished"></translation>
+        <translation>启用Tor</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="566"/>
         <source>Connection over Tor has been enabled. To use this feature, you need to restart ZecWallet.</source>
-        <translation type="unfinished"></translation>
+        <translation>已启用Tor上的连接。 要使用此功能，您需要重新启动ZecWallet。</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="575"/>
         <source>Disable Tor</source>
-        <translation type="unfinished"></translation>
+        <translation>禁用Tor</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="576"/>
         <source>Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart ZecWallet.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tor上的连接已被禁用。 要完全断开与Tor的连接，您需要重新启动ZecWallet。</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="605"/>
+        <source>ZecWallet needs to restart to rescan/reindex. ZecWallet will now close, please restart ZecWallet to continue</source>
+        <translation>ZecWallet需要重新启动才能重新扫描/重新索引。 ZecWallet现在关闭，请重启ZecWallet以继续</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="607"/>
+        <source>Restart ZecWallet</source>
+        <translation>重启ZecWallet</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="637"/>
         <source>Thanks for supporting ZecWallet!</source>
-        <translation>Gracias por apoyar ZecWallet!</translation>
+        <translation>感谢您支持ZecWallet！</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="639"/>
         <source>Donate 0.01 </source>
-        <translation>Donar 0.01 </translation>
+        <translation>捐赠0.01 </translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="639"/>
         <source> to support ZecWallet</source>
-        <translation> para apoyar ZecWallet</translation>
+        <translation> 支持ZecWallet</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="676"/>
         <source>You are on testnet, your post won&apos;t actually appear on z-board.net</source>
-        <translation>Estas en testnet, tu publicación no aparecerá en z-board.net</translation>
+        <translation>你在testnet上，你的帖子实际上不会出现在z-board.net上</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="732"/>
         <source>You need a sapling address with available balance to post</source>
-        <translation>Necesitas una dirección Sapling con saldo disponible para publicar</translation>
+        <translation>您需要一个具有可用余额的sapling地址才能发布</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="746"/>
         <location filename="../src/sendtab.cpp" line="768"/>
         <source>Computing Tx: </source>
-        <translation>Calculando Tx: </translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="908"/>
-        <source>The keys were imported. It may take several minutes to rescan the blockchain. Until then, functionality may be limited</source>
-        <translation>Las claves fueron importadas. Puede que se demore varios minutos en volver a escanear el blockchain. Hasta entonces, la funcionalidad puede ser limitada.</translation>
+        <translation>计算交易： </translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="770"/>
         <source>Private key import rescan finished</source>
-        <translation>Importación de clave privada re-escaneada finalizada</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="605"/>
-        <source>ZecWallet needs to restart to rescan/reindex. ZecWallet will now close, please restart ZecWallet to continue</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="607"/>
-        <source>Restart ZecWallet</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="849"/>
-        <source>Error paying zcash URI</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="850"/>
-        <source>URI should be of the form &apos;zcash:&lt;addr&gt;?amt=x&amp;memo=y</source>
-        <translation type="unfinished"></translation>
+        <translation>私钥导入重新扫描完成</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="837"/>
         <source>Paste Zcash URI</source>
-        <translation type="unfinished"></translation>
+        <translation>粘贴Zcash URI</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="277"/>
-        <source>Not yet ready</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/mainwindow.cpp" line="849"/>
+        <source>Error paying zcash URI</source>
+        <translation>支付zcash URI时出错</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="277"/>
-        <source>zcashd is not yet ready. Please wait for the UI to load</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/mainwindow.cpp" line="850"/>
+        <source>URI should be of the form &apos;zcash:&lt;addr&gt;?amt=x&amp;memo=y</source>
+        <translation>URI的格式应为 &apos;zcash:&lt;addr&gt;?amt=x&amp;memo=y&apos;</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="886"/>
         <source>Please paste your private keys (z-Addr or t-Addr) here, one per line</source>
-        <translation>Por favor pegue sus claves privadas (z-Addr o t-Addr) aqui, una por línea</translation>
+        <translation>请在此粘贴您的私钥（z-Addr或t-Addr），每行一个</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="887"/>
         <source>The keys will be imported into your connected zcashd node</source>
-        <translation>Las claves serán importadas en su nodo zcashd conectado</translation>
+        <translation>密钥将导入已连接的zcashd节点</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="908"/>
+        <source>The keys were imported. It may take several minutes to rescan the blockchain. Until then, functionality may be limited</source>
+        <translation>钥匙是导入的。 重新扫描区块链可能需要几分钟时间。 在此之前，功能可能会受到限制</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="927"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>错误</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="928"/>
         <source>Error exporting transactions, file was not saved</source>
-        <translation type="unfinished"></translation>
+        <translation>导出交易时出错，文件未保存</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="950"/>
         <source>No wallet.dat</source>
-        <translation>Sin wallet.dat</translation>
+        <translation>没有 wallet.dat</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="950"/>
         <source>Couldn&apos;t find the wallet.dat on this computer</source>
-        <translation>No se pudo encontrar wallet.dat en esta computadora</translation>
+        <translation>在这台电脑上找不到wallet.dat</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="951"/>
         <source>You need to back it up from the machine zcashd is running on</source>
-        <translation>Necesitas hacer una copia de seguridad de la computadora en la que se está ejecutando zcashd</translation>
+        <translation>你需要从运行zcashd的机器备份它</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="955"/>
         <source>Backup wallet.dat</source>
-        <translation>Respaldar wallet.dat</translation>
+        <translation>备份 wallet.dat</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="960"/>
         <source>Couldn&apos;t backup</source>
-        <translation>No se pudo hacer una copia de seguridad</translation>
+        <translation>无法备份</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="960"/>
         <source>Couldn&apos;t backup the wallet.dat file.</source>
-        <translation>No se pudo hacer copia de seguridad de wallet.dat</translation>
+        <translation>无法备份wallet.dat文件。</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="961"/>
         <source>You need to back it up manually.</source>
-        <translation>Necesitas hacer una copia de seguridad manualmente.</translation>
+        <translation>您需要手动备份它。</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="988"/>
         <source>These are all the private keys for all the addresses in your wallet</source>
-        <translation>Estas son todas las claves privadas para todas las direcciones en tu billetera</translation>
+        <translation>这些都是钱包中所有地址的私钥</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="990"/>
         <source>Private key for </source>
-        <translation>Clave privada para </translation>
+        <translation>私钥 </translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="998"/>
         <source>Save File</source>
-        <translation>Guardar Archivo</translation>
+        <translation>保存文件</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1002"/>
         <source>Unable to open file</source>
-        <translation>No es posible abrir el archivo</translation>
+        <translation>无法打开文件</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1099"/>
         <location filename="../src/mainwindow.cpp" line="1175"/>
         <source>Copy address</source>
-        <translation>Copiar dirección</translation>
+        <translation>复制成功</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1102"/>
         <location filename="../src/mainwindow.cpp" line="1171"/>
         <location filename="../src/mainwindow.cpp" line="1177"/>
         <source>Copied to clipboard</source>
-        <translation>Copiado al portapapeles</translation>
+        <translation>复制到剪贴板</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1105"/>
         <source>Get private key</source>
-        <translation>Obtener clave privada</translation>
+        <translation>获取私钥</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1116"/>
         <source>Shield balance to Sapling</source>
-        <translation>Proteger saldo a Sapling</translation>
+        <translation>屏蔽余额到Sapling地址</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1121"/>
         <location filename="../src/mainwindow.cpp" line="1181"/>
         <source>View on block explorer</source>
-        <translation>Ver en el explorador de bloques</translation>
+        <translation>从区块浏览器中查看</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1127"/>
         <source>Migrate to Sapling</source>
-        <translation>Migrar a Sapling</translation>
+        <translation>迁移到Sapling地址</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1169"/>
         <source>Copy txid</source>
-        <translation>Copiar txid</translation>
+        <translation>复制交易ID</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1187"/>
         <source>View Payment Request</source>
-        <translation type="unfinished"></translation>
+        <translation>查看付款申请</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1194"/>
         <source>View Memo</source>
-        <translation>Ver Memo</translation>
+        <translation>查看备注</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1208"/>
         <source>Reply to </source>
-        <translation type="unfinished"></translation>
+        <translation>回复给 </translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1291"/>
         <source>Created new t-Addr</source>
-        <translation>Nuevo dirección t-Addr creada</translation>
+        <translation>创建了新的t-Addr</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1368"/>
         <source>Address has been previously used</source>
-        <translation type="unfinished"></translation>
+        <translation>该地址以前使用过</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1370"/>
         <source>Address is unused</source>
-        <translation type="unfinished"></translation>
+        <translation>地址未使用</translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="128"/>
         <source>Cannot support multiple addresses</source>
-        <translation type="unfinished"></translation>
+        <translation>不能支持多个地址</translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="129"/>
         <source>Recurring payments doesn&apos;t currently support multiple addresses</source>
-        <translation type="unfinished"></translation>
+        <translation>定期付款目前不支持多个地址</translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="239"/>
         <source>Recipient </source>
-        <translation>Destinatario </translation>
+        <translation>接收者 </translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="360"/>
         <source>Only z-addresses can have memos</source>
-        <translation>Solo las direcciones z-Addr pueden tener memos</translation>
+        <translation>只有 z-addresses 才能有备注</translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="368"/>
         <source>Memos can only be used with z-addresses</source>
-        <translation>Los memos solo se pueden usar con direcciones z-Addr</translation>
+        <translation>备注只能与z-addresses一起使用</translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="369"/>
         <source>The memo field can only be used with a z-address.
 </source>
-        <translation>El campo memo solo puede ser usado con una direccion z-Addr </translation>
+        <translation>备注字段只能与z-address一起使用。
+</translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="369"/>
         <source>
 doesn&apos;t look like a z-address</source>
-        <translation>no parece una direccion z-Addr</translation>
+        <translation>
+看起来不像是z-address</translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="548"/>
         <source>Change from </source>
-        <translation>Cambiar de </translation>
+        <translation>更改发送地址 </translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="722"/>
         <source>Current balance      : </source>
-        <translation type="unfinished"></translation>
+        <translation>当前余额      : </translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="724"/>
         <source>Balance after this Tx: </source>
-        <translation type="unfinished"></translation>
+        <translation>这次交易后余额： </translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="739"/>
         <source>Transaction Error</source>
-        <translation>Error de Transacción</translation>
+        <translation>交易错误</translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="802"/>
         <source>From Address is Invalid</source>
-        <translation>Dirección de envio inválida</translation>
+        <translation>发送地址无效</translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="807"/>
         <source>Recipient Address </source>
-        <translation>Dirección de Destinatario </translation>
+        <translation>接收地址 </translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="807"/>
         <source> is Invalid</source>
-        <translation> es Inválida</translation>
+        <translation> 无效</translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="813"/>
         <source>Amount &apos;%1&apos; is invalid!</source>
-        <translation type="unfinished"></translation>
+        <translation>转账金额 &apos;%1&apos; 无效!</translation>
     </message>
 </context>
 <context>
@@ -764,12 +758,12 @@ doesn&apos;t look like a z-address</source>
         <location filename="../src/memodialog.ui" line="14"/>
         <location filename="../src/memodialog.ui" line="43"/>
         <source>Memo</source>
-        <translation>Memo</translation>
+        <translation>备注</translation>
     </message>
     <message>
         <location filename="../src/memodialog.ui" line="52"/>
         <source>Include Reply Address</source>
-        <translation type="unfinished"></translation>
+        <translation>包含回复地址</translation>
     </message>
 </context>
 <context>
@@ -777,7 +771,7 @@ doesn&apos;t look like a z-address</source>
     <message>
         <location filename="../src/memoedit.cpp" line="51"/>
         <source>Reply to</source>
-        <translation type="unfinished"></translation>
+        <translation>回复</translation>
     </message>
 </context>
 <context>
@@ -785,32 +779,32 @@ doesn&apos;t look like a z-address</source>
     <message>
         <location filename="../src/migration.ui" line="14"/>
         <source>Migration Turnstile</source>
-        <translation type="unfinished"></translation>
+        <translation>迁移旋转门</translation>
     </message>
     <message>
         <location filename="../src/migration.ui" line="30"/>
         <source>Migration History</source>
-        <translation type="unfinished"></translation>
+        <translation>迁移历史记录</translation>
     </message>
     <message>
         <location filename="../src/migration.ui" line="36"/>
         <source>Migrated Amount</source>
-        <translation type="unfinished"></translation>
+        <translation>已迁移金额</translation>
     </message>
     <message>
         <location filename="../src/migration.ui" line="50"/>
         <source>Unmigrated Amount</source>
-        <translation type="unfinished"></translation>
+        <translation>未迁移金额</translation>
     </message>
     <message>
         <location filename="../src/migration.ui" line="74"/>
         <source>Sprout -&gt; Sapling migration enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprout  -&gt;Sapling 启用迁移</translation>
     </message>
     <message>
         <location filename="../src/migration.ui" line="81"/>
         <source>If enabled, zcashd will slowly migrate your Sprout shielded funds to your Sapling address. </source>
-        <translation type="unfinished"></translation>
+        <translation>如果启用，zcashd将慢慢将您的Sprout屏蔽资金迁移到您的Sapling地址。 </translation>
     </message>
 </context>
 <context>
@@ -818,7 +812,7 @@ doesn&apos;t look like a z-address</source>
     <message>
         <location filename="../src/turnstile.cpp" line="440"/>
         <source>Migration Txids</source>
-        <translation type="unfinished"></translation>
+        <translation>迁移交易ID</translation>
     </message>
 </context>
 <context>
@@ -826,60 +820,60 @@ doesn&apos;t look like a z-address</source>
     <message>
         <location filename="../src/mobileappconnector.ui" line="14"/>
         <source>Connect Mobile App</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mobileappconnector.ui" line="43"/>
-        <source>QR Code</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mobileappconnector.ui" line="49"/>
-        <source>Connection String</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mobileappconnector.ui" line="84"/>
-        <source>Allow connections over the internet via ZecWallet wormhole</source>
-        <translation type="unfinished"></translation>
+        <translation>连接手机App</translation>
     </message>
     <message>
         <location filename="../src/mobileappconnector.ui" line="36"/>
         <source>Scan this QRCode from your ZecWallet companion app to connect your phone</source>
-        <translation type="unfinished"></translation>
+        <translation>从您的ZecWallet配套应用程序扫描此二维码以连接您的手机</translation>
+    </message>
+    <message>
+        <location filename="../src/mobileappconnector.ui" line="43"/>
+        <source>QR Code</source>
+        <translation>二维码</translation>
+    </message>
+    <message>
+        <location filename="../src/mobileappconnector.ui" line="49"/>
+        <source>Connection String</source>
+        <translation>连接字符串</translation>
+    </message>
+    <message>
+        <location filename="../src/mobileappconnector.ui" line="84"/>
+        <source>Allow connections over the internet via ZecWallet wormhole</source>
+        <translation>允许通过ZecWallet虫洞连接互联网</translation>
     </message>
     <message>
         <location filename="../src/mobileappconnector.ui" line="94"/>
         <source>ZecWallet Companion App</source>
-        <translation type="unfinished"></translation>
+        <translation>ZecWallet配套App</translation>
     </message>
     <message>
         <location filename="../src/mobileappconnector.ui" line="106"/>
         <source>Disconnect</source>
-        <translation type="unfinished"></translation>
+        <translation>断开连接</translation>
     </message>
     <message>
         <location filename="../src/mobileappconnector.ui" line="126"/>
         <location filename="../src/mobileappconnector.ui" line="160"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>TextLabel</translation>
     </message>
     <message>
         <location filename="../src/mobileappconnector.ui" line="136"/>
         <source>Last seen:</source>
-        <translation type="unfinished"></translation>
+        <translation>上一次连接：</translation>
     </message>
     <message>
         <location filename="../src/mobileappconnector.ui" line="153"/>
         <source>Connection type:</source>
-        <translation type="unfinished"></translation>
+        <translation>连接类型：</translation>
     </message>
 </context>
 <context>
     <name>PrivKey</name>
     <message>
         <source>Private Key</source>
-        <translation type="vanished">Clave Privada</translation>
+        <translation type="vanished">私钥</translation>
     </message>
     <message>
         <location filename="../src/privkey.ui" line="14"/>
@@ -890,220 +884,94 @@ doesn&apos;t look like a z-address</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/rpc.cpp" line="388"/>
-        <location filename="../src/rpc.cpp" line="390"/>
-        <source>No Connection</source>
-        <translation>Sin Conexión</translation>
+        <location filename="../src/addressbook.cpp" line="110"/>
+        <source>Pick</source>
+        <translation>选择</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="641"/>
-        <source>Downloading blocks</source>
-        <translation>Descargando Bloques</translation>
+        <location filename="../src/addressbook.cpp" line="128"/>
+        <source>Address or Label Error</source>
+        <translation>地址或标签错误</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="652"/>
-        <source>Block height</source>
-        <translation>Altura del bloque</translation>
+        <location filename="../src/addressbook.cpp" line="129"/>
+        <source>Address or Label cannot be empty</source>
+        <translation>地址或标签不能为空</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="658"/>
-        <source>Syncing</source>
-        <translation>Sincronizando</translation>
+        <location filename="../src/addressbook.cpp" line="134"/>
+        <source>Address Format Error</source>
+        <translation>地址格式错误</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="658"/>
-        <source>Connected</source>
-        <translation>Conectando</translation>
+        <location filename="../src/addressbook.cpp" line="135"/>
+        <source>%1 doesn&apos;t seem to be a valid Zcash address.</source>
+        <translation>%1 似乎不是有效的Zcash地址。</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="660"/>
-        <source>testnet:</source>
-        <translation>testnet:</translation>
+        <location filename="../src/addressbook.cpp" line="143"/>
+        <source>Label Error</source>
+        <translation>标签错误</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="673"/>
-        <source>Connected to zcashd</source>
-        <translation>Conectando a zcashd</translation>
+        <location filename="../src/addressbook.cpp" line="144"/>
+        <source>The label &apos;%1&apos; already exists. Please remove the existing label.</source>
+        <translation>标签 &apos;%1&apos; 已存在。 请删除现有标签。</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="676"/>
-        <source>zcashd has no peer connections</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/addressbook.cpp" line="156"/>
+        <source>Import Address Book</source>
+        <translation>导入地址簿</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="695"/>
-        <source>There was an error connecting to zcashd. The error was</source>
-        <translation>Hubo un error al conectar con zcashd. El error fue</translation>
+        <location filename="../src/addressbook.cpp" line="163"/>
+        <source>Unable to open file</source>
+        <translation>无法打开文件</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="755"/>
-        <location filename="../src/sendtab.cpp" line="786"/>
-        <location filename="../src/turnstile.cpp" line="374"/>
-        <source>The transaction with id </source>
-        <translation>La transacción con id </translation>
+        <location filename="../src/addressbook.cpp" line="183"/>
+        <source>Address Book Import Done</source>
+        <translation>地址簿导入完成</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="755"/>
-        <location filename="../src/sendtab.cpp" line="786"/>
-        <location filename="../src/turnstile.cpp" line="374"/>
-        <source> failed. The error was</source>
-        <translation> falló. El error fue</translation>
+        <location filename="../src/addressbook.cpp" line="184"/>
+        <source>Imported %1 new Address book entries</source>
+        <translation>已导入 %1 个新地址簿条目</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="752"/>
-        <location filename="../src/recurring.cpp" line="525"/>
-        <location filename="../src/sendtab.cpp" line="783"/>
-        <location filename="../src/turnstile.cpp" line="371"/>
-        <source> Tx </source>
-        <translation> Tx</translation>
+        <location filename="../src/addressbook.cpp" line="224"/>
+        <source>Copy address</source>
+        <translation>复制地址</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="752"/>
-        <location filename="../src/recurring.cpp" line="525"/>
-        <location filename="../src/sendtab.cpp" line="783"/>
-        <location filename="../src/turnstile.cpp" line="371"/>
-        <source> failed</source>
-        <translation> falló</translation>
+        <location filename="../src/addressbook.cpp" line="226"/>
+        <source>Copied to clipboard</source>
+        <translation>复制到剪贴板</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="1032"/>
-        <source> tx computing. This can take several minutes.</source>
-        <translation>tx computando. Esto puede tomar varios minutos.</translation>
-    </message>
-    <message>
-        <location filename="../src/rpc.cpp" line="1081"/>
-        <source>Update Available</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/rpc.cpp" line="1082"/>
-        <source>A new release v%1 is available! You have v%2.
-
-Would you like to visit the releases page?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/rpc.cpp" line="1094"/>
-        <source>No updates available</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/rpc.cpp" line="1095"/>
-        <source>You already have the latest release v%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/rpc.cpp" line="1182"/>
-        <source>Please wait for ZecWallet to exit</source>
-        <translation>Por favor, espere que ZecWallet salga</translation>
-    </message>
-    <message>
-        <location filename="../src/rpc.cpp" line="1183"/>
-        <source>Waiting for zcashd to exit</source>
-        <translation>Esperando que zcashd salga</translation>
+        <location filename="../src/addressbook.cpp" line="229"/>
+        <source>Delete label</source>
+        <translation>删除标签</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="43"/>
         <source>Attempting autoconnect</source>
-        <translation>Intentando de autoconectarse</translation>
+        <translation>尝试自动连接</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="52"/>
         <source>Starting embedded zcashd</source>
-        <translation>Iniciando zcashd incorporado</translation>
+        <translation>启动内嵌的zcashd</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="62"/>
         <source>zcashd is set to run as daemon</source>
-        <translation>zcashd está configurado para ejecutarse como demonio</translation>
+        <translation>zcashd设置为作为守护进程运行</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="62"/>
         <source>Waiting for zcashd</source>
-        <translation>Esperando zcashd</translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="146"/>
-        <source>Hide Advanced Config</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="146"/>
-        <source>Show Advanced Config</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="159"/>
-        <source>Choose data directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="243"/>
-        <source>All Downloads Finished Successfully!</source>
-        <translation>Todas Las Descargas Terminaron Exitosamente!</translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="266"/>
-        <source>Couldn&apos;t download params. Please check the help site for more info.</source>
-        <translation>No se pudieron descargar los parámetros. Por favor, consulta el sitio de ayuda para mayor información.</translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="292"/>
-        <location filename="../src/connection.cpp" line="308"/>
-        <source>Downloading </source>
-        <translation>Descargando </translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="292"/>
-        <source> more remaining )</source>
-        <translation> faltan ))</translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="293"/>
-        <source>MB of </source>
-        <translation>MB de </translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="293"/>
-        <source>MB at </source>
-        <translation>MB a </translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="399"/>
-        <source>A manual connection was requested, but the settings are not configured.
-
-Please set the host/port and user/password in the Edit-&gt;Settings menu.</source>
-        <translation>Una conexión manual fue solicitada, pero el host/puerta no fue configurada.
-		Por favor, especificar el host/puerta y usario/contraseña en el menú Editar-&gt;Configuración.
-	</translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="411"/>
-        <source>Could not connect to zcashd configured in settings.
-
-Please set the host/port and user/password in the Edit-&gt;Settings menu.</source>
-        <translation>No su puede conectar a zcashd usando la configuración actual.
-
-Por favor, especificar el host/puerta y usario/contraseña en el menú Editar-&gt;Configuración.
-	</translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="504"/>
-        <source>This may take several hours</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="750"/>
-        <location filename="../src/mainwindow.cpp" line="757"/>
-        <location filename="../src/sendtab.cpp" line="795"/>
-        <location filename="../src/turnstile.cpp" line="376"/>
-        <source>Transaction Error</source>
-        <translation> Error De Transacción</translation>
-    </message>
-    <message>
-        <location filename="../src/connection.cpp" line="308"/>
-        <source> failed. Please check the help site for more info</source>
-        <translation> falló. Por favor, consulte el sitio de ayuda para más información</translation>
+        <translation>等待zcashd</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="77"/>
@@ -1111,8 +979,9 @@ Por favor, especificar el host/puerta y usario/contraseña en el menú Editar-&g
 
 .Please remove the following line from your zcash.conf and restart ZecWallet
 daemon=1</source>
-        <translation>Has configurado zcashd para ejecutar como demonio, lo que puede causar problemas con ZecWallet.
-Por favor, eliminar la siguente linea de zcashd.conf y reinicia ZecWallet
+        <translation>你已经将zcashd设置为守护进程启动，这可能会导致ZecWallet出现问题
+
+。请从zcash.conf中删除以下行并重新启动ZecWallet
 daemon=1</translation>
     </message>
     <message>
@@ -1124,226 +993,349 @@ Please try restarting.
 If you previously started zcashd with custom arguments, you might need to reset zcash.conf.
 
 If all else fails, please run zcashd manually.</source>
-        <translation>No se pudo iniciar zcashd incorporado.
-	
-Por favor, intenta reiniciar.
-		
-Si todo falla, por favor ejecutar zcashd manualmente.
-	</translation>
+        <translation>无法启动内嵌的zcashd。
+
+请尝试重新启动。
+
+如果您之前使用自定义参数启动了zcashd，则可能需要重置zcash.conf。
+
+如果所有其他方法都失败了，请手动运行zcashd。</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="85"/>
         <source>The process returned</source>
-        <translation>El proceso devuelto</translation>
+        <translation>该进程返回</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="93"/>
         <source>Couldn&apos;t connect to zcashd configured in zcash.conf.
 
 Not starting embedded zcashd because --no-embedded was passed</source>
-        <translation>No se pudo conectar con zcashd configurado en zcashd.conf.
-	
-No iniciaré zcashd incorporado porque la opcion --no-embedded fue dada.</translation>
+        <translation>无法连接到zcash.conf中配置的zcashd。
+
+没有启动内嵌的zcashd，因为已经传了--no-embedded参数</translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="146"/>
+        <source>Hide Advanced Config</source>
+        <translation>隐藏高级配置</translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="146"/>
+        <source>Show Advanced Config</source>
+        <translation>显示高级配置</translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="159"/>
+        <source>Choose data directory</source>
+        <translation>选择数据目录</translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="243"/>
+        <source>All Downloads Finished Successfully!</source>
+        <translation>所有下载成功完成！</translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="266"/>
+        <source>Couldn&apos;t download params. Please check the help site for more info.</source>
+        <translation>无法下载params。 请查看帮助网站以获取更多信息。</translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="292"/>
+        <location filename="../src/connection.cpp" line="308"/>
+        <source>Downloading </source>
+        <translation>下载 </translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="292"/>
+        <source> more remaining )</source>
+        <translation> 剩余）</translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="293"/>
+        <source>MB of </source>
+        <translation>MB of </translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="293"/>
+        <source>MB at </source>
+        <translation>MB at </translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="308"/>
+        <source> failed. Please check the help site for more info</source>
+        <translation> 失败。 请查看帮助网站以获取更多信息</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="332"/>
         <source>zcashd error</source>
-        <translation>error de zcashd</translation>
+        <translation>zcashd 出错</translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="399"/>
+        <source>A manual connection was requested, but the settings are not configured.
+
+Please set the host/port and user/password in the Edit-&gt;Settings menu.</source>
+        <translation>请求了手动连接，但未配置设置。
+
+请在编辑 - &gt;设置菜单中设置主机/端口和用户/密码。</translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="411"/>
+        <source>Could not connect to zcashd configured in settings.
+
+Please set the host/port and user/password in the Edit-&gt;Settings menu.</source>
+        <translation>无法连接到设置中配置的zcashd。
+
+请在编辑 - &gt;设置菜单中设置主机/端口和用户/密码。</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="472"/>
         <source>Authentication failed. The username / password you specified was not accepted by zcashd. Try changing it in the Edit-&gt;Settings menu</source>
-        <translation>Autenticación fallida. El usario/contraseña que epecificó no fue aceptado por zcashd. Intenta cambiarlo en el menu Editar-&gt;Configuración.</translation>
+        <translation>验证失败。 zcashd不接受您指定的用户名/密码。 请在编辑 - &gt;设置菜单中更改它</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="487"/>
         <source>Your zcashd is starting up. Please wait.</source>
-        <translation>Tu zcashd se está iniciando. Por favor espera.</translation>
+        <translation>你的zcashd正在启动。 请耐心等待。</translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="504"/>
+        <source>This may take several hours</source>
+        <translation>这可能需要几个小时</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="521"/>
         <location filename="../src/rpc.cpp" line="695"/>
         <source>Connection Error</source>
-        <translation>Error de conexión</translation>
+        <translation>连接错误</translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="750"/>
+        <location filename="../src/mainwindow.cpp" line="757"/>
+        <location filename="../src/sendtab.cpp" line="795"/>
+        <location filename="../src/turnstile.cpp" line="376"/>
+        <source>Transaction Error</source>
+        <translation>交易错误</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="750"/>
         <source>There was an error sending the transaction. The error was:</source>
-        <translation>Hubo un error al enviar la transacción. El error fue:</translation>
+        <translation>发送交易时出错。 错误是：</translation>
     </message>
     <message>
-        <location filename="../src/settings.cpp" line="235"/>
-        <source>Tx submitted (right click to copy) txid:</source>
-        <translation>Tx presentado (clic derecho para copiar) txid:</translation>
+        <location filename="../src/mainwindow.cpp" line="752"/>
+        <location filename="../src/recurring.cpp" line="525"/>
+        <location filename="../src/sendtab.cpp" line="783"/>
+        <location filename="../src/turnstile.cpp" line="371"/>
+        <source> Tx </source>
+        <translation> 交易 </translation>
     </message>
     <message>
-        <location filename="../src/turnstile.cpp" line="121"/>
-        <source>Locked funds</source>
-        <translation>Fondos bloqueados</translation>
+        <location filename="../src/mainwindow.cpp" line="752"/>
+        <location filename="../src/recurring.cpp" line="525"/>
+        <location filename="../src/sendtab.cpp" line="783"/>
+        <location filename="../src/turnstile.cpp" line="371"/>
+        <source> failed</source>
+        <translation> 失败</translation>
     </message>
     <message>
-        <location filename="../src/turnstile.cpp" line="122"/>
-        <source>Could not initiate migration.
-You either have unconfirmed funds or the balance is too low for an automatic migration.</source>
-        <translation>No se pudo iniciar la migración.
-El saldo es insuficiente para una migración automática.
-	</translation>
+        <location filename="../src/mainwindow.cpp" line="755"/>
+        <location filename="../src/sendtab.cpp" line="786"/>
+        <location filename="../src/turnstile.cpp" line="374"/>
+        <source>The transaction with id </source>
+        <translation>交易 </translation>
     </message>
     <message>
-        <location filename="../src/turnstile.cpp" line="364"/>
-        <source>Computing Tx: </source>
-        <translation>Calculando Tx: </translation>
-    </message>
-    <message>
-        <location filename="../src/txtablemodel.cpp" line="7"/>
-        <source>Type</source>
-        <translation>Tipo</translation>
-    </message>
-    <message>
-        <location filename="../src/txtablemodel.cpp" line="7"/>
-        <source>Address</source>
-        <translation>Dirección</translation>
-    </message>
-    <message>
-        <location filename="../src/txtablemodel.cpp" line="7"/>
-        <source>Date/Time</source>
-        <translation>Fecha/Hora</translation>
-    </message>
-    <message>
-        <location filename="../src/txtablemodel.cpp" line="7"/>
-        <source>Amount</source>
-        <translation>Monto</translation>
-    </message>
-    <message>
-        <location filename="../src/addressbook.cpp" line="110"/>
-        <source>Pick</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/addressbook.cpp" line="128"/>
-        <source>Address or Label Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/addressbook.cpp" line="129"/>
-        <source>Address or Label cannot be empty</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/addressbook.cpp" line="134"/>
-        <source>Address Format Error</source>
-        <translation>Error en el formato de la dirección.</translation>
-    </message>
-    <message>
-        <source> doesn&apos;t seem to be a valid Zcash address.</source>
-        <translation type="vanished">no parece ser una dirección Zcash válida</translation>
-    </message>
-    <message>
-        <location filename="../src/addressbook.cpp" line="135"/>
-        <source>%1 doesn&apos;t seem to be a valid Zcash address.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/addressbook.cpp" line="143"/>
-        <source>Label Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/addressbook.cpp" line="144"/>
-        <source>The label &apos;%1&apos; already exists. Please remove the existing label.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/addressbook.cpp" line="156"/>
-        <source>Import Address Book</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/addressbook.cpp" line="163"/>
-        <source>Unable to open file</source>
-        <translation type="unfinished">No es posible abrir el archivo</translation>
-    </message>
-    <message>
-        <location filename="../src/addressbook.cpp" line="183"/>
-        <source>Address Book Import Done</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/addressbook.cpp" line="184"/>
-        <source>Imported %1 new Address book entries</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/addressbook.cpp" line="224"/>
-        <source>Copy address</source>
-        <translation>Copiar dirección</translation>
-    </message>
-    <message>
-        <location filename="../src/addressbook.cpp" line="226"/>
-        <source>Copied to clipboard</source>
-        <translation>Copiado al portapapeles</translation>
-    </message>
-    <message>
-        <location filename="../src/addressbook.cpp" line="229"/>
-        <source>Delete label</source>
-        <translation>Eliminar etiqueta</translation>
-    </message>
-    <message>
-        <location filename="../src/websockets.cpp" line="356"/>
-        <source>Connected directly</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/websockets.cpp" line="359"/>
-        <source>Connected over the internet via ZecWallet wormhole service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/websockets.cpp" line="652"/>
-        <source>Node is still syncing.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/websockets.cpp" line="676"/>
-        <source>No sapling or transparent addresses with enough balance to spend.</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/mainwindow.cpp" line="755"/>
+        <location filename="../src/sendtab.cpp" line="786"/>
+        <location filename="../src/turnstile.cpp" line="374"/>
+        <source> failed. The error was</source>
+        <translation> 失败。 错误是</translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="469"/>
         <source>No ZEC price was available to convert from USD</source>
-        <translation type="unfinished"></translation>
+        <translation>ZEC的美元价格无法获取</translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="518"/>
         <source>Computing Recurring Tx: </source>
-        <translation type="unfinished"></translation>
+        <translation>计算重复交易： </translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="575"/>
         <location filename="../src/turnstile.cpp" line="409"/>
         <source>View on block explorer</source>
-        <translation type="unfinished">Ver en el explorador de bloques</translation>
+        <translation>在区块浏览器查看</translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="588"/>
         <source>View Error</source>
-        <translation type="unfinished"></translation>
+        <translation>查看错误</translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="589"/>
         <source>Reported Error</source>
-        <translation type="unfinished"></translation>
+        <translation>报告错误</translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="626"/>
         <location filename="../src/recurring.cpp" line="627"/>
         <source>Are you sure you want to delete the recurring payment?</source>
-        <translation type="unfinished"></translation>
+        <translation>您确定要删除定期付款吗？</translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="628"/>
         <source>All future payments will be cancelled.</source>
-        <translation type="unfinished"></translation>
+        <translation>所有未来的付款都将被取消。</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="388"/>
+        <location filename="../src/rpc.cpp" line="390"/>
+        <source>No Connection</source>
+        <translation>没有连接</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="641"/>
+        <source>Downloading blocks</source>
+        <translation>下载区块</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="652"/>
+        <source>Block height</source>
+        <translation>区块高度</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="658"/>
+        <source>Syncing</source>
+        <translation>同步中</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="658"/>
+        <source>Connected</source>
+        <translation>已连接</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="660"/>
+        <source>testnet:</source>
+        <translation>testnet:</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="673"/>
+        <source>Connected to zcashd</source>
+        <translation>连接到zcashd</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="676"/>
+        <source>zcashd has no peer connections</source>
+        <translation>zcashd没有节点可连接</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="695"/>
+        <source>There was an error connecting to zcashd. The error was</source>
+        <translation>连接到zcashd时出错。 错误是</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="1032"/>
+        <source> tx computing. This can take several minutes.</source>
+        <translation> 交易计算中。 这可能需要几分钟。</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="1081"/>
+        <source>Update Available</source>
+        <translation>可用更新</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="1082"/>
+        <source>A new release v%1 is available! You have v%2.
+
+Would you like to visit the releases page?</source>
+        <translation>新版本 v%1.可用！ 你有 v%2.
+
+您想访问发布页面吗？</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="1094"/>
+        <source>No updates available</source>
+        <translation>没有可用的更新</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="1095"/>
+        <source>You already have the latest release v%1</source>
+        <translation>您已拥有最新版本 v%1</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="1182"/>
+        <source>Please wait for ZecWallet to exit</source>
+        <translation>请等待ZecWallet退出</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="1183"/>
+        <source>Waiting for zcashd to exit</source>
+        <translation>等待zcashd退出</translation>
+    </message>
+    <message>
+        <location filename="../src/settings.cpp" line="235"/>
+        <source>Tx submitted (right click to copy) txid:</source>
+        <translation>交易提交（右键单击复制）交易ID:</translation>
+    </message>
+    <message>
+        <location filename="../src/turnstile.cpp" line="121"/>
+        <source>Locked funds</source>
+        <translation>锁定资金</translation>
+    </message>
+    <message>
+        <location filename="../src/turnstile.cpp" line="122"/>
+        <source>Could not initiate migration.
+You either have unconfirmed funds or the balance is too low for an automatic migration.</source>
+        <translation>无法启动迁移。
+您要么有未经证实的资金，要么余额太低，无法进行自动迁移。</translation>
+    </message>
+    <message>
+        <location filename="../src/turnstile.cpp" line="364"/>
+        <source>Computing Tx: </source>
+        <translation>计算交易： </translation>
+    </message>
+    <message>
+        <location filename="../src/txtablemodel.cpp" line="7"/>
+        <source>Type</source>
+        <translation>类型</translation>
+    </message>
+    <message>
+        <location filename="../src/txtablemodel.cpp" line="7"/>
+        <source>Address</source>
+        <translation>地址</translation>
+    </message>
+    <message>
+        <location filename="../src/txtablemodel.cpp" line="7"/>
+        <source>Date/Time</source>
+        <translation>日期/时间</translation>
+    </message>
+    <message>
+        <location filename="../src/txtablemodel.cpp" line="7"/>
+        <source>Amount</source>
+        <translation>金额</translation>
+    </message>
+    <message>
+        <location filename="../src/websockets.cpp" line="356"/>
+        <source>Connected directly</source>
+        <translation>直接连接</translation>
+    </message>
+    <message>
+        <location filename="../src/websockets.cpp" line="359"/>
+        <source>Connected over the internet via ZecWallet wormhole service</source>
+        <translation>通过ZecWallet虫洞服务连接互联网</translation>
+    </message>
+    <message>
+        <location filename="../src/websockets.cpp" line="652"/>
+        <source>Node is still syncing.</source>
+        <translation>节点仍在同步。</translation>
+    </message>
+    <message>
+        <location filename="../src/websockets.cpp" line="676"/>
+        <source>No sapling or transparent addresses with enough balance to spend.</source>
+        <translation>没有sapling或透明地址有足够的余额可以花费。</translation>
     </message>
 </context>
 <context>
@@ -1351,17 +1343,17 @@ El saldo es insuficiente para una migración automática.
     <message>
         <location filename="../src/recurringdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>对话框</translation>
     </message>
     <message>
         <location filename="../src/recurringdialog.ui" line="35"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>视图</translation>
     </message>
     <message>
         <location filename="../src/recurringdialog.ui" line="42"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>删除</translation>
     </message>
 </context>
 <context>
@@ -1369,37 +1361,37 @@ El saldo es insuficiente para una migración automática.
     <message>
         <location filename="../src/recurring.cpp" line="650"/>
         <source>Amount</source>
-        <translation type="unfinished">Monto</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="650"/>
         <source>Schedule</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="650"/>
         <source>Payments Left</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="651"/>
         <source>Next Payment</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="651"/>
         <source>To</source>
-        <translation type="unfinished">A</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="668"/>
         <source>Every </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="672"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1407,7 +1399,7 @@ El saldo es insuficiente para una migración automática.
     <message>
         <location filename="../src/recurringpayments.ui" line="14"/>
         <source>Payments</source>
-        <translation type="unfinished"></translation>
+        <translation>支付</translation>
     </message>
 </context>
 <context>
@@ -1415,48 +1407,48 @@ El saldo es insuficiente para una migración automática.
     <message>
         <location filename="../src/recurring.cpp" line="701"/>
         <source>Date</source>
-        <translation type="unfinished"></translation>
+        <translation>日期</translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="701"/>
         <source>Status</source>
-        <translation type="unfinished"></translation>
+        <translation>状态</translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="701"/>
         <source>Txid</source>
-        <translation type="unfinished"></translation>
+        <translation>交易ID</translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="721"/>
         <source>Not due yet</source>
-        <translation type="unfinished"></translation>
+        <translation>尚未到期</translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="722"/>
         <source>Pending</source>
-        <translation type="unfinished"></translation>
+        <translation>等待中</translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="723"/>
         <source>Skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>跳过</translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="724"/>
         <source>Paid</source>
-        <translation type="unfinished"></translation>
+        <translation>已支付</translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="725"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>错误</translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="726"/>
         <location filename="../src/recurring.cpp" line="727"/>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>未知状态</translation>
     </message>
 </context>
 <context>
@@ -1464,62 +1456,62 @@ El saldo es insuficiente para una migración automática.
     <message>
         <location filename="../src/recurringmultiple.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>对话框</translation>
     </message>
     <message>
         <location filename="../src/recurringmultiple.ui" line="20"/>
         <source>No payments will be processed. You can manually pay them from the Recurring Payments Dialog box</source>
-        <translation type="unfinished"></translation>
+        <translation>没有付款将被处理。您可以从“定期付款”对话框手动支付</translation>
     </message>
     <message>
         <location filename="../src/recurringmultiple.ui" line="37"/>
         <source>Schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>计划</translation>
     </message>
     <message>
         <location filename="../src/recurringmultiple.ui" line="44"/>
         <source>How should ZecWallet proceed?</source>
-        <translation type="unfinished"></translation>
+        <translation>ZecWallet应该如何处理？</translation>
     </message>
     <message>
         <location filename="../src/recurringmultiple.ui" line="51"/>
         <source>Pay All in 1 Tx</source>
-        <translation type="unfinished"></translation>
+        <translation>在一个交易中支付全部</translation>
     </message>
     <message>
         <location filename="../src/recurringmultiple.ui" line="58"/>
         <source>Only the latest pending payment will be processed. All previous pending payments will be skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>只会处理最新的待处理付款。 之前的所有待付款都将被跳过</translation>
     </message>
     <message>
         <location filename="../src/recurringmultiple.ui" line="68"/>
         <source>Pay Latest Only</source>
-        <translation type="unfinished"></translation>
+        <translation>仅支付最新费用</translation>
     </message>
     <message>
         <location filename="../src/recurringmultiple.ui" line="75"/>
         <source>Pay None</source>
-        <translation type="unfinished"></translation>
+        <translation>没有支付</translation>
     </message>
     <message>
         <location filename="../src/recurringmultiple.ui" line="96"/>
         <source>All pending payments collected, added up and paid in a single transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>所有待处理的付款都在一次交易中收集，累计和支付</translation>
     </message>
     <message>
         <location filename="../src/recurringmultiple.ui" line="116"/>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation>描述</translation>
     </message>
     <message>
         <location filename="../src/recurringmultiple.ui" line="123"/>
         <source>To</source>
-        <translation type="unfinished">A</translation>
+        <translation>发送到</translation>
     </message>
     <message>
         <location filename="../src/recurringmultiple.ui" line="137"/>
         <source>The following recurring payment has multiple payments pending</source>
-        <translation type="unfinished"></translation>
+        <translation>以下定期付款有多笔待付款</translation>
     </message>
 </context>
 <context>
@@ -1527,92 +1519,92 @@ El saldo es insuficiente para una migración automática.
     <message>
         <location filename="../src/requestdialog.ui" line="14"/>
         <source>Payment Request</source>
-        <translation type="unfinished"></translation>
+        <translation>付款请求</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.ui" line="38"/>
         <source>AddressBook</source>
-        <translation type="unfinished"></translation>
+        <translation>地址簿</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.ui" line="54"/>
         <source>Request From</source>
-        <translation type="unfinished"></translation>
+        <translation>请求来自</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.ui" line="61"/>
         <source>My Address</source>
-        <translation type="unfinished"></translation>
+        <translation>我的地址</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.ui" line="78"/>
         <source>Amount in </source>
-        <translation type="unfinished"></translation>
+        <translation>金额 </translation>
     </message>
     <message>
         <location filename="../src/requestdialog.ui" line="118"/>
         <source>z address</source>
-        <translation type="unfinished"></translation>
+        <translation>z address</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.ui" line="145"/>
         <source>Amount</source>
-        <translation type="unfinished">Monto</translation>
+        <translation>金额</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.ui" line="159"/>
         <source>The recipient will see this address in the &quot;to&quot; field when they pay your request.</source>
-        <translation type="unfinished"></translation>
+        <translation>支付者在付款时会在“接收者”字段中看到此地址。</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.ui" line="179"/>
         <source>Amount USD</source>
-        <translation type="unfinished"></translation>
+        <translation>金额 美元</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.ui" line="202"/>
         <source>Memo</source>
-        <translation type="unfinished">Memo</translation>
+        <translation>备注</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.ui" line="209"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>TextLabel</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.ui" line="219"/>
         <source>Request payment from a Sapling address. You&apos;ll send a ZEC 0.0001 transaction to the address with a zcash payment URI. The memo will be included in the transaction when the address pays you.</source>
-        <translation type="unfinished"></translation>
+        <translation>要求从树苗地址付款。 您将使用zcash支付URI将ZEC 0.0001交易发送到该地址。 当地址付款时，备注将包含在交易中。</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.cpp" line="50"/>
         <source>Error paying zcash URI</source>
-        <translation type="unfinished"></translation>
+        <translation>支付zcash URI时出错</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.cpp" line="51"/>
         <source>URI should be of the form &apos;zcash:&lt;addr&gt;?amt=x&amp;memo=y</source>
-        <translation type="unfinished"></translation>
+        <translation>URI的格式应为&apos;zcash:&lt;addr&gt;?amt=x&amp;memo=y‘</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.cpp" line="65"/>
         <source>Pay To</source>
-        <translation type="unfinished"></translation>
+        <translation>支付给</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.cpp" line="78"/>
         <source>Pay</source>
-        <translation type="unfinished"></translation>
+        <translation>支付</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.cpp" line="80"/>
         <source>You are paying a payment request. Your address will not be visible to the person requesting this payment.</source>
-        <translation type="unfinished"></translation>
+        <translation>您正在支付一个付款申请。 请求此付款的人员无法看到您的地址。</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.cpp" line="99"/>
         <source>Can only request from Sapling addresses</source>
-        <translation type="unfinished"></translation>
+        <translation>只能从Sapling地址请求</translation>
     </message>
 </context>
 <context>
@@ -1620,127 +1612,127 @@ El saldo es insuficiente para una migración automática.
     <message>
         <location filename="../src/settings.ui" line="20"/>
         <source>Settings</source>
-        <translation>Configuración</translation>
+        <translation>设置</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="33"/>
         <source>zcashd connection</source>
-        <translation>conexión zcashd</translation>
+        <translation>zcashd连接</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="62"/>
         <source>Host</source>
-        <translation>Host</translation>
+        <translation>主机</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="82"/>
         <source>Port</source>
-        <translation>Puerto</translation>
+        <translation>端口</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="102"/>
         <source>RPC Username</source>
-        <translation>Nombre de usario RPC</translation>
+        <translation>RPC用户名</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="118"/>
         <source>RPC Password</source>
-        <translation>Contraseña de RPC</translation>
+        <translation>RPC密码</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="145"/>
         <source>Options</source>
-        <translation>Opciones</translation>
-    </message>
-    <message>
-        <location filename="../src/settings.ui" line="184"/>
-        <source>Check github for updates at startup</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/settings.ui" line="256"/>
-        <source>Connect to the Tor network via SOCKS proxy running on 127.0.0.1:9050. Please note that you&apos;ll have to install and run the Tor service externally.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/settings.ui" line="232"/>
-        <source>Shielded transactions are saved locally and shown in the transactions tab.  If you uncheck this, shielded transactions will not appear in the transactions tab.</source>
-        <translation>Las transacciones protegidas se guardan localmente y se muestran en la pestaña de transacciones.  Si desactivas esto, las transacciones protegidas no aparecerán en la pestaña de transacciones.</translation>
+        <translation>选项</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="177"/>
         <source>Connect via Tor</source>
-        <translation type="unfinished"></translation>
+        <translation>通过Tor连接</translation>
     </message>
     <message>
-        <location filename="../src/settings.ui" line="266"/>
-        <source>Connect to github on startup to check for updates</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/settings.ui" line="273"/>
-        <source>Connect to the internet to fetch ZEC prices</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/settings.ui" line="280"/>
-        <source>Fetch ZEC / USD prices</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/settings.ui" line="288"/>
-        <source>Troubleshooting</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/settings.ui" line="294"/>
-        <source>Reindex</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/settings.ui" line="301"/>
-        <source>Rescan the blockchain for any missing wallet transactions and to correct your wallet balance. This may take several hours. You need to restart ZecWallet for this to take effect</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/settings.ui" line="311"/>
-        <source>Rescan</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/settings.ui" line="345"/>
-        <source>Rebuild the entire blockchain from the genesis block, by rescanning all the block files. This may take several hours to days, depending on your hardware. You need to restart ZecWallet for this to take effect</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/settings.ui" line="225"/>
-        <source>Clear History</source>
-        <translation>Borrar historial</translation>
+        <location filename="../src/settings.ui" line="184"/>
+        <source>Check github for updates at startup</source>
+        <translation>启动时检查github更新</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="198"/>
         <source>Remember shielded transactions</source>
-        <translation>Recuerde las transacciones protegidas</translation>
-    </message>
-    <message>
-        <location filename="../src/settings.ui" line="242"/>
-        <source>Allow custom fees</source>
-        <translation>Permitir tarifas personalizadas</translation>
-    </message>
-    <message>
-        <location filename="../src/settings.ui" line="215"/>
-        <source>Allow overriding the default fees when sending transactions. Enabling this option may compromise your privacy since fees are transparent. </source>
-        <translation>Permite utilizar tarifas no estándar al enviar transacciones. Habilitar esta opción puede reducir su privacidad porque las tarifas son transparentes. </translation>
+        <translation>记住隐蔽交易</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="205"/>
         <source>Normally, change from t-Addresses goes to another t-Address. Checking this option will send the change to your shielded sapling address instead. Check this option to increase your privacy.</source>
-        <translation>Normalmente, el vuelto de las t-Addr va a otra t-Addr. Al marcar esta opción, se enviará el vuelto a su dirección protegida. Marcar esta opción para aumentar tu privacidad.</translation>
+        <translation>通常，从t-Addresses发送到另一个t-Address。 选中此选项会将更改发送到屏蔽的树苗地址。 选中此选项可增加隐私。</translation>
+    </message>
+    <message>
+        <location filename="../src/settings.ui" line="215"/>
+        <source>Allow overriding the default fees when sending transactions. Enabling this option may compromise your privacy since fees are transparent. </source>
+        <translation>允许在发送交易时覆盖默认费用。由于费用是透明的，因此启用此选项可能会损害您的隐私。 </translation>
+    </message>
+    <message>
+        <location filename="../src/settings.ui" line="225"/>
+        <source>Clear History</source>
+        <translation>清空历史屏蔽交易</translation>
+    </message>
+    <message>
+        <location filename="../src/settings.ui" line="232"/>
+        <source>Shielded transactions are saved locally and shown in the transactions tab.  If you uncheck this, shielded transactions will not appear in the transactions tab.</source>
+        <translation>屏蔽交易在本地保存并显示在交易“选项”卡中。 如果取消选中此项，屏蔽的交易将不会显示在“交易”选项卡中。</translation>
+    </message>
+    <message>
+        <location filename="../src/settings.ui" line="242"/>
+        <source>Allow custom fees</source>
+        <translation>允许自定义费用</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="249"/>
         <source>Shield change from t-Addresses to your sapling address</source>
-        <translation>Proteger el vuelto de direcciones t-Addr a su direccion Sapling</translation>
+        <translation>屏蔽改变从t-Addresses到您的树苗地址</translation>
+    </message>
+    <message>
+        <location filename="../src/settings.ui" line="256"/>
+        <source>Connect to the Tor network via SOCKS proxy running on 127.0.0.1:9050. Please note that you&apos;ll have to install and run the Tor service externally.</source>
+        <translation>通过运行在127.0.0.1:9050上的SOCKS代理连接到Tor网络。 请注意，您必须在外部安装和运行Tor服务。</translation>
+    </message>
+    <message>
+        <location filename="../src/settings.ui" line="266"/>
+        <source>Connect to github on startup to check for updates</source>
+        <translation>在启动时连接到github以检查更新</translation>
+    </message>
+    <message>
+        <location filename="../src/settings.ui" line="273"/>
+        <source>Connect to the internet to fetch ZEC prices</source>
+        <translation>连接到互联网以获取ZEC价格</translation>
+    </message>
+    <message>
+        <location filename="../src/settings.ui" line="280"/>
+        <source>Fetch ZEC / USD prices</source>
+        <translation>获取 ZEC/USD 价格</translation>
+    </message>
+    <message>
+        <location filename="../src/settings.ui" line="288"/>
+        <source>Troubleshooting</source>
+        <translation>故障排除</translation>
+    </message>
+    <message>
+        <location filename="../src/settings.ui" line="294"/>
+        <source>Reindex</source>
+        <translation>重建索引</translation>
+    </message>
+    <message>
+        <location filename="../src/settings.ui" line="301"/>
+        <source>Rescan the blockchain for any missing wallet transactions and to correct your wallet balance. This may take several hours. You need to restart ZecWallet for this to take effect</source>
+        <translation>重新扫描区块链以查找任何丢失的钱包交易并更正您的钱包余额。 这可能需要几个小时。 您需要重新启动ZecWallet才能使其生效</translation>
+    </message>
+    <message>
+        <location filename="../src/settings.ui" line="311"/>
+        <source>Rescan</source>
+        <translation>重新扫描</translation>
+    </message>
+    <message>
+        <location filename="../src/settings.ui" line="345"/>
+        <source>Rebuild the entire blockchain from the genesis block, by rescanning all the block files. This may take several hours to days, depending on your hardware. You need to restart ZecWallet for this to take effect</source>
+        <translation>通过重新扫描所有区块文件，从创世块重建整个区块链。 这可能需要几个小时到几天，具体取决于您的硬件环境。 您需要重新启动ZecWallet才能使其生效</translation>
     </message>
 </context>
 <context>
@@ -1749,42 +1741,42 @@ El saldo es insuficiente para una migración automática.
         <location filename="../src/turnstile.ui" line="14"/>
         <location filename="../src/turnstile.ui" line="20"/>
         <source>Turnstile Migration</source>
-        <translation>Migración Turnstile</translation>
+        <translation>十字转门迁移</translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="44"/>
         <source>Migrate over</source>
-        <translation>Tiempo de migración</translation>
+        <translation>中间地址</translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="57"/>
         <source>From</source>
-        <translation>Desde</translation>
+        <translation>从</translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="90"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Funds from Sprout z-Addresses (which start with &amp;quot;zc&amp;quot;) need to be moved to the upgraded Sapling z-Addresses (which start with &amp;quot;zs&amp;quot;). The funds cannot be moved directly, but need to be sent through intermediate &amp;quot;transparent&amp;quot; addresses in privacy-preserving way.&lt;/p&gt;&lt;p&gt;This migration can be done automatically for you.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Fondos de direcciones z-Addr Sprout (que comienzan con &amp;quot;zc&amp;quot;) necesitan ser movidos a direcciones z-Addr Sapling (que comienzan con &amp;quot;zs&amp;quot;). Los fondos no pueden ser movidos directamente, deben enviarse a través de direcciones intermedias &amp;quot;transparentes&amp;quot; de manera que se mantenga la privacidad.&lt;/p&gt;&lt;p&gt;Esta migración se puede hacer automáticamente.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;来自Sprout z-Addresses（以“zc”开头）的资金需要被移动到升级的Sapling z-Addresses（以“zs”开头）。 资金不能直接转移，但需要以隐私保护的方式通过中间透明地址发送。&lt;/p&gt;&lt;p&gt;此迁移可以自动完成。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="106"/>
         <source>To</source>
-        <translation>A</translation>
+        <translation>迁移到</translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="123"/>
         <source>Balance</source>
-        <translation>Saldo</translation>
+        <translation>余额</translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="149"/>
         <source>Miner Fees</source>
-        <translation>Cuota Minera</translation>
+        <translation>矿工费</translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="172"/>
         <source>Total Balance</source>
-        <translation>Saldo Total</translation>
+        <translation>总余额</translation>
     </message>
 </context>
 <context>
@@ -1792,32 +1784,32 @@ El saldo es insuficiente para una migración automática.
     <message>
         <location filename="../src/turnstileprogress.ui" line="14"/>
         <source>Turnstile Migration Progress</source>
-        <translation>Progreso de la migracion Turnstile</translation>
+        <translation>十字转门迁移进度</translation>
     </message>
     <message>
         <location filename="../src/turnstileprogress.ui" line="20"/>
         <source>From</source>
-        <translation>Desde</translation>
+        <translation>从</translation>
     </message>
     <message>
         <location filename="../src/turnstileprogress.ui" line="27"/>
         <source>To</source>
-        <translation>A</translation>
+        <translation>发送到</translation>
     </message>
     <message>
         <location filename="../src/turnstileprogress.ui" line="57"/>
         <source>Please ensure you have your wallet.dat backed up!</source>
-        <translation>Por favor, asegúrese de tener una copia de seguridad de wallet.dat!</translation>
+        <translation>请确保你的wallet.dat已经备份！</translation>
     </message>
     <message>
         <location filename="../src/turnstileprogress.ui" line="67"/>
         <source>Next Transaction in 4 hours</source>
-        <translation>Siguente transacción en 4 horas</translation>
+        <translation>4小时后的下一笔交易</translation>
     </message>
     <message>
         <location filename="../src/turnstileprogress.ui" line="88"/>
         <source>Migration Progress</source>
-        <translation>Progreso de la migracion</translation>
+        <translation>迁移进度</translation>
     </message>
 </context>
 <context>
@@ -1825,7 +1817,7 @@ El saldo es insuficiente para una migración automática.
     <message>
         <location filename="../src/about.ui" line="14"/>
         <source>About</source>
-        <translation>Sobre</translation>
+        <translation>关于</translation>
     </message>
 </context>
 <context>
@@ -1833,32 +1825,32 @@ El saldo es insuficiente para una migración automática.
     <message>
         <location filename="../src/addressbook.ui" line="14"/>
         <source>Address Book</source>
-        <translation>Directorio</translation>
+        <translation>地址簿</translation>
     </message>
     <message>
         <location filename="../src/addressbook.ui" line="20"/>
         <source>Add New Address</source>
-        <translation>Agregar nueva dirección</translation>
+        <translation>添加新地址</translation>
     </message>
     <message>
         <location filename="../src/addressbook.ui" line="26"/>
         <source>Address (z-Addr or t-Addr)</source>
-        <translation>Dirección (z-Addr o t-Addr)</translation>
+        <translation>地址 (z-Addr or t-Addr)</translation>
     </message>
     <message>
         <location filename="../src/addressbook.ui" line="36"/>
         <source>Label</source>
-        <translation>Etiqueta</translation>
+        <translation>标签</translation>
     </message>
     <message>
         <location filename="../src/addressbook.ui" line="65"/>
         <source>Add to Address Book</source>
-        <translation>Agregar a Directorio</translation>
+        <translation>添加到地址薄</translation>
     </message>
     <message>
         <location filename="../src/addressbook.ui" line="95"/>
         <source>Import Address Book</source>
-        <translation type="unfinished"></translation>
+        <translation>导入地址簿</translation>
     </message>
 </context>
 <context>
@@ -1866,42 +1858,42 @@ El saldo es insuficiente para una migración automática.
     <message>
         <location filename="../src/confirm.ui" line="14"/>
         <source>Confirm Transaction</source>
-        <translation>Confirmar Transacción</translation>
+        <translation>确认交易</translation>
     </message>
     <message>
         <location filename="../src/confirm.ui" line="20"/>
         <source>From</source>
-        <translation>Desde</translation>
+        <translation>从</translation>
     </message>
     <message>
         <location filename="../src/confirm.ui" line="39"/>
         <source>To</source>
-        <translation>A</translation>
+        <translation>发送到</translation>
     </message>
     <message>
         <location filename="../src/confirm.ui" line="151"/>
         <source>Recurring Payment</source>
-        <translation type="unfinished"></translation>
+        <translation>重复付款</translation>
     </message>
     <message>
         <location filename="../src/confirm.ui" line="157"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>TextLabel</translation>
     </message>
     <message>
         <location filename="../src/confirm.ui" line="183"/>
         <source>zcashd doesn&apos;t seem to have any peers. You might not be connected to the internet, so this transaction might not work.</source>
-        <translation type="unfinished"></translation>
+        <translation>zcashd似乎没有任何可连接的节点。 您可能没有连接到互联网，因此此交易可能无效。</translation>
     </message>
     <message>
         <location filename="../src/confirm.ui" line="196"/>
         <source>You are sending a transaction while your node is still syncing. This may not work.</source>
-        <translation>Estás enviando una transacción mientras su nodo aún se esta sincronizando. Esto puede no funcionar.</translation>
+        <translation>您在节点仍在同步时发送交易， 这可能发送不成功。</translation>
     </message>
     <message>
         <location filename="../src/confirm.ui" line="209"/>
         <source>You are using a custom fee. Since fees are transparent, you are giving up some privacy. Please use this only if you know what you are doing!</source>
-        <translation>Estás utilizando una tarifa personalizada. Como las tarifas son transparentes estás perdiendo algo de privacidad. Por favor, solo haz esto si sabes lo que estás haciendo!</translation>
+        <translation>您使用的是自定义费用。 由于费用是透明的，您放弃了一些隐私。 只有在你知道自己在做什么的情况下才能使用它！</translation>
     </message>
 </context>
 <context>
@@ -1909,62 +1901,62 @@ El saldo es insuficiente para una migración automática.
     <message>
         <location filename="../src/createzcashconfdialog.ui" line="14"/>
         <source>Configure zcash.conf</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/createzcashconfdialog.ui" line="42"/>
-        <source>Show Advanced Configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>配置 zcash.conf</translation>
     </message>
     <message>
         <location filename="../src/createzcashconfdialog.ui" line="20"/>
         <source>Your zcash node will be configured for you automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>您的zcash节点将自动为您配置</translation>
     </message>
     <message>
         <location filename="../src/createzcashconfdialog.ui" line="30"/>
         <source>Enable Fast Sync</source>
-        <translation type="unfinished"></translation>
+        <translation>启用快速同步</translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="42"/>
+        <source>Show Advanced Configuration</source>
+        <translation>显示高级配置</translation>
     </message>
     <message>
         <location filename="../src/createzcashconfdialog.ui" line="112"/>
         <source>Allow connections to the internet to check for updates, get ZEC/USD prices etc...</source>
-        <translation type="unfinished"></translation>
+        <translation>允许连接到互联网检查更新，获得ZEC/USD价格等…</translation>
     </message>
     <message>
         <location filename="../src/createzcashconfdialog.ui" line="119"/>
         <source>Use custom datadir</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/createzcashconfdialog.ui" line="164"/>
-        <source>Connect to the internet for updates and price feeds</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/createzcashconfdialog.ui" line="174"/>
-        <source>Please choose a directory to store your wallet.dat and blockchain</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/createzcashconfdialog.ui" line="205"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Skips the most expensive checks during the initial block download. &lt;a href=&quot;https://docs.zecwallet.co/using-zecwallet/#fastsync&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Learn More&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>使用自定义datadir</translation>
     </message>
     <message>
         <location filename="../src/createzcashconfdialog.ui" line="128"/>
         <source>Choose directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/createzcashconfdialog.ui" line="181"/>
-        <source>Connect over Tor</source>
-        <translation type="unfinished"></translation>
+        <translation>选择目录</translation>
     </message>
     <message>
         <location filename="../src/createzcashconfdialog.ui" line="157"/>
         <source>Please note that you&apos;ll need to already have a Tor service configured on port 9050</source>
-        <translation type="unfinished"></translation>
+        <translation>请注意，您需要在端口9050上已经配置了Tor服务</translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="164"/>
+        <source>Connect to the internet for updates and price feeds</source>
+        <translation>连接到internet获取更新和价格数据</translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="174"/>
+        <source>Please choose a directory to store your wallet.dat and blockchain</source>
+        <translation>请选择一个目录来存储您的wallet.dat和区块链数据</translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="181"/>
+        <source>Connect over Tor</source>
+        <translation>连接到Tor</translation>
+    </message>
+    <message>
+        <location filename="../src/createzcashconfdialog.ui" line="205"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Skips the most expensive checks during the initial block download. &lt;a href=&quot;https://docs.zecwallet.co/using-zecwallet/#fastsync&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Learn More&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;在初始块下载期间跳过了最费时的检查。 &lt;a href=&quot;https://docs.zecwallet.co/using-zecwallet/#fastsync&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;了解更多&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -1972,47 +1964,47 @@ El saldo es insuficiente para una migración automática.
     <message>
         <location filename="../src/newrecurring.ui" line="14"/>
         <source>Edit Schedule</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/newrecurring.ui" line="54"/>
-        <source>Schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑计划</translation>
     </message>
     <message>
         <location filename="../src/newrecurring.ui" line="20"/>
         <source>Payment Description</source>
-        <translation type="unfinished"></translation>
+        <translation>付款说明</translation>
     </message>
     <message>
-        <location filename="../src/newrecurring.ui" line="142"/>
-        <source>From</source>
-        <translation type="unfinished">Desde</translation>
-    </message>
-    <message>
-        <location filename="../src/newrecurring.ui" line="166"/>
-        <source>Number of payments</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/newrecurring.ui" line="75"/>
-        <source>Amount</source>
-        <translation type="unfinished">Monto</translation>
+        <location filename="../src/newrecurring.ui" line="54"/>
+        <source>Schedule</source>
+        <translation>计划</translation>
     </message>
     <message>
         <location filename="../src/newrecurring.ui" line="68"/>
         <source>Next Payment</source>
-        <translation type="unfinished"></translation>
+        <translation>下一次付款</translation>
     </message>
     <message>
-        <location filename="../src/newrecurring.ui" line="135"/>
-        <source>To</source>
-        <translation type="unfinished">A</translation>
+        <location filename="../src/newrecurring.ui" line="75"/>
+        <source>Amount</source>
+        <translation>金额</translation>
     </message>
     <message>
         <location filename="../src/newrecurring.ui" line="121"/>
         <source>Memo</source>
-        <translation type="unfinished">Memo</translation>
+        <translation>备注</translation>
+    </message>
+    <message>
+        <location filename="../src/newrecurring.ui" line="135"/>
+        <source>To</source>
+        <translation>发送给</translation>
+    </message>
+    <message>
+        <location filename="../src/newrecurring.ui" line="142"/>
+        <source>From</source>
+        <translation>从</translation>
+    </message>
+    <message>
+        <location filename="../src/newrecurring.ui" line="166"/>
+        <source>Number of payments</source>
+        <translation>支付次数</translation>
     </message>
 </context>
 <context>
@@ -2020,47 +2012,47 @@ El saldo es insuficiente para una migración automática.
     <message>
         <location filename="../src/zboard.ui" line="14"/>
         <source>Post to z-board.net</source>
-        <translation>Publicar en z-board.net</translation>
+        <translation>发布到z-board.net</translation>
     </message>
     <message>
         <location filename="../src/zboard.ui" line="20"/>
         <source>Total Fee</source>
-        <translation>Costo Total</translation>
+        <translation>总费用</translation>
     </message>
     <message>
         <location filename="../src/zboard.ui" line="57"/>
         <source>Memo</source>
-        <translation>Memo</translation>
+        <translation>备注</translation>
     </message>
     <message>
         <location filename="../src/zboard.ui" line="64"/>
         <source>(optional)</source>
-        <translation>(opcional)</translation>
+        <translation>(可选)</translation>
     </message>
     <message>
         <location filename="../src/zboard.ui" line="71"/>
         <source>Send From</source>
-        <translation>Enviado desde</translation>
+        <translation>发送来自</translation>
     </message>
     <message>
         <location filename="../src/zboard.ui" line="78"/>
         <source>Post As:</source>
-        <translation>Publicar Como:</translation>
+        <translation>发布为：</translation>
     </message>
     <message>
         <location filename="../src/zboard.ui" line="85"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ZBoard: Fully anonymous and untraceable chat messages based on the ZCash blockchain. &lt;a href=&quot;http://www.z-board.net/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://www.z-board.net/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ZBoard: Mensajes de chat totalmente anónimos e imposibles de rastrear basados en la cadena de bloques Zcash. &lt;a href=&quot;http://www.z-board.net/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://www.z-board.net/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ZBoard：基于ZCash区块链的完全匿名且无法追踪的聊天消息。 &lt;a href=&quot;http://www.z-board.net/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://www.z-board.net/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/zboard.ui" line="107"/>
         <source>Warning</source>
-        <translation>Advertencia</translation>
+        <translation>警告</translation>
     </message>
     <message>
         <location filename="../src/zboard.ui" line="124"/>
         <source>Posting to Board</source>
-        <translation>Publicar en ZBoard</translation>
+        <translation>发布到Board</translation>
     </message>
 </context>
 </TS>

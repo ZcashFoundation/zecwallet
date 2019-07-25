@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "addressbook.h"
+#include "viewalladdresses.h"
+#include "validateaddress.h"
 #include "ui_mainwindow.h"
 #include "ui_mobileappconnector.h"
 #include "ui_addressbook.h"
@@ -9,6 +11,8 @@
 #include "ui_settings.h"
 #include "ui_turnstile.h"
 #include "ui_turnstileprogress.h"
+#include "ui_viewalladdresses.h"
+#include "ui_validateaddress.h"
 #include "rpc.h"
 #include "balancestablemodel.h"
 #include "settings.h"
@@ -37,12 +41,17 @@ MainWindow::MainWindow(QWidget *parent) :
     // Set up exit action
     QObject::connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
 
-    // Set up feedback action
+    // Set up donate action
     QObject::connect(ui->actionDonate, &QAction::triggered, this, &MainWindow::donate);
 
     QObject::connect(ui->actionDiscord, &QAction::triggered, this, &MainWindow::discord);
 
     QObject::connect(ui->actionWebsite, &QAction::triggered, this, &MainWindow::website);
+
+    // File a bug
+    QObject::connect(ui->actionFile_a_bug, &QAction::triggered, [=]() {
+        QDesktopServices::openUrl(QUrl("https://github.com/Fair-Exchange/safecoinwallet/issues/new"));
+    });
 
     // Set up check for updates action
     QObject::connect(ui->actionCheck_for_Updates, &QAction::triggered, [=] () {
@@ -50,12 +59,17 @@ MainWindow::MainWindow(QWidget *parent) :
         rpc->checkForUpdate(false);
     });
 
+    // Recurring payments 
+    QObject::connect(ui->action_Recurring_Payments, &QAction::triggered, [=]() {
+        Recurring::getInstance()->showRecurringDialog(this);
+    });
+
     // Request safecoin
     QObject::connect(ui->actionRequest_zcash, &QAction::triggered, [=]() {
         RequestDialog::showRequestZcash(this);
     });
 
-    // Pay Zcash URI
+    // Pay Safecoin URI
     QObject::connect(ui->actionPay_URI, &QAction::triggered, [=] () {
         payZcashURI();
     });
@@ -74,6 +88,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // z-Board.net
     QObject::connect(ui->actionz_board_net, &QAction::triggered, this, &MainWindow::postToZBoard);
+
+    // Validate Address
+    QObject::connect(ui->actionValidate_Address, &QAction::triggered, this, &MainWindow::validateAddress);
 
     // Connect mobile app
     QObject::connect(ui->actionConnect_Mobile_App, &QAction::triggered, this, [=] () {
@@ -102,14 +119,13 @@ MainWindow::MainWindow(QWidget *parent) :
     // Initialize to the balances tab
     ui->tabWidget->setCurrentIndex(0);
 
-    // The zcashd tab is hidden by default, and only later added in if the embedded zcashd is started
-    //zcashdtab = ui->tabWidget->widget(4);
-    //ui->tabWidget->removeTab(4);
-    // TODO: setting to decide whether to auto-close embedded safecoind when closing SafecoinWallet
+    // The safecoind tab is hidden by default, and only later added in if the embedded safecoind is started
+    zcashdtab = ui->tabWidget->widget(4);
+    ui->tabWidget->removeTab(4);
 
     setupSendTab();
     setupTransactionsTab();
-    setupRecieveTab();
+    setupReceiveTab();
     setupBalancesTab();
     setupTurnstileDialog();
     setupZcashdTab();
@@ -165,6 +181,11 @@ void MainWindow::restoreSavedStates() {
 
     ui->balancesTable->horizontalHeader()->restoreState(s.value("baltablegeometry").toByteArray());
     ui->transactionsTable->horizontalHeader()->restoreState(s.value("tratablegeometry").toByteArray());
+
+    // Explicitly set the tx table resize headers, since some previous values may have made them
+    // non-expandable.
+    ui->transactionsTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Interactive);
+    ui->transactionsTable->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
 }
 
 void MainWindow::doClose() {
@@ -268,8 +289,10 @@ void MainWindow::turnstileProgress() {
 
 void MainWindow::turnstileDoMigration(QString fromAddr) {
     // Return if there is no connection
-    if (rpc->getAllZAddresses() == nullptr)
+    if (rpc->getAllZAddresses() == nullptr || rpc->getAllBalances() == nullptr) {
+        QMessageBox::information(this, tr("Not yet ready"), tr("safecoind is not yet ready. Please wait for the UI to load"), QMessageBox::Ok);
         return;
+    }
 
     // If a migration is already in progress, show the progress dialog instead
     if (rpc->getTurnstile()->isMigrationPresent()) {
@@ -288,7 +311,7 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
     auto fnGetAllSproutBalance = [=] () {
         double bal = 0;
         for (auto addr : *rpc->getAllZAddresses()) {
-            if (Settings::getInstance()->isSproutAddress(addr)) {
+            if (Settings::getInstance()->isSproutAddress(addr) && rpc->getAllBalances()) {
                 bal += rpc->getAllBalances()->value(addr);
             }
         }
@@ -381,11 +404,19 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
 void MainWindow::setupTurnstileDialog() {        
     // Turnstile migration
     QObject::connect(ui->actionTurnstile_Migration, &QAction::triggered, [=] () {
-        // If there is current migration that is present, show the progress button
-        if (rpc->getTurnstile()->isMigrationPresent())
-            turnstileProgress();
-        else    
-            turnstileDoMigration();        
+        // If the underlying safecoind has support for the migration and there is no existing migration
+        // in progress, use that.         
+        if (rpc->getMigrationStatus()->available && !rpc->getTurnstile()->isMigrationPresent()) {
+            Turnstile::showZcashdMigration(this);
+        } else {
+            // Else, show the SafecoinWallet turnstile tool
+
+            // If there is current migration that is present, show the progress button
+            if (rpc->getTurnstile()->isMigrationPresent())
+                turnstileProgress();
+            else    
+                turnstileDoMigration();        
+        }
     });
 
 }
@@ -410,22 +441,15 @@ void MainWindow::setupStatusBar() {
 
         if (!msg.isEmpty() && msg.startsWith(Settings::txidStatusMessage)) {
             auto txid = msg.split(":")[1].trimmed();
-            menu.addAction("Copy txid", [=]() {
+            menu.addAction(tr("Copy txid"), [=]() {
                 QGuiApplication::clipboard()->setText(txid);
             });
-            menu.addAction("View tx on block explorer", [=]() {
-                QString url;
-                if (Settings::getInstance()->isTestnet()) {
-                    url = "https://testnet.safecoin.org/tx/" + txid;
-                }
-                else {
-                    url = "https://explorer.safecoin.org/tx/" + txid;
-                }
-                QDesktopServices::openUrl(QUrl(url));
+            menu.addAction(tr("View tx on block explorer"), [=]() {
+                Settings::openTxInExplorer(txid);
             });
         }
 
-        menu.addAction("Refresh", [=]() {
+        menu.addAction(tr("Refresh"), [=]() {
             rpc->refresh(true);
         });
         QPoint gpos(mapToGlobal(pos).x(), mapToGlobal(pos).y() + this->height() - ui->statusBar->height());
@@ -472,6 +496,12 @@ void MainWindow::setupSettingsModal() {
         // Auto shielding
         settings.chkAutoShield->setChecked(Settings::getInstance()->getAutoShield());
 
+        // Check for updates
+        settings.chkCheckUpdates->setChecked(Settings::getInstance()->getCheckForUpdates());
+
+        // Fetch prices
+        settings.chkFetchPrices->setChecked(Settings::getInstance()->getAllowFetchPrices());
+
         // Use Tor
         bool isUsingTor = false;
         if (rpc->getConnection() != nullptr) {
@@ -498,7 +528,8 @@ void MainWindow::setupSettingsModal() {
             settings.port->setEnabled(false);
             settings.rpcuser->setEnabled(false);
             settings.rpcpassword->setEnabled(false);
-        } else {
+        }
+        else {
             settings.confMsg->setText("No local safecoin.conf found. Please configure connection manually.");
             settings.hostname->setEnabled(true);
             settings.port->setEnabled(true);
@@ -535,6 +566,12 @@ void MainWindow::setupSettingsModal() {
 
             // Auto shield
             Settings::getInstance()->setAutoShield(settings.chkAutoShield->isChecked());
+
+            // Check for updates
+            Settings::getInstance()->setCheckForUpdates(settings.chkCheckUpdates->isChecked());
+
+            // Allow fetching prices
+            Settings::getInstance()->setAllowFetchPrices(settings.chkFetchPrices->isChecked());
 
             if (!isUsingTor && settings.chkTor->isChecked()) {
                 // If "use tor" was previously unchecked and now checked
@@ -614,20 +651,65 @@ void MainWindow::website() {
     QDesktopServices::openUrl(QUrl(url));
 }
 
-void MainWindow::donate() {
-    removeExtraAddresses();
 
-    ui->Address1->setText(Settings::getDonationAddr(true));
+void MainWindow::donate() {
+    // Set up a donation to me :)
+    clearSendForm();
+
+    ui->Address1->setText(Settings::getDonationAddr(
+                            Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText("0.00");
-    ui->MemoTxt1->setText(tr("Some feedback about SafecoinWallet or Safecoin..."));
+    ui->MemoTxt1->setText(tr("Some feedback about SafecoinWallet or Safecoin...!"));
 
-    ui->statusBar->showMessage(tr("Send OleksandrBlack some private and shielded feedback about ") % Settings::getTokenName() % tr(" or SafecoinWallet"));
+    ui->statusBar->showMessage(tr("Send OleksandrBlack feedback about ") % Settings::getTokenName() % tr(" or SafecoinWallet"));
 
     // And switch to the send tab.
     ui->tabWidget->setCurrentIndex(1);
 }
 
+/**
+ * Validate an address
+ */
+void MainWindow::validateAddress() {
+    // Make sure everything is up and running
+    if (!getRPC() || !getRPC()->getConnection())
+        return;
+
+    // First thing is ask the user for an address
+    bool ok;
+    auto address = QInputDialog::getText(this, tr("Enter Address to validate"), 
+        tr("Transparent or Shielded Address:") + QString(" ").repeated(140),    // Pad the label so the dialog box is wide enough
+        QLineEdit::Normal, "", &ok);
+    if (!ok)
+        return;
+
+    getRPC()->validateAddress(address, [=] (json props) {
+        QDialog d(this);
+        Ui_ValidateAddress va;
+        va.setupUi(&d);
+        Settings::saveRestore(&d);
+        Settings::saveRestoreTableHeader(va.tblProps, &d, "validateaddressprops");
+        va.tblProps->horizontalHeader()->setStretchLastSection(true);
+
+        va.lblAddress->setText(address);
+
+        QList<QPair<QString, QString>> propsList;
+        for (auto it = props.begin(); it != props.end(); it++) {
+
+            propsList.append(
+                QPair<QString, QString>(
+                    QString::fromStdString(it.key()), QString::fromStdString(it.value().dump()))
+            );
+        }
+
+        ValidateAddressesModel model(va.tblProps, propsList);
+        va.tblProps->setModel(&model);
+
+        d.exec();
+    });
+
+}
 
 void MainWindow::postToZBoard() {
     QDialog d(this);
@@ -789,6 +871,8 @@ void MainWindow::balancesReady() {
         pendingURIPayment = "";
     }
 
+    // Execute any pending Recurring payments
+    Recurring::getInstance()->processPending(this);
 }
 
 // Event filter for MacOS specific handling of payment URIs
@@ -805,12 +889,12 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
 }
 
 
-// Pay the Zcash URI by showing a confirmation window. If the URI parameter is empty, the UI
+// Pay the Safecoin URI by showing a confirmation window. If the URI parameter is empty, the UI
 // will prompt for one. If the myAddr is empty, then the default from address is used to send
 // the transaction.
 void MainWindow::payZcashURI(QString uri, QString myAddr) {
     // If the Payments UI is not ready (i.e, all balances have not loaded), defer the payment URI
-    if (!uiPaymentsReady) {
+    if (!isPaymentsReady()) {
         qDebug() << "Payment UI not ready, waiting for UI to pay URI";
         pendingURIPayment = uri;
         return;
@@ -827,16 +911,17 @@ void MainWindow::payZcashURI(QString uri, QString myAddr) {
         return;
 
     // Extract the address
-    qDebug() << "Recieved URI " << uri;
+    qDebug() << "Received URI " << uri;
     PaymentURI paymentInfo = Settings::parseURI(uri);
     if (!paymentInfo.error.isEmpty()) {
-        QMessageBox::critical(this, tr("Error paying pirate URI"), 
+        QMessageBox::critical(this, tr("Error paying safecoin URI"), 
                 tr("URI should be of the form 'safecoin:<addr>?amt=x&memo=y") + "\n" + paymentInfo.error);
         return;
     }
 
     // Now, set the fields on the send tab
-    removeExtraAddresses();
+    clearSendForm();
+
     if (!myAddr.isEmpty()) {
         ui->inputsCombo->setCurrentText(myAddr);
     }
@@ -866,8 +951,8 @@ void MainWindow::importPrivKey() {
 
     pui.buttonBox->button(QDialogButtonBox::Save)->setVisible(false);
     pui.helpLbl->setText(QString() %
-                        tr("Please paste your private keys here, one per line") % ".\n" %
-                        tr("The keys will be imported into your connected Safecoin node"));  
+                        tr("Please paste your private keys (z-Addr or t-Addr) here, one per line") % ".\n" %
+                        tr("The keys will be imported into your connected safecoind node"));  
 
     if (d.exec() == QDialog::Accepted && !pui.privKeyTxt->toPlainText().trimmed().isEmpty()) {
         auto rawkeys = pui.privKeyTxt->toPlainText().trimmed().split("\n");
@@ -888,7 +973,7 @@ void MainWindow::importPrivKey() {
 
         // Show the dialog that keys will be imported. 
         QMessageBox::information(this,
-            "Imported", tr("The keys were imported! It may take several minutes to rescan the blockchain. Until then, functionality may be limited"),
+            "Imported", tr("The keys were imported. It may take several minutes to rescan the blockchain. Until then, functionality may be limited"),
             QMessageBox::Ok);
     }
 }
@@ -963,7 +1048,7 @@ void MainWindow::exportKeys(QString addr) {
 
     Settings::saveRestore(&d);
 
-    pui.privKeyTxt->setPlainText(tr("Loading..."));
+    pui.privKeyTxt->setPlainText(tr("This might take several minutes. Loading..."));
     pui.privKeyTxt->setReadOnly(true);
     pui.privKeyTxt->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
 
@@ -1029,6 +1114,8 @@ void MainWindow::exportKeys(QString addr) {
 
 void MainWindow::setupBalancesTab() {
     ui->unconfirmedWarning->setVisible(false);
+    ui->lblSyncWarning->setVisible(false);
+    ui->lblSyncWarningReceive->setVisible(false);
 
     // Double click on balances table
     auto fnDoSendFrom = [=](const QString& addr, const QString& to = QString(), bool sendMax = false) {
@@ -1044,7 +1131,7 @@ void MainWindow::setupBalancesTab() {
         // If there's a to address, add that as well
         if (!to.isEmpty()) {
             // Remember to clear any existing address fields, because we are creating a new transaction.
-            this->removeExtraAddresses();
+            this->clearSendForm();
             ui->Address1->setText(to);
         }
 
@@ -1091,7 +1178,7 @@ void MainWindow::setupBalancesTab() {
             fnDoSendFrom(addr);
         });
 
-        if (addr.startsWith("R")) {
+        if (Settings::isTAddress(addr)) {
             auto defaultSapling = rpc->getDefaultSaplingAddress();
             if (!defaultSapling.isEmpty()) {
                 menu.addAction(tr("Shield balance to Sapling"), [=] () {
@@ -1100,31 +1187,10 @@ void MainWindow::setupBalancesTab() {
             }
 
             menu.addAction(tr("View on block explorer"), [=] () {
-                QString url;
-                if (Settings::getInstance()->isTestnet()) {
-                    //TODO
-                    url = "https://testnet.safecoin.org/address/" + addr;
-                } else {
-                    url = "https://explorer.safecoin.org/address/" + addr;
-                }
-                QDesktopServices::openUrl(QUrl(url));
+                Settings::openAddressInExplorer(addr);
             });
-
-/*            menu.addAction(tr("Address Asset Viewer"), [=] () {
-                QString url;
-                url = "https://dexstats.info/assetviewer.php?address=" + addr;
-                QDesktopServices::openUrl(QUrl(url));
-            });
-
-            menu.addAction(tr("Convert Address"), [=] () {
-                QString url;
-                url = "https://dexstats.info/addressconverter.php?fromcoin=HUSH3&address=" + addr;
-                QDesktopServices::openUrl(QUrl(url));
-            });
-*/
         }
 
-        //TODO: No sprout UTXOs on the Safecoin chain, should we remove all turnstile code?
         if (Settings::getInstance()->isSproutAddress(addr)) {
             menu.addAction(tr("Migrate to Sapling"), [=] () {
                 this->turnstileDoMigration(addr);
@@ -1181,13 +1247,7 @@ void MainWindow::setupTransactionsTab() {
         }
 
         menu.addAction(tr("View on block explorer"), [=] () {
-            QString url;
-            if (Settings::getInstance()->isTestnet()) {
-                url = "https://testnet.safecoin.org/tx/" + txid;
-            } else {
-                url = "https://explorer.safecoin.org/tx/" + txid;
-            }
-            QDesktopServices::openUrl(QUrl(url));
+            Settings::openTxInExplorer(txid);
         });
 
         // Payment Request
@@ -1239,7 +1299,6 @@ void MainWindow::setupTransactionsTab() {
 }
 
 void MainWindow::addNewZaddr(bool sapling) {
-
     rpc->newZaddr(sapling, [=] (json reply) {
         QString addr = QString::fromStdString(reply.get<json::string_t>());
         // Make sure the RPC class reloads the z-addrs for future use
@@ -1247,8 +1306,8 @@ void MainWindow::addNewZaddr(bool sapling) {
 
         // Just double make sure the z-address is still checked
         if ( sapling && ui->rdioZSAddr->isChecked() ) {
-            ui->listRecieveAddresses->insertItem(0, addr); 
-            ui->listRecieveAddresses->setCurrentIndex(0);
+            ui->listReceiveAddresses->insertItem(0, addr); 
+            ui->listReceiveAddresses->setCurrentIndex(0);
 
             ui->statusBar->showMessage(QString::fromStdString("Created new zAddr") %
                                        (sapling ? "(Sapling)" : "(Sprout)"), 
@@ -1264,14 +1323,14 @@ std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
     return [=] (bool checked) { 
         if (checked && this->rpc->getAllZAddresses() != nullptr) { 
             auto addrs = this->rpc->getAllZAddresses();
-            ui->listRecieveAddresses->clear();
+            ui->listReceiveAddresses->clear();
 
             std::for_each(addrs->begin(), addrs->end(), [=] (auto addr) {
                 if ( (sapling &&  Settings::getInstance()->isSaplingAddress(addr)) ||
                     (!sapling && !Settings::getInstance()->isSaplingAddress(addr))) {
                         if (rpc->getAllBalances()) {
                             auto bal = rpc->getAllBalances()->value(addr);
-                            ui->listRecieveAddresses->addItem(addr, bal);
+                            ui->listReceiveAddresses->addItem(addr, bal);
                         }
                 }
             }); 
@@ -1284,15 +1343,17 @@ std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
     };
 }
 
-void MainWindow::setupRecieveTab() {
+void MainWindow::setupReceiveTab() {
     auto addNewTAddr = [=] () {
         rpc->newTaddr([=] (json reply) {
             QString addr = QString::fromStdString(reply.get<json::string_t>());
+            // Make sure the RPC class reloads the t-addrs for future use
+            rpc->refreshAddresses();
 
             // Just double make sure the t-address is still checked
             if (ui->rdioTAddr->isChecked()) {
-                ui->listRecieveAddresses->insertItem(0, addr);
-                ui->listRecieveAddresses->setCurrentIndex(0);
+                ui->listReceiveAddresses->insertItem(0, addr);
+                ui->listReceiveAddresses->setCurrentIndex(0);
 
                 ui->statusBar->showMessage(tr("Created new t-Addr"), 10 * 1000);
             }
@@ -1305,14 +1366,58 @@ void MainWindow::setupRecieveTab() {
         // want to reuse t-addrs
         if (checked && this->rpc->getUTXOs() != nullptr) { 
             updateTAddrCombo(checked);
-            addNewTAddr();
         } 
+
+        // Toggle the "View all addresses" button as well
+        ui->btnViewAllAddresses->setVisible(checked);
+    });
+
+    // View all addresses goes to "View all private keys"
+    QObject::connect(ui->btnViewAllAddresses, &QPushButton::clicked, [=] () {
+        // If there's no RPC, return
+        if (!getRPC())
+            return;
+
+        QDialog d(this);
+        Ui_ViewAddressesDialog viewaddrs;
+        viewaddrs.setupUi(&d);
+        Settings::saveRestore(&d);
+        Settings::saveRestoreTableHeader(viewaddrs.tblAddresses, &d, "viewalladdressestable");
+        viewaddrs.tblAddresses->horizontalHeader()->setStretchLastSection(true);
+
+        ViewAllAddressesModel model(viewaddrs.tblAddresses, *getRPC()->getAllTAddresses(), getRPC());
+        viewaddrs.tblAddresses->setModel(&model);
+
+        QObject::connect(viewaddrs.btnExportAll, &QPushButton::clicked,  this, &MainWindow::exportAllKeys);
+
+        viewaddrs.tblAddresses->setContextMenuPolicy(Qt::CustomContextMenu);
+        QObject::connect(viewaddrs.tblAddresses, &QTableView::customContextMenuRequested, [=] (QPoint pos) {
+            QModelIndex index = viewaddrs.tblAddresses->indexAt(pos);
+            if (index.row() < 0) return;
+
+            index = index.sibling(index.row(), 0);
+            QString addr = viewaddrs.tblAddresses->model()->data(index).toString();
+
+            QMenu menu(this);
+            menu.addAction(tr("Export Private Key"), [=] () {                
+                if (addr.isEmpty())
+                    return;
+
+                this->exportKeys(addr);
+            });
+            menu.addAction(tr("Copy Address"), [=]() {
+                QGuiApplication::clipboard()->setText(addr);
+            });
+            menu.exec(viewaddrs.tblAddresses->viewport()->mapToGlobal(pos));
+        });
+
+        d.exec();
     });
 
     QObject::connect(ui->rdioZSAddr, &QRadioButton::toggled, addZAddrsToComboList(true));
 
     // Explicitly get new address button.
-    QObject::connect(ui->btnRecieveNewAddr, &QPushButton::clicked, [=] () {
+    QObject::connect(ui->btnReceiveNewAddr, &QPushButton::clicked, [=] () {
         if (!rpc->getConnection())
             return;
 
@@ -1328,9 +1433,10 @@ void MainWindow::setupRecieveTab() {
         if (tab == 2) {
             // Switched to receive tab, select the z-addr radio button
             ui->rdioZSAddr->setChecked(true);
+            ui->btnViewAllAddresses->setVisible(false);
             
             // And then select the first one
-            ui->listRecieveAddresses->setCurrentIndex(0);
+            ui->listReceiveAddresses->setCurrentIndex(0);
         }
     });
 
@@ -1339,15 +1445,15 @@ void MainWindow::setupRecieveTab() {
     ui->rcvLabel->setValidator(v);
 
     // Select item in address list
-    QObject::connect(ui->listRecieveAddresses, 
+    QObject::connect(ui->listReceiveAddresses, 
         QOverload<int>::of(&QComboBox::currentIndexChanged), [=] (int index) {
-        QString addr = ui->listRecieveAddresses->itemText(index);
+        QString addr = ui->listReceiveAddresses->itemText(index);
         if (addr.isEmpty()) {
             // Draw empty stuff
 
             ui->rcvLabel->clear();
             ui->rcvBal->clear();
-            ui->txtRecieve->clear();
+            ui->txtReceive->clear();
             ui->qrcodeDisplay->clear();
             return;
         }
@@ -1362,7 +1468,7 @@ void MainWindow::setupRecieveTab() {
         
         ui->rcvLabel->setText(label);
         ui->rcvBal->setText(Settings::getZECUSDDisplayFormat(rpc->getAllBalances()->value(addr)));
-        ui->txtRecieve->setPlainText(addr);       
+        ui->txtReceive->setPlainText(addr);       
         ui->qrcodeDisplay->setQrcodeString(addr);
         if (rpc->getUsedAddresses()->value(addr, false)) {
             ui->rcvBal->setToolTip(tr("Address has been previously used"));
@@ -1374,7 +1480,7 @@ void MainWindow::setupRecieveTab() {
 
     // Receive tab add/update label
     QObject::connect(ui->rcvUpdateLabel, &QPushButton::clicked, [=]() {
-        QString addr = ui->listRecieveAddresses->currentText();
+        QString addr = ui->listReceiveAddresses->currentText();
         if (addr.isEmpty())
             return;
 
@@ -1408,9 +1514,9 @@ void MainWindow::setupRecieveTab() {
         }
     });
 
-    // Recieve Export Key
+    // Receive Export Key
     QObject::connect(ui->exportKey, &QPushButton::clicked, [=]() {
-        QString addr = ui->listRecieveAddresses->currentText();
+        QString addr = ui->listReceiveAddresses->currentText();
         if (addr.isEmpty())
             return;
 
@@ -1421,15 +1527,57 @@ void MainWindow::setupRecieveTab() {
 void MainWindow::updateTAddrCombo(bool checked) {
     if (checked) {
         auto utxos = this->rpc->getUTXOs();
-        ui->listRecieveAddresses->clear();
+        ui->listReceiveAddresses->clear();
 
-        std::for_each(utxos->begin(), utxos->end(), [=](auto& utxo) {
+        // Maintain a set of addresses so we don't duplicate any, because we'll be adding
+        // t addresses multiple times
+        QSet<QString> addrs;
+
+        // 1. Add all t addresses that have a balance
+        std::for_each(utxos->begin(), utxos->end(), [=, &addrs](auto& utxo) {
             auto addr = utxo.address;
-            if (addr.startsWith("R") && ui->listRecieveAddresses->findText(addr) < 0) {
+            if (Settings::isTAddress(addr) && !addrs.contains(addr)) {
                 auto bal = rpc->getAllBalances()->value(addr);
-                ui->listRecieveAddresses->addItem(addr, bal);
+                ui->listReceiveAddresses->addItem(addr, bal);
+
+                addrs.insert(addr);
             }
         });
+        
+        // 2. Add all t addresses that have a label
+        auto allTaddrs = this->rpc->getAllTAddresses();
+        QSet<QString> labels;
+        for (auto p : AddressBook::getInstance()->getAllAddressLabels()) {
+            labels.insert(p.second);
+        }
+        std::for_each(allTaddrs->begin(), allTaddrs->end(), [=, &addrs] (auto& taddr) {
+            // If the address is in the address book, add it. 
+            if (labels.contains(taddr) && !addrs.contains(taddr)) {
+                addrs.insert(taddr);
+                ui->listReceiveAddresses->addItem(taddr, 0);
+            }
+        });
+
+        // 3. Add all t-addresses. We won't add more than 20 total t-addresses,
+        // since it will overwhelm the dropdown
+        for (int i=0; addrs.size() < 20 && i < allTaddrs->size(); i++) {
+            auto addr = allTaddrs->at(i);
+            if (!addrs.contains(addr))  {
+                addrs.insert(addr);
+                // Balance is zero since it has not been previously added
+                ui->listReceiveAddresses->addItem(addr, 0);
+            }
+        }
+
+        // 4. Add a last, disabled item if there are remaining items
+        if (allTaddrs->size() > addrs.size()) {
+            auto num = QString::number(allTaddrs->size() - addrs.size());
+            ui->listReceiveAddresses->addItem("-- " + num + " more --", 0);
+
+            QStandardItemModel* model = qobject_cast<QStandardItemModel*>(ui->listReceiveAddresses->model());
+            QStandardItem* item =  model->findItems("--", Qt::MatchStartsWith)[0];
+            item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+        }
     }
 };
 
@@ -1456,6 +1604,7 @@ MainWindow::~MainWindow()
     delete rpc;
     delete labelCompleter;
 
+    delete sendTxRecurringInfo;
     delete amtValidator;
     delete feesValidator;
 

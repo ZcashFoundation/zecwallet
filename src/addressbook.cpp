@@ -122,14 +122,32 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
     // Add new address button
     QObject::connect(ab.addNew, &QPushButton::clicked, [&] () {
         auto addr = ab.addr->text().trimmed();
-        if (!addr.isEmpty() && !ab.label->text().isEmpty()) {
-            // Test if address is valid.
-            if (!Settings::isValidAddress(addr)) {
-                QMessageBox::critical(parent, QObject::tr("Address Format Error"), addr + QObject::tr(" doesn't seem to be a valid Safecoin address."), QMessageBox::Ok);
-            } else {
-                model.addNewLabel(ab.label->text(), ab.addr->text());
-            }
+        QString newLabel = ab.label->text();
+
+        if (addr.isEmpty() || newLabel.isEmpty()) {
+            QMessageBox::critical(parent, QObject::tr("Address or Label Error"), 
+                QObject::tr("Address or Label cannot be empty"), QMessageBox::Ok);
+            return;
         }
+        // Test if address is valid.
+        if (!Settings::isValidAddress(addr)) {
+            QMessageBox::critical(parent, QObject::tr("Address Format Error"), 
+                QObject::tr("%1 doesn't seem to be a valid Safecoin address.")
+                    .arg(addr), 
+                QMessageBox::Ok);
+            return;
+        } 
+
+        // Don't allow duplicate address labels.                 
+        if (!getInstance()->getAddressForLabel(newLabel).isEmpty()) {
+            QMessageBox::critical(parent, QObject::tr("Label Error"), 
+                QObject::tr("The label '%1' already exists. Please remove the existing label.")
+                    .arg(newLabel), 
+                QMessageBox::Ok);
+            return;
+        } 
+    
+        model.addNewLabel(newLabel, ab.addr->text());
     });
 
     // Import Button
@@ -217,7 +235,7 @@ void AddressBook::open(MainWindow* parent, QLineEdit* target) {
 
     if (d.exec() == QDialog::Accepted && target != nullptr) {
         auto selection = ab.addresses->selectionModel();
-        if (selection->hasSelection()) {
+        if (selection && selection->hasSelection() && selection->selectedRows().size() > 0) {
             auto item = model.itemAt(selection->selectedRows().at(0).row());
             fnSetTargetLabelAddr(target, item.first, item.second);
         }
@@ -244,17 +262,24 @@ AddressBook::AddressBook() {
 void AddressBook::readFromStorage() {
     QFile file(AddressBook::writeableFile());
 
-    if (!file.exists()) {
-        return;
+    if (file.exists()) {
+        allLabels.clear();
+        file.open(QIODevice::ReadOnly);
+        QDataStream in(&file);    // read the data serialized from the file
+        QString version;
+        in >> version >> allLabels; 
+
+        file.close();
     }
 
-    allLabels.clear();
-    file.open(QIODevice::ReadOnly);
-    QDataStream in(&file);    // read the data serialized from the file
-    QString version;
-    in >> version >> allLabels; 
-
-    file.close();
+    // Special. 
+    // Add the default SafecoinWallet donation address if it isn't already present
+    // QList<QString> allAddresses;
+    // std::transform(allLabels.begin(), allLabels.end(), 
+    //     std::back_inserter(allAddresses), [=] (auto i) { return i.second; });
+    // if (!allAddresses.contains(Settings::getDonationAddr(true))) {
+    //     allLabels.append(QPair<QString, QString>("SafecoinWallet donation", Settings::getDonationAddr(true)));
+    // }
 }
 
 void AddressBook::writeToStorage() {
@@ -332,6 +357,16 @@ QString AddressBook::getLabelForAddress(QString addr) {
     for (auto i : allLabels) {
         if (i.second == addr)
             return i.first;
+    }
+
+    return "";
+}
+
+// Get the address for a label
+QString AddressBook::getAddressForLabel(QString label) {
+    for (auto i: allLabels) {
+        if (i.first == label)
+            return i.second;
     }
 
     return "";

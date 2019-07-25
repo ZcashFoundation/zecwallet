@@ -24,6 +24,8 @@
 #include <QMessageBox>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QStandardItemModel>
+#include <QStandardItem>
 #include <QScrollBar>
 #include <QPainter>
 #include <QMovie>

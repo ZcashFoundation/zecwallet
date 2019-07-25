@@ -64,7 +64,7 @@ private:
 
     void doRPCSetConnection(Connection* conn);
 
-    std::shared_ptr<QProcess> ezcashd;
+    QProcess*               ezcashd  = nullptr;
 
     QDialog*                d;
     Ui_ConnectionDialog*    connD;
@@ -164,7 +164,6 @@ public:
 
             // If all responses have arrived, return
             if (responses->size() == totalSize) {
-
                 waitTimer->stop();
                 
                 cb(responses);
