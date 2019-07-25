@@ -11,6 +11,15 @@ public:
     TxTableModel(QObject* parent);    
     ~TxTableModel();
 
+    enum Column
+    {
+        Type = 0,
+        Address = 1,
+        Time = 2,
+        Confirmations = 3,
+        Amount = 4
+    };
+
     void addTData    (const QList<TransactionItem>& data);
     void addZSentData(const QList<TransactionItem>& data);
     void addZRecvData(const QList<TransactionItem>& data);     
