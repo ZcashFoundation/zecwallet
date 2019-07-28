@@ -181,7 +181,7 @@ void MainWindow::restoreSavedStates() {
     // Explicitly set the tx table resize headers, since some previous values may have made them
     // non-expandable.
     ui->transactionsTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Interactive);
-    ui->transactionsTable->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
+    ui->transactionsTable->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Interactive);
 }
 
 void MainWindow::doClose() {
