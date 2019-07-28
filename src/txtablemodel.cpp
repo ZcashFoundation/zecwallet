@@ -104,9 +104,9 @@ void TxTableModel::updateAllData() {
 
  QVariant TxTableModel::data(const QModelIndex &index, int role) const
  {
-     // Align column 4,5 (confirmations, amount) right
+     // Align numeric columns (confirmations, amount) right
     if (role == Qt::TextAlignmentRole && 
-         (index.column() == 3 || index.column() == 4)) 
+         (index.column() == Column::Confirmations || index.column() == Column::Amount))
         return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 
     auto dat = modeldata->at(index.row());
@@ -125,23 +125,23 @@ void TxTableModel::updateAllData() {
 
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
-        case 0: return dat.type;
-        case 1: { 
+        case Column::Type: return dat.type;
+        case Column::Address: {
                     auto addr = dat.address;
                     if (addr.trimmed().isEmpty()) 
                         return "(Shielded)";
                     else 
                         return addr;
                 }
-        case 2: return QDateTime::fromMSecsSinceEpoch(dat.datetime *  (qint64)1000).toLocalTime().toString();
-        case 3: return QString::number(dat.confirmations);
-        case 4: return Settings::getZECDisplayFormat(dat.amount);
+        case Column::Time: return QDateTime::fromMSecsSinceEpoch(dat.datetime *  (qint64)1000).toLocalTime().toString();
+        case Column::Confirmations: return QString::number(dat.confirmations);
+        case Column::Amount: return Settings::getZECDisplayFormat(dat.amount);
         }
     } 
 
     if (role == Qt::ToolTipRole) {
         switch (index.column()) {
-        case 0: { 
+        case Column::Type: {
                     if (dat.memo.startsWith("zcash:")) {
                         return Settings::paymentURIPretty(Settings::parseURI(dat.memo));
                     } else {
@@ -149,16 +149,16 @@ void TxTableModel::updateAllData() {
                         (dat.memo.isEmpty() ? "" : " tx memo: \"" + dat.memo + "\"");
                     }
                 }
-        case 1: { 
+        case Column::Address: {
                     auto addr = modeldata->at(index.row()).address;
                     if (addr.trimmed().isEmpty()) 
                         return "(Shielded)";
                     else 
                         return addr;
                 }
-        case 2: return QDateTime::fromMSecsSinceEpoch(modeldata->at(index.row()).datetime * (qint64)1000).toLocalTime().toString();
-        case 3: return QString("%1 Network Confirmations").arg(QString::number(dat.confirmations));
-        case 4: return Settings::getInstance()->getUSDFromZecAmount(modeldata->at(index.row()).amount);
+        case Column::Time: return QDateTime::fromMSecsSinceEpoch(modeldata->at(index.row()).datetime * (qint64)1000).toLocalTime().toString();
+        case Column::Confirmations: return QString("%1 Network Confirmations").arg(QString::number(dat.confirmations));
+        case Column::Amount: return Settings::getInstance()->getUSDFromZecAmount(modeldata->at(index.row()).amount);
         }    
     }
 
@@ -187,7 +187,7 @@ void TxTableModel::updateAllData() {
 
  QVariant TxTableModel::headerData(int section, Qt::Orientation orientation, int role) const
  {
-     if (role == Qt::TextAlignmentRole && (section == 3 || section == 4))
+     if (role == Qt::TextAlignmentRole && (section == Column::Confirmations || section == Column::Amount))
         return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 
      if (role == Qt::FontRole) {
