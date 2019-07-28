@@ -219,7 +219,7 @@ void RPC::importTPrivKey(QString addr, bool rescan, const std::function<void(jso
 }
 
 void RPC::validateAddress(QString address, const std::function<void(json)>& cb) {
-    QString method = address.startsWith("z") ? "z_validateaddress" : "validateaddress";
+    QString method = Settings::isZAddress(address) ? "z_validateaddress" : "validateaddress";
 
     json payload = {
         {"jsonrpc", "1.0"},
