@@ -37,6 +37,8 @@ public:
     bool    isSaplingAddress(QString addr);
     bool    isSproutAddress(QString addr);
             
+    bool    isValidSaplingPrivateKey(QString pk);
+
     bool    isSyncing();
     void    setSyncing(bool syncing);
 

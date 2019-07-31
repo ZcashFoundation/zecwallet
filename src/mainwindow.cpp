@@ -830,7 +830,7 @@ void MainWindow::doImport(QList<QString>* keys) {
     keys->pop_front();
     bool rescan = keys->isEmpty();
 
-    if (key.startsWith("S") ||
+    if (key.startsWith("SK") ||
         key.startsWith("secret")) { // Z key
         rpc->importZPrivKey(key, rescan, [=] (auto) { this->doImport(keys); });                   
     } else {
@@ -953,6 +953,16 @@ void MainWindow::importPrivKey() {
         std::transform(keysTmp.begin(), keysTmp.end(), std::back_inserter(*keys), [=](auto key) {
             return key.trimmed().split(" ")[0];
         });
+
+        // Special case. 
+        // Sometimes, when importing from a paperwallet or such, the key is split by newlines, and might have 
+        // been pasted like that. So check to see if the whole thing is one big private key
+        if (Settings::getInstance()->isValidSaplingPrivateKey(keys->join(""))) {
+            auto multiline = keys;
+            keys = new QList<QString>();
+            keys->append(multiline->join(""));
+            delete multiline;
+        }
 
         // Start the import. The function takes ownership of keys
         QTimer::singleShot(1, [=]() {doImport(keys);});
