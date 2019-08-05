@@ -256,6 +256,7 @@ QString Settings::getDonationAddr(bool sapling) {
 	    return "ztestsaplingXXX";
     }
     return "RtU6tF2d1YE6hw9DHMAyNRb2uUk4PwSCZr";
+}
 
 bool Settings::addToZcashConf(QString confLocation, QString line) {
     QFile file(confLocation);
