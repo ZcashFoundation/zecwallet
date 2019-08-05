@@ -120,8 +120,10 @@ private:
     void setMemoEnabled(int number, bool enabled);
     
     void donate();
+	
     void website();
     void discord();
+	
     void addressBook();
     void postToZBoard();
     void importPrivKey();

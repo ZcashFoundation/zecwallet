@@ -651,7 +651,6 @@ void MainWindow::website() {
     QDesktopServices::openUrl(QUrl(url));
 }
 
-
 void MainWindow::donate() {
     // Set up a donation to me :)
     clearSendForm();

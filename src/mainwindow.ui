@@ -1128,6 +1128,16 @@
     <string>&amp;Donate</string>
    </property>
   </action>
+  <action name="actionDiscord">
+   <property name="text">
+    <string>&amp;Safecoin Discord</string>
+   </property>
+  </action>
+  <action name="actionWebsite">
+   <property name="text">
+    <string>&amp;Safecoin Website</string>
+   </property>
+  </action>
   <action name="actionCheck_for_Updates">
    <property name="text">
     <string>Check github.com for &amp;updates</string>
