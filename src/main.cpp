@@ -160,12 +160,12 @@ public:
         parser.addOption(noembeddedOption);
 
         // Add an option to specify the conf file
-            QCommandLineOption confOption(QStringList() << "conf", "Use the safecoin.conf specified instead of looking for the default one.",
+            QCommandLineOption confOption(QStringList() << "conf", "Use the zcash.conf specified instead of looking for the default one.",
                                           "confFile");
         parser.addOption(confOption);
 
         // Positional argument will specify a safecoin payment URI
-        parser.addPositionalArgument("safecoinURI", "An optional safecoin URI to pay");
+        parser.addPositionalArgument("zcashURI", "An optional safecoin URI to pay");
 
         parser.process(a);
 

@@ -219,7 +219,7 @@ void RPC::importTPrivKey(QString addr, bool rescan, const std::function<void(jso
 }
 
 void RPC::validateAddress(QString address, const std::function<void(json)>& cb) {
-    QString method = address.startsWith("z") ? "z_validateaddress" : "validateaddress";
+    QString method = Settings::isZAddress(address) ? "z_validateaddress" : "validateaddress";
 
     json payload = {
         {"jsonrpc", "1.0"},
@@ -574,21 +574,7 @@ void RPC::getInfoThenRefresh(bool force) {
         static int    lastBlock = 0;
         int curBlock  = reply["blocks"].get<json::number_integer_t>();
         int version = reply["version"].get<json::number_integer_t>();
-        int p2pport             = reply["p2pport"].get<json::number_integer_t>();
-        int rpcport             = reply["rpcport"].get<json::number_integer_t>();
-        int protocolversion     = reply["protocolversion"].get<json::number_integer_t>();
-        // QString ntzhash         = QString::fromStdString( reply["notarizedhash"].get<json::string_t>() );
-        // QString ntztxid         = QString::fromStdString( reply["notarizedtxid"].get<json::string_t>() );
-        QString safever          = QString::fromStdString( reply["SAFEversion"].get<json::string_t>() );
         Settings::getInstance()->setZcashdVersion(version);
-
-        // ui->notarizedhashvalue->setText( ntzhash );
-        // ui->notarizedtxidvalue->setText( ntztxid );
-        ui->version->setText( QString::number(version) );
-        ui->safeversion->setText( safever );
-        ui->protocolversion->setText( QString::number(protocolversion) );
-        ui->p2pport->setText( QString::number(p2pport) );
-        ui->rpcport->setText( QString::number(rpcport) );
 
         // See if recurring payments needs anything
         Recurring::getInstance()->processPending(main);

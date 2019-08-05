@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="safecoinwallet vRELEASE_VERSION" Language="1033" Version="RELEASE_VERSION" Manufacturer="safecoin-org" UpgradeCode="fb9bf166-b55f-46b5-a990-9189bdf64533">
+	<Product Id="*" Name="SafecoinWallet vRELEASE_VERSION" Language="1033" Version="RELEASE_VERSION" Manufacturer="safecoin-org" UpgradeCode="fb9bf166-b55f-46b5-a990-9189bdf64533">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<MediaTemplate EmbedCab="yes"/>
 
-        <Icon Id="zecqtwalleticon.exe" SourceFile="res/icon.ico"/>
-        <Property Id="ARPPRODUCTICON" Value="zecqtwalleticon.exe" />
+        <Icon Id="safecoinwallet.exe" SourceFile="res/icon.ico"/>
+        <Property Id="ARPPRODUCTICON" Value="safecoinwallet.exe" />
 
-		<Feature Id="ProductFeature" Title="silent-dragon" Level="1">
+		<Feature Id="ProductFeature" Title="safecoinwallet" Level="1">
 			<ComponentGroupRef Id="ProductComponents" /> 
             <ComponentRef Id="ProgramMenuDir"/>
 		</Feature>
@@ -57,7 +57,7 @@
 			<Component Id="ProductComponent" Guid="0D210F5A-53E0-4E7E-CAAD-15A26995505E">
                 <File Source="safecoinwallet.exe" KeyPath="yes">
                     <Shortcut Id="startMenuShotcut" Advertise="yes" Directory="ApplicationProgramsFolder"
-                        Name="safecoinwallet" WorkingDirectory="INSTALLFOLDER" Icon="safecoinwallet.exe" >
+                        Name="SafecoinWallet" WorkingDirectory="INSTALLFOLDER" Icon="safecoinwallet.exe" >
                     </Shortcut>
                 </File>
                 <File Source="LICENSE" />

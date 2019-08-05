@@ -106,8 +106,6 @@ void Settings::setBlockNumber(int number) {
     this->_blockNumber = number;
 }
 
-// TODOOOOOOOO
-
 bool Settings::isSaplingActive() {
     return  (isTestnet() && getBlockNumber() > 0) ||
 			(!isTestnet() && getBlockNumber() > 547422);
@@ -320,6 +318,16 @@ QString Settings::getZboardAddr() {
     }
     else {
         return "zs10m00rvkhfm4f7n23e4sxsx275r7ptnggx39ygl0vy46j9mdll5c97gl6dxgpk0njuptg2mn9w5s";
+    }
+}
+
+bool Settings::isValidSaplingPrivateKey(QString pk) {
+    if (isTestnet()) {
+        QRegExp zspkey("^secret-extended-key-test[0-9a-z]{278}$", Qt::CaseInsensitive);
+        return zspkey.exactMatch(pk);
+    } else {
+        QRegExp zspkey("^secret-extended-key-main[0-9a-z]{278}$", Qt::CaseInsensitive);
+        return zspkey.exactMatch(pk);
     }
 }
 

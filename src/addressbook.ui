@@ -23,7 +23,7 @@
       <item>
        <widget class="QLabel" name="label_1">
         <property name="text">
-         <string>Address</string>
+         <string>Address (z-Addr or t-Addr)</string>
         </property>
        </widget>
       </item>

@@ -185,7 +185,7 @@ void MainWindow::restoreSavedStates() {
     // Explicitly set the tx table resize headers, since some previous values may have made them
     // non-expandable.
     ui->transactionsTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Interactive);
-    ui->transactionsTable->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
+    ui->transactionsTable->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Interactive);
 }
 
 void MainWindow::doClose() {
@@ -844,7 +844,7 @@ void MainWindow::doImport(QList<QString>* keys) {
     keys->pop_front();
     bool rescan = keys->isEmpty();
 
-    if (key.startsWith("S") ||
+    if (key.startsWith("SK") ||
         key.startsWith("secret")) { // Z key
         rpc->importZPrivKey(key, rescan, [=] (auto) { this->doImport(keys); });                   
     } else {
@@ -967,6 +967,16 @@ void MainWindow::importPrivKey() {
         std::transform(keysTmp.begin(), keysTmp.end(), std::back_inserter(*keys), [=](auto key) {
             return key.trimmed().split(" ")[0];
         });
+
+        // Special case. 
+        // Sometimes, when importing from a paperwallet or such, the key is split by newlines, and might have 
+        // been pasted like that. So check to see if the whole thing is one big private key
+        if (Settings::getInstance()->isValidSaplingPrivateKey(keys->join(""))) {
+            auto multiline = keys;
+            keys = new QList<QString>();
+            keys->append(multiline->join(""));
+            delete multiline;
+        }
 
         // Start the import. The function takes ownership of keys
         QTimer::singleShot(1, [=]() {doImport(keys);});
@@ -1323,6 +1333,9 @@ std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
     return [=] (bool checked) { 
         if (checked && this->rpc->getAllZAddresses() != nullptr) { 
             auto addrs = this->rpc->getAllZAddresses();
+
+            // Save the current address, so we can update it later
+            auto zaddr = ui->listReceiveAddresses->currentText();
             ui->listReceiveAddresses->clear();
 
             std::for_each(addrs->begin(), addrs->end(), [=] (auto addr) {
@@ -1334,6 +1347,10 @@ std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
                         }
                 }
             }); 
+            
+            if (!zaddr.isEmpty() && Settings::isZAddress(zaddr)) {
+                ui->listReceiveAddresses->setCurrentText(zaddr);
+            }
 
             // If z-addrs are empty, then create a new one.
             if (addrs->isEmpty()) {
@@ -1527,6 +1544,10 @@ void MainWindow::setupReceiveTab() {
 void MainWindow::updateTAddrCombo(bool checked) {
     if (checked) {
         auto utxos = this->rpc->getUTXOs();
+
+        // Save the current address so we can restore it later
+        auto currentTaddr = ui->listReceiveAddresses->currentText();
+
         ui->listReceiveAddresses->clear();
 
         // Maintain a set of addresses so we don't duplicate any, because we'll be adding
@@ -1569,7 +1590,17 @@ void MainWindow::updateTAddrCombo(bool checked) {
             }
         }
 
-        // 4. Add a last, disabled item if there are remaining items
+        // 4. Add the previously selected t-address
+        if (!currentTaddr.isEmpty() && Settings::isTAddress(currentTaddr)) {
+            // Make sure the current taddr is in the list
+            if (!addrs.contains(currentTaddr)) {
+                auto bal = rpc->getAllBalances()->value(currentTaddr);
+                ui->listReceiveAddresses->addItem(currentTaddr, bal);
+            }
+            ui->listReceiveAddresses->setCurrentText(currentTaddr);
+        }
+
+        // 5. Add a last, disabled item if there are remaining items
         if (allTaddrs->size() > addrs.size()) {
             auto num = QString::number(allTaddrs->size() - addrs.size());
             ui->listReceiveAddresses->addItem("-- " + num + " more --", 0);
