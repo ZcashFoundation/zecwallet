@@ -337,8 +337,7 @@ bool Settings::isValidAddress(QString addr) {
     QRegExp texp("^R[a-z0-9]{33}$", Qt::CaseInsensitive);
     //qDebug() << "isValidAddress(" << addr << ")";
 
-    return  zcexp.exactMatch(addr)  || texp.exactMatch(addr) || 
-            ztsexp.exactMatch(addr) || zsexp.exactMatch(addr);
+    return  texp.exactMatch(addr) || ztsexp.exactMatch(addr) || zsexp.exactMatch(addr);
 }
 
 // Get a pretty string representation of this Payment URI
