@@ -123,6 +123,7 @@ private:
 	
     void website();
     void discord();
+    void safenodes();
 	
     void addressBook();
     void postToZBoard();

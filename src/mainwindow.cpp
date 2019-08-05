@@ -47,6 +47,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionDiscord, &QAction::triggered, this, &MainWindow::discord);
 
     QObject::connect(ui->actionWebsite, &QAction::triggered, this, &MainWindow::website);
+	
+    QObject::connect(ui->actionSafeNodes, &QAction::triggered, this, &MainWindow::safenodes);
 
     // File a bug
     QObject::connect(ui->actionFile_a_bug, &QAction::triggered, [=]() {
@@ -86,19 +88,22 @@ MainWindow::MainWindow(QWidget *parent) :
     // Export transactions
     QObject::connect(ui->actionExport_transactions, &QAction::triggered, this, &MainWindow::exportTransactions);
 
+/*
     // z-Board.net
     QObject::connect(ui->actionz_board_net, &QAction::triggered, this, &MainWindow::postToZBoard);
+*/
 
     // Validate Address
     QObject::connect(ui->actionValidate_Address, &QAction::triggered, this, &MainWindow::validateAddress);
 
-    // Connect mobile app
+/*    // Connect mobile app
     QObject::connect(ui->actionConnect_Mobile_App, &QAction::triggered, this, [=] () {
         if (rpc->getConnection() == nullptr)
             return;
 
         AppDataServer::getInstance()->connectAppDialog(this);
     });
+*/
 
     // Address Book
     QObject::connect(ui->action_Address_Book, &QAction::triggered, this, &MainWindow::addressBook);
@@ -127,7 +132,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setupTransactionsTab();
     setupReceiveTab();
     setupBalancesTab();
-    setupTurnstileDialog();
+//    setupTurnstileDialog();
     setupZcashdTab();
 
     rpc = new RPC(this);
@@ -401,6 +406,7 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
     }
 }
 
+/*
 void MainWindow::setupTurnstileDialog() {        
     // Turnstile migration
     QObject::connect(ui->actionTurnstile_Migration, &QAction::triggered, [=] () {
@@ -420,6 +426,7 @@ void MainWindow::setupTurnstileDialog() {
     });
 
 }
+*/
 
 void MainWindow::setupStatusBar() {
     // Status Bar
@@ -648,6 +655,11 @@ void MainWindow::discord() {
 
 void MainWindow::website() {
     QString url = "https://safecoin.org";
+    QDesktopServices::openUrl(QUrl(url));
+}
+
+void MainWindow::safenodes() {
+    QString url = "https://safenodes.org/";
     QDesktopServices::openUrl(QUrl(url));
 }
 

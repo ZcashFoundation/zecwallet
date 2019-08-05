@@ -1085,11 +1085,20 @@
     <property name="title">
      <string>&amp;Apps</string>
     </property>
-    <addaction name="actionConnect_Mobile_App"/>
+	
+<!--
+    <addaction name="actionConnect_Mobile_App"/> 
+-->
+
     <addaction name="actionValidate_Address"/>
     <addaction name="separator"/>
+    <addaction name="actionSafeNodes"/>
+	
+<!--
     <addaction name="actionz_board_net"/>
     <addaction name="actionTurnstile_Migration"/>
+-->
+
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="title">
@@ -1143,6 +1152,14 @@
     <string>Check github.com for &amp;updates</string>
    </property>
   </action>
+
+  <action name="actionSafeNodes">
+   <property name="text">
+    <string>&amp;SafeNodes</string>
+   </property>
+  </action>
+
+<!--
   <action name="actionTurnstile_Migration">
    <property name="text">
     <string>Sapling &amp;turnstile</string>
@@ -1151,6 +1168,8 @@
     <string>Ctrl+A, Ctrl+T</string>
    </property>
   </action>
+-->
+  
   <action name="actionImport_Private_Key">
    <property name="text">
     <string>&amp;Import private key</string>
@@ -1161,6 +1180,8 @@
     <string>&amp;Export all private keys</string>
    </property>
   </action>
+  
+<!--  
   <action name="actionz_board_net">
    <property name="text">
     <string>&amp;z-board.net</string>
@@ -1169,6 +1190,8 @@
     <string>Ctrl+A, Ctrl+Z</string>
    </property>
   </action>
+-->
+  
   <action name="action_Address_Book">
    <property name="text">
     <string>Address &amp;book</string>
@@ -1192,6 +1215,8 @@
     <string>Pay safecoin &amp;URI...</string>
    </property>
   </action>
+
+<!--
   <action name="actionConnect_Mobile_App">
    <property name="text">
     <string>Connect mobile &amp;app</string>
@@ -1200,6 +1225,8 @@
     <string>Ctrl+M</string>
    </property>
   </action>
+-->
+  
   <action name="action_Recurring_Payments">
    <property name="text">
     <string>&amp;Recurring Payments</string>
