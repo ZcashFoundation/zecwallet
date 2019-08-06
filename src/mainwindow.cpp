@@ -535,6 +535,16 @@ void MainWindow::setupSettingsModal() {
             settings.chkTxindex->setEnabled(false);
         }
 
+        // Use Addressindex
+        bool isUsingAddressindex = false;
+        if (rpc->getConnection() != nullptr) {
+            isUsingAddressindex = !rpc->getConnection()->config->proxy.isEmpty();
+        }
+        settings.chkAddressindex->setChecked(isUsingAddressindex);
+        if (rpc->getEZcashD() == nullptr) {
+            settings.chkAddressindex->setEnabled(false);
+        }
+
 //END_SAFENODES
 
         // Connection Settings
@@ -615,9 +625,10 @@ void MainWindow::setupSettingsModal() {
             }
 
 //SAFENODES
+//Txindex
 
             if (!isUsingTxindex && settings.chkTxindex->isChecked()) {
-                // If "use tor" was previously unchecked and now checked
+                // If "use Txindex" was previously unchecked and now checked
                 Settings::addToZcashConf(zcashConfLocation, "txindex=1");
                 rpc->getConnection()->config->proxy = "txindex=1";
 
@@ -633,6 +644,28 @@ void MainWindow::setupSettingsModal() {
 
                 QMessageBox::information(this, tr("Disable Txindex"),
                     tr("Txindex disabled. To fully disabled Txindex, you need to restart SafecoinWallet."),
+                    QMessageBox::Ok);
+            }
+
+//Addressindex
+
+            if (!isUsingAddressindex && settings.chkAddressindex->isChecked()) {
+                // If "use Addressindex" was previously unchecked and now checked
+                Settings::addToZcashConf(zcashConfLocation, "addressindex=1");
+                rpc->getConnection()->config->proxy = "addressindex=1";
+
+                QMessageBox::information(this, tr("Enable Addressindex"), 
+                    tr("Addressindex enabled. To use this feature, you need to restart SafecoinWallet."), 
+                    QMessageBox::Ok);
+            }
+
+            if (isUsingAddressindex && !settings.chkAddressindex->isChecked()) {
+                // If "use Addressindex" was previously checked and now is unchecked
+                Settings::removeFromZcashConf(zcashConfLocation, "addressindex");
+                rpc->getConnection()->config->proxy.clear();
+
+                QMessageBox::information(this, tr("Disable Addressindex"),
+                    tr("Addressindex disabled. To fully disabled Addressindex, you need to restart SafecoinWallet."),
                     QMessageBox::Ok);
             }
 
