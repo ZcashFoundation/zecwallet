@@ -25,6 +25,7 @@ struct ConnectionConfig {
     bool    skiptxverification;
     QString zcashDir;
     QString proxy;
+    QString indexing;
 
     ConnectionType connType;
 };
