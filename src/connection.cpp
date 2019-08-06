@@ -637,7 +637,7 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {
         if (name == "testnet" &&
             value == "1"  &&
             zcashconf->port.isEmpty()) {
-                zcashconf->port = "18232";
+                zcashconf->port = "18770";
         }
         if (name == "ibdskiptxverification" && value == "1") {
             zcashconf->skiptxverification = true;
@@ -668,7 +668,7 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::loadFromSettings() {
     if (username.isEmpty() || password.isEmpty())
         return nullptr;
 
-    auto uiConfig = new ConnectionConfig{ host, port, username, password, false, false, false, "", "", ConnectionType::UISettingsZCashD};
+    auto uiConfig = new ConnectionConfig{ host, port, username, password, false, false, false, "", "", "", ConnectionType::UISettingsZCashD};
 
     return std::shared_ptr<ConnectionConfig>(uiConfig);
 }
