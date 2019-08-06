@@ -544,6 +544,26 @@ void MainWindow::setupSettingsModal() {
         if (rpc->getEZcashD() == nullptr) {
             settings.chkAddressindex->setEnabled(false);
         }
+		
+        // Use Timestampindex
+        bool isUsingTimestampindex = false;
+        if (rpc->getConnection() != nullptr) {
+            isUsingTimestampindex = !rpc->getConnection()->config->proxy.isEmpty();
+        }
+        settings.chkTimestampindex->setChecked(isUsingTimestampindex);
+        if (rpc->getEZcashD() == nullptr) {
+            settings.chkTimestampindex->setEnabled(false);
+        }
+		
+        // Use Spentindex
+        bool isUsingSpentindex = false;
+        if (rpc->getConnection() != nullptr) {
+            isUsingSpentindex = !rpc->getConnection()->config->proxy.isEmpty();
+        }
+        settings.chkSpentindex->setChecked(isUsingSpentindex);
+        if (rpc->getEZcashD() == nullptr) {
+            settings.chkSpentindex->setEnabled(false);
+        }
 
 //END_SAFENODES
 
@@ -648,7 +668,6 @@ void MainWindow::setupSettingsModal() {
             }
 
 //Addressindex
-
             if (!isUsingAddressindex && settings.chkAddressindex->isChecked()) {
                 // If "use Addressindex" was previously unchecked and now checked
                 Settings::addToZcashConf(zcashConfLocation, "addressindex=1");
@@ -669,6 +688,48 @@ void MainWindow::setupSettingsModal() {
                     QMessageBox::Ok);
             }
 
+//Timestampindex
+            if (!isUsingTimestampindex && settings.chkTimestampindex->isChecked()) {
+                // If "use Timestampindex" was previously unchecked and now checked
+                Settings::addToZcashConf(zcashConfLocation, "timestampindex=1");
+                rpc->getConnection()->config->proxy = "timestampindex=1";
+
+                QMessageBox::information(this, tr("Enable Timestampindex"), 
+                    tr("Timestampindex enabled. To use this feature, you need to restart SafecoinWallet."), 
+                    QMessageBox::Ok);
+            }
+
+            if (isUsingTimestampindex && !settings.chkTimestampindex->isChecked()) {
+                // If "use Timestampindex" was previously checked and now is unchecked
+                Settings::removeFromZcashConf(zcashConfLocation, "timestampindex");
+                rpc->getConnection()->config->proxy.clear();
+
+                QMessageBox::information(this, tr("Disable Timestampindex"),
+                    tr("Timestampindex disabled. To fully disabled Timestampindex, you need to restart SafecoinWallet."),
+                    QMessageBox::Ok);
+            }
+
+
+//Spentindex
+            if (!isUsingSpentindex && settings.chkSpentindex->isChecked()) {
+                // If "use Spentindex" was previously unchecked and now checked
+                Settings::addToZcashConf(zcashConfLocation, "spentindex=1");
+                rpc->getConnection()->config->proxy = "spentindex=1";
+
+                QMessageBox::information(this, tr("Enable Spentindex"), 
+                    tr("Spentindex enabled. To use this feature, you need to restart SafecoinWallet."), 
+                    QMessageBox::Ok);
+            }
+
+            if (isUsingSpentindex && !settings.chkSpentindex->isChecked()) {
+                // If "use Spentindex" was previously checked and now is unchecked
+                Settings::removeFromZcashConf(zcashConfLocation, "spentindex");
+                rpc->getConnection()->config->proxy.clear();
+
+                QMessageBox::information(this, tr("Disable Spentindex"),
+                    tr("Spentindex disabled. To fully disabled Spentindex, you need to restart SafecoinWallet."),
+                    QMessageBox::Ok);
+            }
 //END_SAFENODES
 
             if (zcashConfLocation.isEmpty()) {
