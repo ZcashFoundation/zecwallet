@@ -522,6 +522,20 @@ void MainWindow::setupSettingsModal() {
             settings.chkTor->setToolTip(tooltip);
             settings.lblTor->setToolTip(tooltip);
         }
+		
+//SAFENODES
+
+        // Use Txindex
+        bool isUsingTxindex = false;
+        if (rpc->getConnection() != nullptr) {
+            isUsingTxindex = !rpc->getConnection()->config->proxy.isEmpty();
+        }
+        settings.chkTxindex->setChecked(isUsingTxindex);
+        if (rpc->getEZcashD() == nullptr) {
+            settings.chkTxindex->setEnabled(false);
+        }
+
+//END_SAFENODES
 
         // Connection Settings
         QIntValidator validator(0, 65535);
@@ -599,6 +613,30 @@ void MainWindow::setupSettingsModal() {
                     tr("Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart SafecoinWallet."),
                     QMessageBox::Ok);
             }
+
+//SAFENODES
+
+            if (!isUsingTxindex && settings.chkTxindex->isChecked()) {
+                // If "use tor" was previously unchecked and now checked
+                Settings::addToZcashConf(zcashConfLocation, "txindex=1");
+                rpc->getConnection()->config->proxy = "txindex=1";
+
+                QMessageBox::information(this, tr("Enable Txindex"), 
+                    tr("Txindex enabled. To use this feature, you need to restart SafecoinWallet."), 
+                    QMessageBox::Ok);
+            }
+
+            if (isUsingTxindex && !settings.chkTxindex->isChecked()) {
+                // If "use Txindex" was previously checked and now is unchecked
+                Settings::removeFromZcashConf(zcashConfLocation, "txindex");
+                rpc->getConnection()->config->proxy.clear();
+
+                QMessageBox::information(this, tr("Disable Txindex"),
+                    tr("Txindex disabled. To fully disabled Txindex, you need to restart SafecoinWallet."),
+                    QMessageBox::Ok);
+            }
+
+//END_SAFENODES
 
             if (zcashConfLocation.isEmpty()) {
                 // Save settings
