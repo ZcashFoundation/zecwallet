@@ -173,7 +173,7 @@
     <message>
         <location filename="../src/mainwindow.ui" line="608"/>
         <source>0</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="664"/>
@@ -227,7 +227,7 @@
     </message>
     <message>
         <source>z-Addr(Sprout)</source>
-        <translation type="obsolete">YOUR_TRANSLATION_HERE</translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="733"/>
@@ -308,7 +308,7 @@
         <location filename="../src/mainwindow.ui" line="1027"/>
         <location filename="../src/mainwindow.ui" line="1034"/>
         <source>|</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1060"/>
@@ -348,7 +348,7 @@
     <message>
         <location filename="../src/mainwindow.ui" line="1132"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1137"/>
@@ -372,11 +372,11 @@
     </message>
     <message>
         <source>Sapling &amp;turnstile</source>
-        <translation type="obsolete">YOUR_TRANSLATION_HERE</translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Ctrl+A, Ctrl+T</source>
-        <translation type="obsolete">YOUR_TRANSLATION_HERE</translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1175"/>
@@ -390,11 +390,11 @@
     </message>
     <message>
         <source>&amp;z-board.net</source>
-        <translation type="obsolete">YOUR_TRANSLATION_HERE</translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Ctrl+A, Ctrl+Z</source>
-        <translation type="obsolete">YOUR_TRANSLATION_HERE</translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1197"/>
@@ -404,7 +404,7 @@
     <message>
         <location filename="../src/mainwindow.ui" line="1200"/>
         <source>Ctrl+B</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1205"/>
@@ -449,25 +449,25 @@
     </message>
     <message>
         <source>Thanks for supporting SafecoinWallet!</source>
-        <translation type="obsolete">YOUR_TRANSLATION_HERE</translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Donate 0.01 </source>
-        <translation type="obsolete">YOUR_TRANSLATION_HERE</translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source> to support SafecoinWallet</source>
-        <translation type="obsolete">YOUR_TRANSLATION_HERE</translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="933"/>
         <source>You are on testnet, your post won&apos;t actually appear on z-board.net</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="989"/>
         <source>You need a sapling address with available balance to post</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1003"/>
@@ -508,7 +508,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="1144"/>
         <source>The keys will be imported into your connected safecoind node</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1194"/>
@@ -533,7 +533,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="1218"/>
         <source>You need to back it up from the machine safecoind is running on</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1222"/>
@@ -596,7 +596,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="1383"/>
         <source>Shield balance to Sapling</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1388"/>
@@ -607,7 +607,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="1394"/>
         <source>Migrate to Sapling</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="451"/>
@@ -1026,7 +1026,7 @@ doesn&apos;t look like a z-address</source>
     <name>PrivKey</name>
     <message>
         <source>Private Key</source>
-        <translation type="obsolete">YOUR_TRANSLATION_HERE</translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <location filename="../src/privkey.ui" line="14"/>
@@ -1044,24 +1044,24 @@ doesn&apos;t look like a z-address</source>
     <message>
         <location filename="../src/connection.cpp" line="52"/>
         <source>Starting embedded safecoind</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="62"/>
         <source>safecoind is set to run as daemon</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="62"/>
         <source>Waiting for safecoind</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>You have safecoind set to start as a daemon, which can cause problems with SafecoinWallet
 
 .Please remove the following line from your zcash.conf and restart SafecoinWallet
 daemon=1</source>
-        <translation type="obsolete">YOUR_TRANSLATION_HERE</translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Couldn&apos;t start the embedded safecoind.
@@ -1071,13 +1071,13 @@ Please try restarting.
 If you previously started safecoind with custom arguments, you might need to reset zcash.conf.
 
 If all else fails, please run safecoind manually.</source>
-        <translation type="obsolete">YOUR_TRANSLATION_HERE</translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Couldn&apos;t connect to safecoind configured in zcash.conf.
 
 Not starting embedded safecoind because --no-embedded was passed</source>
-        <translation type="obsolete">YOUR_TRANSLATION_HERE</translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="146"/>
@@ -1214,17 +1214,17 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
     <message>
         <location filename="../src/rpc.cpp" line="671"/>
         <source>testnet:</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="684"/>
         <source>Connected to safecoind</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="706"/>
         <source>There was an error connecting to safecoind. The error was</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1012"/>
@@ -1254,7 +1254,7 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
         <location filename="../src/sendtab.cpp" line="783"/>
         <location filename="../src/turnstile.cpp" line="371"/>
         <source> Tx </source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="687"/>
@@ -1293,7 +1293,7 @@ Would you like to visit the releases page?</source>
     <message>
         <location filename="../src/rpc.cpp" line="1193"/>
         <source>Please wait for SafecoinWallet to exit</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="1194"/>
@@ -1366,7 +1366,7 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
     </message>
     <message>
         <source> doesn&apos;t seem to be a valid Zcash address.</source>
-        <translation type="obsolete">YOUR_TRANSLATION_HERE</translation>
+        <translation type="obsolete"></translation>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="135"/>
@@ -1432,7 +1432,7 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
         <location filename="../src/turnstile.cpp" line="122"/>
         <source>Could not initiate migration.
 You either have unconfirmed funds or the balance is too low for an automatic migration.</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/turnstile.cpp" line="364"/>
@@ -1805,27 +1805,27 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     <message>
         <location filename="../src/settings.ui" line="33"/>
         <source>safecoind connection</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="62"/>
         <source>Host</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="82"/>
         <source>Port</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="102"/>
         <source>RPC Username</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="118"/>
         <source>RPC Password</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="145"/>
@@ -2009,42 +2009,42 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
         <location filename="../src/turnstile.ui" line="14"/>
         <location filename="../src/turnstile.ui" line="20"/>
         <source>Turnstile Migration</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="44"/>
         <source>Migrate over</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="57"/>
         <source>From</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="90"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Funds from Sprout z-Addresses (which start with &amp;quot;zc&amp;quot;) need to be moved to the upgraded Sapling z-Addresses (which start with &amp;quot;zs&amp;quot;). The funds cannot be moved directly, but need to be sent through intermediate &amp;quot;transparent&amp;quot; addresses in privacy-preserving way.&lt;/p&gt;&lt;p&gt;This migration can be done automatically for you.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="106"/>
         <source>To</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="123"/>
         <source>Balance</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="149"/>
         <source>Miner Fees</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="172"/>
         <source>Total Balance</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2052,32 +2052,32 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     <message>
         <location filename="../src/turnstileprogress.ui" line="14"/>
         <source>Turnstile Migration Progress</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/turnstileprogress.ui" line="20"/>
         <source>From</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/turnstileprogress.ui" line="27"/>
         <source>To</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/turnstileprogress.ui" line="57"/>
         <source>Please ensure you have your wallet.dat backed up!</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/turnstileprogress.ui" line="67"/>
         <source>Next Transaction in 4 hours</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/turnstileprogress.ui" line="88"/>
         <source>Migration Progress</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2337,47 +2337,47 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     <message>
         <location filename="../src/zboard.ui" line="14"/>
         <source>Post to z-board.net</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/zboard.ui" line="20"/>
         <source>Total Fee</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/zboard.ui" line="57"/>
         <source>Memo</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/zboard.ui" line="64"/>
         <source>(optional)</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/zboard.ui" line="71"/>
         <source>Send From</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/zboard.ui" line="78"/>
         <source>Post As:</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/zboard.ui" line="85"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ZBoard: Fully anonymous and untraceable chat messages based on the ZCash blockchain. &lt;a href=&quot;http://www.z-board.net/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://www.z-board.net/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/zboard.ui" line="107"/>
         <source>Warning</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/zboard.ui" line="124"/>
         <source>Posting to Board</source>
-        <translation type="unfinished">YOUR_TRANSLATION_HERE</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
