@@ -5,13 +5,14 @@
     <name>AddressBookModel</name>
     <message>
         <location filename="../src/addressbook.cpp" line="11"/>
+        <location filename="../src/mainwindow.cpp" line="1719"/>
         <source>Label</source>
         <translation type="unfinished">Метка</translation>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="11"/>
         <source>Address</source>
-        <translation type="unfinished">Адрес</translation>
+        <translation>Адрес</translation>
     </message>
 </context>
 <context>
@@ -42,6 +43,37 @@
 </context>
 <context>
     <name>MainWindow</name>
+
+    <message>
+        <location filename="../src/mainwindow.cpp" line="591"/>
+        <source>Settings are being read from </source>
+        <translation type="unfinished">Настройки читаются из </translation>
+    </message>
+	
+    <message>
+        <location filename="../src/mainwindow.cpp" line="1669"/>
+        <source>Add Label</source>
+        <translation type="unfinished">Добавить метку</translation>
+    </message>
+
+    <message>
+        <location filename="../src/mainwindow.cpp" line="1702"/>
+        <source>Removed Label </source>
+        <translation type="unfinished">Удалена метка </translation>
+    </message>
+
+    <message>
+        <location filename="../src/mainwindow.cpp" line="1706"/>
+        <source>Updated Label </source>
+        <translation type="unfinished">Обновлена метка </translation>
+    </message>
+
+    <message>
+        <location filename="../src/mainwindow.cpp" line="1710"/>
+        <source>Added Label </source>
+        <translation type="unfinished">Добавлена метка </translation>
+    </message>
+
     <message>
         <location filename="../src/mainwindow.ui" line="14"/>
         <source>SafecoinWallet</source>
@@ -86,7 +118,7 @@
         <location filename="../src/mainwindow.ui" line="256"/>
         <location filename="../src/mainwindow.ui" line="648"/>
         <source>Send</source>
-        <translation type="unfinished">Отправка</translation>
+        <translation type="unfinished">Отправить</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="265"/>
@@ -121,7 +153,7 @@
         <location filename="../src/mainwindow.ui" line="392"/>
         <location filename="../src/sendtab.cpp" line="263"/>
         <source>Address Book</source>
-        <translation type="unfinished">Книга адресов</translation>
+        <translation type="unfinished">Адресная книга</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="403"/>
@@ -173,7 +205,7 @@
     <message>
         <location filename="../src/mainwindow.ui" line="608"/>
         <source>0</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">0</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="664"/>
@@ -183,7 +215,7 @@
     <message>
         <location filename="../src/mainwindow.ui" line="674"/>
         <source>Receive</source>
-        <translation type="unfinished">Прием</translation>
+        <translation type="unfinished">Получить</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="682"/>
@@ -226,10 +258,6 @@
         <translation type="unfinished">Прозрачный адрес (общедоступный, утечка метаданных)</translation>
     </message>
     <message>
-        <source>z-Addr(Sprout)</source>
-        <translation type="obsolete"></translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.ui" line="733"/>
         <source>New Address</source>
         <translation type="unfinished">Новый адрес</translation>
@@ -241,6 +269,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="765"/>
+        <location filename="../src/mainwindow.cpp" line="1672"/>
         <source>Update Label</source>
         <translation type="unfinished">Обновить метку</translation>
     </message>
@@ -308,7 +337,7 @@
         <location filename="../src/mainwindow.ui" line="1027"/>
         <location filename="../src/mainwindow.ui" line="1034"/>
         <source>|</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">|</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1060"/>
@@ -348,7 +377,7 @@
     <message>
         <location filename="../src/mainwindow.ui" line="1132"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ctrl+P</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1137"/>
@@ -371,14 +400,6 @@
         <translation type="unfinished">Проверить github.com на обновления</translation>
     </message>
     <message>
-        <source>Sapling &amp;turnstile</source>
-        <translation type="obsolete"></translation>
-    </message>
-    <message>
-        <source>Ctrl+A, Ctrl+T</source>
-        <translation type="obsolete"></translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.ui" line="1175"/>
         <source>&amp;Import private key</source>
         <translation type="unfinished">Импортировать приватный ключ</translation>
@@ -389,22 +410,14 @@
         <translation type="unfinished">Експортировать все приватные ключи</translation>
     </message>
     <message>
-        <source>&amp;z-board.net</source>
-        <translation type="obsolete"></translation>
-    </message>
-    <message>
-        <source>Ctrl+A, Ctrl+Z</source>
-        <translation type="obsolete"></translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.ui" line="1197"/>
         <source>Address &amp;book</source>
-        <translation type="unfinished">Книга адресов</translation>
+        <translation type="unfinished">Адресная книга</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1200"/>
         <source>Ctrl+B</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ctrl+B</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1205"/>
@@ -446,18 +459,6 @@
         <location filename="../src/mainwindow.cpp" line="657"/>
         <source>Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart SafecoinWallet.</source>
         <translation type="unfinished">Соединение через Tor было отключено. Чтобы полностью отключиться от Tor, вам нужно перезапустить SafecoinWallet.</translation>
-    </message>
-    <message>
-        <source>Thanks for supporting SafecoinWallet!</source>
-        <translation type="obsolete"></translation>
-    </message>
-    <message>
-        <source>Donate 0.01 </source>
-        <translation type="obsolete"></translation>
-    </message>
-    <message>
-        <source> to support SafecoinWallet</source>
-        <translation type="obsolete"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="933"/>
@@ -508,7 +509,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="1144"/>
         <source>The keys will be imported into your connected safecoind node</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ключи будут импортированы в ваш подключенный узел safecoind</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1194"/>
@@ -533,7 +534,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="1218"/>
         <source>You need to back it up from the machine safecoind is running on</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вы должны сделать резервную копию с машины, на которой работает safecoind</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1222"/>
@@ -563,7 +564,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="1257"/>
         <source>Private key for </source>
-        <translation type="unfinished">Приватный ключ для</translation>
+        <translation type="unfinished">Приватный ключ для </translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1265"/>
@@ -867,7 +868,7 @@ doesn&apos;t look like a z-address</source>
     <message>
         <location filename="../src/sendtab.cpp" line="548"/>
         <source>Change from </source>
-        <translation type="unfinished">Изменить с</translation>
+        <translation type="unfinished">Изменить с </translation>
     </message>
     <message>
         <location filename="../src/sendtab.cpp" line="722"/>
@@ -1025,10 +1026,6 @@ doesn&apos;t look like a z-address</source>
 <context>
     <name>PrivKey</name>
     <message>
-        <source>Private Key</source>
-        <translation type="obsolete"></translation>
-    </message>
-    <message>
         <location filename="../src/privkey.ui" line="14"/>
         <source>Private Keys</source>
         <translation type="unfinished">Приватные ключи</translation>
@@ -1044,40 +1041,17 @@ doesn&apos;t look like a z-address</source>
     <message>
         <location filename="../src/connection.cpp" line="52"/>
         <source>Starting embedded safecoind</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Запуск встроенного safecoind</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="62"/>
         <source>safecoind is set to run as daemon</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">safecoind настроен на запуск в качестве демона</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="62"/>
         <source>Waiting for safecoind</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You have safecoind set to start as a daemon, which can cause problems with SafecoinWallet
-
-.Please remove the following line from your zcash.conf and restart SafecoinWallet
-daemon=1</source>
-        <translation type="obsolete"></translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t start the embedded safecoind.
-
-Please try restarting.
-
-If you previously started safecoind with custom arguments, you might need to reset zcash.conf.
-
-If all else fails, please run safecoind manually.</source>
-        <translation type="obsolete"></translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t connect to safecoind configured in zcash.conf.
-
-Not starting embedded safecoind because --no-embedded was passed</source>
-        <translation type="obsolete"></translation>
+        <translation type="unfinished">Ожидаем safecoind</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="146"/>
@@ -1196,6 +1170,13 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
         <source>Downloading blocks</source>
         <translation type="unfinished">Загрузка блоков</translation>
     </message>
+	
+    <message>
+        <location filename="../src/rpc.cpp" line="92"/>
+        <source>Ready! Thank you for helping secure the Safecoin network by running a full node.</source>
+        <translation type="unfinished">Готово! Благодарим Вас за помощь в защите сети Safecoin, запустив полный узел.</translation>
+    </message>
+	
     <message>
         <location filename="../src/rpc.cpp" line="663"/>
         <source>Block height</source>
@@ -1214,31 +1195,31 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
     <message>
         <location filename="../src/rpc.cpp" line="671"/>
         <source>testnet:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">testnet:</translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="684"/>
         <source>Connected to safecoind</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Подключен к safecoind</translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="706"/>
         <source>There was an error connecting to safecoind. The error was</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">При подключении к Safecoind произошла ошибка. Ошибка </translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1012"/>
         <location filename="../src/sendtab.cpp" line="786"/>
         <location filename="../src/turnstile.cpp" line="374"/>
         <source>The transaction with id </source>
-        <translation type="unfinished">Транзакция с идентификатором </translation>
+        <translation type="unfinished">Транзакция с id </translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1012"/>
         <location filename="../src/sendtab.cpp" line="786"/>
         <location filename="../src/turnstile.cpp" line="374"/>
         <source> failed. The error was</source>
-        <translation type="unfinished">не удалось. Ошибка была</translation>
+        <translation type="unfinished">не удалось. Ошибка </translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1009"/>
@@ -1254,7 +1235,7 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
         <location filename="../src/sendtab.cpp" line="783"/>
         <location filename="../src/turnstile.cpp" line="371"/>
         <source> Tx </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> Tx </translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="687"/>
@@ -1293,7 +1274,7 @@ Would you like to visit the releases page?</source>
     <message>
         <location filename="../src/rpc.cpp" line="1193"/>
         <source>Please wait for SafecoinWallet to exit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Пожалуйста, дождитесь выхода SafecoinWallet</translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="1194"/>
@@ -1365,10 +1346,6 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
         <translation type="unfinished">Ошибка формата адреса</translation>
     </message>
     <message>
-        <source> doesn&apos;t seem to be a valid Zcash address.</source>
-        <translation type="obsolete"></translation>
-    </message>
-    <message>
         <location filename="../src/addressbook.cpp" line="135"/>
         <source>%1 doesn&apos;t seem to be a valid Safecoin address.</source>
         <translation type="unfinished">%1 не похоже на действительный адрес Safecoin.</translation>
@@ -1421,7 +1398,7 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
     <message>
         <location filename="../src/settings.cpp" line="244"/>
         <source>Tx submitted (right click to copy) txid:</source>
-        <translation type="unfinished">Tx представлен (кликните правой кнопкой мыши, чтобы скопировать) TXID:</translation>
+        <translation type="unfinished">Tx представлен (кликните правой кнопкой мыши, чтобы скопировать) txid:</translation>
     </message>
     <message>
         <location filename="../src/turnstile.cpp" line="121"/>
@@ -1432,12 +1409,13 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
         <location filename="../src/turnstile.cpp" line="122"/>
         <source>Could not initiate migration.
 You either have unconfirmed funds or the balance is too low for an automatic migration.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Could not initiate migration.
+You either have unconfirmed funds or the balance is too low for an automatic migration.</translation>
     </message>
     <message>
         <location filename="../src/turnstile.cpp" line="364"/>
         <source>Computing Tx: </source>
-        <translation type="unfinished">Вычисление Tx: </translation>
+        <translation type="unfinished">Вычисленый Tx: </translation>
     </message>
     <message>
         <location filename="../src/txtablemodel.cpp" line="7"/>
@@ -1491,12 +1469,12 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     <message>
         <location filename="../src/recurring.cpp" line="469"/>
         <source>No ZEC price was available to convert from USD</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Цена SAFE не доступна для конвертации в USD</translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="518"/>
         <source>Computing Recurring Tx: </source>
-        <translation type="unfinished">Dsxbcktybt gериодической Tx:</translation>
+        <translation type="unfinished">Вычеслен повторяющий Tx: </translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="575"/>
@@ -1805,27 +1783,27 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     <message>
         <location filename="../src/settings.ui" line="33"/>
         <source>safecoind connection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Соединение safecoind</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="62"/>
         <source>Host</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Host</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="82"/>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Port</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="102"/>
         <source>RPC Username</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">RPC Username</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="118"/>
         <source>RPC Password</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">RPC Password</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="145"/>
@@ -1855,7 +1833,7 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     <message>
         <location filename="../src/settings.ui" line="373"/>
         <source>SafeNodes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SafeNodes</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="401"/>
@@ -1865,42 +1843,42 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     <message>
         <location filename="../src/settings.ui" line="431"/>
         <source>SafeHeight</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SafeHeight</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="455"/>
         <source>ParentKey</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ParentKey</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="462"/>
         <source>0333b9796526ef8de88712a649d618689a1de1ed1adf9fb5ec415f31e560b1f9a3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">0333b9796526ef8de88712a649d618689a1de1ed1adf9fb5ec415f31e560b1f9a3</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="493"/>
         <source>SafeKey</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SafeKey</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="553"/>
         <source>Spentindex</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Spentindex</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="560"/>
         <source>Timestampindex</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Timestampindex</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="567"/>
         <source>Addressindex</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Addressindex</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="574"/>
         <source>Txindex</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Txindex</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="583"/>
@@ -1925,7 +1903,7 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     <message>
         <location filename="../src/settings.ui" line="656"/>
         <source>SafePass</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SafePass</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="670"/>
@@ -1965,7 +1943,7 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     <message>
         <location filename="../src/settings.ui" line="311"/>
         <source>Rescan</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rescan</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="345"/>
@@ -2019,7 +1997,7 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     <message>
         <location filename="../src/turnstile.ui" line="57"/>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Откуда</translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="90"/>
@@ -2029,22 +2007,22 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     <message>
         <location filename="../src/turnstile.ui" line="106"/>
         <source>To</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Куда</translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="123"/>
         <source>Balance</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Баланс</translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="149"/>
         <source>Miner Fees</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Комисия майнеров</translation>
     </message>
     <message>
         <location filename="../src/turnstile.ui" line="172"/>
         <source>Total Balance</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Весь баланс</translation>
     </message>
 </context>
 <context>
@@ -2057,12 +2035,12 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     <message>
         <location filename="../src/turnstileprogress.ui" line="20"/>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Откуда</translation>
     </message>
     <message>
         <location filename="../src/turnstileprogress.ui" line="27"/>
         <source>To</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Куда</translation>
     </message>
     <message>
         <location filename="../src/turnstileprogress.ui" line="57"/>
