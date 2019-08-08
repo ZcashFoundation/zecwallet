@@ -642,8 +642,7 @@ void MainWindow::donate() {
     // Set up a donation to me :)
     clearSendForm();
 
-    ui->Address1->setText(Settings::getDonationAddr(
-                            Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
+    ui->Address1->setText(Settings::getDonationAddr());
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText("0.01");
     ui->MemoTxt1->setText(tr("Thanks for supporting ZecWallet!"));
@@ -715,12 +714,12 @@ void MainWindow::postToZBoard() {
 
     QMap<QString, QString> topics;
     // Insert the main topic automatically
-    topics.insert("#Main_Area", Settings::getInstance()->isTestnet() ? Settings::getDonationAddr(true) : Settings::getZboardAddr());
+    topics.insert("#Main_Area", Settings::getInstance()->isTestnet() ? Settings::getDonationAddr() : Settings::getZboardAddr());
     zb.topicsList->addItem(topics.firstKey());
     // Then call the API to get topics, and if it returns successfully, then add the rest of the topics
     rpc->getZboardTopics([&](QMap<QString, QString> topicsMap) {
         for (auto t : topicsMap.keys()) {
-            topics.insert(t, Settings::getInstance()->isTestnet() ? Settings::getDonationAddr(true) : topicsMap[t]);
+            topics.insert(t, Settings::getInstance()->isTestnet() ? Settings::getDonationAddr() : topicsMap[t]);
             zb.topicsList->addItem(t);
         }
     });
