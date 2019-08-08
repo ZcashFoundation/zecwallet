@@ -962,6 +962,29 @@ void RPC::addNewTxToWatch(const QString& newOpid, WatchedTx wtx) {
     watchTxStatus();
 }
 
+/**
+ * Execute a transaction with the standard UI. i.e., standard status bar message and standard error
+ * handling
+ */
+void RPC::executeStandardUITransaction(Tx tx) {
+    executeTransaction(tx, 
+        [=] (QString opid) {
+            ui->statusBar->showMessage(QObject::tr("Computing Tx: ") % opid);
+        },
+        [=] (QString, QString txid) { 
+            ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
+        },
+        [=] (QString opid, QString errStr) {
+            ui->statusBar->showMessage(QObject::tr(" Tx ") % opid % QObject::tr(" failed"), 15 * 1000);
+
+            if (!opid.isEmpty())
+                errStr = QObject::tr("The transaction with id ") % opid % QObject::tr(" failed. The error was") + ":\n\n" + errStr; 
+
+            QMessageBox::critical(main, QObject::tr("Transaction Error"), errStr, QMessageBox::Ok);            
+        }
+    );
+}
+
 
 // Execute a transaction!
 void RPC::executeTransaction(Tx tx, 
