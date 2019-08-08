@@ -11,6 +11,7 @@
     <qresource prefix="/img">
         <file>res/safecoindlogo.gif</file>
         <file>res/logobig.gif</file>
+        <file>res/safenode.png</file>
     </qresource>
     <qresource prefix="/translations">
         <file>res/zec_qt_wallet_es.qm</file>

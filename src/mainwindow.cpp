@@ -528,7 +528,7 @@ void MainWindow::setupSettingsModal() {
         // Use Txindex
         bool isUsingTxindex = false;
         if (rpc->getConnection() != nullptr) {
-            isUsingTxindex = !rpc->getConnection()->config->indexing.isEmpty();
+            isUsingTxindex = !rpc->getConnection()->config->tx.isEmpty();
         }
         settings.chkTxindex->setChecked(isUsingTxindex);
         if (rpc->getEZcashD() == nullptr) {
@@ -538,7 +538,7 @@ void MainWindow::setupSettingsModal() {
         // Use Addressindex
         bool isUsingAddressindex = false;
         if (rpc->getConnection() != nullptr) {
-            isUsingAddressindex = !rpc->getConnection()->config->indexing.isEmpty();
+            isUsingAddressindex = !rpc->getConnection()->config->addres.isEmpty();
         }
         settings.chkAddressindex->setChecked(isUsingAddressindex);
         if (rpc->getEZcashD() == nullptr) {
@@ -548,7 +548,7 @@ void MainWindow::setupSettingsModal() {
         // Use Timestampindex
         bool isUsingTimestampindex = false;
         if (rpc->getConnection() != nullptr) {
-            isUsingTimestampindex = !rpc->getConnection()->config->indexing.isEmpty();
+            isUsingTimestampindex = !rpc->getConnection()->config->time.isEmpty();
         }
         settings.chkTimestampindex->setChecked(isUsingTimestampindex);
         if (rpc->getEZcashD() == nullptr) {
@@ -558,11 +558,25 @@ void MainWindow::setupSettingsModal() {
         // Use Spentindex
         bool isUsingSpentindex = false;
         if (rpc->getConnection() != nullptr) {
-            isUsingSpentindex = !rpc->getConnection()->config->indexing.isEmpty();
+            isUsingSpentindex = !rpc->getConnection()->config->spent.isEmpty();
         }
         settings.chkSpentindex->setChecked(isUsingSpentindex);
         if (rpc->getEZcashD() == nullptr) {
             settings.chkSpentindex->setEnabled(false);
+        }
+
+        // Use SafeNode
+        bool isUsingSafeNode = false;
+        if (rpc->getConnection() != nullptr) {
+            isUsingSafeNode = !rpc->getConnection()->config->safenode.isEmpty();
+        }
+        settings.chkSafeNode->setChecked(isUsingSafeNode);
+        if (rpc->getEZcashD() == nullptr) {
+            settings.chkSafeNode->setEnabled(false);
+            settings.safeheight->setEnabled(false);
+            settings.safepass->setEnabled(false);
+            settings.safekey->setEnabled(false);
+            settings.parentkey->setEnabled(false);
         }
 
 //END_SAFENODES
@@ -650,7 +664,7 @@ void MainWindow::setupSettingsModal() {
             if (!isUsingTxindex && settings.chkTxindex->isChecked()) {
                 // If "use Txindex" was previously unchecked and now checked
                 Settings::addToZcashConf(zcashConfLocation, "txindex=1");
-                rpc->getConnection()->config->indexing = "txindex=1";
+                rpc->getConnection()->config->tx = "txindex=1";
 
                 QMessageBox::information(this, tr("Enable Txindex"), 
                     tr("Txindex enabled. To use this feature, you need to restart SafecoinWallet."), 
@@ -660,7 +674,7 @@ void MainWindow::setupSettingsModal() {
             if (isUsingTxindex && !settings.chkTxindex->isChecked()) {
                 // If "use Txindex" was previously checked and now is unchecked
                 Settings::removeFromZcashConf(zcashConfLocation, "txindex");
-                rpc->getConnection()->config->indexing.clear();
+                rpc->getConnection()->config->tx.clear();
 
                 QMessageBox::information(this, tr("Disable Txindex"),
                     tr("Txindex disabled. To fully disabled Txindex, you need to restart SafecoinWallet."),
@@ -671,7 +685,7 @@ void MainWindow::setupSettingsModal() {
             if (!isUsingAddressindex && settings.chkAddressindex->isChecked()) {
                 // If "use Addressindex" was previously unchecked and now checked
                 Settings::addToZcashConf(zcashConfLocation, "addressindex=1");
-                rpc->getConnection()->config->indexing = "addressindex=1";
+                rpc->getConnection()->config->addres = "addressindex=1";
 
                 QMessageBox::information(this, tr("Enable Addressindex"), 
                     tr("Addressindex enabled. To use this feature, you need to restart SafecoinWallet."), 
@@ -681,7 +695,7 @@ void MainWindow::setupSettingsModal() {
             if (isUsingAddressindex && !settings.chkAddressindex->isChecked()) {
                 // If "use Addressindex" was previously checked and now is unchecked
                 Settings::removeFromZcashConf(zcashConfLocation, "addressindex");
-                rpc->getConnection()->config->indexing.clear();
+                rpc->getConnection()->config->addres.clear();
 
                 QMessageBox::information(this, tr("Disable Addressindex"),
                     tr("Addressindex disabled. To fully disabled Addressindex, you need to restart SafecoinWallet."),
@@ -692,7 +706,7 @@ void MainWindow::setupSettingsModal() {
             if (!isUsingTimestampindex && settings.chkTimestampindex->isChecked()) {
                 // If "use Timestampindex" was previously unchecked and now checked
                 Settings::addToZcashConf(zcashConfLocation, "timestampindex=1");
-                rpc->getConnection()->config->indexing = "timestampindex=1";
+                rpc->getConnection()->config->time = "timestampindex=1";
 
                 QMessageBox::information(this, tr("Enable Timestampindex"), 
                     tr("Timestampindex enabled. To use this feature, you need to restart SafecoinWallet."), 
@@ -702,7 +716,7 @@ void MainWindow::setupSettingsModal() {
             if (isUsingTimestampindex && !settings.chkTimestampindex->isChecked()) {
                 // If "use Timestampindex" was previously checked and now is unchecked
                 Settings::removeFromZcashConf(zcashConfLocation, "timestampindex");
-                rpc->getConnection()->config->indexing.clear();
+                rpc->getConnection()->config->time.clear();
 
                 QMessageBox::information(this, tr("Disable Timestampindex"),
                     tr("Timestampindex disabled. To fully disabled Timestampindex, you need to restart SafecoinWallet."),
@@ -714,7 +728,7 @@ void MainWindow::setupSettingsModal() {
             if (!isUsingSpentindex && settings.chkSpentindex->isChecked()) {
                 // If "use Spentindex" was previously unchecked and now checked
                 Settings::addToZcashConf(zcashConfLocation, "spentindex=1");
-                rpc->getConnection()->config->indexing = "spentindex=1";
+                rpc->getConnection()->config->spent = "spentindex=1";
 
                 QMessageBox::information(this, tr("Enable Spentindex"), 
                     tr("Spentindex enabled. To use this feature, you need to restart SafecoinWallet."), 
@@ -724,12 +738,44 @@ void MainWindow::setupSettingsModal() {
             if (isUsingSpentindex && !settings.chkSpentindex->isChecked()) {
                 // If "use Spentindex" was previously checked and now is unchecked
                 Settings::removeFromZcashConf(zcashConfLocation, "spentindex");
-                rpc->getConnection()->config->indexing.clear();
+                rpc->getConnection()->config->spent.clear();
 
                 QMessageBox::information(this, tr("Disable Spentindex"),
                     tr("Spentindex disabled. To fully disabled Spentindex, you need to restart SafecoinWallet."),
                     QMessageBox::Ok);
             }
+			
+//SafeNode
+            if (!isUsingSafeNode && settings.chkSafeNode->isChecked()) {
+                // If "use SafeNode" was previously unchecked and now checked
+                Settings::addToZcashConf(zcashConfLocation, "safeheight=" + settings.safeheight->text());
+                Settings::addToZcashConf(zcashConfLocation, "safepass=" + settings.safepass->text());
+                Settings::addToZcashConf(zcashConfLocation, "safekey=" + settings.safekey->text());
+                Settings::addToZcashConf(zcashConfLocation, "parentkey=" + settings.parentkey->text());
+
+                rpc->getConnection()->config->safenode = "safeheight=" + settings.safeheight->text();
+                rpc->getConnection()->config->safenode = "safepass=" + settings.safepass->text();
+                rpc->getConnection()->config->safenode = "safekey=" + settings.safekey->text();
+                rpc->getConnection()->config->safenode = "parentkey=" + settings.parentkey->text();
+
+                QMessageBox::information(this, tr("SafeNode Configured" ),
+                    tr("SafeNode Configured. To use this feature, you need to restart SafecoinWallet."),
+                    QMessageBox::Ok);
+            }
+
+            if (isUsingSafeNode && !settings.chkSafeNode->isChecked()) {
+                // If "use SafeNode" was previously checked and now is unchecked
+                Settings::removeFromZcashConf(zcashConfLocation, "safeheight");
+                Settings::removeFromZcashConf(zcashConfLocation, "safepass");
+                Settings::removeFromZcashConf(zcashConfLocation, "safekey");
+                Settings::removeFromZcashConf(zcashConfLocation, "parentkey");
+                rpc->getConnection()->config->safenode.clear();
+
+                QMessageBox::information(this, tr("Disable SafeNode Configuration"),
+                    tr("Configuration SafeNode disabled. To fully disabled SafeNode Configuration, you need to restart SafecoinWallet."),
+                    QMessageBox::Ok);
+            }
+			
 //END_SAFENODES
 
             if (zcashConfLocation.isEmpty()) {
