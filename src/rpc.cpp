@@ -571,10 +571,23 @@ void RPC::getInfoThenRefresh(bool force) {
         QIcon i(":/icons/res/connected.gif");
         main->statusIcon->setPixmap(i.pixmap(16, 16));
 
-        static int    lastBlock = 0;
-        int curBlock  = reply["blocks"].get<json::number_integer_t>();
-        int version = reply["version"].get<json::number_integer_t>();
+        static int lastBlock    = 0;
+        int curBlock            = reply["blocks"].get<json::number_integer_t>();
+        int version             = reply["version"].get<json::number_integer_t>();
+        int p2pport             = reply["p2pport"].get<json::number_integer_t>();
+        int rpcport             = reply["rpcport"].get<json::number_integer_t>();
+        int protocolversion     = reply["protocolversion"].get<json::number_integer_t>();
+        int tls_connections     = reply["tls_connections"].get<json::number_integer_t>();
+        QString safever          = QString::fromStdString( reply["SAFEversion"].get<json::string_t>() );
         Settings::getInstance()->setZcashdVersion(version);
+
+        ui->version->setText( QString::number(version) );
+        ui->safeversion->setText( safever );
+        ui->protocolversion->setText( QString::number(protocolversion) );
+        ui->tls_connections->setText( QString::number(tls_connections) );
+        ui->p2pport->setText( QString::number(p2pport) );
+        ui->rpcport->setText( QString::number(rpcport) );
+
 
         // See if recurring payments needs anything
         Recurring::getInstance()->processPending(main);
@@ -602,12 +615,11 @@ void RPC::getInfoThenRefresh(bool force) {
         }
 
         // Get network sol/s
-        if (ezcashd) {
-            json payload = {
-                {"jsonrpc", "1.0"},
-                {"id", "someid"},
-                {"method", "getnetworksolps"}
-            };
+        json payload = {
+            {"jsonrpc", "1.0"},
+            {"id", "someid"},
+            {"method", "getnetworksolps"}
+        };
 
             conn->doRPCIgnoreError(payload, [=](const json& reply) {
                 qint64 solrate = reply.get<json::number_unsigned_t>();
@@ -615,10 +627,23 @@ void RPC::getInfoThenRefresh(bool force) {
                 ui->numconnections->setText(QString::number(connections));
                 ui->solrate->setText(QString::number(solrate) % " Sol/s");
             });
-        } 
+
+            // Get network info
+            payload = {
+                {"jsonrpc", "1.0"},
+                {"id", "someid"},
+                {"method", "getnetworkinfo"}
+            };
+
+            conn->doRPCIgnoreError(payload, [=](const json& reply) {
+                QString clientname    = QString::fromStdString( reply["subversion"].get<json::string_t>() );
+
+                ui->clientname->setText(clientname);
+            });
+
 
         // Call to see if the blockchain is syncing. 
-        json payload = {
+        payload = {
             {"jsonrpc", "1.0"},
             {"id", "someid"},
             {"method", "getblockchaininfo"}
@@ -638,7 +663,6 @@ void RPC::getInfoThenRefresh(bool force) {
             Settings::getInstance()->setBlockNumber(blockNumber);
 
             // Update safecoind tab if it exists
-            if (ezcashd) {
                 if (isSyncing) {
                     QString txt = QString::number(blockNumber);
                     if (estimatedheight > 0) {
@@ -662,7 +686,6 @@ void RPC::getInfoThenRefresh(bool force) {
                     ui->blockheight->setText(QString::number(blockNumber));
                     ui->heightLabel->setText(QObject::tr("Block height"));
                 }
-            }
 
             // Update the status bar
             QString statusText = QString() %
@@ -743,6 +766,12 @@ void RPC::refreshAddresses() {
 
         delete taddresses;
         taddresses = newtaddresses;
+
+        // If there are no t Addresses, create one
+        newTaddr([=] (json reply) {
+            // What if taddress gets deleted before this executes?
+            taddresses->append(QString::fromStdString(reply.get<json::string_t>()));
+        });
     });
 }
 
