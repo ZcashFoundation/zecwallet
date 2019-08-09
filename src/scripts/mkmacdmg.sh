@@ -12,8 +12,8 @@ case $key in
     shift # past argument
     shift # past value
     ;;
-    -h|--safecoin_path)
-    SAFE_DIR="$2"
+    -z|--zcash_path)
+    ZCASH_DIR="$2"
     shift # past argument
     shift # past value
     ;;
@@ -35,8 +35,8 @@ if [ -z $QT_PATH ]; then
     exit 1; 
 fi
 
-if [ -z $SAFE_DIR ]; then
-    echo "SAFE_DIR is not set. Please set it to the base directory of a compiled safecoind";
+if [ -z $ZCASH_DIR ]; then
+    echo "ZCASH_DIR is not set. Please set it to the base directory of a compiled safecoind";
     exit 1;
 fi
 
@@ -45,8 +45,8 @@ if [ -z $APP_VERSION ]; then
     exit 1;
 fi
 
-if [ ! -f $SAFE_DIR/src/safecoind ]; then
-    echo "Could not find compiled safecoind in $SAFE_DIR/src/.";
+if [ ! -f $ZCASH_DIR/src/safecoind ]; then
+    echo "Could not find compiled safecoind in $ZCASH_DIR/src/.";
     exit 1;
 fi
 
@@ -80,15 +80,15 @@ echo -n "Deploying.............."
 mkdir artifacts >/dev/null 2>&1
 rm -f artifcats/safecoinwallet.dmg >/dev/null 2>&1
 rm -f artifacts/rw* >/dev/null 2>&1
-cp $SAFE_DIR/src/safecoind safecoinwallet.app/Contents/MacOS/
-cp $SAFE_DIR/src/safecoin-cli safecoinwallet.app/Contents/MacOS/
+cp $ZCASH_DIR/src/safecoind safecoinwallet.app/Contents/MacOS/
+cp $ZCASH_DIR/src/safecoin-cli safecoinwallet.app/Contents/MacOS/
 $QT_PATH/bin/macdeployqt safecoinwallet.app 
 echo "[OK]"
 
 
 echo -n "Building dmg..........."
-mv safecoinwallet.app safecoinwallet.app
-create-dmg --volname "safecoinwallet-v$APP_VERSION" --volicon "res/logo.icns" --window-pos 200 120 --icon "safecoinwallet.app" 200 190  --app-drop-link 600 185 --hide-extension "safecoinwallet.app"  --window-size 800 400 --hdiutil-quiet --background res/dmgbg.png  artifacts/macOS-safecoinwallet-v$APP_VERSION.dmg safecoinwallet.app >/dev/null 2>&1
+mv safecoinwallet.app SafecoinWallet.app
+create-dmg --volname "SafecoinWallet-v$APP_VERSION" --volicon "res/logo.icns" --window-pos 200 120 --icon "SafecoinWallet.app" 200 190  --app-drop-link 600 185 --hide-extension "SafecoinWallet.app"  --window-size 800 400 --hdiutil-quiet --background res/dmgbg.png  artifacts/macOS-safecoinwallet-v$APP_VERSION.dmg SafecoinWallet.app >/dev/null 2>&1
 
 #mkdir bin/dmgbuild >/dev/null 2>&1
 #sed "s/RELEASE_VERSION/${APP_VERSION}/g" res/appdmg.json > bin/dmgbuild/appdmg.json

@@ -31,8 +31,8 @@
     <name>ConnectionDialog</name>
     <message>
         <location filename="../src/connection.ui" line="17"/>
-        <source>ZecWallet</source>
-        <translation>ZecWallet</translation>
+        <source>SafecoinWallet</source>
+        <translation>SafecoinWallet</translation>
     </message>
     <message>
         <location filename="../src/connection.ui" line="58"/>
@@ -44,8 +44,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../src/mainwindow.ui" line="14"/>
-        <source>ZecWallet</source>
-        <translation>ZecWallet</translation>
+        <source>SafecoinWallet</source>
+        <translation>SafecoinWallet</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="29"/>
@@ -260,8 +260,8 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="908"/>
-        <source>zcashd</source>
-        <translation>zcashd</translation>
+        <source>safecoind</source>
+        <translation>safecoind</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="938"/>
@@ -404,7 +404,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1179"/>
-        <source>Pay zcash &amp;URI...</source>
+        <source>Pay safecoin &amp;URI...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -424,7 +424,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1197"/>
-        <source>Request zcash...</source>
+        <source>Request safecoin...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -434,8 +434,8 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="637"/>
-        <source>Thanks for supporting ZecWallet!</source>
-        <translation>Grazie per il tuo supporto a ZecWallet!</translation>
+        <source>Thanks for supporting SafecoinWallet!</source>
+        <translation>Grazie per il tuo supporto a SafecoinWallet!</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="639"/>
@@ -444,8 +444,8 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="639"/>
-        <source> to support ZecWallet</source>
-        <translation> per supportare ZecWallet</translation>
+        <source> to support SafecoinWallet</source>
+        <translation> per supportare SafecoinWallet</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="676"/>
@@ -475,17 +475,17 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="498"/>
-        <source>Tor configuration is available only when running an embedded zcashd.</source>
+        <source>Tor configuration is available only when running an embedded safecoind.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="537"/>
-        <source>You&apos;re using an external zcashd. Please restart zcashd with -rescan</source>
+        <source>You&apos;re using an external safecoind. Please restart safecoind with -rescan</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="540"/>
-        <source>You&apos;re using an external zcashd. Please restart zcashd with -reindex</source>
+        <source>You&apos;re using an external safecoind. Please restart safecoind with -reindex</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -495,7 +495,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="566"/>
-        <source>Connection over Tor has been enabled. To use this feature, you need to restart ZecWallet.</source>
+        <source>Connection over Tor has been enabled. To use this feature, you need to restart SafecoinWallet.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -505,27 +505,27 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="576"/>
-        <source>Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart ZecWallet.</source>
+        <source>Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart SafecoinWallet.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="605"/>
-        <source>ZecWallet needs to restart to rescan/reindex. ZecWallet will now close, please restart ZecWallet to continue</source>
+        <source>SafecoinWallet needs to restart to rescan/reindex. SafecoinWallet will now close, please restart SafecoinWallet to continue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="607"/>
-        <source>Restart ZecWallet</source>
+        <source>Restart SafecoinWallet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="849"/>
-        <source>Error paying zcash URI</source>
+        <source>Error paying safecoin URI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="850"/>
-        <source>URI should be of the form &apos;zcash:&lt;addr&gt;?amt=x&amp;memo=y</source>
+        <source>URI should be of the form &apos;safecoin:&lt;addr&gt;?amt=x&amp;memo=y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -540,7 +540,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="277"/>
-        <source>zcashd is not yet ready. Please wait for the UI to load</source>
+        <source>safecoind is not yet ready. Please wait for the UI to load</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -550,9 +550,9 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="887"/>
-        <source>The keys will be imported into your connected zcashd node</source>
+        <source>The keys will be imported into your connected safecoind node</source>
         <translatorcomment>check</translatorcomment>
-        <translation>Le chiavi saranno importate nel tuo nodo zcashd</translation>
+        <translation>Le chiavi saranno importate nel tuo nodo safecoind</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="927"/>
@@ -576,8 +576,8 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="951"/>
-        <source>You need to back it up from the machine zcashd is running on</source>
-        <translation>È necessario eseguire il backup dalla macchina su cui zcashd è in esecuzione</translation>
+        <source>You need to back it up from the machine safecoind is running on</source>
+        <translation>È necessario eseguire il backup dalla macchina su cui safecoind è in esecuzione</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="955"/>
@@ -819,7 +819,7 @@ doesn&apos;t look like a z-address</source>
     </message>
     <message>
         <location filename="../src/migration.ui" line="81"/>
-        <source>If enabled, zcashd will slowly migrate your Sprout shielded funds to your Sapling address. </source>
+        <source>If enabled, safecoind will slowly migrate your Sprout shielded funds to your Sapling address. </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -850,17 +850,17 @@ doesn&apos;t look like a z-address</source>
     </message>
     <message>
         <location filename="../src/mobileappconnector.ui" line="84"/>
-        <source>Allow connections over the internet via ZecWallet wormhole</source>
+        <source>Allow connections over the internet via SafecoinWallet wormhole</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mobileappconnector.ui" line="36"/>
-        <source>Scan this QRCode from your ZecWallet companion app to connect your phone</source>
+        <source>Scan this QRCode from your SafecoinWallet companion app to connect your phone</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mobileappconnector.ui" line="94"/>
-        <source>ZecWallet Companion App</source>
+        <source>SafecoinWallet Companion App</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -906,52 +906,52 @@ doesn&apos;t look like a z-address</source>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="52"/>
-        <source>Starting embedded zcashd</source>
+        <source>Starting embedded safecoind</source>
         <translatorcomment>check</translatorcomment>
-        <translation>Avvio demone zcashd</translation>
+        <translation>Avvio demone safecoind</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="62"/>
-        <source>zcashd is set to run as daemon</source>
-        <translation>zcashd è impostato per essere eseguito come un demone</translation>
+        <source>safecoind is set to run as daemon</source>
+        <translation>safecoind è impostato per essere eseguito come un demone</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="62"/>
-        <source>Waiting for zcashd</source>
-        <translation>In attesa di zcashd</translation>
+        <source>Waiting for safecoind</source>
+        <translation>In attesa di safecoind</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="77"/>
-        <source>You have zcashd set to start as a daemon, which can cause problems with ZecWallet
+        <source>You have safecoind set to start as a daemon, which can cause problems with SafecoinWallet
 
-.Please remove the following line from your zcash.conf and restart ZecWallet
+.Please remove the following line from your safecoin.conf and restart SafecoinWallet
 daemon=1</source>
-        <translatorcomment>Hai zcashd impostato per l&apos;avvio come daemon, che può causare problemi con ZecWallet</translatorcomment>
+        <translatorcomment>Hai safecoind impostato per l&apos;avvio come daemon, che può causare problemi con SafecoinWallet</translatorcomment>
         <translation>YOUR_TRANSLATION_HERE</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="82"/>
-        <source>Couldn&apos;t start the embedded zcashd.
+        <source>Couldn&apos;t start the embedded safecoind.
 
 Please try restarting.
 
-If you previously started zcashd with custom arguments, you might need to reset zcash.conf.
+If you previously started safecoind with custom arguments, you might need to reset safecoin.conf.
 
-If all else fails, please run zcashd manually.</source>
+If all else fails, please run safecoind manually.</source>
         <translatorcomment>check</translatorcomment>
-        <translation>Impossibile avviare zcashd integrato
+        <translation>Impossibile avviare safecoind integrato
 Per favore prova a riavviare.
-Se hai precedentemente avviato zcashd con parametri personalizzati, potresti dover reimpostare lo zcash.conf
-Se tutto il resto fallisce, si prega di eseguire manualmente zcashd.</translation>
+Se hai precedentemente avviato safecoind con parametri personalizzati, potresti dover reimpostare lo safecoin.conf
+Se tutto il resto fallisce, si prega di eseguire manualmente safecoind.</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="93"/>
-        <source>Couldn&apos;t connect to zcashd configured in zcash.conf.
+        <source>Couldn&apos;t connect to safecoind configured in safecoin.conf.
 
-Not starting embedded zcashd because --no-embedded was passed</source>
+Not starting embedded safecoind because --no-embedded was passed</source>
         <translatorcomment>Check</translatorcomment>
-        <translation>Impossibile connettersi a zcashd come configurato nello zcash.conf.
-Non è stato avviato zcashd integrato perché è stato passato il comando --no-embedded</translation>
+        <translation>Impossibile connettersi a safecoind come configurato nello safecoin.conf.
+Non è stato avviato safecoind integrato perché è stato passato il comando --no-embedded</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="146"/>
@@ -1032,18 +1032,18 @@ Non è stato avviato zcashd integrato perché è stato passato il comando --no-e
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="673"/>
-        <source>Connected to zcashd</source>
-        <translation>Connesso a zcashd</translation>
+        <source>Connected to safecoind</source>
+        <translation>Connesso a safecoind</translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="676"/>
-        <source>zcashd has no peer connections</source>
+        <source>safecoind has no peer connections</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="695"/>
-        <source>There was an error connecting to zcashd. The error was</source>
-        <translation>Si è verificato un errore durante la connessione a zcashd. L&apos;errore era</translation>
+        <source>There was an error connecting to safecoind. The error was</source>
+        <translation>Si è verificato un errore durante la connessione a safecoind. L&apos;errore era</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="755"/>
@@ -1104,15 +1104,15 @@ Would you like to visit the releases page?</source>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="1182"/>
-        <source>Please wait for ZecWallet to exit</source>
+        <source>Please wait for SafecoinWallet to exit</source>
         <translatorcomment>controllare, senza contesto potrebbe voler dire  &quot;attendere zec qt wallet per uscire&quot; o altro, non ho contesto</translatorcomment>
-        <translation>Si prega di attendere che ZecWallet finisca la procedura di uscita</translation>
+        <translation>Si prega di attendere che SafecoinWallet finisca la procedura di uscita</translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="1183"/>
-        <source>Waiting for zcashd to exit</source>
+        <source>Waiting for safecoind to exit</source>
         <translatorcomment>vedi appunto precedente</translatorcomment>
-        <translation>Attendere l&apos;uscita di zcashd</translation>
+        <translation>Attendere l&apos;uscita di safecoind</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="308"/>
@@ -1121,8 +1121,8 @@ Would you like to visit the releases page?</source>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="332"/>
-        <source>zcashd error</source>
-        <translation>zcashd errore</translation>
+        <source>safecoind error</source>
+        <translation>safecoind errore</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="399"/>
@@ -1134,22 +1134,22 @@ Impostare host/porta e utente/password nel menu Modifica-&gt; Impostazioni.</tra
     </message>
     <message>
         <location filename="../src/connection.cpp" line="411"/>
-        <source>Could not connect to zcashd configured in settings.
+        <source>Could not connect to safecoind configured in settings.
 
 Please set the host/port and user/password in the Edit-&gt;Settings menu.</source>
-        <translation>Impossibile connettersi a zcashd configurato nelle impostazioni.
+        <translation>Impossibile connettersi a safecoind configurato nelle impostazioni.
 
 Impostare host/porta e utente/password nel menu Modifica-&gt; Impostazioni.</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="472"/>
-        <source>Authentication failed. The username / password you specified was not accepted by zcashd. Try changing it in the Edit-&gt;Settings menu</source>
-        <translation>Autenticazione fallita. Il nome utente/password che hai specificato non sono stati accettati da zcashd. Prova a cambiarlo nel menu Modifica-&gt; Impostazioni</translation>
+        <source>Authentication failed. The username / password you specified was not accepted by safecoind. Try changing it in the Edit-&gt;Settings menu</source>
+        <translation>Autenticazione fallita. Il nome utente/password che hai specificato non sono stati accettati da safecoind. Prova a cambiarlo nel menu Modifica-&gt; Impostazioni</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="487"/>
-        <source>Your zcashd is starting up. Please wait.</source>
-        <translation>Il tuo zcashd si sta avviando. Attendere prego.</translation>
+        <source>Your safecoind is starting up. Please wait.</source>
+        <translation>Il tuo safecoind si sta avviando. Attendere prego.</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="504"/>
@@ -1304,7 +1304,7 @@ Avete fondi non confermati o il saldo è troppo basso per una migrazione automat
     </message>
     <message>
         <location filename="../src/websockets.cpp" line="359"/>
-        <source>Connected over the internet via ZecWallet wormhole service</source>
+        <source>Connected over the internet via SafecoinWallet wormhole service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1319,7 +1319,7 @@ Avete fondi non confermati o il saldo è troppo basso per una migrazione automat
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="469"/>
-        <source>No ZEC price was available to convert from USD</source>
+        <source>No SAFE price was available to convert from USD</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1487,7 +1487,7 @@ Avete fondi non confermati o il saldo è troppo basso per una migrazione automat
     </message>
     <message>
         <location filename="../src/recurringmultiple.ui" line="44"/>
-        <source>How should ZecWallet proceed?</source>
+        <source>How should SafecoinWallet proceed?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1590,17 +1590,17 @@ Avete fondi non confermati o il saldo è troppo basso per una migrazione automat
     </message>
     <message>
         <location filename="../src/requestdialog.ui" line="219"/>
-        <source>Request payment from a Sapling address. You&apos;ll send a ZEC 0.0001 transaction to the address with a zcash payment URI. The memo will be included in the transaction when the address pays you.</source>
+        <source>Request payment from a Sapling address. You&apos;ll send a SAFE 0.0001 transaction to the address with a safecoin payment URI. The memo will be included in the transaction when the address pays you.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/requestdialog.cpp" line="50"/>
-        <source>Error paying zcash URI</source>
+        <source>Error paying safecoin URI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/requestdialog.cpp" line="51"/>
-        <source>URI should be of the form &apos;zcash:&lt;addr&gt;?amt=x&amp;memo=y</source>
+        <source>URI should be of the form &apos;safecoin:&lt;addr&gt;?amt=x&amp;memo=y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1633,8 +1633,8 @@ Avete fondi non confermati o il saldo è troppo basso per una migrazione automat
     </message>
     <message>
         <location filename="../src/settings.ui" line="33"/>
-        <source>zcashd connection</source>
-        <translation>Connessione zcashd</translation>
+        <source>safecoind connection</source>
+        <translation>Connessione safecoind</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="62"/>
@@ -1688,12 +1688,12 @@ Avete fondi non confermati o il saldo è troppo basso per una migrazione automat
     </message>
     <message>
         <location filename="../src/settings.ui" line="273"/>
-        <source>Connect to the internet to fetch ZEC prices</source>
+        <source>Connect to the internet to fetch SAFE prices</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="280"/>
-        <source>Fetch ZEC / USD prices</source>
+        <source>Fetch SAFE / USD prices</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1708,7 +1708,7 @@ Avete fondi non confermati o il saldo è troppo basso per una migrazione automat
     </message>
     <message>
         <location filename="../src/settings.ui" line="301"/>
-        <source>Rescan the blockchain for any missing wallet transactions and to correct your wallet balance. This may take several hours. You need to restart ZecWallet for this to take effect</source>
+        <source>Rescan the blockchain for any missing wallet transactions and to correct your wallet balance. This may take several hours. You need to restart SafecoinWallet for this to take effect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1718,7 +1718,7 @@ Avete fondi non confermati o il saldo è troppo basso per una migrazione automat
     </message>
     <message>
         <location filename="../src/settings.ui" line="345"/>
-        <source>Rebuild the entire blockchain from the genesis block, by rescanning all the block files. This may take several hours to days, depending on your hardware. You need to restart ZecWallet for this to take effect</source>
+        <source>Rebuild the entire blockchain from the genesis block, by rescanning all the block files. This may take several hours to days, depending on your hardware. You need to restart SafecoinWallet for this to take effect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1901,7 +1901,7 @@ Avete fondi non confermati o il saldo è troppo basso per una migrazione automat
     </message>
     <message>
         <location filename="../src/confirm.ui" line="183"/>
-        <source>zcashd doesn&apos;t seem to have any peers. You might not be connected to the internet, so this transaction might not work.</source>
+        <source>safecoind doesn&apos;t seem to have any peers. You might not be connected to the internet, so this transaction might not work.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1919,7 +1919,7 @@ Avete fondi non confermati o il saldo è troppo basso per una migrazione automat
     <name>createZcashConf</name>
     <message>
         <location filename="../src/createzcashconfdialog.ui" line="14"/>
-        <source>Configure zcash.conf</source>
+        <source>Configure safecoin.conf</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1929,7 +1929,7 @@ Avete fondi non confermati o il saldo è troppo basso per una migrazione automat
     </message>
     <message>
         <location filename="../src/createzcashconfdialog.ui" line="20"/>
-        <source>Your zcash node will be configured for you automatically</source>
+        <source>Your safecoin node will be configured for you automatically</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1939,7 +1939,7 @@ Avete fondi non confermati o il saldo è troppo basso per una migrazione automat
     </message>
     <message>
         <location filename="../src/createzcashconfdialog.ui" line="112"/>
-        <source>Allow connections to the internet to check for updates, get ZEC/USD prices etc...</source>
+        <source>Allow connections to the internet to check for updates, get SAFE/USD prices etc...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
