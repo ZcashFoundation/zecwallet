@@ -663,7 +663,7 @@ void MainWindow::setupSettingsModal() {
 
             if (!isUsingTxindex && settings.chkTxindex->isChecked()) {
                 // If "use Txindex" was previously unchecked and now checked
-                Settings::addToZcashConf(zcashConfLocation, "txindex=1");
+                Settings::addToZcashConf(zcashConfLocation, "txindex=1\n");
                 rpc->getConnection()->config->tx = "txindex=1";
 
                 QMessageBox::information(this, tr("Enable Txindex"), 
@@ -684,7 +684,7 @@ void MainWindow::setupSettingsModal() {
 //Addressindex
             if (!isUsingAddressindex && settings.chkAddressindex->isChecked()) {
                 // If "use Addressindex" was previously unchecked and now checked
-                Settings::addToZcashConf(zcashConfLocation, "addressindex=1");
+                Settings::addToZcashConf(zcashConfLocation, "addressindex=1\n");
                 rpc->getConnection()->config->addres = "addressindex=1";
 
                 QMessageBox::information(this, tr("Enable Addressindex"), 
@@ -705,7 +705,7 @@ void MainWindow::setupSettingsModal() {
 //Timestampindex
             if (!isUsingTimestampindex && settings.chkTimestampindex->isChecked()) {
                 // If "use Timestampindex" was previously unchecked and now checked
-                Settings::addToZcashConf(zcashConfLocation, "timestampindex=1");
+                Settings::addToZcashConf(zcashConfLocation, "timestampindex=1\n");
                 rpc->getConnection()->config->time = "timestampindex=1";
 
                 QMessageBox::information(this, tr("Enable Timestampindex"), 
@@ -727,7 +727,7 @@ void MainWindow::setupSettingsModal() {
 //Spentindex
             if (!isUsingSpentindex && settings.chkSpentindex->isChecked()) {
                 // If "use Spentindex" was previously unchecked and now checked
-                Settings::addToZcashConf(zcashConfLocation, "spentindex=1");
+                Settings::addToZcashConf(zcashConfLocation, "spentindex=1\n");
                 rpc->getConnection()->config->spent = "spentindex=1";
 
                 QMessageBox::information(this, tr("Enable Spentindex"), 
@@ -748,10 +748,10 @@ void MainWindow::setupSettingsModal() {
 //SafeNode
             if (!isUsingSafeNode && settings.chkSafeNode->isChecked()) {
                 // If "use SafeNode" was previously unchecked and now checked
-                Settings::addToZcashConf(zcashConfLocation, "safeheight=" + settings.safeheight->text());
-                Settings::addToZcashConf(zcashConfLocation, "safepass=" + settings.safepass->text());
-                Settings::addToZcashConf(zcashConfLocation, "safekey=" + settings.safekey->text());
-                Settings::addToZcashConf(zcashConfLocation, "parentkey=" + settings.parentkey->text());
+                Settings::addToZcashConf(zcashConfLocation, "safeheight=" + settings.safeheight->text() + "\n");
+                Settings::addToZcashConf(zcashConfLocation, "safepass=" + settings.safepass->text() + "\n");
+                Settings::addToZcashConf(zcashConfLocation, "safekey=" + settings.safekey->text() + "\n");
+                Settings::addToZcashConf(zcashConfLocation, "parentkey=" + settings.parentkey->text() + "\n");
 
                 rpc->getConnection()->config->safenode = "safeheight=" + settings.safeheight->text();
                 rpc->getConnection()->config->safenode = "safepass=" + settings.safepass->text();

@@ -189,14 +189,15 @@ void ConnectionLoader::createZcashConf() {
     out << "server=1\n";
     out << "rpcuser=safecoin\n";
     out << "rpcpassword=" % randomPassword() << "\n";
-    out << "rpcport=8770\n";
+    out << "rpcport=8771\n";
     out << "rpcworkqueue=256\n";
-    out << "rpcallowip=127.0.0.1\n";
+    out << "txindex=1\n";
 
-    // Fast sync override
+/*    // Fast sync override
     if (ui.chkFastSync->isChecked()) {
         out << "ibdskiptxverification=1\n";
     }
+*/
 
     // Datadir override 
     if (!datadir.isEmpty()) {
