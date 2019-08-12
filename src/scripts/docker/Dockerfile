@@ -10,6 +10,8 @@ RUN apt-get -y update && apt-get install -y \
     g++ build-essential cmake wget git clang++-6.0 \
     software-properties-common  \
     autoconf automake autopoint bison flex gperf libtool libtool-bin intltool lzip python ruby unzip p7zip-full libgdk-pixbuf2.0-dev libltdl-dev 
+	
+RUN apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev
 
 # Hack to make clang work with Qt
 RUN ln -s /usr/bin/clang++-6.0 /usr/bin/clang++ && \
