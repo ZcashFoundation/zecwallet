@@ -66,7 +66,8 @@ echo "[OK]"
 
 echo -n "Configuring............"
 # Build
-QT_STATIC=$QT_PATH src/scripts/dotranslations.sh >/dev/null
+#TODO
+#QT_STATIC=$QT_PATH src/scripts/dotranslations.sh >/dev/null
 $QT_PATH/bin/qmake safe-qt-wallet.pro CONFIG+=release >/dev/null
 echo "[OK]"
 

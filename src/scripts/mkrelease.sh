@@ -22,24 +22,25 @@ if [ ! -f $ZCASH_DIR/artifacts/safecoin-cli ]; then
     exit 1;
 fi
 
-# Ensure that safecoind is the right build
-echo -n "safecoind version........."
-if grep -q "zqwMagicBean" $ZCASH_DIR/artifacts/safecoind && ! readelf -s $ZCASH_DIR/artifacts/safecoind | grep -q "GLIBC_2\.25"; then 
-    echo "[OK]"
-else
-    echo "[ERROR]"
-    echo "safecoind doesn't seem to be a zqwMagicBean build or safecoind is built with libc 2.25"
-    exit 1
-fi
 
-echo -n "safecoind.exe version....."
-if grep -q "zqwMagicBean" $ZCASH_DIR/artifacts/safecoind.exe; then 
-    echo "[OK]"
-else
-    echo "[ERROR]"
-    echo "safecoind doesn't seem to be a zqwMagicBean build"
-    exit 1
-fi
+## Ensure that safecoind is the right build
+#echo -n "safecoind version........."
+#if grep -q "zqwMagicBean" $ZCASH_DIR/artifacts/safecoind && ! readelf -s $ZCASH_DIR/artifacts/safecoind | grep -q "GLIBC_2\.25"; then 
+#    echo "[OK]"
+#else
+#    echo "[ERROR]"
+#    echo "safecoind doesn't seem to be a zqwMagicBean build or safecoind is built with libc 2.25"
+#    exit 1
+#fi
+
+#echo -n "safecoind.exe version....."
+#if grep -q "zqwMagicBean" $ZCASH_DIR/artifacts/safecoind.exe; then 
+#    echo "[OK]"
+#else
+#    echo "[ERROR]"
+#    echo "safecoind doesn't seem to be a zqwMagicBean build"
+#    exit 1
+#fi
 
 echo -n "Version files.........."
 # Replace the version number in the .pro file so it gets picked up everywhere
@@ -59,13 +60,14 @@ echo ""
 echo "[Building on" `lsb_release -r`"]"
 
 echo -n "Configuring............"
-QT_STATIC=$QT_STATIC bash src/scripts/dotranslations.sh >/dev/null
+#TODO
+#QT_STATIC=$QT_STATIC bash src/scripts/dotranslations.sh >/dev/null
 $QT_STATIC/bin/qmake safe-qt-wallet.pro -spec linux-clang CONFIG+=release > /dev/null
 echo "[OK]"
 
 
 echo -n "Building..............."
-rm -rf bin/safecoinwallet* > /dev/null
+rm -rf bin/safe-qt-wallet* > /dev/null
 rm -rf bin/safecoinwallet* > /dev/null
 make clean > /dev/null
 make -j$(nproc) > /dev/null
