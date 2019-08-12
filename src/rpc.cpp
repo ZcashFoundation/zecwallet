@@ -415,10 +415,12 @@ void RPC::noConnection() {
     ui->balSheilded->setText("");
     ui->balTransparent->setText("");
     ui->balTotal->setText("");
+    ui->balUSDTotal->setText("");
 
     ui->balSheilded->setToolTip("");
     ui->balTransparent->setToolTip("");
     ui->balTotal->setToolTip("");
+    ui->balUSDTotal->setToolTip("");
 
     // Clear send tab from address
     ui->inputsCombo->clear();
@@ -694,7 +696,7 @@ void RPC::getInfoThenRefresh(bool force) {
                 (Settings::getInstance()->isTestnet() ? QObject::tr("testnet:") : "") %
                 QString::number(blockNumber) %
                 (isSyncing ? ("/" % QString::number(progress*100, 'f', 2) % "%") : QString()) %
-                ")";
+                ") SAFE=$" % QString::number( (double) Settings::getInstance()->getZECPrice() );
             main->statusLabel->setText(statusText);   
 
             // Update the balances view to show a warning if the node is still syncing
@@ -860,6 +862,7 @@ void RPC::refreshBalances() {
         auto balZ      = QString::fromStdString(reply["private"]).toDouble();
         auto balTotal  = QString::fromStdString(reply["total"]).toDouble();
 
+
         AppDataModel::getInstance()->setBalances(balT, balZ);
 
         ui->balSheilded   ->setText(Settings::getZECDisplayFormat(balZ));
@@ -870,6 +873,9 @@ void RPC::refreshBalances() {
         ui->balSheilded   ->setToolTip(Settings::getZECDisplayFormat(balZ));
         ui->balTransparent->setToolTip(Settings::getZECDisplayFormat(balT));
         ui->balTotal      ->setToolTip(Settings::getZECDisplayFormat(balTotal));
+
+        ui->balUSDTotal      ->setText(Settings::getUSDFromZecAmount(balTotal));
+        ui->balUSDTotal      ->setToolTip(Settings::getUSDFromZecAmount(balTotal));
     });
 
     // 2. Get the UTXOs
@@ -1147,14 +1153,14 @@ void RPC::checkForUpdate(bool silent) {
 
 // Get the ZEC->USD price from coinmarketcap using their API
 void RPC::refreshZECPrice() {
-    if  (conn == nullptr) 
+    if  (conn == nullptr)
         return noConnection();
 
-    QUrl cmcURL("https://api.coinmarketcap.com/v1/ticker/");
+    QUrl cmcURL("https://api.coinmarketcap.com/v1/ticker/safecoin/");
 
     QNetworkRequest req;
     req.setUrl(cmcURL);
-    
+
     QNetworkReply *reply = conn->restclient->get(req);
 
     QObject::connect(reply, &QNetworkReply::finished, [=] {
@@ -1164,16 +1170,16 @@ void RPC::refreshZECPrice() {
             if (reply->error() != QNetworkReply::NoError) {
                 auto parsed = json::parse(reply->readAll(), nullptr, false);
                 if (!parsed.is_discarded() && !parsed["error"]["message"].is_null()) {
-                    qDebug() << QString::fromStdString(parsed["error"]["message"]);    
+                    qDebug() << QString::fromStdString(parsed["error"]["message"]);
                 } else {
                     qDebug() << reply->errorString();
                 }
                 Settings::getInstance()->setZECPrice(0);
                 return;
-            } 
+            }
 
             auto all = reply->readAll();
-            
+
             auto parsed = json::parse(all, nullptr, false);
             if (parsed.is_discarded()) {
                 Settings::getInstance()->setZECPrice(0);
