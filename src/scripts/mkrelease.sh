@@ -43,7 +43,7 @@ fi
 
 echo -n "Version files.........."
 # Replace the version number in the .pro file so it gets picked up everywhere
-sed -i "s/${PREV_VERSION}/${APP_VERSION}/g" safecoinwallet.pro > /dev/null
+sed -i "s/${PREV_VERSION}/${APP_VERSION}/g" safe-qt-wallet.pro > /dev/null
 
 # Also update it in the README.md
 sed -i "s/${PREV_VERSION}/${APP_VERSION}/g" README.md > /dev/null
@@ -60,7 +60,7 @@ echo "[Building on" `lsb_release -r`"]"
 
 echo -n "Configuring............"
 QT_STATIC=$QT_STATIC bash src/scripts/dotranslations.sh >/dev/null
-$QT_STATIC/bin/qmake safecoinwallet.pro -spec linux-clang CONFIG+=release > /dev/null
+$QT_STATIC/bin/qmake safe-qt-wallet.pro -spec linux-clang CONFIG+=release > /dev/null
 echo "[OK]"
 
 
@@ -125,7 +125,7 @@ cp safecoinwallet                   $debdir/usr/local/bin/
 cp $ZCASH_DIR/artifacts/safecoind $debdir/usr/local/bin/safecoind
 
 mkdir -p $debdir/usr/share/pixmaps/
-cp res/zecwallet.xpm           $debdir/usr/share/pixmaps/
+cp res/safecoinwallet.xpm           $debdir/usr/share/pixmaps/
 
 mkdir -p $debdir/usr/share/applications
 cp src/scripts/desktopentry    $debdir/usr/share/applications/safecoinwallet.desktop
@@ -160,15 +160,15 @@ export PATH=$MXE_PATH:$PATH
 
 echo -n "Configuring............"
 make clean  > /dev/null
-rm -f safecoinwallet-mingw.pro
+rm -f safe-qt-wallet-mingw.pro
 rm -rf release/
 #Mingw seems to have trouble with precompiled headers, so strip that option from the .pro file
-cat safecoinwallet.pro | sed "s/precompile_header/release/g" | sed "s/PRECOMPILED_HEADER.*//g" > safecoinwallet-mingw.pro
+cat safe-qt-wallet.pro | sed "s/precompile_header/release/g" | sed "s/PRECOMPILED_HEADER.*//g" > safe-qt-wallet-mingw.pro
 echo "[OK]"
 
 
 echo -n "Building..............."
-x86_64-w64-mingw32.static-qmake-qt5 safecoinwallet-mingw.pro CONFIG+=release > /dev/null
+x86_64-w64-mingw32.static-qmake-qt5 safe-qt-wallet-mingw.pro CONFIG+=release > /dev/null
 make -j32 > /dev/null
 echo "[OK]"
 

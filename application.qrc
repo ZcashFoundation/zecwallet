@@ -14,11 +14,11 @@
         <file>res/safenode.png</file>
     </qresource>
     <qresource prefix="/translations">
-        <file>res/zec_qt_wallet_es.qm</file>
-        <file>res/zec_qt_wallet_fr.qm</file>
-        <file>res/zec_qt_wallet_pt.qm</file>
-        <file>res/zec_qt_wallet_it.qm</file>
-        <file>res/zec_qt_wallet_zh.qm</file>
-        <file>res/zec_qt_wallet_ru.qm</file>
+        <file>res/safe_qt_wallet_es.qm</file>
+        <file>res/safe_qt_wallet_fr.qm</file>
+        <file>res/safe_qt_wallet_pt.qm</file>
+        <file>res/safe_qt_wallet_it.qm</file>
+        <file>res/safe_qt_wallet_zh.qm</file>
+        <file>res/safe_qt_wallet_ru.qm</file>
     </qresource>
 </RCC>

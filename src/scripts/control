@@ -1,4 +1,4 @@
-Package: safecoinwallet
+Package: safe-qt-wallet
 Version: RELEASE_VERSION
 Section: base
 Priority: optional

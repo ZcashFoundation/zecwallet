@@ -178,15 +178,15 @@ public:
             return 0;            
         } 
 
-        QCoreApplication::setOrganizationName("Safecoin");
-        QCoreApplication::setApplicationName("SafecoinWallet");
+        QCoreApplication::setOrganizationName("safe-qt-wallet-org");
+        QCoreApplication::setApplicationName("safe-qt-wallet");
 
         QString locale = QLocale::system().name();
         locale.truncate(locale.lastIndexOf('_'));   // Get the language code
         qDebug() << "Loading locale " << locale;
         
         QTranslator translator;
-        translator.load(QString(":/translations/res/zec_qt_wallet_") + locale);
+        translator.load(QString(":/translations/res/safe_qt_wallet_") + locale);
         a.installTranslator(&translator);
 
         QIcon icon(":/icons/res/icon.ico");

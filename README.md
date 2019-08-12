@@ -24,7 +24,7 @@ safecoinwallet is written in C++ 14, and can be compiled with g++/clang++/visual
 sudo apt-get install qt5-default qt5-qmake libqt5websockets5-dev
 git clone https://github.com/Fair-Exchange/safecoinwallet.git
 cd safecoinwallet
-qmake safecoinwallet.pro CONFIG+=debug
+qmake safe-qt-wallet.pro CONFIG+=debug
 make -j$(nproc)
 
 ./safecoinwallet
@@ -37,7 +37,7 @@ From the VS Tools command prompt
 ```
 git clone  https://github.com/Fair-Exchange/safecoinwallet.git
 cd safecoinwallet
-c:\Qt5\bin\qmake.exe safecoinwallet.pro -spec win32-msvc CONFIG+=debug
+c:\Qt5\bin\qmake.exe safe-qt-wallet.pro -spec win32-msvc CONFIG+=debug
 nmake
 
 debug\safecoinwallet.exe
@@ -45,7 +45,7 @@ debug\safecoinwallet.exe
 
 To create the Visual Studio project files so you can compile and run from Visual Studio:
 ```
-c:\Qt5\bin\qmake.exe safecoinwallet.pro -tp vc CONFIG+=debug
+c:\Qt5\bin\qmake.exe safe-qt-wallet.pro -tp vc CONFIG+=debug
 ```
 
 ### Building on macOS
@@ -54,7 +54,7 @@ You need to install the Xcode app or the Xcode command line tools first, and the
 ```
 git clone https://github.com/Fair-Exchange/safecoinwallet.git
 cd safecoinwallet
-qmake safecoinwallet.pro CONFIG+=debug
+qmake safe-qt-wallet.pro CONFIG+=debug
 make
 
 ./safecoinwallet.app/Contents/MacOS/safecoinwallet

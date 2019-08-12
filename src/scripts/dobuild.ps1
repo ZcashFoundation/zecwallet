@@ -6,11 +6,11 @@ param (
 )
 
 Write-Host "[Initializing]"
-Remove-Item -Force -ErrorAction Ignore ./artifacts/linux-binaries-zec-qt-wallet-v$version.tar.gz
-Remove-Item -Force -ErrorAction Ignore ./artifacts/linux-deb-zec-qt-wallet-v$version.deb
-Remove-Item -Force -ErrorAction Ignore ./artifacts/Windows-binaries-zec-qt-wallet-v$version.zip
-Remove-Item -Force -ErrorAction Ignore ./artifacts/Windows-installer-zec-qt-wallet-v$version.msi
-Remove-Item -Force -ErrorAction Ignore ./artifacts/macOS-zec-qt-wallet-v$version.dmg
+Remove-Item -Force -ErrorAction Ignore ./artifacts/linux-binaries-safe-qt-wallet-v$version.tar.gz
+Remove-Item -Force -ErrorAction Ignore ./artifacts/linux-deb-safe-qt-wallet-v$version.deb
+Remove-Item -Force -ErrorAction Ignore ./artifacts/Windows-binaries-safe-qt-wallet-v$version.zip
+Remove-Item -Force -ErrorAction Ignore ./artifacts/Windows-installer-safe-qt-wallet-v$version.msi
+Remove-Item -Force -ErrorAction Ignore ./artifacts/macOS-safe-qt-wallet-v$version.dmg
 
 Remove-Item -Recurse -Force -ErrorAction Ignore ./bin
 Remove-Item -Recurse -Force -ErrorAction Ignore ./debug
@@ -51,10 +51,10 @@ Write-Host "[OK]"
 
 # Finally, test to make sure all files exist
 Write-Host -NoNewline "Checking Build........."
-if (! (Test-Path ./artifacts/linux-binaries-zec-qt-wallet-v$version.tar.gz) -or
-    ! (Test-Path ./artifacts/linux-deb-zec-qt-wallet-v$version.deb) -or
-    ! (Test-Path ./artifacts/Windows-binaries-zec-qt-wallet-v$version.zip) -or
-    ! (Test-Path ./artifacts/Windows-installer-zec-qt-wallet-v$version.msi) ) {
+if (! (Test-Path ./artifacts/linux-binaries-safe-qt-wallet-v$version.tar.gz) -or
+    ! (Test-Path ./artifacts/linux-deb-safe-qt-wallet-v$version.deb) -or
+    ! (Test-Path ./artifacts/Windows-binaries-safe-qt-wallet-v$version.zip) -or
+    ! (Test-Path ./artifacts/Windows-installer-safe-qt-wallet-v$version.msi) ) {
         Write-Host "[Error]"
         exit 1;
     }
