@@ -525,7 +525,7 @@ void MainWindow::setupSettingsModal() {
 		
 //SAFENODES
 
-        // Use Txindex
+/*        // Use Txindex
         bool isUsingTxindex = false;
         if (rpc->getConnection() != nullptr) {
             isUsingTxindex = !rpc->getConnection()->config->tx.isEmpty();
@@ -534,7 +534,7 @@ void MainWindow::setupSettingsModal() {
         if (rpc->getEZcashD() == nullptr) {
             settings.chkTxindex->setEnabled(false);
         }
-
+*/
         // Use Addressindex
         bool isUsingAddressindex = false;
         if (rpc->getConnection() != nullptr) {
@@ -659,7 +659,7 @@ void MainWindow::setupSettingsModal() {
             }
 
 //SAFENODES
-//Txindex
+/* //Txindex
 
             if (!isUsingTxindex && settings.chkTxindex->isChecked()) {
                 // If "use Txindex" was previously unchecked and now checked
@@ -680,7 +680,7 @@ void MainWindow::setupSettingsModal() {
                     tr("Txindex disabled. To fully disabled Txindex, you need to restart SafecoinWallet."),
                     QMessageBox::Ok);
             }
-
+*/
 //Addressindex
             if (!isUsingAddressindex && settings.chkAddressindex->isChecked()) {
                 // If "use Addressindex" was previously unchecked and now checked
