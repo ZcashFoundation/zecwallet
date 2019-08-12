@@ -251,11 +251,11 @@ QString Settings::getTokenName() {
     }
 }
 
-QString Settings::getDonationAddr(bool sapling) {
-    if (Settings::getInstance()->isTestnet())  {
-	    return "ztestsaplingXXX";
-    }
-    return "RtU6tF2d1YE6hw9DHMAyNRb2uUk4PwSCZr";
+QString Settings::getDonationAddr() {
+    if (Settings::getInstance()->isTestnet()) 
+            return "ztestsaplingXXX";
+    else 
+            return "RtU6tF2d1YE6hw9DHMAyNRb2uUk4PwSCZr";
 }
 
 bool Settings::addToZcashConf(QString confLocation, QString line) {
@@ -315,7 +315,7 @@ double Settings::getZboardAmount() {
 
 QString Settings::getZboardAddr() {
     if (Settings::getInstance()->isTestnet()) {
-        return getDonationAddr(true);
+        return getDonationAddr();
     }
     else {
         return "zs10m00rvkhfm4f7n23e4sxsx275r7ptnggx39ygl0vy46j9mdll5c97gl6dxgpk0njuptg2mn9w5s";

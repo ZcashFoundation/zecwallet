@@ -845,8 +845,7 @@ void MainWindow::donate() {
     // Set up a donation to me :)
     clearSendForm();
 
-    ui->Address1->setText(Settings::getDonationAddr(
-                            Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
+    ui->Address1->setText(Settings::getDonationAddr());
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText("0.00");
     ui->MemoTxt1->setText(tr("Some feedback about SafecoinWallet or Safecoin...!"));
@@ -918,12 +917,12 @@ void MainWindow::postToZBoard() {
 
     QMap<QString, QString> topics;
     // Insert the main topic automatically
-    topics.insert("#Main_Area", Settings::getInstance()->isTestnet() ? Settings::getDonationAddr(true) : Settings::getZboardAddr());
+    topics.insert("#Main_Area", Settings::getInstance()->isTestnet() ? Settings::getDonationAddr() : Settings::getZboardAddr());
     zb.topicsList->addItem(topics.firstKey());
     // Then call the API to get topics, and if it returns successfully, then add the rest of the topics
     rpc->getZboardTopics([&](QMap<QString, QString> topicsMap) {
         for (auto t : topicsMap.keys()) {
-            topics.insert(t, Settings::getInstance()->isTestnet() ? Settings::getDonationAddr(true) : topicsMap[t]);
+            topics.insert(t, Settings::getInstance()->isTestnet() ? Settings::getDonationAddr() : topicsMap[t]);
             zb.topicsList->addItem(t);
         }
     });
@@ -999,20 +998,7 @@ void MainWindow::postToZBoard() {
         tx.fee = Settings::getMinerFee();
 
         // And send the Tx
-        rpc->executeTransaction(tx, [=] (QString opid) {
-            ui->statusBar->showMessage(tr("Computing Tx: ") % opid);
-        },
-        [=] (QString /*opid*/, QString txid) { 
-            ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
-        },
-        [=] (QString opid, QString errStr) {
-            ui->statusBar->showMessage(QObject::tr(" Tx ") % opid % QObject::tr(" failed"), 15 * 1000);
-
-            if (!opid.isEmpty())
-                errStr = QObject::tr("The transaction with id ") % opid % QObject::tr(" failed. The error was") + ":\n\n" + errStr; 
-
-            QMessageBox::critical(this, QObject::tr("Transaction Error"), errStr, QMessageBox::Ok);            
-        });
+        rpc->executeStandardUITransaction(tx);
     }
 }
 

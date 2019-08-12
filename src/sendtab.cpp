@@ -512,7 +512,12 @@ Tx MainWindow::createTxFromSendPage() {
         // If address is sprout, then we can't send change to sapling, because of turnstile.
         sendChangeToSapling = sendChangeToSapling && !Settings::getInstance()->isSproutAddress(addr);
 
-        double  amt  = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1))->text().trimmed().toDouble();        
+        QString amtStr = ui->sendToWidgets->findChild<QLineEdit*>(QString("Amount")  % QString::number(i+1))->text().trimmed();
+        if (amtStr.isEmpty()) {
+            amtStr = "-1";; // The user didn't specify an amount
+        }        
+
+        double amt = amtStr.toDouble();
         totalAmt += amt;
         QString memo = ui->sendToWidgets->findChild<QLabel*>(QString("MemoTxt")  % QString::number(i+1))->text().trimmed();
         
@@ -521,8 +526,7 @@ Tx MainWindow::createTxFromSendPage() {
 
     if (Settings::getInstance()->getAllowCustomFees()) {
         tx.fee = ui->minerFeeAmt->text().toDouble();
-    }
-    else {
+    } else {
         tx.fee = Settings::getMinerFee();
     }
 
@@ -731,6 +735,8 @@ bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
 
 // Send button clicked
 void MainWindow::sendButton() {
+    // Create a Tx from the values on the send tab. Note that this Tx object
+    // might not be valid yet.
     Tx tx = createTxFromSendPage();
 
     QString error = doSendTxValidations(tx);
@@ -810,7 +816,7 @@ QString MainWindow::doSendTxValidations(Tx tx) {
         // This technically shouldn't be possible, but issue #62 seems to have discovered a bug
         // somewhere, so just add a check to make sure. 
         if (toAddr.amount < 0) {
-            return QString(tr("Amount '%1' is invalid!").arg(toAddr.amount));
+            return QString(tr("Amount for address '%1' is invalid!").arg(toAddr.addr));
         }
     }
 
@@ -821,4 +827,3 @@ QString MainWindow::doSendTxValidations(Tx tx) {
 void MainWindow::cancelButton() {
     clearSendForm();
 }
-
