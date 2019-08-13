@@ -578,7 +578,12 @@ void MainWindow::setupSettingsModal() {
             settings.safekey->setEnabled(false);
             settings.parentkey->setEnabled(false);
         }
-
+        if (!rpc->getConnection()->config->safenode.isEmpty()) {
+            settings.safeheight->setEnabled(false);
+            settings.safepass->setEnabled(false);
+            settings.safekey->setEnabled(false);
+            settings.parentkey->setEnabled(false);
+        }
 //END_SAFENODES
 
         // Connection Settings
