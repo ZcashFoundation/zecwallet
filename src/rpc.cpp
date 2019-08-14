@@ -677,12 +677,12 @@ void RPC::getInfoThenRefresh(bool force) {
                     ui->blockheight->setText(txt);
                     ui->heightLabel->setText(QObject::tr("Downloading blocks"));
                 } else {
-                    // If syncing is finished, we may have to remove the ibdskiptxverification
+                    // If syncing is finished, we may have to remove the fastsync
                     // flag from safecoin.conf
                     if (getConnection() != nullptr && getConnection()->config->skiptxverification) {
                         getConnection()->config->skiptxverification = false;
                         Settings::removeFromZcashConf(Settings::getInstance()->getZcashdConfLocation(), 
-                                                        "ibdskiptxverification");
+                                                        "fastsync");
                     }
 
                     ui->blockheight->setText(QString::number(blockNumber));

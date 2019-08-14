@@ -193,11 +193,11 @@ void ConnectionLoader::createZcashConf() {
     out << "rpcworkqueue=256\n";
     out << "txindex=1\n";
 
-/*    // Fast sync override
+    // Fast sync override
     if (ui.chkFastSync->isChecked()) {
-        out << "ibdskiptxverification=1\n";
+        out << "fastsync=1\n";
     }
-*/
+
 
     // Datadir override 
     if (!datadir.isEmpty()) {
@@ -640,7 +640,7 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {
             zcashconf->port.isEmpty()) {
                 zcashconf->port = "18770";
         }
-        if (name == "ibdskiptxverification" && value == "1") {
+        if (name == "fastsync" && value == "1") {
             zcashconf->skiptxverification = true;
         }
     }
