@@ -641,7 +641,7 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {
                 zcashconf->port = "18770";
         }
         if (name == "fastsync" && value == "1") {
-            zcashconf->skiptxverification = true;
+            zcashconf->fastsync = true;
         }
     }
 
