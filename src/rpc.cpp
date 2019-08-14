@@ -679,8 +679,8 @@ void RPC::getInfoThenRefresh(bool force) {
                 } else {
                     // If syncing is finished, we may have to remove the fastsync
                     // flag from safecoin.conf
-                    if (getConnection() != nullptr && getConnection()->config->skiptxverification) {
-                        getConnection()->config->skiptxverification = false;
+                    if (getConnection() != nullptr && getConnection()->config->fastsync) {
+                        getConnection()->config->fastsync = false;
                         Settings::removeFromZcashConf(Settings::getInstance()->getZcashdConfLocation(), 
                                                         "fastsync");
                     }
