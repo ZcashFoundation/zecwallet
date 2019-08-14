@@ -22,8 +22,14 @@ struct ConnectionConfig {
     QString rpcpassword;
     bool    usingZcashConf;
     bool    zcashDaemon;
+    bool    fastsync;
     QString zcashDir;
     QString proxy;
+    QString spent;
+    QString time;
+    QString addres;
+    QString tx;
+    QString safenode;
 
     ConnectionType connType;
 };
@@ -64,7 +70,7 @@ private:
 
     void doRPCSetConnection(Connection* conn);
 
-    std::shared_ptr<QProcess> ezcashd;
+    QProcess*               ezcashd  = nullptr;
 
     QDialog*                d;
     Ui_ConnectionDialog*    connD;
@@ -164,7 +170,6 @@ public:
 
             // If all responses have arrived, return
             if (responses->size() == totalSize) {
-
                 waitTimer->stop();
                 
                 cb(responses);

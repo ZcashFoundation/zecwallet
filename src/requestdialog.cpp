@@ -47,8 +47,8 @@ void RequestDialog::setupDialog(MainWindow* main, QDialog* d, Ui_RequestDialog* 
 void RequestDialog::showPaymentConfirmation(MainWindow* main, QString paymentURI) {
     PaymentURI payInfo = Settings::parseURI(paymentURI);
     if (!payInfo.error.isEmpty()) {
-        QMessageBox::critical(main, tr("Error paying HUSH URI"), 
-                tr("URI should be of the form 'hush:<addr>?amt=x&memo=y") + "\n" + payInfo.error);
+        QMessageBox::critical(main, tr("Error paying safecoin URI"), 
+                tr("URI should be of the form 'safecoin:<addr>?amt=x&memo=y") + "\n" + payInfo.error);
         return;
     }
 
@@ -73,7 +73,7 @@ void RequestDialog::showPaymentConfirmation(MainWindow* main, QString paymentURI
     req.txtFrom->setText(payInfo.addr);
     req.txtMemo->setPlainText(payInfo.memo);
     req.txtAmount->setText(payInfo.amt);
-    req.txtAmountUSD->setText(Settings::getUSDFormat(req.txtAmount->text().toDouble()));
+    req.txtAmountUSD->setText(Settings::getUSDFromZecAmount(req.txtAmount->text().toDouble()));
 
     req.buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Pay"));
 
@@ -112,9 +112,9 @@ void RequestDialog::showRequestZcash(MainWindow* main) {
     // Amount textbox
     req.txtAmount->setValidator(main->getAmountValidator());
     QObject::connect(req.txtAmount, &QLineEdit::textChanged, [=] (auto text) {
-        req.txtAmountUSD->setText(Settings::getUSDFormat(text.toDouble()));
+        req.txtAmountUSD->setText(Settings::getUSDFromZecAmount(text.toDouble()));
     });
-    req.txtAmountUSD->setText(Settings::getUSDFormat(req.txtAmount->text().toDouble()));
+    req.txtAmountUSD->setText(Settings::getUSDFromZecAmount(req.txtAmount->text().toDouble()));
 
     req.txtMemo->setAcceptButton(req.buttonBox->button(QDialogButtonBox::Ok));
     req.txtMemo->setLenDisplayLabel(req.lblMemoLen);
@@ -123,12 +123,12 @@ void RequestDialog::showRequestZcash(MainWindow* main) {
     req.txtFrom->setFocus();
 
     if (d.exec() == QDialog::Accepted) {
-        // Construct a zcash Payment URI with the data and pay it immediately.
-        QString memoURI = "hush:" + req.cmbMyAddress->currentText()
+        // Construct a safecoin Payment URI with the data and pay it immediately.
+        QString memoURI = "safecoin:" + req.cmbMyAddress->currentText()
                     + "?amt=" + Settings::getDecimalString(req.txtAmount->text().toDouble())
                     + "&memo=" + QUrl::toPercentEncoding(req.txtMemo->toPlainText());
 
-        QString sendURI = "hush:" + AddressBook::addressFromAddressLabel(req.txtFrom->text()) 
+        QString sendURI = "safecoin:" + AddressBook::addressFromAddressLabel(req.txtFrom->text()) 
                     + "?amt=0.0001"
                     + "&memo=" + QUrl::toPercentEncoding(memoURI);
 

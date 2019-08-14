@@ -4,7 +4,7 @@
 
 TxTableModel::TxTableModel(QObject *parent)
      : QAbstractTableModel(parent) {
-    headers << QObject::tr("Type") << QObject::tr("Address") << QObject::tr("Date/Time") << QObject::tr("Amount");
+    headers << QObject::tr("Type") << QObject::tr("Address") << QObject::tr("Date/Time") << QObject::tr("Confirmations") << QObject::tr("Amount");
 }
 
 TxTableModel::~TxTableModel() {
@@ -104,11 +104,14 @@ void TxTableModel::updateAllData() {
 
  QVariant TxTableModel::data(const QModelIndex &index, int role) const
  {
-     // Align column 4 (amount) right
-    if (role == Qt::TextAlignmentRole && index.column() == 3) return QVariant(Qt::AlignRight | Qt::AlignVCenter);
-    
+     // Align numeric columns (confirmations, amount) right
+    if (role == Qt::TextAlignmentRole && 
+         (index.column() == Column::Confirmations || index.column() == Column::Amount))
+        return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+
+    auto dat = modeldata->at(index.row());
     if (role == Qt::ForegroundRole) {
-        if (modeldata->at(index.row()).confirmations == 0) {
+        if (dat.confirmations <= 0) {
             QBrush b;
             b.setColor(Qt::red);
             return b;
@@ -120,48 +123,49 @@ void TxTableModel::updateAllData() {
         return b;        
     }
 
-    auto dat = modeldata->at(index.row());
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
-        case 0: return dat.type;
-        case 1: { 
-                    auto addr = modeldata->at(index.row()).address;
+        case Column::Type: return dat.type;
+        case Column::Address: {
+                    auto addr = dat.address;
                     if (addr.trimmed().isEmpty()) 
                         return "(Shielded)";
                     else 
                         return addr;
                 }
-        case 2: return QDateTime::fromMSecsSinceEpoch(modeldata->at(index.row()).datetime *  (qint64)1000).toLocalTime().toString();
-        case 3: return Settings::getZECDisplayFormat(modeldata->at(index.row()).amount);
+        case Column::Time: return QDateTime::fromMSecsSinceEpoch(dat.datetime *  (qint64)1000).toLocalTime().toString();
+        case Column::Confirmations: return QString::number(dat.confirmations);
+        case Column::Amount: return Settings::getZECDisplayFormat(dat.amount);
         }
     } 
 
     if (role == Qt::ToolTipRole) {
         switch (index.column()) {
-        case 0: { 
-                    if (dat.memo.startsWith("hush:")) {
+        case Column::Type: {
+                    if (dat.memo.startsWith("safecoin:")) {
                         return Settings::paymentURIPretty(Settings::parseURI(dat.memo));
                     } else {
                         return modeldata->at(index.row()).type + 
                         (dat.memo.isEmpty() ? "" : " tx memo: \"" + dat.memo + "\"");
                     }
                 }
-        case 1: { 
+        case Column::Address: {
                     auto addr = modeldata->at(index.row()).address;
                     if (addr.trimmed().isEmpty()) 
                         return "(Shielded)";
                     else 
                         return addr;
                 }
-        case 2: return QDateTime::fromMSecsSinceEpoch(modeldata->at(index.row()).datetime * (qint64)1000).toLocalTime().toString();
-        case 3: return Settings::getInstance()->getUSDFormat(modeldata->at(index.row()).amount);
+        case Column::Time: return QDateTime::fromMSecsSinceEpoch(modeldata->at(index.row()).datetime * (qint64)1000).toLocalTime().toString();
+        case Column::Confirmations: return QString("%1 Network Confirmations").arg(QString::number(dat.confirmations));
+        case Column::Amount: return Settings::getInstance()->getUSDFromZecAmount(modeldata->at(index.row()).amount);
         }    
     }
 
     if (role == Qt::DecorationRole && index.column() == 0) {
         if (!dat.memo.isEmpty()) {
             // If the memo is a Payment URI, then show a payment request icon
-            if (dat.memo.startsWith("hush:")) {
+            if (dat.memo.startsWith("safecoin:")) {
                 QIcon icon(":/icons/res/paymentreq.gif");
                 return QVariant(icon.pixmap(16, 16));
             } else {
@@ -183,7 +187,8 @@ void TxTableModel::updateAllData() {
 
  QVariant TxTableModel::headerData(int section, Qt::Orientation orientation, int role) const
  {
-     if (role == Qt::TextAlignmentRole && section == 3) return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+     if (role == Qt::TextAlignmentRole && (section == Column::Confirmations || section == Column::Amount))
+        return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 
      if (role == Qt::FontRole) {
          QFont f;
