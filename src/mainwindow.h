@@ -89,6 +89,7 @@ private:
     void setupReceiveTab();
     void setupBalancesTab();
     void setupZcashdTab();
+    void SafeNodesTab();
 
     void setupTurnstileDialog();
     void setupSettingsModal();

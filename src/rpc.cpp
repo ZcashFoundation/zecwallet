@@ -77,7 +77,7 @@ RPC::~RPC() {
 void RPC::setEZcashd(QProcess* p) {
     ezcashd = p;
 
-    if (ezcashd && ui->tabWidget->widget(4) == nullptr) {
+    if (ezcashd && ui->tabWidget->widget(5) == nullptr) {
         ui->tabWidget->addTab(main->zcashdtab, "safecoind");
     }
 }
