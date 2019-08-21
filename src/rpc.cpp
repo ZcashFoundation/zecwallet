@@ -630,18 +630,78 @@ void RPC::getInfoThenRefresh(bool force) {
                 ui->solrate->setText(QString::number(solrate) % " Sol/s");
             });
 
-            // Get network info
-            payload = {
-                {"jsonrpc", "1.0"},
-                {"id", "someid"},
-                {"method", "getnetworkinfo"}
-            };
+        // Get activenodes
+        payload = {
+            {"jsonrpc", "1.0"},
+            {"id", "someid"},
+            {"method", "getactivenodes"}
+        };
+        conn->doRPCIgnoreError(payload, [=] (const json& reply) {
 
-            conn->doRPCIgnoreError(payload, [=](const json& reply) {
-                QString clientname    = QString::fromStdString( reply["subversion"].get<json::string_t>() );
+            int node_count          = reply["node_count"].get<json::number_integer_t>();
+            int tier_0_count        = reply["tier_0_count"].get<json::number_integer_t>();
+            int tier_1_count        = reply["tier_1_count"].get<json::number_integer_t>();
+            int tier_2_count        = reply["tier_2_count"].get<json::number_integer_t>();
+            int tier_3_count        = reply["tier_3_count"].get<json::number_integer_t>();
+            int collateral_total    = reply["collateral_total"].get<json::number_integer_t>();
 
-                ui->clientname->setText(clientname);
-            });
+            ui->node_count->setText(QString::number(node_count));
+            ui->tier_0_count->setText(QString::number(tier_0_count));
+            ui->tier_1_count->setText(QString::number(tier_1_count));
+            ui->tier_2_count->setText(QString::number(tier_2_count));
+            ui->tier_3_count->setText(QString::number(tier_3_count));
+            ui->collateral_total->setToolTip(Settings::getZECDisplayFormat(collateral_total));
+            ui->collateral_total->setText(Settings::getZECDisplayFormat(collateral_total));
+            ui->collateral_total_usd->setToolTip(Settings::getUSDFromZecAmount(collateral_total));
+            ui->collateral_total_usd->setText(Settings::getUSDFromZecAmount(collateral_total));
+        });
+
+
+        // Get nodeinfo
+        payload = {
+            {"jsonrpc", "1.0"},
+            {"id", "someid"},
+            {"method", "getnodeinfo"}
+        };
+        conn->doRPCIgnoreError(payload, [=] (const json& reply) {
+
+            if (!getConnection()->config->safenode.isEmpty()) {
+
+                /* TODO
+                * 
+                * balance
+                * collateral
+                * is_valid
+                * tier
+                * errors
+                * 
+                */
+            
+                QString parentkey   = QString::fromStdString( reply["parentkey"].get<json::string_t>() );
+                QString safekey     = QString::fromStdString( reply["safekey"].get<json::string_t>() );
+                QString safeheight  = QString::fromStdString( reply["safeheight"].get<json::string_t>() );
+                QString SAFE_address  = QString::fromStdString( reply["SAFE_address"].get<json::string_t>() );
+
+                ui->parentkey->setText(parentkey);
+                ui->safekey->setText(safekey);
+                ui->safeheight->setText(safeheight);
+                ui->safeaddress->setText(SAFE_address);
+            }
+        });
+
+
+        // Get network info
+        payload = {
+            {"jsonrpc", "1.0"},
+            {"id", "someid"},
+            {"method", "getnetworkinfo"}
+        };
+
+        conn->doRPCIgnoreError(payload, [=](const json& reply) {
+            QString clientname    = QString::fromStdString( reply["subversion"].get<json::string_t>() );
+
+            ui->clientname->setText(clientname);
+        });
 
 
         // Call to see if the blockchain is syncing. 
