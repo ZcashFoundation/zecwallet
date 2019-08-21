@@ -635,6 +635,18 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {
         if (name == "proxy") {
             zcashconf->proxy = value;
         }
+        if (name == "safekey") {
+            zcashconf->safenode = value;
+        }
+        if (name == "spentindex") {
+            zcashconf->spentindex = value;
+        }
+        if (name == "timestampindex") {
+            zcashconf->timeindex = value;
+        }
+        if (name == "addressindex") {
+            zcashconf->addrindex = value;
+        }
         if (name == "testnet" &&
             value == "1"  &&
             zcashconf->port.isEmpty()) {
@@ -669,7 +681,7 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::loadFromSettings() {
     if (username.isEmpty() || password.isEmpty())
         return nullptr;
 
-    auto uiConfig = new ConnectionConfig{ host, port, username, password, false, false, false, "", "", "", "", "", "", "", ConnectionType::UISettingsZCashD};
+    auto uiConfig = new ConnectionConfig{ host, port, username, password, false, false, false, "", "", "", "", "", "", ConnectionType::UISettingsZCashD};
 
     return std::shared_ptr<ConnectionConfig>(uiConfig);
 }
