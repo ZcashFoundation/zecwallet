@@ -1,13 +1,12 @@
 [Desktop Entry]
-Name=SilentDragon
-Comment=Full node and wallet for Hush
+Name=SafecoinWallet
+Comment=Full node and wallet for Safecoin
 GenericName=Wallet
-Exec=/usr/local/bin/silentdragon %u
-Icon=silentdragon.xpm
+Exec=/usr/local/bin/safecoinwallet %u
+Icon=safecoinwallet.xpm
 Type=Application
 StartupNotify=true
-StartupWMClass=silentdragon
+StartupWMClass=safecoinwallet
 Categories=Utility;
-MimeType=x-scheme-handler/hush;
-Keywords=silentdragon;
-
+MimeType=x-scheme-handler/safecoin;
+Keywords=safecoinwallet;

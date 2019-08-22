@@ -14,18 +14,15 @@ ConnectionLoader::ConnectionLoader(MainWindow* main, RPC* rpc) {
     this->rpc  = rpc;
 
     d = new QDialog(main);
-    d->setWindowFlags(d->windowFlags() & ~(Qt::WindowCloseButtonHint | Qt::WindowContextHelpButtonHint));
     connD = new Ui_ConnectionDialog();
     connD->setupUi(d);
     QPixmap logo(":/img/res/logobig.gif");
-    connD->topIcon->setBasePixmap(logo.scaled(512, 512, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    main->logger->write("set topIcon");
+    connD->topIcon->setBasePixmap(logo.scaled(256, 256, Qt::KeepAspectRatio, Qt::SmoothTransformation));
 }
 
-ConnectionLoader::~ConnectionLoader() {
+ConnectionLoader::~ConnectionLoader() {    
     delete d;
     delete connD;
-    main->logger->write("ConnectionLoader done");
 }
 
 void ConnectionLoader::loadConnection() {
@@ -41,7 +38,7 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
         return;
     }
 
-    // Priority 2: Try to connect to detect zcash.conf and connect to it.
+    // Priority 2: Try to connect to detect safecoin.conf and connect to it.
     auto config = autoDetectZcashConf();
     main->logger->write(QObject::tr("Attempting autoconnect"));
 
@@ -49,58 +46,58 @@ void ConnectionLoader::doAutoConnect(bool tryEzcashdStart) {
         auto connection = makeConnection(config);
 
         refreshZcashdState(connection, [=] () {
-            // Refused connection. So try and start embedded zcashd
+            // Refused connection. So try and start embedded safecoind
             if (Settings::getInstance()->useEmbedded()) {
                 if (tryEzcashdStart) {
-                    this->showInformation(QObject::tr("Starting embedded hushd"));
+                    this->showInformation(QObject::tr("Starting embedded safecoind"));
                     if (this->startEmbeddedZcashd()) {
-                        // Embedded zcashd started up. Wait a second and then refresh the connection
-                        main->logger->write("Embedded hushd started up, trying autoconnect in 1 sec");
+                        // Embedded safecoind started up. Wait a second and then refresh the connection
+                        main->logger->write("Embedded safecoind started up, trying autoconnect in 1 sec");
                         QTimer::singleShot(1000, [=]() { doAutoConnect(); } );
                     } else {
                         if (config->zcashDaemon) {
-                            // hushd is configured to run as a daemon, so we must wait for a few seconds
+                            // safecoind is configured to run as a daemon, so we must wait for a few seconds
                             // to let it start up. 
-                            main->logger->write("hushd is daemon=1. Waiting for it to start up");
-                            this->showInformation(QObject::tr("hushd is set to run as daemon"), QObject::tr("Waiting for hushd"));
-                            QTimer::singleShot(5000, [=]() { doAutoConnect(/* don't attempt to start ehushd */ false); });
+                            main->logger->write("safecoind is daemon=1. Waiting for it to start up");
+                            this->showInformation(QObject::tr("safecoind is set to run as daemon"), QObject::tr("Waiting for safecoind"));
+                            QTimer::singleShot(5000, [=]() { doAutoConnect(/* don't attempt to start ezcashd */ false); });
                         } else {
                             // Something is wrong. 
                             // We're going to attempt to connect to the one in the background one last time
                             // and see if that works, else throw an error
-                            main->logger->write("Unknown problem while trying to start hushd!");
+                            main->logger->write("Unknown problem while trying to start safecoind");
                             QTimer::singleShot(2000, [=]() { doAutoConnect(/* don't attempt to start ezcashd */ false); });
                         }
                     }
                 } else {
                     // We tried to start ezcashd previously, and it didn't work. So, show the error. 
-                    main->logger->write("Couldn't start embedded hushd for unknown reason");
+                    main->logger->write("Couldn't start embedded safecoind for unknown reason");
                     QString explanation;
                     if (config->zcashDaemon) {
-                        explanation = QString() % QObject::tr("You have hushd set to start as a daemon, which can cause problems "
-                            "with SilentDragon\n\n."
-                            "Please remove the following line from your HUSH3.conf and restart SilentDragon\n"
+                        explanation = QString() % QObject::tr("You have safecoind set to start as a daemon, which can cause problems "
+                            "with SafecoinWallet\n\n."
+                            "Please remove the following line from your safecoin.conf and restart SafecoinWallet\n"
                             "daemon=1");
                     } else {
-                        explanation = QString() % QObject::tr("Couldn't start the embedded hushd.\n\n" 
-                            "Please try restarting.\n\nIf you previously started hushd with custom arguments, you might need to  reset HUSH3.conf.\n\n" 
-                            "If all else fails, please run hushd manually.") %  
+                        explanation = QString() % QObject::tr("Couldn't start the embedded safecoind.\n\n" 
+                            "Please try restarting.\n\nIf you previously started safecoind with custom arguments, you might need to reset safecoin.conf.\n\n" 
+                            "If all else fails, please run safecoind manually.") %  
                             (ezcashd ? QObject::tr("The process returned") + ":\n\n" % ezcashd->errorString() : QString(""));
                     }
                     
                     this->showError(explanation);
                 }                
             } else {
-                // HUSH3.conf exists, there's no connection, and the user asked us not to start hushd. Error!
-                main->logger->write("Not using embedded and couldn't connect to hushd");
-                QString explanation = QString() % QObject::tr("Couldn't connect to hushd configured in HUSH3.conf.\n\n" 
-                                      "Not starting embedded hushd because --no-embedded was passed");
+                // safecoin.conf exists, there's no connection, and the user asked us not to start safecoind. Error!
+                main->logger->write("Not using embedded and couldn't connect to safecoind");
+                QString explanation = QString() % QObject::tr("Couldn't connect to safecoind configured in safecoin.conf.\n\n" 
+                                      "Not starting embedded safecoind because --no-embedded was passed");
                 this->showError(explanation);
             }
         });
     } else {
         if (Settings::getInstance()->useEmbedded()) {
-            // HUSH3.conf was not found, so create one
+            // safecoin.conf was not found, so create one
             createZcashConf();
         } else {
             // Fall back to manual connect
@@ -127,7 +124,7 @@ QString randomPassword() {
 }
 
 /**
- * This will create a new HUSH3.conf, download Zcash parameters.
+ * This will create a new safecoin.conf, download Safecoin parameters.
  */ 
 void ConnectionLoader::createZcashConf() {
     main->logger->write("createZcashConf");
@@ -139,8 +136,8 @@ void ConnectionLoader::createZcashConf() {
     Ui_createZcashConf ui;
     ui.setupUi(&d);
 
-    QPixmap logo(":/img/res/zcashdlogo.gif");
-    ui.lblTopIcon->setBasePixmap(logo.scaled(512,512, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    QPixmap logo(":/img/res/safecoindlogo.gif");
+    ui.lblTopIcon->setBasePixmap(logo.scaled(256, 256, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     ui.btnPickDir->setEnabled(false);
 
     ui.grpAdvanced->setVisible(false);
@@ -171,6 +168,10 @@ void ConnectionLoader::createZcashConf() {
     if (d.exec() == QDialog::Accepted) {
         datadir = ui.lblDirName->text();
         useTor = ui.chkUseTor->isChecked();
+        if (!ui.chkAllowInternet->isChecked()) {
+            Settings::getInstance()->setAllowFetchPrices(false);
+            Settings::getInstance()->setCheckForUpdates(false);
+        }
     }
 
     main->logger->write("Creating file " + confLocation);
@@ -178,37 +179,39 @@ void ConnectionLoader::createZcashConf() {
 
     QFile file(confLocation);
     if (!file.open(QIODevice::ReadWrite | QIODevice::Truncate)) {
-        main->logger->write("Could not create HUSH3.conf, returning");
-
-        QString explanation = QString() % QObject::tr("Could not create HUSH3.conf.");
-        this->showError(explanation);
+        main->logger->write("Could not create safecoin.conf, returning");
         return;
     }
-
-    QTextStream out(&file);
-
-    out << "# Autogenerated by Silent Dragon\n";
+        
+    QTextStream out(&file); 
+    
+    out << "# Autogenerated by SafecoinWallet\n";
     out << "server=1\n";
-    out << "rpcuser=hush\n";
+    out << "rpcuser=safecoin\n";
     out << "rpcpassword=" % randomPassword() << "\n";
-    out << "rpcport=18031\n";
-    out << "txindex=1\n";
-    out << "addressindex=1\n";
-    out << "spentindex=1\n";
-    out << "timestampindex=1\n";
+    out << "rpcport=8771\n";
     out << "rpcworkqueue=256\n";
-    out << "rpcallowip=127.0.0.1\n";
+    out << "txindex=1\n";
 
+    // Fast sync override
+    if (ui.chkFastSync->isChecked()) {
+        out << "fastsync=1\n";
+    }
+
+
+    // Datadir override 
     if (!datadir.isEmpty()) {
         out << "datadir=" % datadir % "\n";
     }
+
+    // Tor override
     if (useTor) {
         out << "proxy=127.0.0.1:9050\n";
     }
 
     file.close();
 
-    // Now that HUSH3.conf exists, try to autoconnect again
+    // Now that safecoin.conf exists, try to autoconnect again
     this->doAutoConnect();
 }
 
@@ -218,9 +221,12 @@ void ConnectionLoader::downloadParams(std::function<void(void)> cb) {
     // Add all the files to the download queue
     downloadQueue = new QQueue<QUrl>();
     client = new QNetworkAccessManager(main);   
-
+    
     downloadQueue->enqueue(QUrl("https://z.cash/downloads/sapling-output.params"));
-    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sapling-spend.params"));
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sapling-spend.params"));    
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-proving.key"));
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-verifying.key"));
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-groth16.params"));
 
     doNextDownload(cb);    
 }
@@ -319,7 +325,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     if (!Settings::getInstance()->useEmbedded()) 
         return false;
     
-    main->logger->write("Trying to start embedded hushd");
+    main->logger->write("Trying to start embedded safecoind");
 
     // Static because it needs to survive even after this method returns.
     static QString processStdErrOutput;
@@ -327,7 +333,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     if (ezcashd != nullptr) {
         if (ezcashd->state() == QProcess::NotRunning) {
             if (!processStdErrOutput.isEmpty()) {
-                QMessageBox::critical(main, QObject::tr("hushd error"), "hushd said: " + processStdErrOutput, 
+                QMessageBox::critical(main, QObject::tr("safecoind error"), "safecoind said: " + processStdErrOutput, 
                                       QMessageBox::Ok);
             }
             return false;
@@ -336,47 +342,42 @@ bool ConnectionLoader::startEmbeddedZcashd() {
         }        
     }
 
-    // Finally, start hushd
+    // Finally, start safecoind    
     QDir appPath(QCoreApplication::applicationDirPath());
 #ifdef Q_OS_LINUX
-    auto zcashdProgram = appPath.absoluteFilePath("hushd");
+    auto zcashdProgram = appPath.absoluteFilePath("safecoind");
     if (!QFile(zcashdProgram).exists()) {
-        zcashdProgram = appPath.absoluteFilePath("hushd");
+        zcashdProgram = appPath.absoluteFilePath("safecoind");
     }
 #elif defined(Q_OS_DARWIN)
-    auto zcashdProgram = appPath.absoluteFilePath("hushd");
-#elif defined(Q_OS_WIN64)
-    auto zcashdProgram = appPath.absoluteFilePath("hushd.bat");
+    auto zcashdProgram = appPath.absoluteFilePath("safecoind");
 #else
-    //TODO: Not Linux + not darwin DOES NOT EQUAL windows!!!
-    auto zcashdProgram = appPath.absoluteFilePath("hushd");
+    auto zcashdProgram = appPath.absoluteFilePath("safecoind.exe");
 #endif
     
     if (!QFile(zcashdProgram).exists()) {
-        qDebug() << "Can't find hushd at " << zcashdProgram;
-        main->logger->write("Can't find hushd at " + zcashdProgram); 
+        qDebug() << "Can't find safecoind at " << zcashdProgram;
+        main->logger->write("Can't find safecoind at " + zcashdProgram); 
         return false;
     }
 
-    ezcashd = std::shared_ptr<QProcess>(new QProcess(main));
-    QObject::connect(ezcashd.get(), &QProcess::started, [=] () {
-        qDebug() << "Embedded hushd started";
+    ezcashd = new QProcess(main);    
+    QObject::connect(ezcashd, &QProcess::started, [=] () {
+        //qDebug() << "safecoind started";
     });
 
-    QObject::connect(ezcashd.get(), QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-                        [=](int exitCode, QProcess::ExitStatus exitStatus) {
-        qDebug() << "hushd finished with code " << exitCode << "," << exitStatus;
+    QObject::connect(ezcashd, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+                        [=](int, QProcess::ExitStatus) {
+        //qDebug() << "safecoind finished with code " << exitCode << "," << exitStatus;    
     });
 
-    QObject::connect(ezcashd.get(), &QProcess::errorOccurred, [&] (QProcess::ProcessError error) {
-        qDebug() << "Couldn't start hushd: " << error;
+    QObject::connect(ezcashd, &QProcess::errorOccurred, [&] (auto) {
+        //qDebug() << "Couldn't start safecoind: " << error;
     });
 
-    std::weak_ptr<QProcess> weak_obj(ezcashd);
-    auto ptr_main(main);
-    QObject::connect(ezcashd.get(), &QProcess::readyReadStandardError, [weak_obj, ptr_main]() {
-        auto output = weak_obj.lock()->readAllStandardError();
-        ptr_main->logger->write("hushd stderr:" + output);
+    QObject::connect(ezcashd, &QProcess::readyReadStandardError, [=]() {
+        auto output = ezcashd->readAllStandardError();
+       main->logger->write("safecoind stderr:" + output);
         processStdErrOutput.append(output);
     });
 
@@ -386,7 +387,7 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     ezcashd->start(zcashdProgram);
 #else
     ezcashd->setWorkingDirectory(appPath.absolutePath());
-    ezcashd->start(zcashdProgram);
+    ezcashd->start("safecoind.exe");
 #endif // Q_OS_LINUX
 
 
@@ -411,7 +412,7 @@ void ConnectionLoader::doManualConnect() {
     auto connection = makeConnection(config);
     refreshZcashdState(connection, [=] () {
         QString explanation = QString()
-                % QObject::tr("Could not connect to hushd configured in settings.\n\n" 
+                % QObject::tr("Could not connect to safecoind configured in settings.\n\n" 
                 "Please set the host/port and user/password in the Edit->Settings menu.");
 
         showError(explanation);
@@ -450,8 +451,6 @@ Connection* ConnectionLoader::makeConnection(std::shared_ptr<ConnectionConfig> c
 }
 
 void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<void(void)> refused) {
-    main->logger->write("refreshZcashdState");
-
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -459,10 +458,10 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
     };
     connection->doRPC(payload,
         [=] (auto) {
-            // Success
-            main->logger->write("hushd is online.");
-            // Delay 1 second to ensure loading (splash) is seen at least 1 second.
-            QTimer::singleShot(1000, [=]() { this->doRPCSetConnection(connection); });
+            // Success, hide the dialog if it was shown. 
+            d->hide();
+            main->logger->write("safecoind is online.");
+            this->doRPCSetConnection(connection);
         },
         [=] (auto reply, auto res) {            
             // Failed, see what it is. 
@@ -475,7 +474,7 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
                 main->logger->write("Authentication failed");
                 QString explanation = QString() % 
                         QObject::tr("Authentication failed. The username / password you specified was "
-                        "not accepted by hushd. Try changing it in the Edit->Settings menu");
+                        "not accepted by safecoind. Try changing it in the Edit->Settings menu");
 
                 this->showError(explanation);
             } else if (err == QNetworkReply::NetworkError::InternalServerError && 
@@ -489,8 +488,8 @@ void ConnectionLoader::refreshZcashdState(Connection* connection, std::function<
                     if (dots > 3)
                         dots = 0;
                 }
-                this->showInformation(QObject::tr("Your hushd is starting up. Please wait."), status);
-                main->logger->write("Waiting for hushd to come online.");
+                this->showInformation(QObject::tr("Your safecoind is starting up. Please wait."), status);
+                main->logger->write("Waiting for safecoind to come online.");
                 // Refresh after one second
                 QTimer::singleShot(1000, [=]() { this->refreshZcashdState(connection, refused); });
             }
@@ -506,7 +505,7 @@ void ConnectionLoader::showInformation(QString info, QString detail) {
     }
     
     if (rescanCount > 10) {
-        detail = detail + "\n" + QObject::tr("This may take several hours, grab some popcorn");
+        detail = detail + "\n" + QObject::tr("This may take several hours");
     }
 
     connD->status->setText(info);
@@ -529,27 +528,27 @@ void ConnectionLoader::showError(QString explanation) {
 
 QString ConnectionLoader::locateZcashConfFile() {
 #ifdef Q_OS_LINUX
-    auto confLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, ".komodo/HUSH3/HUSH3.conf");
+    auto confLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, ".safecoin/safecoin.conf");
 #elif defined(Q_OS_DARWIN)
-    auto confLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, "Library/Application Support/Komodo/HUSH3/HUSH3.conf");
+    auto confLocation = QStandardPaths::locate(QStandardPaths::HomeLocation, "Library/Application Support/Safecoin/safecoin.conf");
 #else
-    auto confLocation = QStandardPaths::locate(QStandardPaths::AppDataLocation, "../../Komodo/HUSH3/HUSH3.conf");
+    auto confLocation = QStandardPaths::locate(QStandardPaths::AppDataLocation, "../../Safecoin/safecoin.conf");
 #endif
 
-    main->logger->write("Found HUSH3.conf at " + QDir::cleanPath(confLocation));
+    main->logger->write("Found safecoin.conf at " + QDir::cleanPath(confLocation));
     return QDir::cleanPath(confLocation);
 }
 
 QString ConnectionLoader::zcashConfWritableLocation() {
 #ifdef Q_OS_LINUX
-    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath(".komodo/HUSH3/HUSH3.conf");
+    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath(".safecoin/safecoin.conf");
 #elif defined(Q_OS_DARWIN)
-    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath("Library/Application Support/Komodo/HUSH3/HUSH3.conf");
+    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).filePath("Library/Application Support/Safecoin/safecoin.conf");
 #else
-    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("../../Komodo/HUSH3/HUSH3.conf");
+    auto confLocation = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("../../Safecoin/safecoin.conf");
 #endif
 
-    main->logger->write("Found HUSH3.conf at " + QDir::cleanPath(confLocation));
+    main->logger->write("Found safecoin.conf at " + QDir::cleanPath(confLocation));
     return QDir::cleanPath(confLocation);
 }
 
@@ -574,24 +573,27 @@ QString ConnectionLoader::zcashParamsDir() {
 bool ConnectionLoader::verifyParams() {
     QDir paramsDir(zcashParamsDir());
 
-    qDebug() << "Verifying param files exist";
-
     if (!QFile(paramsDir.filePath("sapling-output.params")).exists()) return false;
     if (!QFile(paramsDir.filePath("sapling-spend.params")).exists()) return false;
-
-    qDebug() << "All param files found!";
+    if (!QFile(paramsDir.filePath("sprout-proving.key")).exists()) return false;
+    if (!QFile(paramsDir.filePath("sprout-verifying.key")).exists()) return false;
+    if (!QFile(paramsDir.filePath("sprout-groth16.params")).exists()) return false;
 
     return true;
 }
 
 /**
- * Try to automatically detect a HUSH3/HUSH3.conf file in the correct location and load parameters
+ * Try to automatically detect a safecoin.conf file in the correct location and load parameters
  */ 
 std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {    
-    auto confLocation = locateZcashConfFile();
+    auto confLocation = Settings::getInstance()->getZcashdConfLocation();
+
+    if (confLocation.isEmpty()) {
+        confLocation = locateZcashConfFile();
+    }
 
     if (confLocation.isNull()) {
-        // No Zcash file, just return with nothing
+        // No Safecoin file, just return with nothing
         return nullptr;
     }
 
@@ -633,24 +635,39 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::autoDetectZcashConf() {
         if (name == "proxy") {
             zcashconf->proxy = value;
         }
+        if (name == "safekey") {
+            zcashconf->safenode = value;
+        }
+        if (name == "spentindex") {
+            zcashconf->spentindex = value;
+        }
+        if (name == "timestampindex") {
+            zcashconf->timeindex = value;
+        }
+        if (name == "addressindex") {
+            zcashconf->addrindex = value;
+        }
         if (name == "testnet" &&
             value == "1"  &&
             zcashconf->port.isEmpty()) {
-                zcashconf->port = "18232";
+                zcashconf->port = "18770";
+        }
+        if (name == "fastsync" && value == "1") {
+            zcashconf->fastsync = true;
         }
     }
 
     // If rpcport is not in the file, and it was not set by the testnet=1 flag, then go to default
-    if (zcashconf->port.isEmpty()) zcashconf->port = "18031";
+    if (zcashconf->port.isEmpty()) zcashconf->port = "8770";
     file.close();
 
-    // In addition to the HUSH3/HUSH3.conf file, also double check the params. 
+    // In addition to the safecoin.conf file, also double check the params. 
 
     return std::shared_ptr<ConnectionConfig>(zcashconf);
 }
 
 /**
- * Load connection settings from the UI, which indicates an unknown, external zcashd
+ * Load connection settings from the UI, which indicates an unknown, external safecoind
  */ 
 std::shared_ptr<ConnectionConfig> ConnectionLoader::loadFromSettings() {
     // Load from the QT Settings. 
@@ -664,7 +681,7 @@ std::shared_ptr<ConnectionConfig> ConnectionLoader::loadFromSettings() {
     if (username.isEmpty() || password.isEmpty())
         return nullptr;
 
-    auto uiConfig = new ConnectionConfig{ host, port, username, password, false, false, "", "", ConnectionType::UISettingsZCashD};
+    auto uiConfig = new ConnectionConfig{ host, port, username, password, false, false, false, "", "", "", "", "", "", ConnectionType::UISettingsZCashD};
 
     return std::shared_ptr<ConnectionConfig>(uiConfig);
 }

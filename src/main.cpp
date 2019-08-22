@@ -148,23 +148,28 @@ public:
 
         // Command line parser
         QCommandLineParser parser;
-        parser.setApplicationDescription("Shielded desktop wallet and embedded full node for Hush");
+        parser.setApplicationDescription("Shielded desktop wallet and embedded full node for Safecoin");
         parser.addHelpOption();
 
         // A boolean option for running it headless
         QCommandLineOption headlessOption(QStringList() << "headless", "Running it via GUI.");
         parser.addOption(headlessOption);
 
-        // No embedded will disable the embedded zcashd node
-        QCommandLineOption noembeddedOption(QStringList() << "no-embedded", "Disable embedded hushd");
+        // No embedded will disable the embedded safecoind node
+        QCommandLineOption noembeddedOption(QStringList() << "no-embedded", "Disable embedded safecoind");
         parser.addOption(noembeddedOption);
 
-        // Positional argument will specify a zcash payment URI
-        parser.addPositionalArgument("hushURI", "An optional HUSH URI to pay");
+        // Add an option to specify the conf file
+            QCommandLineOption confOption(QStringList() << "conf", "Use the zcash.conf specified instead of looking for the default one.",
+                                          "confFile");
+        parser.addOption(confOption);
+
+        // Positional argument will specify a safecoin payment URI
+        parser.addPositionalArgument("zcashURI", "An optional safecoin URI to pay");
 
         parser.process(a);
 
-        // Check for a positional argument indicating a zcash payment URI
+        // Check for a positional argument indicating a safecoin payment URI
         if (a.isSecondary()) {
             if (parser.positionalArguments().length() > 0) {
                 a.sendMessage(parser.positionalArguments()[0].toUtf8());    
@@ -173,21 +178,20 @@ public:
             return 0;            
         } 
 
-        QCoreApplication::setOrganizationName("Hush");
-        QCoreApplication::setApplicationName("SilentDragon");
+        QCoreApplication::setOrganizationName("safe-qt-wallet-org");
+        QCoreApplication::setApplicationName("safe-qt-wallet");
 
         QString locale = QLocale::system().name();
         locale.truncate(locale.lastIndexOf('_'));   // Get the language code
         qDebug() << "Loading locale " << locale;
         
         QTranslator translator;
-        translator.load(QString(":/translations/res/zec_qt_wallet_") + locale);
+        translator.load(QString(":/translations/res/safe_qt_wallet_") + locale);
         a.installTranslator(&translator);
 
         QIcon icon(":/icons/res/icon.ico");
         QApplication::setWindowIcon(icon);
 
-        // TODO: update for SD
         #ifdef Q_OS_LINUX
             QFontDatabase::addApplicationFont(":/fonts/res/Ubuntu-R.ttf");
             qApp->setFont(QFont("Ubuntu", 11, QFont::Normal, false));
@@ -218,15 +222,20 @@ public:
             Settings::getInstance()->setUseEmbedded(true);
         }
 
+        // Check to see if a conf location was specified
+        if (parser.isSet(confOption)) {
+            Settings::getInstance()->setUsingZcashConf(parser.value(confOption));
+        }
+
         w = new MainWindow();
-        w->setWindowTitle("SilentDragon v" + QString(APP_VERSION));
+        w->setWindowTitle("SafecoinWallet v" + QString(APP_VERSION));
 
         // If there was a payment URI on the command line, pay it
         if (parser.positionalArguments().length() > 0) {
             w->payZcashURI(parser.positionalArguments()[0]);
         }
 
-        // Listen for any secondary instances telling us about a zcash payment URI
+        // Listen for any secondary instances telling us about a safecoin payment URI
         QObject::connect(&a, &SingleApplication::receivedMessage, [=] (quint32, QByteArray msg) {
             QString uri(msg);
 

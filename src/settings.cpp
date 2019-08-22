@@ -58,7 +58,7 @@ bool Settings::isSaplingAddress(QString addr) {
         return false;
 
     return ( isTestnet() && addr.startsWith("ztestsapling")) ||
-           (!isTestnet() && addr.startsWith("zs1"));
+           (!isTestnet() && addr.startsWith("zs"));
 }
 
 bool Settings::isSproutAddress(QString addr) {
@@ -79,7 +79,7 @@ bool Settings::isTAddress(QString addr) {
     if (!isValidAddress(addr))
         return false;
         
-    return addr.startsWith("t");
+    return addr.startsWith("R");
 }
 
 int Settings::getZcashdVersion() {
@@ -107,7 +107,8 @@ void Settings::setBlockNumber(int number) {
 }
 
 bool Settings::isSaplingActive() {
-    return  (isTestnet() && getBlockNumber() > 0) || (!isTestnet() && getBlockNumber() > 0);
+    return  (isTestnet() && getBlockNumber() > 0) ||
+			(!isTestnet() && getBlockNumber() > 547422);
 }
 
 double Settings::getZECPrice() { 
@@ -121,6 +122,22 @@ bool Settings::getAutoShield() {
 
 void Settings::setAutoShield(bool allow) {
     QSettings().setValue("options/autoshield", allow);
+}
+
+bool Settings::getCheckForUpdates() {
+    return QSettings().value("options/allowcheckupdates", true).toBool();
+}
+
+void Settings::setCheckForUpdates(bool allow) {
+     QSettings().setValue("options/allowcheckupdates", allow);
+}
+
+bool Settings::getAllowFetchPrices() {
+    return QSettings().value("options/allowfetchprices", true).toBool();
+}
+
+void Settings::setAllowFetchPrices(bool allow) {
+     QSettings().setValue("options/allowfetchprices", allow);
 }
 
 bool Settings::getAllowCustomFees() {
@@ -159,9 +176,45 @@ void Settings::saveRestore(QDialog* d) {
     });
 }
 
-QString Settings::getUSDFormat(double bal) {
-    return "$" + QLocale(QLocale::English).toString(bal * Settings::getInstance()->getZECPrice(), 'f', 2);
+void Settings::saveRestoreTableHeader(QTableView* table, QDialog* d, QString tablename) {
+    table->horizontalHeader()->restoreState(QSettings().value(tablename).toByteArray());
+    table->horizontalHeader()->setStretchLastSection(true);
+
+    QObject::connect(d, &QDialog::finished, [=](auto) {
+        QSettings().setValue(tablename, table->horizontalHeader()->saveState());
+    });
 }
+
+void Settings::openAddressInExplorer(QString address) {
+    QString url;
+    if (Settings::getInstance()->isTestnet()) {
+        url = "https://testnet.safecoin.org/address/" + address;
+    } else {
+        url = "https://explorer.safecoin.org/address/" + address;
+    }
+    QDesktopServices::openUrl(QUrl(url));
+}
+
+void Settings::openTxInExplorer(QString txid) {
+    QString url;
+    if (Settings::getInstance()->isTestnet()) {
+        url = "https://testnet.safecoin.org/tx/" + txid;
+    }
+    else {
+        url = "https://explorer.safecoin.org/tx/" + txid;
+    }
+    QDesktopServices::openUrl(QUrl(url));
+}
+
+QString Settings::getUSDFormat(double bal) {
+    return "$" + QLocale(QLocale::English).toString(bal, 'f', 2);
+}
+
+
+QString Settings::getUSDFromZecAmount(double bal) {
+    return getUSDFormat(bal * Settings::getInstance()->getZECPrice());
+}
+
 
 QString Settings::getDecimalString(double amt) {
     QString f = QString::number(amt, 'f', 8);
@@ -181,9 +234,9 @@ QString Settings::getZECDisplayFormat(double bal) {
 }
 
 QString Settings::getZECUSDDisplayFormat(double bal) {
-    auto usdFormat = getUSDFormat(bal);
+    auto usdFormat = getUSDFromZecAmount(bal);
     if (!usdFormat.isEmpty())
-        return getZECDisplayFormat(bal) % " (" % getUSDFormat(bal) % ")";
+        return getZECDisplayFormat(bal) % " (" % usdFormat % ")";
     else
         return getZECDisplayFormat(bal);
 }
@@ -192,17 +245,17 @@ const QString Settings::txidStatusMessage = QString(QObject::tr("Tx submitted (r
 
 QString Settings::getTokenName() {
     if (Settings::getInstance()->isTestnet()) {
-        return "HUSHT";
+        return "SAFET";
     } else {
-        return "HUSH";
+        return "SAFE";
     }
 }
 
-QString Settings::getDonationAddr(bool sapling) {
-    if (Settings::getInstance()->isTestnet())  {
-	    return "ztestsaplingXXX";
-    }
-    return "zs1aq4xnrkjlnxx0zesqye7jz3dfrf3rjh7q5z6u8l6mwyqqaam3gx3j2fkqakp33v93yavq46j83q";
+QString Settings::getDonationAddr() {
+    if (Settings::getInstance()->isTestnet()) 
+            return "ztestsaplingXXX";
+    else 
+            return "RtU6tF2d1YE6hw9DHMAyNRb2uUk4PwSCZr";
 }
 
 bool Settings::addToZcashConf(QString confLocation, QString line) {
@@ -262,10 +315,20 @@ double Settings::getZboardAmount() {
 
 QString Settings::getZboardAddr() {
     if (Settings::getInstance()->isTestnet()) {
-        return getDonationAddr(true);
+        return getDonationAddr();
     }
     else {
         return "zs10m00rvkhfm4f7n23e4sxsx275r7ptnggx39ygl0vy46j9mdll5c97gl6dxgpk0njuptg2mn9w5s";
+    }
+}
+
+bool Settings::isValidSaplingPrivateKey(QString pk) {
+    if (isTestnet()) {
+        QRegExp zspkey("^secret-extended-key-test[0-9a-z]{278}$", Qt::CaseInsensitive);
+        return zspkey.exactMatch(pk);
+    } else {
+        QRegExp zspkey("^secret-extended-key-main[0-9a-z]{278}$", Qt::CaseInsensitive);
+        return zspkey.exactMatch(pk);
     }
 }
 
@@ -288,12 +351,12 @@ QString Settings::paymentURIPretty(PaymentURI uri) {
 PaymentURI Settings::parseURI(QString uri) {
     PaymentURI ans;
 
-    if (!uri.startsWith("hush:")) {
-        ans.error = "Not a HUSH payment URI";
+    if (!uri.startsWith("safecoin:")) {
+        ans.error = "Not a safecoin payment URI";
         return ans;
     }
 
-    uri = uri.right(uri.length() - QString("hush:").length());
+    uri = uri.right(uri.length() - QString("safecoin:").length());
     
     QRegExp re("([a-zA-Z0-9]+)");
     int pos;
