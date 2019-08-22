@@ -643,7 +643,7 @@ void RPC::getInfoThenRefresh(bool force) {
             int tier_1_count        = reply["tier_1_count"].get<json::number_integer_t>();
             int tier_2_count        = reply["tier_2_count"].get<json::number_integer_t>();
             int tier_3_count        = reply["tier_3_count"].get<json::number_integer_t>();
-            int collateral_total    = reply["collateral_total"].get<json::number_integer_t>();
+            double collateral_total    = reply["collateral_total"].get<json::number_float_t>();
 
             ui->node_count->setText(QString::number(node_count));
             ui->tier_0_count->setText(QString::number(tier_0_count));
@@ -667,16 +667,53 @@ void RPC::getInfoThenRefresh(bool force) {
 
             if (!getConnection()->config->safenode.isEmpty()) {
 
-                /* TODO
-                * 
-                * balance
-                * collateral
-                * is_valid
-                * tier
-                * errors
-                * 
-                */
-            
+                double balance, collateral;
+                int tier;
+
+                try
+                {
+                    balance = reply["balance"].get<json::number_float_t>();
+                    ui->balance->setText(Settings::getZECDisplayFormat(balance));
+                }
+                catch (...)
+                {
+                    ui->balance->setText("unknown");
+                }
+
+                try
+                {
+                    collateral = reply["collateral"].get<json::number_float_t>();
+                    ui->collateral->setText(Settings::getZECDisplayFormat(collateral));
+                }
+                catch (...)
+                {
+                    ui->collateral->setText("unknown");
+                }
+
+                try
+                {
+                    tier = reply["tier"].get<json::number_integer_t>();
+                    ui->tier->setText(QString::number(tier));
+                }
+                catch (...)
+                {
+                    ui->tier->setText("unknown");
+                }
+
+
+                bool is_valid = reply["is_valid"].get<json::boolean_t>();
+
+                std::vector<std::string> vs_errors = reply["errors"].get<std::vector<std::string>>();
+                QString error_line;
+
+                for (int i = 0; i < vs_errors.size(); i++)
+                {
+                    error_line = error_line + QString(vs_errors.at(i).c_str()) + "\n";
+                }
+
+                ui->is_valid->setText(is_valid?"YES":"NO");
+                ui->errors->setText(error_line);
+
                 QString parentkey   = QString::fromStdString( reply["parentkey"].get<json::string_t>() );
                 QString safekey     = QString::fromStdString( reply["safekey"].get<json::string_t>() );
                 QString safeheight  = QString::fromStdString( reply["safeheight"].get<json::string_t>() );
