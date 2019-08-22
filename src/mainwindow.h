@@ -76,6 +76,7 @@ public:
     QLabel*             statusIcon;
     QLabel*             loadingLabel;
     QWidget*            zcashdtab;
+    QWidget*            safenodestab;
 
     Logger*      logger;
 

@@ -77,6 +77,9 @@ RPC::~RPC() {
 void RPC::setEZcashd(QProcess* p) {
     ezcashd = p;
 
+    if (ezcashd && ui->tabWidget->widget(4) == nullptr) {
+        ui->tabWidget->addTab(main->safenodestab, "SafeNodes");
+    }
     if (ezcashd && ui->tabWidget->widget(5) == nullptr) {
         ui->tabWidget->addTab(main->zcashdtab, "safecoind");
     }
@@ -674,6 +677,7 @@ void RPC::getInfoThenRefresh(bool force) {
                 {
                     balance = reply["balance"].get<json::number_float_t>();
                     ui->balance->setText(Settings::getZECDisplayFormat(balance));
+                    ui->balance_usd->setToolTip(Settings::getUSDFromZecAmount(balance));
                 }
                 catch (...)
                 {
@@ -684,6 +688,7 @@ void RPC::getInfoThenRefresh(bool force) {
                 {
                     collateral = reply["collateral"].get<json::number_float_t>();
                     ui->collateral->setText(Settings::getZECDisplayFormat(collateral));
+                    ui->collateral_usd->setToolTip(Settings::getUSDFromZecAmount(collateral));
                 }
                 catch (...)
                 {

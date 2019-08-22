@@ -128,6 +128,10 @@ MainWindow::MainWindow(QWidget *parent) :
     zcashdtab = ui->tabWidget->widget(5);
     ui->tabWidget->removeTab(5);
 
+    // The safenodes tab is hidden by default, and only later added in if the embedded safecoind is started
+    safenodestab = ui->tabWidget->widget(4);
+    ui->tabWidget->removeTab(4);
+
     setupSendTab();
     setupTransactionsTab();
     setupReceiveTab();

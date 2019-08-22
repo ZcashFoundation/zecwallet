@@ -1041,27 +1041,10 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="1">
-                  <widget class="QLabel" name="validsep">
-                   <property name="text">
-                    <string>=</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="1">
-                  <widget class="QLabel" name="safekeysep">
-                   <property name="text">
-                    <string>=</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="3" column="2">
                   <widget class="QLabel" name="safekey">
                    <property name="text">
-                    <string>0</string>
+                    <string>not configured</string>
                    </property>
                   </widget>
                  </item>
@@ -1069,6 +1052,16 @@
                   <widget class="QLabel" name="balancelabel">
                    <property name="text">
                     <string>Balance</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="10" column="1">
+                  <widget class="QLabel" name="validsep">
+                   <property name="text">
+                    <string>=</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
                    </property>
                   </widget>
                  </item>
@@ -1082,31 +1075,37 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="2">
-                  <widget class="QLabel" name="safeheight">
+                 <item row="3" column="1">
+                  <widget class="QLabel" name="safekeysep">
                    <property name="text">
-                    <string>0</string>
+                    <string>=</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="2">
+                 <item row="10" column="2">
                   <widget class="QLabel" name="is_valid">
                    <property name="text">
-                    <string>TODO</string>
+                    <string>not configured</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="7" column="1">
+                 <item row="8" column="1">
                   <widget class="QLabel" name="collateralsep">
                    <property name="text">
                     <string>=</string>
                    </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
                   </widget>
                  </item>
-                 <item row="5" column="2">
-                  <widget class="QLabel" name="safeaddress">
+                 <item row="4" column="2">
+                  <widget class="QLabel" name="safeheight">
                    <property name="text">
-                    <string>0</string>
+                    <string>not configured</string>
                    </property>
                   </widget>
                  </item>
@@ -1117,17 +1116,17 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="7" column="0">
-                  <widget class="QLabel" name="collaterallabel">
+                 <item row="5" column="2">
+                  <widget class="QLabel" name="safeaddress">
                    <property name="text">
-                    <string>Collateral</string>
+                    <string>not configured</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="6" column="2">
-                  <widget class="QLabel" name="balance">
+                 <item row="8" column="0">
+                  <widget class="QLabel" name="collaterallabel">
                    <property name="text">
-                    <string>TODO</string>
+                    <string>Collateral</string>
                    </property>
                   </widget>
                  </item>
@@ -1148,13 +1147,10 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1">
-                  <widget class="QLabel" name="parentkeysep">
+                 <item row="6" column="2">
+                  <widget class="QLabel" name="balance">
                    <property name="text">
-                    <string>=</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
+                    <string>not configured</string>
                    </property>
                   </widget>
                  </item>
@@ -1165,6 +1161,20 @@
                    </property>
                   </widget>
                  </item>
+                 <item row="8" column="2">
+                  <widget class="QLabel" name="collateral">
+                   <property name="text">
+                    <string>not configured</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="10" column="0">
+                  <widget class="QLabel" name="validlabel">
+                   <property name="text">
+                    <string>Valid</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="1" column="0">
                   <widget class="QLabel" name="parentkeylabel">
                    <property name="text">
@@ -1172,45 +1182,58 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="7" column="2">
-                  <widget class="QLabel" name="collateral">
+                 <item row="1" column="1">
+                  <widget class="QLabel" name="parentkeysep">
                    <property name="text">
-                    <string>TODO</string>
+                    <string>=</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="0">
-                  <widget class="QLabel" name="validlabel">
+                 <item row="11" column="1">
+                  <widget class="QLabel" name="tiersep">
                    <property name="text">
-                    <string>Valid</string>
+                    <string>=</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="11" column="2">
+                  <widget class="QLabel" name="tier">
+                   <property name="text">
+                    <string>not configured</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="2">
                   <widget class="QLabel" name="parentkey">
                    <property name="text">
-                    <string>0</string>
+                    <string>not configured</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="9" column="2">
-                  <widget class="QLabel" name="tier">
-                   <property name="text">
-                    <string>TODO</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="9" column="0">
+                 <item row="11" column="0">
                   <widget class="QLabel" name="tierlabel">
                    <property name="text">
                     <string>Tier</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="9" column="1">
-                  <widget class="QLabel" name="tiersep">
+                 <item row="7" column="2">
+                  <widget class="QLabel" name="balance_usd">
                    <property name="text">
-                    <string>=</string>
+                    <string>not configured</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="9" column="2">
+                  <widget class="QLabel" name="collateral_usd">
+                   <property name="text">
+                    <string>not configured</string>
                    </property>
                   </widget>
                  </item>
@@ -1484,7 +1507,7 @@
                     </font>
                    </property>
                    <property name="text">
-                    <string>0</string>
+                    <string>Loading...</string>
                    </property>
                   </widget>
                  </item>
@@ -1497,7 +1520,7 @@
                     </font>
                    </property>
                    <property name="text">
-                    <string>0</string>
+                    <string>Loading...</string>
                    </property>
                   </widget>
                  </item>
@@ -1529,8 +1552,20 @@
                </item>
                <item row="1" column="1">
                 <widget class="QLabel" name="errors">
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">color:red;</string>
+                 </property>
                  <property name="text">
-                  <string>TODO</string>
+                  <string/>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>false</bool>
                  </property>
                 </widget>
                </item>
