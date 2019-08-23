@@ -640,13 +640,13 @@ void RPC::getInfoThenRefresh(bool force) {
             {"method", "getactivenodes"}
         };
         conn->doRPCIgnoreError(payload, [=] (const json& reply) {
-
+            double collateral_total;
             int node_count          = reply["node_count"].get<json::number_integer_t>();
             int tier_0_count        = reply["tier_0_count"].get<json::number_integer_t>();
             int tier_1_count        = reply["tier_1_count"].get<json::number_integer_t>();
             int tier_2_count        = reply["tier_2_count"].get<json::number_integer_t>();
             int tier_3_count        = reply["tier_3_count"].get<json::number_integer_t>();
-            double collateral_total    = reply["collateral_total"].get<json::number_float_t>();
+            collateral_total    = reply["collateral_total"].get<json::number_float_t>();
 
             ui->node_count->setText(QString::number(node_count));
             ui->tier_0_count->setText(QString::number(tier_0_count));
@@ -672,27 +672,34 @@ void RPC::getInfoThenRefresh(bool force) {
 
                 double balance, collateral;
                 int tier;
+                bool is_valid;
 
                 try
                 {
                     balance = reply["balance"].get<json::number_float_t>();
+                    ui->balance->setToolTip(Settings::getZECDisplayFormat(balance));
                     ui->balance->setText(Settings::getZECDisplayFormat(balance));
                     ui->balance_usd->setToolTip(Settings::getUSDFromZecAmount(balance));
+                    ui->balance_usd->setText(Settings::getUSDFromZecAmount(balance));
                 }
                 catch (...)
                 {
                     ui->balance->setText("unknown");
+                    ui->balance_usd->setText("unknown");
                 }
 
                 try
                 {
                     collateral = reply["collateral"].get<json::number_float_t>();
+                    ui->collateral->setToolTip(Settings::getZECDisplayFormat(collateral));
                     ui->collateral->setText(Settings::getZECDisplayFormat(collateral));
                     ui->collateral_usd->setToolTip(Settings::getUSDFromZecAmount(collateral));
+                    ui->collateral_usd->setText(Settings::getUSDFromZecAmount(collateral));
                 }
                 catch (...)
                 {
                     ui->collateral->setText("unknown");
+                    ui->collateral_usd->setText("unknown");
                 }
 
                 try
@@ -705,8 +712,7 @@ void RPC::getInfoThenRefresh(bool force) {
                     ui->tier->setText("unknown");
                 }
 
-
-                bool is_valid = reply["is_valid"].get<json::boolean_t>();
+                is_valid = reply["is_valid"].get<json::boolean_t>();
 
                 std::vector<std::string> vs_errors = reply["errors"].get<std::vector<std::string>>();
                 QString error_line;
