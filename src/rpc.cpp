@@ -717,7 +717,7 @@ void RPC::getInfoThenRefresh(bool force) {
                 std::vector<std::string> vs_errors = reply["errors"].get<std::vector<std::string>>();
                 QString error_line;
 
-                for (int i = 0; i < vs_errors.size(); i++)
+                for (unsigned int i = 0; i < vs_errors.size(); i++)
                 {
                     error_line = error_line + QString(vs_errors.at(i).c_str()) + "\n";
                 }
