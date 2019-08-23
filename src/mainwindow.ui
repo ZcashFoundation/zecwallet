@@ -1240,7 +1240,7 @@
               </widget>
              </item>
              <item row="11" column="2">
-              <widget class="QGroupBox" name="groupBox_8">
+              <widget class="QGroupBox" name="groupBox_9">
                <property name="autoFillBackground">
                 <bool>true</bool>
                </property>
