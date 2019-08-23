@@ -972,7 +972,7 @@
             </property>
             <layout class="QGridLayout" name="gridLayout_6">
              <item row="16" column="2">
-              <widget class="QGroupBox" name="groupBox_8">
+              <widget class="QGroupBox" name="groupBox_9">
                <property name="autoFillBackground">
                 <bool>true</bool>
                </property>
@@ -1205,7 +1205,7 @@
                <property name="title">
                 <string/>
                </property>
-               <layout class="QGridLayout" name="gridLayout_5">
+               <layout class="QGridLayout" name="gridLayout_6">
                 <item row="0" column="0">
                  <layout class="QFormLayout" name="formLayout">
                   <item row="1" column="0">
@@ -1247,7 +1247,7 @@
                <property name="title">
                 <string/>
                </property>
-               <layout class="QGridLayout" name="gridLayout_5">
+               <layout class="QGridLayout" name="gridLayout_7">
                 <item row="0" column="0">
                  <layout class="QVBoxLayout" name="verticalLayout_13">
                   <item>
@@ -1639,7 +1639,7 @@
             <property name="title">
              <string/>
             </property>
-            <layout class="QGridLayout" name="gridLayout_5">
+            <layout class="QGridLayout" name="gridLayout_8">
              <item row="2" column="2">
               <widget class="QLabel" name="solrate">
                <property name="text">
