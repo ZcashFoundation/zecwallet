@@ -1149,14 +1149,6 @@
     <string>&amp;Export all private keys</string>
    </property>
   </action>
-  <action name="actionz_board_net">
-   <property name="text">
-    <string>&amp;z-board.net</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+A, Ctrl+Z</string>
-   </property>
-  </action>
   <action name="action_Address_Book">
    <property name="text">
     <string>Address &amp;book</string>

@@ -82,8 +82,9 @@ MainWindow::MainWindow(QWidget *parent) :
     // Export transactions
     QObject::connect(ui->actionExport_transactions, &QAction::triggered, this, &MainWindow::exportTransactions);
 
+    // Z-board seems to have been abandoned
     // z-Board.net
-    QObject::connect(ui->actionz_board_net, &QAction::triggered, this, &MainWindow::postToZBoard);
+    // QObject::connect(ui->actionz_board_net, &QAction::triggered, this, &MainWindow::postToZBoard);
 
     // Validate Address
     QObject::connect(ui->actionValidate_Address, &QAction::triggered, this, &MainWindow::validateAddress);
