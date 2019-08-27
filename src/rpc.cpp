@@ -674,6 +674,8 @@ void RPC::getInfoThenRefresh(bool force) {
 
                     double balance, collateral;
                     int tier;
+                    int last_reg_height;
+                    int valid_thru_height;
 
                     try
                     {
@@ -699,7 +701,7 @@ void RPC::getInfoThenRefresh(bool force) {
                     }
                     catch (...)
                     {
-                        ui->collateral->setText("unknown");
+                     ui->collateral->setText("unknown");
                      ui->collateral_usd->setText("unknown");
                     }
 
@@ -713,12 +715,25 @@ void RPC::getInfoThenRefresh(bool force) {
                         ui->tier->setText("unknown");
                     }
 
-                    int last_reg_height        = reply["last_reg_height"].get<json::number_integer_t>();
-                    int valid_thru_height        = reply["valid_thru_height"].get<json::number_integer_t>();
-
-                    ui->last_reg_height->setText(QString::number(last_reg_height));
-                    ui->valid_thru_height->setText(QString::number(valid_thru_height));
-
+                    try
+                    {
+						last_reg_height = reply["last_reg_height"].get<json::number_integer_t>();
+						ui->last_reg_height->setText(QString::number(last_reg_height));
+                    }
+                    catch (...)
+                    {
+                        ui->last_reg_height->setText("unknown");
+                    }
+					
+                    try
+                    {
+						valid_thru_height = reply["valid_thru_height"].get<json::number_integer_t>();
+						ui->valid_thru_height->setText(QString::number(valid_thru_height));
+                    }
+                    catch (...)
+                    {
+                        ui->last_reg_height->setText("unknown");
+                    }
                 }
 
                 bool is_valid;
