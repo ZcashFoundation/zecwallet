@@ -670,47 +670,58 @@ void RPC::getInfoThenRefresh(bool force) {
 
             if (!getConnection()->config->safenode.isEmpty()) {
 
-                double balance, collateral;
-                int tier;
+                if (!getConnection()->config->addrindex.isEmpty()) {
+
+                    double balance, collateral;
+                    int tier;
+
+                    try
+                    {
+                        balance = reply["balance"].get<json::number_float_t>();
+                        ui->balance->setToolTip(Settings::getZECDisplayFormat(balance));
+                        ui->balance->setText(Settings::getZECDisplayFormat(balance));
+                        ui->balance_usd->setToolTip(Settings::getUSDFromZecAmount(balance));
+                        ui->balance_usd->setText(Settings::getUSDFromZecAmount(balance));
+                    }
+                    catch (...)
+                    {
+                        ui->balance->setText("unknown");
+                        ui->balance_usd->setText("unknown");
+                    }
+
+                    try
+                    {
+                        collateral = reply["collateral"].get<json::number_float_t>();
+                        ui->collateral->setToolTip(Settings::getZECDisplayFormat(collateral));
+                        ui->collateral->setText(Settings::getZECDisplayFormat(collateral));
+                        ui->collateral_usd->setToolTip(Settings::getUSDFromZecAmount(collateral));
+                        ui->collateral_usd->setText(Settings::getUSDFromZecAmount(collateral));
+                    }
+                    catch (...)
+                    {
+                        ui->collateral->setText("unknown");
+                     ui->collateral_usd->setText("unknown");
+                    }
+
+                    try
+                    {
+                        tier = reply["tier"].get<json::number_integer_t>();
+                        ui->tier->setText(QString::number(tier));
+                    }
+                    catch (...)
+                    {
+                        ui->tier->setText("unknown");
+                    }
+
+                    int last_reg_height        = reply["last_reg_height"].get<json::number_integer_t>();
+                    int valid_thru_height        = reply["valid_thru_height"].get<json::number_integer_t>();
+
+                    ui->last_reg_height->setText(QString::number(last_reg_height));
+                    ui->valid_thru_height->setText(QString::number(valid_thru_height));
+
+                }
+
                 bool is_valid;
-
-                try
-                {
-                    balance = reply["balance"].get<json::number_float_t>();
-                    ui->balance->setToolTip(Settings::getZECDisplayFormat(balance));
-                    ui->balance->setText(Settings::getZECDisplayFormat(balance));
-                    ui->balance_usd->setToolTip(Settings::getUSDFromZecAmount(balance));
-                    ui->balance_usd->setText(Settings::getUSDFromZecAmount(balance));
-                }
-                catch (...)
-                {
-                    ui->balance->setText("unknown");
-                    ui->balance_usd->setText("unknown");
-                }
-
-                try
-                {
-                    collateral = reply["collateral"].get<json::number_float_t>();
-                    ui->collateral->setToolTip(Settings::getZECDisplayFormat(collateral));
-                    ui->collateral->setText(Settings::getZECDisplayFormat(collateral));
-                    ui->collateral_usd->setToolTip(Settings::getUSDFromZecAmount(collateral));
-                    ui->collateral_usd->setText(Settings::getUSDFromZecAmount(collateral));
-                }
-                catch (...)
-                {
-                    ui->collateral->setText("unknown");
-                    ui->collateral_usd->setText("unknown");
-                }
-
-                try
-                {
-                    tier = reply["tier"].get<json::number_integer_t>();
-                    ui->tier->setText(QString::number(tier));
-                }
-                catch (...)
-                {
-                    ui->tier->setText("unknown");
-                }
 
                 is_valid = reply["is_valid"].get<json::boolean_t>();
 
