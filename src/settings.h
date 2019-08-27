@@ -37,6 +37,8 @@ public:
     bool    isSaplingAddress(QString addr);
     bool    isSproutAddress(QString addr);
             
+    bool    isValidSaplingPrivateKey(QString pk);
+
     bool    isSyncing();
     void    setSyncing(bool syncing);
 
@@ -101,7 +103,7 @@ public:
     static QString getZECUSDDisplayFormat(double bal);
 
     static QString getTokenName();
-    static QString getDonationAddr(bool sapling);
+    static QString getDonationAddr();
 
     static double  getMinerFee();
     static double  getZboardAmount();

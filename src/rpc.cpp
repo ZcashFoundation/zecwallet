@@ -27,8 +27,7 @@ RPC::RPC(MainWindow* main) {
     // Setup transactions table model
     transactionsTableModel = new TxTableModel(ui->transactionsTable);
     main->ui->transactionsTable->setModel(transactionsTableModel);
-    main->ui->transactionsTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
-
+    
     // Set up timer to refresh Price
     priceTimer = new QTimer(main);
     QObject::connect(priceTimer, &QTimer::timeout, [=]() {
@@ -220,7 +219,7 @@ void RPC::importTPrivKey(QString addr, bool rescan, const std::function<void(jso
 }
 
 void RPC::validateAddress(QString address, const std::function<void(json)>& cb) {
-    QString method = address.startsWith("z") ? "z_validateaddress" : "validateaddress";
+    QString method = Settings::isZAddress(address) ? "z_validateaddress" : "validateaddress";
 
     json payload = {
         {"jsonrpc", "1.0"},
@@ -961,6 +960,29 @@ void RPC::addNewTxToWatch(const QString& newOpid, WatchedTx wtx) {
     watchingOps.insert(newOpid, wtx);
 
     watchTxStatus();
+}
+
+/**
+ * Execute a transaction with the standard UI. i.e., standard status bar message and standard error
+ * handling
+ */
+void RPC::executeStandardUITransaction(Tx tx) {
+    executeTransaction(tx, 
+        [=] (QString opid) {
+            ui->statusBar->showMessage(QObject::tr("Computing Tx: ") % opid);
+        },
+        [=] (QString, QString txid) { 
+            ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
+        },
+        [=] (QString opid, QString errStr) {
+            ui->statusBar->showMessage(QObject::tr(" Tx ") % opid % QObject::tr(" failed"), 15 * 1000);
+
+            if (!opid.isEmpty())
+                errStr = QObject::tr("The transaction with id ") % opid % QObject::tr(" failed. The error was") + ":\n\n" + errStr; 
+
+            QMessageBox::critical(main, QObject::tr("Transaction Error"), errStr, QMessageBox::Ok);            
+        }
+    );
 }
 
 

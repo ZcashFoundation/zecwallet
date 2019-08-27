@@ -178,6 +178,7 @@ void Settings::saveRestore(QDialog* d) {
 
 void Settings::saveRestoreTableHeader(QTableView* table, QDialog* d, QString tablename) {
     table->horizontalHeader()->restoreState(QSettings().value(tablename).toByteArray());
+    table->horizontalHeader()->setStretchLastSection(true);
 
     QObject::connect(d, &QDialog::finished, [=](auto) {
         QSettings().setValue(tablename, table->horizontalHeader()->saveState());
@@ -250,17 +251,12 @@ QString Settings::getTokenName() {
     }
 }
 
-QString Settings::getDonationAddr(bool sapling) {
+QString Settings::getDonationAddr() {
     if (Settings::getInstance()->isTestnet()) 
-        if (sapling)
             return "ztestsapling1wn6889vznyu42wzmkakl2effhllhpe4azhu696edg2x6me4kfsnmqwpglaxzs7tmqsq7kudemp5";
-        else
-            return "ztn6fYKBii4Fp4vbGhkPgrtLU4XjXp4ZBMZgShtopmDGbn1L2JLTYbBp2b7SSkNr9F3rQeNZ9idmoR7s4JCVUZ7iiM5byhF";
     else 
-        if (sapling)
             return "zs1gv64eu0v2wx7raxqxlmj354y9ycznwaau9kduljzczxztvs4qcl00kn2sjxtejvrxnkucw5xx9u";
-        else
-            return "zcEgrceTwvoiFdEvPWcsJHAMrpLsprMF6aRJiQa3fan5ZphyXLPuHghnEPrEPRoEVzUy65GnMVyCTRdkT6BYBepnXh6NBYs";    
+
 }
 
 bool Settings::addToZcashConf(QString confLocation, QString line) {
@@ -320,10 +316,20 @@ double Settings::getZboardAmount() {
 
 QString Settings::getZboardAddr() {
     if (Settings::getInstance()->isTestnet()) {
-        return getDonationAddr(true);
+        return getDonationAddr();
     }
     else {
         return "zs10m00rvkhfm4f7n23e4sxsx275r7ptnggx39ygl0vy46j9mdll5c97gl6dxgpk0njuptg2mn9w5s";
+    }
+}
+
+bool Settings::isValidSaplingPrivateKey(QString pk) {
+    if (isTestnet()) {
+        QRegExp zspkey("^secret-extended-key-test[0-9a-z]{278}$", Qt::CaseInsensitive);
+        return zspkey.exactMatch(pk);
+    } else {
+        QRegExp zspkey("^secret-extended-key-main[0-9a-z]{278}$", Qt::CaseInsensitive);
+        return zspkey.exactMatch(pk);
     }
 }
 

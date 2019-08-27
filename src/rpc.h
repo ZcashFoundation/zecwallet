@@ -58,6 +58,8 @@ public:
     void refreshZECPrice();
     void getZboardTopics(std::function<void(QMap<QString, QString>)> cb);
 
+    void executeStandardUITransaction(Tx tx); 
+
     void executeTransaction(Tx tx, 
         const std::function<void(QString opid)> submitted,
         const std::function<void(QString opid, QString txid)> computed,

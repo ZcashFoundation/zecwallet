@@ -82,8 +82,9 @@ MainWindow::MainWindow(QWidget *parent) :
     // Export transactions
     QObject::connect(ui->actionExport_transactions, &QAction::triggered, this, &MainWindow::exportTransactions);
 
+    // Z-board seems to have been abandoned
     // z-Board.net
-    QObject::connect(ui->actionz_board_net, &QAction::triggered, this, &MainWindow::postToZBoard);
+    // QObject::connect(ui->actionz_board_net, &QAction::triggered, this, &MainWindow::postToZBoard);
 
     // Validate Address
     QObject::connect(ui->actionValidate_Address, &QAction::triggered, this, &MainWindow::validateAddress);
@@ -177,6 +178,11 @@ void MainWindow::restoreSavedStates() {
 
     ui->balancesTable->horizontalHeader()->restoreState(s.value("baltablegeometry").toByteArray());
     ui->transactionsTable->horizontalHeader()->restoreState(s.value("tratablegeometry").toByteArray());
+
+    // Explicitly set the tx table resize headers, since some previous values may have made them
+    // non-expandable.
+    ui->transactionsTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Interactive);
+    ui->transactionsTable->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Interactive);
 }
 
 void MainWindow::doClose() {
@@ -637,8 +643,7 @@ void MainWindow::donate() {
     // Set up a donation to me :)
     clearSendForm();
 
-    ui->Address1->setText(Settings::getDonationAddr(
-                            Settings::getInstance()->isSaplingAddress(ui->inputsCombo->currentText())));
+    ui->Address1->setText(Settings::getDonationAddr());
     ui->Address1->setCursorPosition(0);
     ui->Amount1->setText("0.01");
     ui->MemoTxt1->setText(tr("Thanks for supporting ZecWallet!"));
@@ -710,12 +715,12 @@ void MainWindow::postToZBoard() {
 
     QMap<QString, QString> topics;
     // Insert the main topic automatically
-    topics.insert("#Main_Area", Settings::getInstance()->isTestnet() ? Settings::getDonationAddr(true) : Settings::getZboardAddr());
+    topics.insert("#Main_Area", Settings::getInstance()->isTestnet() ? Settings::getDonationAddr() : Settings::getZboardAddr());
     zb.topicsList->addItem(topics.firstKey());
     // Then call the API to get topics, and if it returns successfully, then add the rest of the topics
     rpc->getZboardTopics([&](QMap<QString, QString> topicsMap) {
         for (auto t : topicsMap.keys()) {
-            topics.insert(t, Settings::getInstance()->isTestnet() ? Settings::getDonationAddr(true) : topicsMap[t]);
+            topics.insert(t, Settings::getInstance()->isTestnet() ? Settings::getDonationAddr() : topicsMap[t]);
             zb.topicsList->addItem(t);
         }
     });
@@ -791,20 +796,7 @@ void MainWindow::postToZBoard() {
         tx.fee = Settings::getMinerFee();
 
         // And send the Tx
-        rpc->executeTransaction(tx, [=] (QString opid) {
-            ui->statusBar->showMessage(tr("Computing Tx: ") % opid);
-        },
-        [=] (QString /*opid*/, QString txid) { 
-            ui->statusBar->showMessage(Settings::txidStatusMessage + " " + txid);
-        },
-        [=] (QString opid, QString errStr) {
-            ui->statusBar->showMessage(QObject::tr(" Tx ") % opid % QObject::tr(" failed"), 15 * 1000);
-
-            if (!opid.isEmpty())
-                errStr = QObject::tr("The transaction with id ") % opid % QObject::tr(" failed. The error was") + ":\n\n" + errStr; 
-
-            QMessageBox::critical(this, QObject::tr("Transaction Error"), errStr, QMessageBox::Ok);            
-        });
+        rpc->executeStandardUITransaction(tx);
     }
 }
 
@@ -825,7 +817,7 @@ void MainWindow::doImport(QList<QString>* keys) {
     keys->pop_front();
     bool rescan = keys->isEmpty();
 
-    if (key.startsWith("S") ||
+    if (key.startsWith("SK") ||
         key.startsWith("secret")) { // Z key
         rpc->importZPrivKey(key, rescan, [=] (auto) { this->doImport(keys); });                   
     } else {
@@ -948,6 +940,16 @@ void MainWindow::importPrivKey() {
         std::transform(keysTmp.begin(), keysTmp.end(), std::back_inserter(*keys), [=](auto key) {
             return key.trimmed().split(" ")[0];
         });
+
+        // Special case. 
+        // Sometimes, when importing from a paperwallet or such, the key is split by newlines, and might have 
+        // been pasted like that. So check to see if the whole thing is one big private key
+        if (Settings::getInstance()->isValidSaplingPrivateKey(keys->join(""))) {
+            auto multiline = keys;
+            keys = new QList<QString>();
+            keys->append(multiline->join(""));
+            delete multiline;
+        }
 
         // Start the import. The function takes ownership of keys
         QTimer::singleShot(1, [=]() {doImport(keys);});
@@ -1304,6 +1306,9 @@ std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
     return [=] (bool checked) { 
         if (checked && this->rpc->getAllZAddresses() != nullptr) { 
             auto addrs = this->rpc->getAllZAddresses();
+
+            // Save the current address, so we can update it later
+            auto zaddr = ui->listReceiveAddresses->currentText();
             ui->listReceiveAddresses->clear();
 
             std::for_each(addrs->begin(), addrs->end(), [=] (auto addr) {
@@ -1315,6 +1320,10 @@ std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
                         }
                 }
             }); 
+            
+            if (!zaddr.isEmpty() && Settings::isZAddress(zaddr)) {
+                ui->listReceiveAddresses->setCurrentText(zaddr);
+            }
 
             // If z-addrs are empty, then create a new one.
             if (addrs->isEmpty()) {
@@ -1508,6 +1517,10 @@ void MainWindow::setupReceiveTab() {
 void MainWindow::updateTAddrCombo(bool checked) {
     if (checked) {
         auto utxos = this->rpc->getUTXOs();
+
+        // Save the current address so we can restore it later
+        auto currentTaddr = ui->listReceiveAddresses->currentText();
+
         ui->listReceiveAddresses->clear();
 
         // Maintain a set of addresses so we don't duplicate any, because we'll be adding
@@ -1550,7 +1563,17 @@ void MainWindow::updateTAddrCombo(bool checked) {
             }
         }
 
-        // 4. Add a last, disabled item if there are remaining items
+        // 4. Add the previously selected t-address
+        if (!currentTaddr.isEmpty() && Settings::isTAddress(currentTaddr)) {
+            // Make sure the current taddr is in the list
+            if (!addrs.contains(currentTaddr)) {
+                auto bal = rpc->getAllBalances()->value(currentTaddr);
+                ui->listReceiveAddresses->addItem(currentTaddr, bal);
+            }
+            ui->listReceiveAddresses->setCurrentText(currentTaddr);
+        }
+
+        // 5. Add a last, disabled item if there are remaining items
         if (allTaddrs->size() > addrs.size()) {
             auto num = QString::number(allTaddrs->size() - addrs.size());
             ui->listReceiveAddresses->addItem("-- " + num + " more --", 0);
