@@ -193,8 +193,6 @@ void ConnectionLoader::createZcashConf() {
     out << "rpcworkqueue=256\n";
     out << "txindex=1\n";
     out << "addressindex=1\n";
-    out << "spentindex=1\n";
-    out << "timestampindex=1\n";
 
     // Fast sync override
     if (ui.chkFastSync->isChecked()) {
