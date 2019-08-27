@@ -1346,7 +1346,7 @@
                     <item row="7" column="2">
                      <widget class="QLabel" name="last_reg_height">
                       <property name="text">
-                       <string>not address index</string>
+                       <string>not configured</string>
                       </property>
                      </widget>
                     </item>
@@ -1380,7 +1380,7 @@
                     <item row="2" column="2">
                      <widget class="QLabel" name="balance">
                       <property name="text">
-                       <string>not address index</string>
+                       <string>not configured</string>
                       </property>
                      </widget>
                     </item>
@@ -1394,21 +1394,21 @@
                     <item row="4" column="2">
                      <widget class="QLabel" name="collateral">
                       <property name="text">
-                       <string>not address index</string>
+                       <string>not configured</string>
                       </property>
                      </widget>
                     </item>
                     <item row="3" column="2">
                      <widget class="QLabel" name="balance_usd">
                       <property name="text">
-                       <string>not address index</string>
+                       <string>not configured</string>
                       </property>
                      </widget>
                     </item>
                     <item row="6" column="2">
                      <widget class="QLabel" name="tier">
                       <property name="text">
-                       <string>not address index</string>
+                       <string>not configured</string>
                       </property>
                      </widget>
                     </item>
@@ -1432,7 +1432,7 @@
                     <item row="5" column="2">
                      <widget class="QLabel" name="collateral_usd">
                       <property name="text">
-                       <string>not address index</string>
+                       <string>not configured</string>
                       </property>
                      </widget>
                     </item>
@@ -1473,7 +1473,7 @@
                     <item row="8" column="2">
                      <widget class="QLabel" name="valid_thru_height">
                       <property name="text">
-                       <string>not address index</string>
+                       <string>not configured</string>
                       </property>
                      </widget>
                     </item>
@@ -1485,18 +1485,18 @@
               </widget>
              </item>
              <item row="23" column="1">
-              <widget class="QGroupBox" name="groupBox_9">
+              <widget class="QGroupBox" name="groupBox_10">
                <property name="autoFillBackground">
                 <bool>true</bool>
                </property>
                <property name="title">
                 <string/>
                </property>
-               <layout class="QGridLayout" name="gridLayout_5">
+               <layout class="QGridLayout" name="gridLayout_7">
                 <item row="0" column="0">
-                 <layout class="QVBoxLayout" name="verticalLayout_12">
+                 <layout class="QVBoxLayout" name="verticalLayout_13">
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_Info">
+                   <layout class="QGridLayout" name="gridLayout_Info2">
                     <item row="4" column="1">
                      <widget class="QLabel" name="safeheightsep">
                       <property name="text">
@@ -1632,7 +1632,7 @@
                <property name="title">
                 <string/>
                </property>
-               <layout class="QGridLayout" name="gridLayout_7">
+               <layout class="QGridLayout" name="gridLayout_8">
                 <item row="1" column="0">
                  <layout class="QFormLayout" name="formLayout">
                   <item row="1" column="1">
