@@ -77,11 +77,8 @@ RPC::~RPC() {
 void RPC::setEZcashd(QProcess* p) {
     ezcashd = p;
 
-    if (ezcashd && ui->tabWidget->widget(4) == nullptr) {
-        ui->tabWidget->addTab(main->safenodestab, "SafeNodes");
-    }
-    if (ezcashd && ui->tabWidget->widget(5) == nullptr) {
-        ui->tabWidget->addTab(main->zcashdtab, "safecoind");
+    if ((ezcashd && ui->tabWidget->widget(4) == nullptr) && (ezcashd && ui->tabWidget->widget(5) == nullptr)) {
+		ui->tabWidget->addTab(main->safenodestab, "SafeNodes") && ui->tabWidget->addTab(main->zcashdtab, "safecoind");
     }
 }
 
@@ -649,6 +646,9 @@ void RPC::getInfoThenRefresh(bool force) {
             collateral_total    = reply["collateral_total"].get<json::number_float_t>();
 
             ui->node_count->setText(QString::number(node_count));
+			
+		if (!getConnection()->config->addrindex.isEmpty()) {
+			
             ui->tier_0_count->setText(QString::number(tier_0_count));
             ui->tier_1_count->setText(QString::number(tier_1_count));
             ui->tier_2_count->setText(QString::number(tier_2_count));
@@ -657,6 +657,16 @@ void RPC::getInfoThenRefresh(bool force) {
             ui->collateral_total->setText(Settings::getZECDisplayFormat(collateral_total));
             ui->collateral_total_usd->setToolTip(Settings::getUSDFromZecAmount(collateral_total));
             ui->collateral_total_usd->setText(Settings::getUSDFromZecAmount(collateral_total));
+
+		} else {
+				ui->tier_0_count->setText("addressindex not enabled");
+				ui->tier_1_count->setText("addressindex not enabled");
+				ui->tier_2_count->setText("addressindex not enabled");
+				ui->tier_3_count->setText("addressindex not enabled");
+				ui->collateral_total->setText("addressindex not enabled");
+				ui->collateral_total_usd->setText("addressindex not enabled");
+		}
+
         });
 
 
@@ -667,100 +677,129 @@ void RPC::getInfoThenRefresh(bool force) {
             {"method", "getnodeinfo"}
         };
         conn->doRPCIgnoreError(payload, [=] (const json& reply) {
+		
+		double balance, collateral;
+		int tier;
+		int last_reg_height;
+		int valid_thru_height;
+		bool is_valid;
 
-            if (!getConnection()->config->safenode.isEmpty()) {
+	if (!getConnection()->config->safenode.isEmpty()) {
+		if (!getConnection()->config->addrindex.isEmpty()) {
+			try
+			{
+				balance = reply["balance"].get<json::number_float_t>();
+				
+				ui->balance->setToolTip(Settings::getZECDisplayFormat(balance));
+				ui->balance->setText(Settings::getZECDisplayFormat(balance));
+				ui->balance_usd->setToolTip(Settings::getUSDFromZecAmount(balance));
+				ui->balance_usd->setText(Settings::getUSDFromZecAmount(balance));
+			}
+			catch (...)
+			{
+				ui->balance->setText("unknown");
+				ui->balance_usd->setText("unknown");
+			}
+			try
+			{
+				collateral = reply["collateral"].get<json::number_float_t>();
+				
+				ui->collateral->setToolTip(Settings::getZECDisplayFormat(collateral));
+				ui->collateral->setText(Settings::getZECDisplayFormat(collateral));
+				ui->collateral_usd->setToolTip(Settings::getUSDFromZecAmount(collateral));
+				ui->collateral_usd->setText(Settings::getUSDFromZecAmount(collateral));
+			}
+			catch (...)
+			{
+				ui->collateral->setText("unknown");
+				ui->collateral_usd->setText("unknown");
+			}
+		
+			
+			try
+			{
+				tier = reply["tier"].get<json::number_integer_t>();
+				
+				ui->tier->setText(QString::number(tier));
+			}
+			catch (...)
+			{
+				ui->tier->setText("unknown");
+			}
+		} else {
+				ui->balance->setText("addressindex not enabled");
+				ui->balance_usd->setText("addressindex not enabled");
+				ui->collateral->setText("addressindex not enabled");
+				ui->collateral_usd->setText("addressindex not enabled");
+				ui->tier->setText("addressindex not enabled");
+		}
 
-                if (!getConnection()->config->addrindex.isEmpty()) {
+			is_valid = reply["is_valid"].get<json::boolean_t>();
+			
+			std::vector<std::string> vs_errors = reply["errors"].get<std::vector<std::string>>();
+			QString error_line;
+			
+			for (unsigned int i = 0; i < vs_errors.size(); i++)
+			
+			{
+				error_line = error_line + QString(vs_errors.at(i).c_str()) + "\n";
+			}
+			
+			ui->is_valid->setText(is_valid?"YES":"NO");
+			ui->errors->setText(error_line);
 
-                    double balance, collateral;
-                    int tier;
-                    int last_reg_height;
-                    int valid_thru_height;
 
-                    try
-                    {
-                        balance = reply["balance"].get<json::number_float_t>();
-                        ui->balance->setToolTip(Settings::getZECDisplayFormat(balance));
-                        ui->balance->setText(Settings::getZECDisplayFormat(balance));
-                        ui->balance_usd->setToolTip(Settings::getUSDFromZecAmount(balance));
-                        ui->balance_usd->setText(Settings::getUSDFromZecAmount(balance));
-                    }
-                    catch (...)
-                    {
-                        ui->balance->setText("unknown");
-                        ui->balance_usd->setText("unknown");
-                    }
+		if (is_valid == true) {
+			try
+			{
+				last_reg_height = reply["last_reg_height"].get<json::number_integer_t>();
+				
+				ui->last_reg_height->setText(QString::number(last_reg_height));
+			}
+			catch (...)
+			{
+				ui->last_reg_height->setText("unknown");
+			}
+			try
+			{
+				valid_thru_height = reply["valid_thru_height"].get<json::number_integer_t>();
+				
+				ui->valid_thru_height->setText(QString::number(valid_thru_height));
+			}
+			catch (...)
+			{
+				ui->valid_thru_height->setText("unknown");
+			}
+		} else {
+			ui->last_reg_height->setText("not valid");
+			ui->valid_thru_height->setText("not valid");
+		}
 
-                    try
-                    {
-                        collateral = reply["collateral"].get<json::number_float_t>();
-                        ui->collateral->setToolTip(Settings::getZECDisplayFormat(collateral));
-                        ui->collateral->setText(Settings::getZECDisplayFormat(collateral));
-                        ui->collateral_usd->setToolTip(Settings::getUSDFromZecAmount(collateral));
-                        ui->collateral_usd->setText(Settings::getUSDFromZecAmount(collateral));
-                    }
-                    catch (...)
-                    {
-                     ui->collateral->setText("unknown");
-                     ui->collateral_usd->setText("unknown");
-                    }
-
-                    try
-                    {
-                        tier = reply["tier"].get<json::number_integer_t>();
-                        ui->tier->setText(QString::number(tier));
-                    }
-                    catch (...)
-                    {
-                        ui->tier->setText("unknown");
-                    }
-
-                    try
-                    {
-						last_reg_height = reply["last_reg_height"].get<json::number_integer_t>();
-						ui->last_reg_height->setText(QString::number(last_reg_height));
-                    }
-                    catch (...)
-                    {
-                        ui->last_reg_height->setText("unknown");
-                    }
-					
-                    try
-                    {
-						valid_thru_height = reply["valid_thru_height"].get<json::number_integer_t>();
-						ui->valid_thru_height->setText(QString::number(valid_thru_height));
-                    }
-                    catch (...)
-                    {
-                        ui->last_reg_height->setText("unknown");
-                    }
-                }
-
-                bool is_valid;
-
-                is_valid = reply["is_valid"].get<json::boolean_t>();
-
-                std::vector<std::string> vs_errors = reply["errors"].get<std::vector<std::string>>();
-                QString error_line;
-
-                for (unsigned int i = 0; i < vs_errors.size(); i++)
-                {
-                    error_line = error_line + QString(vs_errors.at(i).c_str()) + "\n";
-                }
-
-                ui->is_valid->setText(is_valid?"YES":"NO");
-                ui->errors->setText(error_line);
-
-                QString parentkey   = QString::fromStdString( reply["parentkey"].get<json::string_t>() );
-                QString safekey     = QString::fromStdString( reply["safekey"].get<json::string_t>() );
-                QString safeheight  = QString::fromStdString( reply["safeheight"].get<json::string_t>() );
-                QString SAFE_address  = QString::fromStdString( reply["SAFE_address"].get<json::string_t>() );
-
-                ui->parentkey->setText(parentkey);
-                ui->safekey->setText(safekey);
-                ui->safeheight->setText(safeheight);
-                ui->safeaddress->setText(SAFE_address);
-            }
+		
+			QString parentkey   = QString::fromStdString( reply["parentkey"].get<json::string_t>() );
+			QString safekey     = QString::fromStdString( reply["safekey"].get<json::string_t>() );
+			QString safeheight  = QString::fromStdString( reply["safeheight"].get<json::string_t>() );
+			QString SAFE_address  = QString::fromStdString( reply["SAFE_address"].get<json::string_t>() );
+			
+			ui->parentkey->setText(parentkey);
+			ui->safekey->setText(safekey);
+			ui->safeheight->setText(safeheight);
+			ui->safeaddress->setText(SAFE_address);
+	} else {
+			ui->balance->setText("not configured");
+			ui->balance_usd->setText("not configured");
+			ui->collateral->setText("not configured");
+			ui->collateral_usd->setText("not configured");
+			ui->tier->setText("not configured");
+			ui->is_valid->setText("not configured");
+			ui->errors->setText("not configured");
+			ui->last_reg_height->setText("not configured");
+			ui->valid_thru_height->setText("not configured");
+			ui->parentkey->setText("not configured");
+			ui->safekey->setText("not configured");
+			ui->safeheight->setText("not configured");
+			ui->safeaddress->setText("not configured");
+	}
         });
 
 

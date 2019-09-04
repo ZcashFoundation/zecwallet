@@ -538,8 +538,8 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="837"/>
-        <source>Paste Zcash URI</source>
-        <translation>Coller le URI Zcash</translation>
+        <source>Paste Safecoin URI</source>
+        <translation>Coller le URI Safecoin</translation>
     </message>
     <message>
         <source>Could not understand address</source>
@@ -1210,12 +1210,12 @@ Veuillez configurer l&apos;hôte/port et utilisateur/mot de passe dans le menu E
         <translation>Erreur de format d&apos;adresse</translation>
     </message>
     <message>
-        <source> doesn&apos;t seem to be a valid Zcash address.</source>
-        <translation type="vanished"> ne semble pas être une adresse Zcash valide.</translation>
+        <source> doesn&apos;t seem to be a valid Safecoin address.</source>
+        <translation type="vanished"> ne semble pas être une adresse Safecoin valide.</translation>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="135"/>
-        <source>%1 doesn&apos;t seem to be a valid Zcash address.</source>
+        <source>%1 doesn&apos;t seem to be a valid Safecoin address.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

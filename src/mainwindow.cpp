@@ -542,7 +542,7 @@ void MainWindow::setupSettingsModal() {
             settings.safekey->setEnabled(false);
             settings.parentkey->setEnabled(false);
         }
-        if (!rpc->getConnection()->config->safenode.isEmpty()) {
+        if (rpc->getEZcashD() == nullptr || !rpc->getConnection()->config->safenode.isEmpty()) {
             settings.safeheight->setEnabled(false);
             settings.safepass->setEnabled(false);
             settings.safekey->setEnabled(false);
@@ -669,10 +669,12 @@ void MainWindow::setupSettingsModal() {
                                                         "parentkey=" + settings.parentkey->text());
 
             rpc->getConnection()->config->safenode = "safekey=" + settings.safekey->text();
+			
 
             QMessageBox::information(this, tr("SafeNode Configured" ),
                 tr("SafeNode Configured. To use this feature, you need to restart SafecoinWallet."),
                 QMessageBox::Ok);
+            QTimer::singleShot(1, [=]() { this->close(); });
             }
 
             if (isUsingSafeNode && !settings.chkSafeNode->isChecked()) {
@@ -686,6 +688,7 @@ void MainWindow::setupSettingsModal() {
             QMessageBox::information(this, tr("Disable SafeNode Configuration"),
                 tr("Configuration SafeNode disabled. To fully disabled SafeNode Configuration, you need to restart SafecoinWallet."),
             QMessageBox::Ok);
+            QTimer::singleShot(1, [=]() { this->close(); });
             }
 
     //Addressindex
@@ -698,6 +701,7 @@ void MainWindow::setupSettingsModal() {
                 QMessageBox::information(this, tr("Enable Addressindex"), 
                     tr("Addressindex enabled. To use this feature, you need to restart SafecoinWallet."), 
                     QMessageBox::Ok);
+            QTimer::singleShot(1, [=]() { this->close(); });
             }
 
             if (isUsingAddressindex && !settings.chkAddressindex->isChecked()) {
@@ -708,6 +712,7 @@ void MainWindow::setupSettingsModal() {
                 QMessageBox::information(this, tr("Disable Addressindex"),
                     tr("Addressindex disabled. To fully disabled Addressindex, you need to restart SafecoinWallet."),
                     QMessageBox::Ok);
+            QTimer::singleShot(1, [=]() { this->close(); });
             }
 
     //Timestampindex
