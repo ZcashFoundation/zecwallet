@@ -20,5 +20,6 @@
         <file>res/safe_qt_wallet_it.qm</file>
         <file>res/safe_qt_wallet_zh.qm</file>
         <file>res/safe_qt_wallet_ru.qm</file>
+        <file>res/safe_qt_wallet_ua.qm</file>
     </qresource>
 </RCC>
