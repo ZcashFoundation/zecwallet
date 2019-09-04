@@ -405,7 +405,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="2110"/>
-        <source>&amp;Address book</source>
+        <source>Address &amp;book</source>
         <translation>&amp;Адресная книга</translation>
     </message>
     <message>
@@ -1182,33 +1182,33 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="662"/>
-		<location filename="../src/rpc.cpp" line="663"/>
-		<location filename="../src/rpc.cpp" line="664"/>
-		<location filename="../src/rpc.cpp" line="665"/>
-		<location filename="../src/rpc.cpp" line="666"/>
-		<location filename="../src/rpc.cpp" line="667"/>
-		<location filename="../src/rpc.cpp" line="730"/>
-		<location filename="../src/rpc.cpp" line="731"/>
-		<location filename="../src/rpc.cpp" line="732"/>
-		<location filename="../src/rpc.cpp" line="733"/>
-		<location filename="../src/rpc.cpp" line="734"/>
+        <location filename="../src/rpc.cpp" line="663"/>
+        <location filename="../src/rpc.cpp" line="664"/>
+        <location filename="../src/rpc.cpp" line="665"/>
+        <location filename="../src/rpc.cpp" line="666"/>
+        <location filename="../src/rpc.cpp" line="667"/>
+        <location filename="../src/rpc.cpp" line="730"/>
+        <location filename="../src/rpc.cpp" line="731"/>
+        <location filename="../src/rpc.cpp" line="732"/>
+        <location filename="../src/rpc.cpp" line="733"/>
+        <location filename="../src/rpc.cpp" line="734"/>
         <source>addressindex not enabled</source>
         <translation>addressindex не включено</translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="789"/>
-		<location filename="../src/rpc.cpp" line="790"/>
-		<location filename="../src/rpc.cpp" line="791"/>
-		<location filename="../src/rpc.cpp" line="792"/>
-		<location filename="../src/rpc.cpp" line="793"/>
-		<location filename="../src/rpc.cpp" line="794"/>
-		<location filename="../src/rpc.cpp" line="795"/>
-		<location filename="../src/rpc.cpp" line="796"/>
-		<location filename="../src/rpc.cpp" line="797"/>
-		<location filename="../src/rpc.cpp" line="798"/>
-		<location filename="../src/rpc.cpp" line="799"/>
-		<location filename="../src/rpc.cpp" line="800"/>
-		<location filename="../src/rpc.cpp" line="801"/>
+        <location filename="../src/rpc.cpp" line="790"/>
+        <location filename="../src/rpc.cpp" line="791"/>
+        <location filename="../src/rpc.cpp" line="792"/>
+        <location filename="../src/rpc.cpp" line="793"/>
+        <location filename="../src/rpc.cpp" line="794"/>
+        <location filename="../src/rpc.cpp" line="795"/>
+        <location filename="../src/rpc.cpp" line="796"/>
+        <location filename="../src/rpc.cpp" line="797"/>
+        <location filename="../src/rpc.cpp" line="798"/>
+        <location filename="../src/rpc.cpp" line="799"/>
+        <location filename="../src/rpc.cpp" line="800"/>
+        <location filename="../src/rpc.cpp" line="801"/>
         <source>not configured</source>
         <translation>не настроено</translation>
     </message>
@@ -1898,7 +1898,7 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     </message>
     <message>
         <location filename="../src/settings.ui" line="537"/>
-        <source>Block height at which all steps are completed and chain is synced with balance of roughly 1 SAFE.</source>
+        <source>Block height at which all steps are completed and chain is synced with balance of roughly 1 SAFE</source>
         <translation>Высота блока, на которой все этапы выполнены, и цепь синхронизирована с балансом примерно 1 SAFE.</translation>
     </message>
     <message>

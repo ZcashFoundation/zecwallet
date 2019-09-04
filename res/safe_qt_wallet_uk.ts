@@ -405,7 +405,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="2110"/>
-        <source>&amp;Address book</source>
+        <source>Address &amp;book</source>
         <translation>&amp;Адресна книга</translation>
     </message>
     <message>
@@ -1898,7 +1898,7 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     </message>
     <message>
         <location filename="../src/settings.ui" line="537"/>
-        <source>Block height at which all steps are completed and chain is synced with balance of roughly 1 SAFE.</source>
+        <source>Block height at which all steps are completed and chain is synced with balance of roughly 1 SAFE</source>
         <translation>Висота блоку, на якій всі етапи виконані, і ланцюг синхронізований з балансом приблизно 1 SAFE.</translation>
     </message>
     <message>
