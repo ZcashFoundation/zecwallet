@@ -530,7 +530,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="837"/>
-        <source>Paste Zcash URI</source>
+        <source>Paste Safecoin URI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1105,7 +1105,7 @@ Would you like to visit the releases page?</source>
     <message>
         <location filename="../src/rpc.cpp" line="1182"/>
         <source>Please wait for SafecoinWallet to exit</source>
-        <translatorcomment>controllare, senza contesto potrebbe voler dire  &quot;attendere zec qt wallet per uscire&quot; o altro, non ho contesto</translatorcomment>
+        <translatorcomment>controllare, senza contesto potrebbe voler dire  &quot;attendere safe qt wallet per uscire&quot; o altro, non ho contesto</translatorcomment>
         <translation>Si prega di attendere che SafecoinWallet finisca la procedura di uscita</translation>
     </message>
     <message>
@@ -1202,12 +1202,12 @@ Impostare host/porta e utente/password nel menu Modifica-&gt; Impostazioni.</tra
         <translation>Errore nel formato dell&apos;indirizzo</translation>
     </message>
     <message>
-        <source> doesn&apos;t seem to be a valid Zcash address.</source>
-        <translation type="vanished"> Non sembra un indirizzo Zcash Valido.</translation>
+        <source> doesn&apos;t seem to be a valid Safecoin address.</source>
+        <translation type="vanished"> Non sembra un indirizzo Safecoin Valido.</translation>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="135"/>
-        <source>%1 doesn&apos;t seem to be a valid Zcash address.</source>
+        <source>%1 doesn&apos;t seem to be a valid Safecoin address.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

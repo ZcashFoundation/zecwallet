@@ -355,7 +355,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="2057"/>
-        <source>&amp;Exit</source>
+        <source>E&amp;xit</source>
         <translation>&amp;Выход</translation>
     </message>
     <message>
@@ -376,7 +376,7 @@
     <message>
         <location filename="../src/mainwindow.ui" line="2075"/>
         <source>&amp;Donate</source>
-        <translation>&amp;Пожертвование</translation>
+        <translation>&amp;Пожертвование для OleksandrBlack</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="2080"/>
@@ -390,7 +390,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="2090"/>
-        <source>&amp;Check github.com for updates</source>
+        <source>Check github.com for &amp;updates</source>
         <translation>&amp;Проверить github.com на обновления</translation>
     </message>
     <message>

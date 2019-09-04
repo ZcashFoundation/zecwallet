@@ -390,7 +390,7 @@
     <message>
         <location filename="../src/mainwindow.ui" line="1179"/>
         <source>Pay safecoin &amp;URI...</source>
-        <translation>支付zcash &amp;URI ...</translation>
+        <translation>支付safecoin &amp;URI ...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1184"/>
@@ -425,22 +425,22 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="277"/>
         <source>safecoind is not yet ready. Please wait for the UI to load</source>
-        <translation>zcashd尚未准备好。 请等待UI加载</translation>
+        <translation>safecoind尚未准备好。 请等待UI加载</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="498"/>
         <source>Tor configuration is available only when running an embedded safecoind.</source>
-        <translation>Tor配置仅在运行嵌入的zcashd时可用。</translation>
+        <translation>Tor配置仅在运行嵌入的safecoind时可用。</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="537"/>
         <source>You&apos;re using an external safecoind. Please restart safecoind with -rescan</source>
-        <translation>你正在使用外部zcashd。 请使用-rescan参数重新启动zcashd</translation>
+        <translation>你正在使用外部safecoind。 请使用-rescan参数重新启动safecoind</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="540"/>
         <source>You&apos;re using an external safecoind. Please restart safecoind with -reindex</source>
-        <translation>你正在使用外部zcashd。 请使用-reindex重新启动zcashd</translation>
+        <translation>你正在使用外部safecoind。 请使用-reindex重新启动safecoind</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="565"/>
@@ -510,13 +510,13 @@
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="837"/>
-        <source>Paste Zcash URI</source>
-        <translation>粘贴Zcash URI</translation>
+        <source>Paste Safecoin URI</source>
+        <translation>粘贴Safecoin URI</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="849"/>
         <source>Error paying safecoin URI</source>
-        <translation>支付zcash URI时出错</translation>
+        <translation>支付safecoin URI时出错</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="850"/>
@@ -531,7 +531,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="887"/>
         <source>The keys will be imported into your connected safecoind node</source>
-        <translation>密钥将导入已连接的zcashd节点</translation>
+        <translation>密钥将导入已连接的safecoind节点</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="908"/>
@@ -561,7 +561,7 @@
     <message>
         <location filename="../src/mainwindow.cpp" line="951"/>
         <source>You need to back it up from the machine safecoind is running on</source>
-        <translation>你需要从运行zcashd的机器备份它</translation>
+        <translation>你需要从运行safecoind的机器备份它</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="955"/>
@@ -804,7 +804,7 @@ doesn&apos;t look like a z-address</source>
     <message>
         <location filename="../src/migration.ui" line="81"/>
         <source>If enabled, safecoind will slowly migrate your Sprout shielded funds to your Sapling address. </source>
-        <translation>如果启用，zcashd将慢慢将您的Sprout屏蔽资金迁移到您的Sapling地址。 </translation>
+        <translation>如果启用，safecoind将慢慢将您的Sprout屏蔽资金迁移到您的Sapling地址。 </translation>
     </message>
 </context>
 <context>
@@ -905,8 +905,8 @@ doesn&apos;t look like a z-address</source>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="135"/>
-        <source>%1 doesn&apos;t seem to be a valid Zcash address.</source>
-        <translation>%1 似乎不是有效的Zcash地址。</translation>
+        <source>%1 doesn&apos;t seem to be a valid Safecoin address.</source>
+        <translation>%1 似乎不是有效的Safecoin地址。</translation>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="143"/>
@@ -961,17 +961,17 @@ doesn&apos;t look like a z-address</source>
     <message>
         <location filename="../src/connection.cpp" line="52"/>
         <source>Starting embedded safecoind</source>
-        <translation>启动内嵌的zcashd</translation>
+        <translation>启动内嵌的safecoind</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="62"/>
         <source>safecoind is set to run as daemon</source>
-        <translation>zcashd设置为作为守护进程运行</translation>
+        <translation>safecoind设置为作为守护进程运行</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="62"/>
         <source>Waiting for safecoind</source>
-        <translation>等待zcashd</translation>
+        <translation>等待safecoind</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="77"/>
@@ -979,9 +979,9 @@ doesn&apos;t look like a z-address</source>
 
 .Please remove the following line from your safecoin.conf and restart SafecoinWallet
 daemon=1</source>
-        <translation>你已经将zcashd设置为守护进程启动，这可能会导致SafecoinWallet出现问题
+        <translation>你已经将safecoind设置为守护进程启动，这可能会导致SafecoinWallet出现问题
 
-。请从zcash.conf中删除以下行并重新启动SafecoinWallet
+。请从safecoin.conf中删除以下行并重新启动SafecoinWallet
 daemon=1</translation>
     </message>
     <message>
@@ -993,13 +993,13 @@ Please try restarting.
 If you previously started safecoind with custom arguments, you might need to reset safecoin.conf.
 
 If all else fails, please run safecoind manually.</source>
-        <translation>无法启动内嵌的zcashd。
+        <translation>无法启动内嵌的safecoind。
 
 请尝试重新启动。
 
-如果您之前使用自定义参数启动了zcashd，则可能需要重置zcash.conf。
+如果您之前使用自定义参数启动了safecoind，则可能需要重置safecoin.conf。
 
-如果所有其他方法都失败了，请手动运行zcashd。</translation>
+如果所有其他方法都失败了，请手动运行safecoind。</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="85"/>
@@ -1011,9 +1011,9 @@ If all else fails, please run safecoind manually.</source>
         <source>Couldn&apos;t connect to safecoind configured in safecoin.conf.
 
 Not starting embedded safecoind because --no-embedded was passed</source>
-        <translation>无法连接到zcash.conf中配置的zcashd。
+        <translation>无法连接到safecoin.conf中配置的safecoind。
 
-没有启动内嵌的zcashd，因为已经传了--no-embedded参数</translation>
+没有启动内嵌的safecoind，因为已经传了--no-embedded参数</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="146"/>
@@ -1085,19 +1085,19 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
         <source>Could not connect to safecoind configured in settings.
 
 Please set the host/port and user/password in the Edit-&gt;Settings menu.</source>
-        <translation>无法连接到设置中配置的zcashd。
+        <translation>无法连接到设置中配置的safecoind。
 
 请在编辑 - &gt;设置菜单中设置主机/端口和用户/密码。</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="472"/>
         <source>Authentication failed. The username / password you specified was not accepted by safecoind. Try changing it in the Edit-&gt;Settings menu</source>
-        <translation>验证失败。 zcashd不接受您指定的用户名/密码。 请在编辑 - &gt;设置菜单中更改它</translation>
+        <translation>验证失败。 safecoind不接受您指定的用户名/密码。 请在编辑 - &gt;设置菜单中更改它</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="487"/>
         <source>Your safecoind is starting up. Please wait.</source>
-        <translation>你的zcashd正在启动。 请耐心等待。</translation>
+        <translation>你的safecoind正在启动。 请耐心等待。</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="504"/>
@@ -1156,7 +1156,7 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
     <message>
         <location filename="../src/recurring.cpp" line="469"/>
         <source>No SAFE price was available to convert from USD</source>
-        <translation>ZEC的美元价格无法获取</translation>
+        <translation>SAFE的美元价格无法获取</translation>
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="518"/>
@@ -1224,17 +1224,17 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
     <message>
         <location filename="../src/rpc.cpp" line="673"/>
         <source>Connected to safecoind</source>
-        <translation>连接到zcashd</translation>
+        <translation>连接到safecoind</translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="676"/>
         <source>safecoind has no peer connections</source>
-        <translation>zcashd没有节点可连接</translation>
+        <translation>safecoind没有节点可连接</translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="695"/>
         <source>There was an error connecting to safecoind. The error was</source>
-        <translation>连接到zcashd时出错。 错误是</translation>
+        <translation>连接到safecoind时出错。 错误是</translation>
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="1032"/>
@@ -1273,7 +1273,7 @@ Would you like to visit the releases page?</source>
     <message>
         <location filename="../src/rpc.cpp" line="1183"/>
         <source>Waiting for safecoind to exit</source>
-        <translation>等待zcashd退出</translation>
+        <translation>等待safecoind退出</translation>
     </message>
     <message>
         <location filename="../src/settings.cpp" line="235"/>
@@ -1574,12 +1574,12 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     <message>
         <location filename="../src/requestdialog.ui" line="219"/>
         <source>Request payment from a Sapling address. You&apos;ll send a SAFE 0.0001 transaction to the address with a safecoin payment URI. The memo will be included in the transaction when the address pays you.</source>
-        <translation>要求从树苗地址付款。 您将使用zcash支付URI将ZEC 0.0001交易发送到该地址。 当地址付款时，备注将包含在交易中。</translation>
+        <translation>要求从树苗地址付款。 您将使用safecoin支付URI将SAFE 0.0001交易发送到该地址。 当地址付款时，备注将包含在交易中。</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.cpp" line="50"/>
         <source>Error paying safecoin URI</source>
-        <translation>支付zcash URI时出错</translation>
+        <translation>支付safecoin URI时出错</translation>
     </message>
     <message>
         <location filename="../src/requestdialog.cpp" line="51"/>
@@ -1617,7 +1617,7 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     <message>
         <location filename="../src/settings.ui" line="33"/>
         <source>safecoind connection</source>
-        <translation>zcashd连接</translation>
+        <translation>safecoind连接</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="62"/>
@@ -1702,7 +1702,7 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     <message>
         <location filename="../src/settings.ui" line="273"/>
         <source>Connect to the internet to fetch SAFE prices</source>
-        <translation>连接到互联网以获取ZEC价格</translation>
+        <translation>连接到互联网以获取SAFE价格</translation>
     </message>
     <message>
         <location filename="../src/settings.ui" line="280"/>
@@ -1883,7 +1883,7 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     <message>
         <location filename="../src/confirm.ui" line="183"/>
         <source>safecoind doesn&apos;t seem to have any peers. You might not be connected to the internet, so this transaction might not work.</source>
-        <translation>zcashd似乎没有任何可连接的节点。 您可能没有连接到互联网，因此此交易可能无效。</translation>
+        <translation>safecoind似乎没有任何可连接的节点。 您可能没有连接到互联网，因此此交易可能无效。</translation>
     </message>
     <message>
         <location filename="../src/confirm.ui" line="196"/>
@@ -1899,62 +1899,62 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
 <context>
     <name>createZcashConf</name>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="14"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="14"/>
         <source>Configure safecoin.conf</source>
         <translation>配置 safecoin.conf</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="20"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="20"/>
         <source>Your safecoin node will be configured for you automatically</source>
-        <translation>您的zcash节点将自动为您配置</translation>
+        <translation>您的safecoin节点将自动为您配置</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="30"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="30"/>
         <source>Enable Fast Sync</source>
         <translation>启用快速同步</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="42"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="42"/>
         <source>Show Advanced Configuration</source>
         <translation>显示高级配置</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="112"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="112"/>
         <source>Allow connections to the internet to check for updates, get SAFE/USD prices etc...</source>
-        <translation>允许连接到互联网检查更新，获得ZEC/USD价格等…</translation>
+        <translation>允许连接到互联网检查更新，获得SAFE/USD价格等…</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="119"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="119"/>
         <source>Use custom datadir</source>
         <translation>使用自定义datadir</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="128"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="128"/>
         <source>Choose directory</source>
         <translation>选择目录</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="157"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="157"/>
         <source>Please note that you&apos;ll need to already have a Tor service configured on port 9050</source>
         <translation>请注意，您需要在端口9050上已经配置了Tor服务</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="164"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="164"/>
         <source>Connect to the internet for updates and price feeds</source>
         <translation>连接到internet获取更新和价格数据</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="174"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="174"/>
         <source>Please choose a directory to store your wallet.dat and blockchain</source>
         <translation>请选择一个目录来存储您的wallet.dat和区块链数据</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="181"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="181"/>
         <source>Connect over Tor</source>
         <translation>连接到Tor</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="205"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="205"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Skips the most expensive checks during the initial block download. &lt;a href=&quot;https://docs.zecwallet.co/using-zecwallet/#fastsync&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Learn More&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;在初始块下载期间跳过了最费时的检查。 &lt;a href=&quot;https://docs.zecwallet.co/using-zecwallet/#fastsync&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;了解更多&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
