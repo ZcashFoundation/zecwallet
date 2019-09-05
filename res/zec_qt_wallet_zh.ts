@@ -144,8 +144,8 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="459"/>
-        <location filename="../src/mainwindow.cpp" line="1147"/>
-        <location filename="../src/mainwindow.cpp" line="1195"/>
+        <location filename="../src/mainwindow.cpp" line="1198"/>
+        <location filename="../src/mainwindow.cpp" line="1246"/>
         <location filename="../src/sendtab.cpp" line="302"/>
         <source>Memo</source>
         <translation>备注</translation>
@@ -172,7 +172,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="595"/>
-        <location filename="../src/sendtab.cpp" line="677"/>
+        <location filename="../src/sendtab.cpp" line="681"/>
         <source>Miner Fee</source>
         <translation>矿工费用</translation>
     </message>
@@ -238,6 +238,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="811"/>
+        <location filename="../src/mainwindow.cpp" line="1392"/>
         <source>Export Private Key</source>
         <translation>导出私钥</translation>
     </message>
@@ -260,7 +261,6 @@
         <location filename="../src/mainwindow.ui" line="958"/>
         <location filename="../src/mainwindow.ui" line="972"/>
         <location filename="../src/mainwindow.ui" line="993"/>
-        <location filename="../src/mainwindow.cpp" line="983"/>
         <source>Loading...</source>
         <translation>加载中...</translation>
     </message>
@@ -302,373 +302,406 @@
         <translation>&amp;应用</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1093"/>
+        <location filename="../src/mainwindow.ui" line="1094"/>
         <source>&amp;Edit</source>
         <translation>&amp;编辑</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1107"/>
+        <location filename="../src/mainwindow.ui" line="1108"/>
         <source>E&amp;xit</source>
         <translation>&amp;退出</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1112"/>
+        <location filename="../src/mainwindow.ui" line="1113"/>
         <source>&amp;About</source>
         <translation>&amp;关于</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1117"/>
+        <location filename="../src/mainwindow.ui" line="1118"/>
         <source>&amp;Settings</source>
         <translation>&amp;设置</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1120"/>
+        <location filename="../src/mainwindow.ui" line="1121"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1125"/>
+        <location filename="../src/mainwindow.ui" line="1126"/>
         <source>&amp;Donate</source>
         <translation>&amp;捐赠</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1130"/>
+        <location filename="../src/mainwindow.ui" line="1131"/>
         <source>Check github.com for &amp;updates</source>
         <translation>检查github.com获取和&amp;更新</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1135"/>
+        <location filename="../src/mainwindow.ui" line="1136"/>
         <source>Sapling &amp;turnstile</source>
         <translation>树苗&amp;十字旋转门</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1138"/>
+        <location filename="../src/mainwindow.ui" line="1139"/>
         <source>Ctrl+A, Ctrl+T</source>
         <translation>Ctrl+A, Ctrl+T</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1143"/>
+        <location filename="../src/mainwindow.ui" line="1144"/>
         <source>&amp;Import private key</source>
         <translation>&amp;导入私钥</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1148"/>
+        <location filename="../src/mainwindow.ui" line="1149"/>
         <source>&amp;Export all private keys</source>
         <translation>&amp;导出所有私钥</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1153"/>
+        <location filename="../src/mainwindow.ui" line="1200"/>
+        <source>Validate Address</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&amp;z-board.net</source>
-        <translation>&amp;z-board.net</translation>
+        <translation type="vanished">&amp;z-board.net</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1156"/>
         <source>Ctrl+A, Ctrl+Z</source>
-        <translation>Ctrl+A, Ctrl+Z</translation>
+        <translation type="vanished">Ctrl+A, Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1161"/>
+        <location filename="../src/mainwindow.ui" line="1154"/>
         <source>Address &amp;book</source>
         <translation>&amp;地址簿</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1164"/>
+        <location filename="../src/mainwindow.ui" line="1157"/>
         <source>Ctrl+B</source>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1169"/>
+        <location filename="../src/mainwindow.ui" line="1162"/>
         <source>&amp;Backup wallet.dat</source>
         <translation>&amp;备份 wallet.dat</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1174"/>
-        <location filename="../src/mainwindow.cpp" line="921"/>
+        <location filename="../src/mainwindow.ui" line="1167"/>
+        <location filename="../src/mainwindow.cpp" line="972"/>
         <source>Export transactions</source>
         <translation>导出交易</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1179"/>
+        <location filename="../src/mainwindow.ui" line="1172"/>
         <source>Pay zcash &amp;URI...</source>
         <translation>支付zcash &amp;URI ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1184"/>
+        <location filename="../src/mainwindow.ui" line="1177"/>
         <source>Connect mobile &amp;app</source>
         <translation>连接移动&amp;App</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1187"/>
+        <location filename="../src/mainwindow.ui" line="1180"/>
         <source>Ctrl+M</source>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1192"/>
+        <location filename="../src/mainwindow.ui" line="1185"/>
         <source>&amp;Recurring Payments</source>
         <translation>&amp;定期付款</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1197"/>
+        <location filename="../src/mainwindow.ui" line="1190"/>
         <source>Request zcash...</source>
         <translation>请求 zcash...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="1202"/>
+        <location filename="../src/mainwindow.ui" line="1195"/>
         <source>File a bug...</source>
         <translation>提交错误...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="277"/>
+        <location filename="../src/mainwindow.cpp" line="290"/>
         <source>Not yet ready</source>
         <translation>尚未准备好</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="277"/>
+        <location filename="../src/mainwindow.cpp" line="290"/>
         <source>zcashd is not yet ready. Please wait for the UI to load</source>
         <translation>zcashd尚未准备好。 请等待UI加载</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="498"/>
+        <location filename="../src/mainwindow.cpp" line="444"/>
+        <source>View tx on block explorer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="449"/>
+        <source>Refresh</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="511"/>
         <source>Tor configuration is available only when running an embedded zcashd.</source>
         <translation>Tor配置仅在运行嵌入的zcashd时可用。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="537"/>
+        <location filename="../src/mainwindow.cpp" line="550"/>
         <source>You&apos;re using an external zcashd. Please restart zcashd with -rescan</source>
         <translation>你正在使用外部zcashd。 请使用-rescan参数重新启动zcashd</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="540"/>
+        <location filename="../src/mainwindow.cpp" line="553"/>
         <source>You&apos;re using an external zcashd. Please restart zcashd with -reindex</source>
         <translation>你正在使用外部zcashd。 请使用-reindex重新启动zcashd</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="565"/>
+        <location filename="../src/mainwindow.cpp" line="578"/>
         <source>Enable Tor</source>
         <translation>启用Tor</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="566"/>
+        <location filename="../src/mainwindow.cpp" line="579"/>
         <source>Connection over Tor has been enabled. To use this feature, you need to restart ZecWallet.</source>
         <translation>已启用Tor上的连接。 要使用此功能，您需要重新启动ZecWallet。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="575"/>
+        <location filename="../src/mainwindow.cpp" line="588"/>
         <source>Disable Tor</source>
         <translation>禁用Tor</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="576"/>
+        <location filename="../src/mainwindow.cpp" line="589"/>
         <source>Connection over Tor has been disabled. To fully disconnect from Tor, you need to restart ZecWallet.</source>
         <translation>Tor上的连接已被禁用。 要完全断开与Tor的连接，您需要重新启动ZecWallet。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="605"/>
+        <location filename="../src/mainwindow.cpp" line="618"/>
         <source>ZecWallet needs to restart to rescan/reindex. ZecWallet will now close, please restart ZecWallet to continue</source>
         <translation>ZecWallet需要重新启动才能重新扫描/重新索引。 ZecWallet现在关闭，请重启ZecWallet以继续</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="607"/>
+        <location filename="../src/mainwindow.cpp" line="620"/>
         <source>Restart ZecWallet</source>
         <translation>重启ZecWallet</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="637"/>
+        <location filename="../src/mainwindow.cpp" line="649"/>
         <source>Thanks for supporting ZecWallet!</source>
         <translation>感谢您支持ZecWallet！</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="639"/>
+        <location filename="../src/mainwindow.cpp" line="651"/>
         <source>Donate 0.01 </source>
         <translation>捐赠0.01 </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="639"/>
+        <location filename="../src/mainwindow.cpp" line="651"/>
         <source> to support ZecWallet</source>
         <translation> 支持ZecWallet</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="676"/>
+        <location filename="../src/mainwindow.cpp" line="667"/>
+        <source>Enter Address to validate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="668"/>
+        <source>Transparent or Shielded Address:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="730"/>
         <source>You are on testnet, your post won&apos;t actually appear on z-board.net</source>
         <translation>你在testnet上，你的帖子实际上不会出现在z-board.net上</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="732"/>
+        <location filename="../src/mainwindow.cpp" line="786"/>
         <source>You need a sapling address with available balance to post</source>
         <translation>您需要一个具有可用余额的sapling地址才能发布</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="746"/>
-        <location filename="../src/sendtab.cpp" line="768"/>
+        <location filename="../src/sendtab.cpp" line="774"/>
         <source>Computing Tx: </source>
         <translation>计算交易： </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="770"/>
+        <location filename="../src/mainwindow.cpp" line="811"/>
         <source>Private key import rescan finished</source>
         <translation>私钥导入重新扫描完成</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="837"/>
+        <location filename="../src/mainwindow.cpp" line="878"/>
         <source>Paste Zcash URI</source>
         <translation>粘贴Zcash URI</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="849"/>
+        <location filename="../src/mainwindow.cpp" line="890"/>
         <source>Error paying zcash URI</source>
         <translation>支付zcash URI时出错</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="850"/>
+        <location filename="../src/mainwindow.cpp" line="891"/>
         <source>URI should be of the form &apos;zcash:&lt;addr&gt;?amt=x&amp;memo=y</source>
         <translation>URI的格式应为 &apos;zcash:&lt;addr&gt;?amt=x&amp;memo=y&apos;</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="886"/>
+        <location filename="../src/mainwindow.cpp" line="927"/>
         <source>Please paste your private keys (z-Addr or t-Addr) here, one per line</source>
         <translation>请在此粘贴您的私钥（z-Addr或t-Addr），每行一个</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="887"/>
+        <location filename="../src/mainwindow.cpp" line="928"/>
         <source>The keys will be imported into your connected zcashd node</source>
         <translation>密钥将导入已连接的zcashd节点</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="908"/>
+        <location filename="../src/mainwindow.cpp" line="959"/>
         <source>The keys were imported. It may take several minutes to rescan the blockchain. Until then, functionality may be limited</source>
         <translation>钥匙是导入的。 重新扫描区块链可能需要几分钟时间。 在此之前，功能可能会受到限制</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="927"/>
+        <location filename="../src/mainwindow.cpp" line="978"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="928"/>
+        <location filename="../src/mainwindow.cpp" line="979"/>
         <source>Error exporting transactions, file was not saved</source>
         <translation>导出交易时出错，文件未保存</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="950"/>
+        <location filename="../src/mainwindow.cpp" line="1001"/>
         <source>No wallet.dat</source>
         <translation>没有 wallet.dat</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="950"/>
+        <location filename="../src/mainwindow.cpp" line="1001"/>
         <source>Couldn&apos;t find the wallet.dat on this computer</source>
         <translation>在这台电脑上找不到wallet.dat</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="951"/>
+        <location filename="../src/mainwindow.cpp" line="1002"/>
         <source>You need to back it up from the machine zcashd is running on</source>
         <translation>你需要从运行zcashd的机器备份它</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="955"/>
+        <location filename="../src/mainwindow.cpp" line="1006"/>
         <source>Backup wallet.dat</source>
         <translation>备份 wallet.dat</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="960"/>
+        <location filename="../src/mainwindow.cpp" line="1011"/>
         <source>Couldn&apos;t backup</source>
         <translation>无法备份</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="960"/>
+        <location filename="../src/mainwindow.cpp" line="1011"/>
         <source>Couldn&apos;t backup the wallet.dat file.</source>
         <translation>无法备份wallet.dat文件。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="961"/>
+        <location filename="../src/mainwindow.cpp" line="1012"/>
         <source>You need to back it up manually.</source>
         <translation>您需要手动备份它。</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="988"/>
+        <location filename="../src/mainwindow.cpp" line="1034"/>
+        <source>This might take several minutes. Loading...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="1039"/>
         <source>These are all the private keys for all the addresses in your wallet</source>
         <translation>这些都是钱包中所有地址的私钥</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="990"/>
+        <location filename="../src/mainwindow.cpp" line="1041"/>
         <source>Private key for </source>
         <translation>私钥 </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="998"/>
+        <location filename="../src/mainwindow.cpp" line="1049"/>
         <source>Save File</source>
         <translation>保存文件</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1002"/>
+        <location filename="../src/mainwindow.cpp" line="1053"/>
         <source>Unable to open file</source>
         <translation>无法打开文件</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1099"/>
-        <location filename="../src/mainwindow.cpp" line="1175"/>
+        <location filename="../src/mainwindow.cpp" line="1150"/>
+        <location filename="../src/mainwindow.cpp" line="1226"/>
         <source>Copy address</source>
         <translation>复制成功</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1102"/>
-        <location filename="../src/mainwindow.cpp" line="1171"/>
-        <location filename="../src/mainwindow.cpp" line="1177"/>
+        <location filename="../src/mainwindow.cpp" line="1153"/>
+        <location filename="../src/mainwindow.cpp" line="1222"/>
+        <location filename="../src/mainwindow.cpp" line="1228"/>
         <source>Copied to clipboard</source>
         <translation>复制到剪贴板</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1105"/>
+        <location filename="../src/mainwindow.cpp" line="1156"/>
         <source>Get private key</source>
         <translation>获取私钥</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1116"/>
+        <location filename="../src/mainwindow.cpp" line="1167"/>
         <source>Shield balance to Sapling</source>
         <translation>屏蔽余额到Sapling地址</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1121"/>
-        <location filename="../src/mainwindow.cpp" line="1181"/>
+        <location filename="../src/mainwindow.cpp" line="1172"/>
+        <location filename="../src/mainwindow.cpp" line="1232"/>
         <source>View on block explorer</source>
         <translation>从区块浏览器中查看</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1127"/>
+        <location filename="../src/mainwindow.cpp" line="1178"/>
         <source>Migrate to Sapling</source>
         <translation>迁移到Sapling地址</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1169"/>
+        <location filename="../src/mainwindow.cpp" line="441"/>
+        <location filename="../src/mainwindow.cpp" line="1220"/>
         <source>Copy txid</source>
         <translation>复制交易ID</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1187"/>
+        <location filename="../src/mainwindow.cpp" line="1238"/>
         <source>View Payment Request</source>
         <translation>查看付款申请</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1194"/>
+        <location filename="../src/mainwindow.cpp" line="1245"/>
         <source>View Memo</source>
         <translation>查看备注</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1208"/>
+        <location filename="../src/mainwindow.cpp" line="1259"/>
         <source>Reply to </source>
         <translation>回复给 </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1291"/>
+        <location filename="../src/mainwindow.cpp" line="1348"/>
         <source>Created new t-Addr</source>
         <translation>创建了新的t-Addr</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1368"/>
+        <location filename="../src/mainwindow.cpp" line="1398"/>
+        <source>Copy Address</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="1464"/>
         <source>Address has been previously used</source>
         <translation>该地址以前使用过</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="1370"/>
+        <location filename="../src/mainwindow.cpp" line="1466"/>
         <source>Address is unused</source>
         <translation>地址未使用</translation>
     </message>
@@ -712,44 +745,48 @@ doesn&apos;t look like a z-address</source>
 看起来不像是z-address</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="548"/>
+        <location filename="../src/sendtab.cpp" line="552"/>
         <source>Change from </source>
         <translation>更改发送地址 </translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="722"/>
+        <location filename="../src/sendtab.cpp" line="726"/>
         <source>Current balance      : </source>
         <translation>当前余额      : </translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="724"/>
+        <location filename="../src/sendtab.cpp" line="728"/>
         <source>Balance after this Tx: </source>
         <translation>这次交易后余额： </translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="739"/>
+        <location filename="../src/sendtab.cpp" line="745"/>
         <source>Transaction Error</source>
         <translation>交易错误</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="802"/>
+        <location filename="../src/sendtab.cpp" line="808"/>
         <source>From Address is Invalid</source>
         <translation>发送地址无效</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="807"/>
+        <location filename="../src/sendtab.cpp" line="813"/>
         <source>Recipient Address </source>
         <translation>接收地址 </translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="807"/>
+        <location filename="../src/sendtab.cpp" line="813"/>
         <source> is Invalid</source>
         <translation> 无效</translation>
     </message>
     <message>
-        <location filename="../src/sendtab.cpp" line="813"/>
+        <location filename="../src/sendtab.cpp" line="819"/>
+        <source>Amount for address &apos;%1&apos; is invalid!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Amount &apos;%1&apos; is invalid!</source>
-        <translation>转账金额 &apos;%1&apos; 无效!</translation>
+        <translation type="vanished">转账金额 &apos;%1&apos; 无效!</translation>
     </message>
 </context>
 <context>
@@ -1106,14 +1143,14 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
     </message>
     <message>
         <location filename="../src/connection.cpp" line="521"/>
-        <location filename="../src/rpc.cpp" line="695"/>
+        <location filename="../src/rpc.cpp" line="706"/>
         <source>Connection Error</source>
         <translation>连接错误</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="750"/>
-        <location filename="../src/mainwindow.cpp" line="757"/>
-        <location filename="../src/sendtab.cpp" line="795"/>
+        <location filename="../src/rpc.cpp" line="983"/>
+        <location filename="../src/sendtab.cpp" line="801"/>
         <location filename="../src/turnstile.cpp" line="376"/>
         <source>Transaction Error</source>
         <translation>交易错误</translation>
@@ -1124,31 +1161,31 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
         <translation>发送交易时出错。 错误是：</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="752"/>
         <location filename="../src/recurring.cpp" line="525"/>
-        <location filename="../src/sendtab.cpp" line="783"/>
+        <location filename="../src/rpc.cpp" line="978"/>
+        <location filename="../src/sendtab.cpp" line="789"/>
         <location filename="../src/turnstile.cpp" line="371"/>
         <source> Tx </source>
         <translation> 交易 </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="752"/>
         <location filename="../src/recurring.cpp" line="525"/>
-        <location filename="../src/sendtab.cpp" line="783"/>
+        <location filename="../src/rpc.cpp" line="978"/>
+        <location filename="../src/sendtab.cpp" line="789"/>
         <location filename="../src/turnstile.cpp" line="371"/>
         <source> failed</source>
         <translation> 失败</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="755"/>
-        <location filename="../src/sendtab.cpp" line="786"/>
+        <location filename="../src/rpc.cpp" line="981"/>
+        <location filename="../src/sendtab.cpp" line="792"/>
         <location filename="../src/turnstile.cpp" line="374"/>
         <source>The transaction with id </source>
         <translation>交易 </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="755"/>
-        <location filename="../src/sendtab.cpp" line="786"/>
+        <location filename="../src/rpc.cpp" line="981"/>
+        <location filename="../src/sendtab.cpp" line="792"/>
         <location filename="../src/turnstile.cpp" line="374"/>
         <source> failed. The error was</source>
         <translation> 失败。 错误是</translation>
@@ -1191,63 +1228,63 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
         <translation>所有未来的付款都将被取消。</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="388"/>
-        <location filename="../src/rpc.cpp" line="390"/>
+        <location filename="../src/rpc.cpp" line="399"/>
+        <location filename="../src/rpc.cpp" line="401"/>
         <source>No Connection</source>
         <translation>没有连接</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="641"/>
+        <location filename="../src/rpc.cpp" line="652"/>
         <source>Downloading blocks</source>
         <translation>下载区块</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="652"/>
+        <location filename="../src/rpc.cpp" line="663"/>
         <source>Block height</source>
         <translation>区块高度</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="658"/>
+        <location filename="../src/rpc.cpp" line="669"/>
         <source>Syncing</source>
         <translation>同步中</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="658"/>
+        <location filename="../src/rpc.cpp" line="669"/>
         <source>Connected</source>
         <translation>已连接</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="660"/>
+        <location filename="../src/rpc.cpp" line="671"/>
         <source>testnet:</source>
         <translation>testnet:</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="673"/>
+        <location filename="../src/rpc.cpp" line="684"/>
         <source>Connected to zcashd</source>
         <translation>连接到zcashd</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="676"/>
+        <location filename="../src/rpc.cpp" line="687"/>
         <source>zcashd has no peer connections</source>
         <translation>zcashd没有节点可连接</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="695"/>
+        <location filename="../src/rpc.cpp" line="706"/>
         <source>There was an error connecting to zcashd. The error was</source>
         <translation>连接到zcashd时出错。 错误是</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="1032"/>
+        <location filename="../src/rpc.cpp" line="1066"/>
         <source> tx computing. This can take several minutes.</source>
         <translation> 交易计算中。 这可能需要几分钟。</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="1081"/>
+        <location filename="../src/rpc.cpp" line="1115"/>
         <source>Update Available</source>
         <translation>可用更新</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="1082"/>
+        <location filename="../src/rpc.cpp" line="1116"/>
         <source>A new release v%1 is available! You have v%2.
 
 Would you like to visit the releases page?</source>
@@ -1256,27 +1293,27 @@ Would you like to visit the releases page?</source>
 您想访问发布页面吗？</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="1094"/>
+        <location filename="../src/rpc.cpp" line="1128"/>
         <source>No updates available</source>
         <translation>没有可用的更新</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="1095"/>
+        <location filename="../src/rpc.cpp" line="1129"/>
         <source>You already have the latest release v%1</source>
         <translation>您已拥有最新版本 v%1</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="1182"/>
+        <location filename="../src/rpc.cpp" line="1216"/>
         <source>Please wait for ZecWallet to exit</source>
         <translation>请等待ZecWallet退出</translation>
     </message>
     <message>
-        <location filename="../src/rpc.cpp" line="1183"/>
+        <location filename="../src/rpc.cpp" line="1217"/>
         <source>Waiting for zcashd to exit</source>
         <translation>等待zcashd退出</translation>
     </message>
     <message>
-        <location filename="../src/settings.cpp" line="235"/>
+        <location filename="../src/settings.cpp" line="244"/>
         <source>Tx submitted (right click to copy) txid:</source>
         <translation>交易提交（右键单击复制）交易ID:</translation>
     </message>
@@ -1293,6 +1330,7 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
 您要么有未经证实的资金，要么余额太低，无法进行自动迁移。</translation>
     </message>
     <message>
+        <location filename="../src/rpc.cpp" line="972"/>
         <location filename="../src/turnstile.cpp" line="364"/>
         <source>Computing Tx: </source>
         <translation>计算交易： </translation>
@@ -1316,6 +1354,11 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
         <location filename="../src/txtablemodel.cpp" line="7"/>
         <source>Amount</source>
         <translation>金额</translation>
+    </message>
+    <message>
+        <location filename="../src/txtablemodel.cpp" line="7"/>
+        <source>Confirmations</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/websockets.cpp" line="356"/>
@@ -1810,6 +1853,63 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
         <location filename="../src/turnstileprogress.ui" line="88"/>
         <source>Migration Progress</source>
         <translation>迁移进度</translation>
+    </message>
+</context>
+<context>
+    <name>ValidateAddress</name>
+    <message>
+        <location filename="../src/validateaddress.ui" line="14"/>
+        <source>Validate Address</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/validateaddress.ui" line="20"/>
+        <source>TextLabel</source>
+        <translation type="unfinished">TextLabel</translation>
+    </message>
+    <message>
+        <location filename="../src/validateaddress.ui" line="27"/>
+        <source>Address:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ValidateAddressesModel</name>
+    <message>
+        <location filename="../src/validateaddress.cpp" line="6"/>
+        <source>Property</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/validateaddress.cpp" line="6"/>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ViewAddressesDialog</name>
+    <message>
+        <location filename="../src/viewalladdresses.ui" line="14"/>
+        <source>All Addresses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/viewalladdresses.ui" line="30"/>
+        <source>Export All Keys</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ViewAllAddressesModel</name>
+    <message>
+        <location filename="../src/viewalladdresses.cpp" line="6"/>
+        <source>Address</source>
+        <translation type="unfinished">地址</translation>
+    </message>
+    <message>
+        <location filename="../src/viewalladdresses.cpp" line="6"/>
+        <source>Balance (%1)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
