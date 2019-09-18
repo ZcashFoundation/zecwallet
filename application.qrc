@@ -23,4 +23,7 @@
         <file>res/safe_qt_wallet_uk.qm</file>
         <file>res/safe_qt_wallet_tr.qm</file>
     </qresource>
+    <qresource prefix="/css">
+        <file>res/css/main.css</file>
+    </qresource>
 </RCC>
