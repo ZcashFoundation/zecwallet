@@ -29,6 +29,16 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+	    
+	// Include css
+{
+    QFile qFile(":/css/res/css/main.css");
+    if (qFile.open(QFile::ReadOnly)) {
+      QString styleSheet = QLatin1String(qFile.readAll());
+      this->setStyleSheet(styleSheet);
+    }
+}
+	    
     ui->setupUi(this);
     logger = new Logger(this, QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("zec-qt-wallet.log"));
 
