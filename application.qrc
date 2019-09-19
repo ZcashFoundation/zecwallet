@@ -35,6 +35,5 @@
         <file>res/images/blue/blue_leftArrow_small.png</file>
         <file>res/images/blue/blue_rightArrow_small.png</file>
         <file>res/images/blue/blue_qtreeview_selected.png</file>
-        <file>res/images/blue/blue_walletFrame_bg.png</file>
     </qresource>
 </RCC>
