@@ -25,8 +25,16 @@
     </qresource>
     <qresource prefix="/css">
         <file>res/css/main.css</file>
-    </qresource>
-    <qresource prefix="/css">
-        <file>res/css/main.css</file>
+	</qresource>
+    <qresource prefix="/images/blue">
+        <file>res/images/blue/unchecked.png</file>
+        <file>res/images/blue/checked.png</file>
+        <file>res/images/blue/blue_downArrow.png</file>
+        <file>res/images/blue/blue_downArrow_small.png</file>
+        <file>res/images/blue/blue_upArrow_small.png</file>
+        <file>res/images/blue/blue_leftArrow_small.png</file>
+        <file>res/images/blue/blue_rightArrow_small.png</file>
+        <file>res/images/blue/blue_qtreeview_selected.png</file>
+        <file>res/images/blue/blue_walletFrame_bg.png</file>
     </qresource>
 </RCC>
