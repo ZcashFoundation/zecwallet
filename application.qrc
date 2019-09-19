@@ -20,6 +20,11 @@
         <file>res/safe_qt_wallet_it.qm</file>
         <file>res/safe_qt_wallet_zh.qm</file>
         <file>res/safe_qt_wallet_ru.qm</file>
+        <file>res/safe_qt_wallet_uk.qm</file>
+        <file>res/safe_qt_wallet_tr.qm</file>
+    </qresource>
+    <qresource prefix="/css">
+        <file>res/css/main.css</file>
     </qresource>
     <qresource prefix="/css">
         <file>res/css/main.css</file>
