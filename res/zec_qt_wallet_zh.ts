@@ -391,9 +391,15 @@
         <translation>导出交易</translation>
     </message>
     <message>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <location filename="../src/mainwindow.ui" line="1172"/>
         <source>Pay zcash &amp;URI...</source>
         <translation>支付zcash &amp;URI ...</translation>
+=======
+        <location filename="../src/mainwindow.ui" line="1179"/>
+        <source>Pay safecoin &amp;URI...</source>
+        <translation>支付safecoin &amp;URI ...</translation>
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="1177"/>
@@ -426,6 +432,7 @@
         <translation>尚未准备好</translation>
     </message>
     <message>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <location filename="../src/mainwindow.cpp" line="290"/>
         <source>zcashd is not yet ready. Please wait for the UI to load</source>
         <translation>zcashd尚未准备好。 请等待UI加载</translation>
@@ -454,6 +461,26 @@
         <location filename="../src/mainwindow.cpp" line="553"/>
         <source>You&apos;re using an external zcashd. Please restart zcashd with -reindex</source>
         <translation>你正在使用外部zcashd。 请使用-reindex重新启动zcashd</translation>
+=======
+        <location filename="../src/mainwindow.cpp" line="277"/>
+        <source>safecoind is not yet ready. Please wait for the UI to load</source>
+        <translation>safecoind尚未准备好。 请等待UI加载</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="498"/>
+        <source>Tor configuration is available only when running an embedded safecoind.</source>
+        <translation>Tor配置仅在运行嵌入的safecoind时可用。</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="537"/>
+        <source>You&apos;re using an external safecoind. Please restart safecoind with -rescan</source>
+        <translation>你正在使用外部safecoind。 请使用-rescan参数重新启动safecoind</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="540"/>
+        <source>You&apos;re using an external safecoind. Please restart safecoind with -reindex</source>
+        <translation>你正在使用外部safecoind。 请使用-reindex重新启动safecoind</translation>
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="578"/>
@@ -531,6 +558,7 @@
         <translation>私钥导入重新扫描完成</translation>
     </message>
     <message>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <location filename="../src/mainwindow.cpp" line="878"/>
         <source>Paste Zcash URI</source>
         <translation>粘贴Zcash URI</translation>
@@ -539,6 +567,16 @@
         <location filename="../src/mainwindow.cpp" line="890"/>
         <source>Error paying zcash URI</source>
         <translation>支付zcash URI时出错</translation>
+=======
+        <location filename="../src/mainwindow.cpp" line="837"/>
+        <source>Paste Safecoin URI</source>
+        <translation>粘贴Safecoin URI</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="849"/>
+        <source>Error paying safecoin URI</source>
+        <translation>支付safecoin URI时出错</translation>
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="891"/>
@@ -551,9 +589,15 @@
         <translation>请在此粘贴您的私钥（z-Addr或t-Addr），每行一个</translation>
     </message>
     <message>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <location filename="../src/mainwindow.cpp" line="928"/>
         <source>The keys will be imported into your connected zcashd node</source>
         <translation>密钥将导入已连接的zcashd节点</translation>
+=======
+        <location filename="../src/mainwindow.cpp" line="887"/>
+        <source>The keys will be imported into your connected safecoind node</source>
+        <translation>密钥将导入已连接的safecoind节点</translation>
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="959"/>
@@ -581,9 +625,15 @@
         <translation>在这台电脑上找不到wallet.dat</translation>
     </message>
     <message>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <location filename="../src/mainwindow.cpp" line="1002"/>
         <source>You need to back it up from the machine zcashd is running on</source>
         <translation>你需要从运行zcashd的机器备份它</translation>
+=======
+        <location filename="../src/mainwindow.cpp" line="951"/>
+        <source>You need to back it up from the machine safecoind is running on</source>
+        <translation>你需要从运行safecoind的机器备份它</translation>
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="1006"/>
@@ -840,8 +890,13 @@ doesn&apos;t look like a z-address</source>
     </message>
     <message>
         <location filename="../src/migration.ui" line="81"/>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <source>If enabled, zcashd will slowly migrate your Sprout shielded funds to your Sapling address. </source>
         <translation>如果启用，zcashd将慢慢将您的Sprout屏蔽资金迁移到您的Sapling地址。 </translation>
+=======
+        <source>If enabled, safecoind will slowly migrate your Sprout shielded funds to your Sapling address. </source>
+        <translation>如果启用，safecoind将慢慢将您的Sprout屏蔽资金迁移到您的Sapling地址。 </translation>
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
     </message>
 </context>
 <context>
@@ -942,8 +997,8 @@ doesn&apos;t look like a z-address</source>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="135"/>
-        <source>%1 doesn&apos;t seem to be a valid Zcash address.</source>
-        <translation>%1 似乎不是有效的Zcash地址。</translation>
+        <source>%1 doesn&apos;t seem to be a valid Safecoin address.</source>
+        <translation>%1 似乎不是有效的Safecoin地址。</translation>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="143"/>
@@ -997,6 +1052,7 @@ doesn&apos;t look like a z-address</source>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="52"/>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <source>Starting embedded zcashd</source>
         <translation>启动内嵌的zcashd</translation>
     </message>
@@ -1009,6 +1065,20 @@ doesn&apos;t look like a z-address</source>
         <location filename="../src/connection.cpp" line="62"/>
         <source>Waiting for zcashd</source>
         <translation>等待zcashd</translation>
+=======
+        <source>Starting embedded safecoind</source>
+        <translation>启动内嵌的safecoind</translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="62"/>
+        <source>safecoind is set to run as daemon</source>
+        <translation>safecoind设置为作为守护进程运行</translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="62"/>
+        <source>Waiting for safecoind</source>
+        <translation>等待safecoind</translation>
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
     </message>
     <message>
         <location filename="../src/connection.cpp" line="77"/>
@@ -1016,9 +1086,15 @@ doesn&apos;t look like a z-address</source>
 
 .Please remove the following line from your zcash.conf and restart ZecWallet
 daemon=1</source>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <translation>你已经将zcashd设置为守护进程启动，这可能会导致ZecWallet出现问题
 
 。请从zcash.conf中删除以下行并重新启动ZecWallet
+=======
+        <translation>你已经将safecoind设置为守护进程启动，这可能会导致SafecoinWallet出现问题
+
+。请从safecoin.conf中删除以下行并重新启动SafecoinWallet
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
 daemon=1</translation>
     </message>
     <message>
@@ -1029,14 +1105,19 @@ Please try restarting.
 
 If you previously started zcashd with custom arguments, you might need to reset zcash.conf.
 
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
 If all else fails, please run zcashd manually.</source>
         <translation>无法启动内嵌的zcashd。
+=======
+If all else fails, please run safecoind manually.</source>
+        <translation>无法启动内嵌的safecoind。
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
 
 请尝试重新启动。
 
-如果您之前使用自定义参数启动了zcashd，则可能需要重置zcash.conf。
+如果您之前使用自定义参数启动了safecoind，则可能需要重置safecoin.conf。
 
-如果所有其他方法都失败了，请手动运行zcashd。</translation>
+如果所有其他方法都失败了，请手动运行safecoind。</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="85"/>
@@ -1047,10 +1128,15 @@ If all else fails, please run zcashd manually.</source>
         <location filename="../src/connection.cpp" line="93"/>
         <source>Couldn&apos;t connect to zcashd configured in zcash.conf.
 
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
 Not starting embedded zcashd because --no-embedded was passed</source>
         <translation>无法连接到zcash.conf中配置的zcashd。
+=======
+Not starting embedded safecoind because --no-embedded was passed</source>
+        <translation>无法连接到safecoin.conf中配置的safecoind。
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
 
-没有启动内嵌的zcashd，因为已经传了--no-embedded参数</translation>
+没有启动内嵌的safecoind，因为已经传了--no-embedded参数</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="146"/>
@@ -1122,12 +1208,13 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
         <source>Could not connect to zcashd configured in settings.
 
 Please set the host/port and user/password in the Edit-&gt;Settings menu.</source>
-        <translation>无法连接到设置中配置的zcashd。
+        <translation>无法连接到设置中配置的safecoind。
 
 请在编辑 - &gt;设置菜单中设置主机/端口和用户/密码。</translation>
     </message>
     <message>
         <location filename="../src/connection.cpp" line="472"/>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <source>Authentication failed. The username / password you specified was not accepted by zcashd. Try changing it in the Edit-&gt;Settings menu</source>
         <translation>验证失败。 zcashd不接受您指定的用户名/密码。 请在编辑 - &gt;设置菜单中更改它</translation>
     </message>
@@ -1135,6 +1222,15 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
         <location filename="../src/connection.cpp" line="487"/>
         <source>Your zcashd is starting up. Please wait.</source>
         <translation>你的zcashd正在启动。 请耐心等待。</translation>
+=======
+        <source>Authentication failed. The username / password you specified was not accepted by safecoind. Try changing it in the Edit-&gt;Settings menu</source>
+        <translation>验证失败。 safecoind不接受您指定的用户名/密码。 请在编辑 - &gt;设置菜单中更改它</translation>
+    </message>
+    <message>
+        <location filename="../src/connection.cpp" line="487"/>
+        <source>Your safecoind is starting up. Please wait.</source>
+        <translation>你的safecoind正在启动。 请耐心等待。</translation>
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
     </message>
     <message>
         <location filename="../src/connection.cpp" line="504"/>
@@ -1192,8 +1288,13 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="469"/>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <source>No ZEC price was available to convert from USD</source>
         <translation>ZEC的美元价格无法获取</translation>
+=======
+        <source>No SAFE price was available to convert from USD</source>
+        <translation>SAFE的美元价格无法获取</translation>
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
     </message>
     <message>
         <location filename="../src/recurring.cpp" line="518"/>
@@ -1259,6 +1360,7 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
         <translation>testnet:</translation>
     </message>
     <message>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <location filename="../src/rpc.cpp" line="684"/>
         <source>Connected to zcashd</source>
         <translation>连接到zcashd</translation>
@@ -1272,6 +1374,21 @@ Please set the host/port and user/password in the Edit-&gt;Settings menu.</sourc
         <location filename="../src/rpc.cpp" line="706"/>
         <source>There was an error connecting to zcashd. The error was</source>
         <translation>连接到zcashd时出错。 错误是</translation>
+=======
+        <location filename="../src/rpc.cpp" line="673"/>
+        <source>Connected to safecoind</source>
+        <translation>连接到safecoind</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="676"/>
+        <source>safecoind has no peer connections</source>
+        <translation>safecoind没有节点可连接</translation>
+    </message>
+    <message>
+        <location filename="../src/rpc.cpp" line="695"/>
+        <source>There was an error connecting to safecoind. The error was</source>
+        <translation>连接到safecoind时出错。 错误是</translation>
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="1066"/>
@@ -1308,9 +1425,15 @@ Would you like to visit the releases page?</source>
         <translation>请等待ZecWallet退出</translation>
     </message>
     <message>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <location filename="../src/rpc.cpp" line="1217"/>
         <source>Waiting for zcashd to exit</source>
         <translation>等待zcashd退出</translation>
+=======
+        <location filename="../src/rpc.cpp" line="1183"/>
+        <source>Waiting for safecoind to exit</source>
+        <translation>等待safecoind退出</translation>
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
     </message>
     <message>
         <location filename="../src/settings.cpp" line="244"/>
@@ -1616,6 +1739,7 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     </message>
     <message>
         <location filename="../src/requestdialog.ui" line="219"/>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <source>Request payment from a Sapling address. You&apos;ll send a ZEC 0.0001 transaction to the address with a zcash payment URI. The memo will be included in the transaction when the address pays you.</source>
         <translation>要求从树苗地址付款。 您将使用zcash支付URI将ZEC 0.0001交易发送到该地址。 当地址付款时，备注将包含在交易中。</translation>
     </message>
@@ -1623,6 +1747,15 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
         <location filename="../src/requestdialog.cpp" line="50"/>
         <source>Error paying zcash URI</source>
         <translation>支付zcash URI时出错</translation>
+=======
+        <source>Request payment from a Sapling address. You&apos;ll send a SAFE 0.0001 transaction to the address with a safecoin payment URI. The memo will be included in the transaction when the address pays you.</source>
+        <translation>要求从树苗地址付款。 您将使用safecoin支付URI将SAFE 0.0001交易发送到该地址。 当地址付款时，备注将包含在交易中。</translation>
+    </message>
+    <message>
+        <location filename="../src/requestdialog.cpp" line="50"/>
+        <source>Error paying safecoin URI</source>
+        <translation>支付safecoin URI时出错</translation>
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
     </message>
     <message>
         <location filename="../src/requestdialog.cpp" line="51"/>
@@ -1659,8 +1792,13 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     </message>
     <message>
         <location filename="../src/settings.ui" line="33"/>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <source>zcashd connection</source>
         <translation>zcashd连接</translation>
+=======
+        <source>safecoind connection</source>
+        <translation>safecoind连接</translation>
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
     </message>
     <message>
         <location filename="../src/settings.ui" line="62"/>
@@ -1744,8 +1882,13 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     </message>
     <message>
         <location filename="../src/settings.ui" line="273"/>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <source>Connect to the internet to fetch ZEC prices</source>
         <translation>连接到互联网以获取ZEC价格</translation>
+=======
+        <source>Connect to the internet to fetch SAFE prices</source>
+        <translation>连接到互联网以获取SAFE价格</translation>
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
     </message>
     <message>
         <location filename="../src/settings.ui" line="280"/>
@@ -1982,8 +2125,13 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
     </message>
     <message>
         <location filename="../src/confirm.ui" line="183"/>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <source>zcashd doesn&apos;t seem to have any peers. You might not be connected to the internet, so this transaction might not work.</source>
         <translation>zcashd似乎没有任何可连接的节点。 您可能没有连接到互联网，因此此交易可能无效。</translation>
+=======
+        <source>safecoind doesn&apos;t seem to have any peers. You might not be connected to the internet, so this transaction might not work.</source>
+        <translation>safecoind似乎没有任何可连接的节点。 您可能没有连接到互联网，因此此交易可能无效。</translation>
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
     </message>
     <message>
         <location filename="../src/confirm.ui" line="196"/>
@@ -1999,6 +2147,7 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
 <context>
     <name>createZcashConf</name>
     <message>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <location filename="../src/createzcashconfdialog.ui" line="14"/>
         <source>Configure zcash.conf</source>
         <translation>配置 zcash.conf</translation>
@@ -2007,54 +2156,70 @@ You either have unconfirmed funds or the balance is too low for an automatic mig
         <location filename="../src/createzcashconfdialog.ui" line="20"/>
         <source>Your zcash node will be configured for you automatically</source>
         <translation>您的zcash节点将自动为您配置</translation>
+=======
+        <location filename="../src/createsafecoinconfdialog.ui" line="14"/>
+        <source>Configure safecoin.conf</source>
+        <translation>配置 safecoin.conf</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="30"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="20"/>
+        <source>Your safecoin node will be configured for you automatically</source>
+        <translation>您的safecoin节点将自动为您配置</translation>
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
+    </message>
+    <message>
+        <location filename="../src/createsafecoinconfdialog.ui" line="30"/>
         <source>Enable Fast Sync</source>
         <translation>启用快速同步</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="42"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="42"/>
         <source>Show Advanced Configuration</source>
         <translation>显示高级配置</translation>
     </message>
     <message>
+<<<<<<< HEAD:res/zec_qt_wallet_zh.ts
         <location filename="../src/createzcashconfdialog.ui" line="112"/>
         <source>Allow connections to the internet to check for updates, get ZEC/USD prices etc...</source>
         <translation>允许连接到互联网检查更新，获得ZEC/USD价格等…</translation>
+=======
+        <location filename="../src/createsafecoinconfdialog.ui" line="112"/>
+        <source>Allow connections to the internet to check for updates, get SAFE/USD prices etc...</source>
+        <translation>允许连接到互联网检查更新，获得SAFE/USD价格等…</translation>
+>>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_zh.ts
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="119"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="119"/>
         <source>Use custom datadir</source>
         <translation>使用自定义datadir</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="128"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="128"/>
         <source>Choose directory</source>
         <translation>选择目录</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="157"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="157"/>
         <source>Please note that you&apos;ll need to already have a Tor service configured on port 9050</source>
         <translation>请注意，您需要在端口9050上已经配置了Tor服务</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="164"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="164"/>
         <source>Connect to the internet for updates and price feeds</source>
         <translation>连接到internet获取更新和价格数据</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="174"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="174"/>
         <source>Please choose a directory to store your wallet.dat and blockchain</source>
         <translation>请选择一个目录来存储您的wallet.dat和区块链数据</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="181"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="181"/>
         <source>Connect over Tor</source>
         <translation>连接到Tor</translation>
     </message>
     <message>
-        <location filename="../src/createzcashconfdialog.ui" line="205"/>
+        <location filename="../src/createsafecoinconfdialog.ui" line="205"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Skips the most expensive checks during the initial block download. &lt;a href=&quot;https://docs.zecwallet.co/using-zecwallet/#fastsync&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Learn More&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;在初始块下载期间跳过了最费时的检查。 &lt;a href=&quot;https://docs.zecwallet.co/using-zecwallet/#fastsync&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;了解更多&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>

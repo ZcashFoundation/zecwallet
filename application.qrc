@@ -23,4 +23,7 @@
     <qresource prefix="/css">
         <file>res/css/main.css</file>
     </qresource>
+    <qresource prefix="/css">
+        <file>res/css/main.css</file>
+    </qresource>
 </RCC>

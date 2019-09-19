@@ -22,7 +22,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -966,24 +966,24 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="2">
-              <widget class="QLabel" name="solrate">
+             <item row="3" column="1">
+              <widget class="QLabel" name="connectionsspacer">
+               <property name="text">
+                <string>|</string>
+               </property>
+              </widget>
+             </item>
+             <item row="18" column="2">
+              <widget class="QLabel" name="protocolversion">
                <property name="text">
                 <string>Loading...</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="0">
-              <widget class="QLabel" name="label_12">
+             <item row="22" column="0">
+              <widget class="QLabel" name="clientnamelabel">
                <property name="text">
-                <string>Network solution rate</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_8">
-               <property name="text">
-                <string>Connections</string>
+                <string>Client Name</string>
                </property>
               </widget>
              </item>
@@ -994,10 +994,66 @@
                </property>
               </widget>
              </item>
-             <item row="4" column="0" colspan="3">
-              <widget class="Line" name="line_2">
+             <item row="3" column="0">
+              <widget class="QLabel" name="connectionslable">
+               <property name="text">
+                <string>Connections</string>
+               </property>
+              </widget>
+             </item>
+             <item row="16" column="1">
+              <widget class="QLabel" name="notarizedtxidspacer">
+               <property name="text">
+                <string>|</string>
+               </property>
+              </widget>
+             </item>
+             <item row="17" column="2">
+              <widget class="QLabel" name="safeversion">
+               <property name="text">
+                <string>Loading...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="tls_connectionslabel">
+               <property name="text">
+                <string>TLS Connections</string>
+               </property>
+              </widget>
+             </item>
+             <item row="17" column="0">
+              <widget class="QLabel" name="safeversionlabel">
+               <property name="text">
+                <string>SAFE Version</string>
+               </property>
+              </widget>
+             </item>
+             <item row="23" column="0" colspan="3">
+              <spacer name="verticalSpacer_4">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="20" column="1">
+              <widget class="QLabel" name="p2pportpacer">
+               <property name="text">
+                <string>|</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="nsolutionspacer">
+               <property name="text">
+                <string>|</string>
+               </property>
+              </widget>
+             </item>
+             <item row="21" column="0">
+              <widget class="QLabel" name="rpcportlabel">
+               <property name="text">
+                <string>RPC Port</string>
                </property>
               </widget>
              </item>
@@ -1014,24 +1070,79 @@
                </property>
               </spacer>
              </item>
-             <item row="3" column="1">
-              <widget class="QLabel" name="label_9">
+             <item row="1" column="0">
+              <widget class="QLabel" name="heightLabel">
+               <property name="text">
+                <string>Block height</string>
+               </property>
+              </widget>
+             </item>
+             <item row="21" column="2">
+              <widget class="QLabel" name="rpcport">
+               <property name="text">
+                <string>Loading...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="2">
+              <widget class="QLabel" name="tls_connections">
+               <property name="text">
+                <string>Loading...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="14" column="0" colspan="3">
+              <spacer name="verticalSpacer_7">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="5" column="0">
+              <widget class="QLabel" name="longestlable">
+               <property name="text">
+                <string>Longest Chain</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="1">
+              <widget class="QLabel" name="longestspacer">
                <property name="text">
                 <string>|</string>
                </property>
               </widget>
              </item>
-             <item row="2" column="1">
-              <widget class="QLabel" name="label_11">
+             <item row="5" column="2">
+              <widget class="QLabel" name="longestchain">
+               <property name="text">
+                <string>Loading...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="QLabel" name="notarizedlable">
+               <property name="text">
+                <string>Notarized</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="1">
+              <widget class="QLabel" name="notarizedspacer">
                <property name="text">
                 <string>|</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="1">
-              <widget class="QLabel" name="label_13">
+             <item row="6" column="2">
+              <widget class="QLabel" name="notarized">
                <property name="text">
-                <string>|</string>
+                <string>Loading...</string>
                </property>
               </widget>
              </item>
