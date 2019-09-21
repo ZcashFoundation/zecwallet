@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>968</width>
-    <height>616</height>
+    <width>550</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,13 +26,13 @@
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>Overview</string>
+        <string>Balance</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <widget class="QGroupBox" name="BalanceTable">
+           <widget class="QGroupBox" name="groupBox_2">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -40,7 +40,7 @@
              </sizepolicy>
             </property>
             <property name="title">
-             <string/>
+             <string>Address Balances</string>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <property name="spacing">
@@ -60,15 +60,6 @@
              </property>
              <item>
               <widget class="QTableView" name="balancesTable">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>666</width>
-                 <height>16777215</height>
-                </size>
-               </property>
                <property name="selectionMode">
                 <enum>QAbstractItemView::SingleSelection</enum>
                </property>
@@ -103,43 +94,31 @@
            </size>
           </property>
           <property name="title">
-           <string/>
+           <string>Summary</string>
           </property>
           <property name="flat">
            <bool>false</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout">
-           <item row="1" column="0">
+           <item row="0" column="0">
             <layout class="QVBoxLayout" name="verticalLayout">
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <layout class="QHBoxLayout" name="horizontalLayout">
                <item>
-                <widget class="QLabel" name="label_3">
+                <widget class="QLabel" name="label">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
-                 <property name="font">
-                  <font>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
-                 </property>
                  <property name="text">
-                  <string>Total</string>
+                  <string>Shielded</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QLabel" name="balTotal">
-                 <property name="font">
-                  <font>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
-                 </property>
+                <widget class="QLabel" name="balSheilded">
                  <property name="text">
                   <string/>
                  </property>
@@ -149,13 +128,6 @@
                 </widget>
                </item>
               </layout>
-             </item>
-             <item>
-              <widget class="Line" name="line">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -185,22 +157,41 @@
               </layout>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout">
+              <widget class="Line" name="line">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
                <item>
-                <widget class="QLabel" name="label">
+                <widget class="QLabel" name="label_3">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
                  <property name="text">
-                  <string>Shielded</string>
+                  <string>Total</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QLabel" name="balSheilded">
+                <widget class="QLabel" name="balTotal">
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
                  <property name="text">
                   <string/>
                  </property>
@@ -296,6 +287,53 @@
            </item>
           </layout>
          </widget>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <layout class="QHBoxLayout" name="horizontalLayout_28">
+          <item>
+           <widget class="QGroupBox" name="horizontalGroupBox_3">
+            <property name="title">
+             <string>Transactions</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_29">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QTableView" name="transactionsTable">
+               <property name="selectionMode">
+                <enum>QAbstractItemView::SingleSelection</enum>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectRows</enum>
+               </property>
+               <property name="cornerButtonEnabled">
+                <bool>false</bool>
+               </property>
+               <attribute name="horizontalHeaderStretchLastSection">
+                <bool>true</bool>
+               </attribute>
+               <attribute name="verticalHeaderVisible">
+                <bool>false</bool>
+               </attribute>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -423,12 +461,9 @@
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>400</width>
+                 <width>40</width>
                  <height>20</height>
                 </size>
                </property>
@@ -473,8 +508,9 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>920</width>
-                <height>301</height>
+
+                <width>504</width>
+                <height>329</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="sendToLayout">
@@ -805,6 +841,13 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_9">
                <item>
+                <widget class="QRadioButton" name="rdioZSAddr">
+                 <property name="text">
+                  <string>Shielded Address (Private, Anonymous)</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <widget class="QRadioButton" name="rdioTAddr">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -814,13 +857,6 @@
                  </property>
                  <property name="text">
                   <string>t-Addr</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QRadioButton" name="rdioZSAddr">
-                 <property name="text">
-                  <string>Shielded Address (Private, Anonymous)</string>
                  </property>
                 </widget>
                </item>
@@ -1004,23 +1040,6 @@
            </layout>
           </item>
          </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab_4">
-       <attribute name="title">
-        <string>Transactions</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QTableView" name="transactionsTable">
-          <property name="selectionMode">
-           <enum>QAbstractItemView::SingleSelection</enum>
-          </property>
-          <property name="selectionBehavior">
-           <enum>QAbstractItemView::SelectRows</enum>
-          </property>
-         </widget>
         </item>
        </layout>
       </widget>
@@ -1283,8 +1302,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>968</width>
-     <height>22</height>
+     <width>550</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1463,12 +1482,12 @@
   <tabstop>sendTransactionButton</tabstop>
   <tabstop>cancelSendButton</tabstop>
   <tabstop>rdioZSAddr</tabstop>
+  <tabstop>rdioTAddr</tabstop>
   <tabstop>listReceiveAddresses</tabstop>
   <tabstop>btnReceiveNewAddr</tabstop>
   <tabstop>txtReceive</tabstop>
   <tabstop>rcvLabel</tabstop>
   <tabstop>rcvUpdateLabel</tabstop>
-  <tabstop>transactionsTable</tabstop>
   <tabstop>balancesTable</tabstop>
   <tabstop>minerFeeAmt</tabstop>
   <tabstop>sendAddressBalance</tabstop>
