@@ -25,7 +25,7 @@
     </qresource>
     <qresource prefix="/css">
         <file>res/css/main.css</file>
-	</qresource>
+    </qresource>
     <qresource prefix="/images/blue">
         <file>res/images/blue/unchecked.png</file>
         <file>res/images/blue/checked.png</file>
