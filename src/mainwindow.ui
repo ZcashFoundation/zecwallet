@@ -310,50 +310,113 @@
            <bool>false</bool>
           </property>
           <property name="title">
-           <string>From</string>
+           <string/>
           </property>
           <property name="flat">
            <bool>false</bool>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_6">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="1" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout">
              <item>
-              <widget class="AddressCombo" name="inputsCombo"/>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <widget class="QLabel" name="label_3">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Total</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="balTotal">
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_15">
              <item>
-              <widget class="QLabel" name="label_5">
-               <property name="text">
-                <string>Address Balance</string>
+              <widget class="Line" name="line">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="sendAddressBalance">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <widget class="QLabel" name="label_2">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Transparent</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="balTransparent">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
              <item>
-              <widget class="QLabel" name="sendAddressBalanceUSD">
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <widget class="QLabel" name="label">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Shielded</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="balSheilded">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
              <item>
               <spacer name="horizontalSpacer_6">
@@ -751,6 +814,13 @@
                  </property>
                  <property name="text">
                   <string>t-Addr</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="rdioZSAddr">
+                 <property name="text">
+                  <string>Shielded Address (Private, Anonymous)</string>
                  </property>
                 </widget>
                </item>
