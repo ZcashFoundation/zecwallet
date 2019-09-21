@@ -126,6 +126,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Initialize to the balances tab
     ui->tabWidget->setCurrentIndex(0);
 
+
     // The zcashd tab is hidden by default, and only later added in if the embedded zcashd is started
     zcashdtab = ui->tabWidget->widget(4);
     ui->tabWidget->removeTab(4);
