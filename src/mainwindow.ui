@@ -22,181 +22,17 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>5</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>Balance</string>
+        <string>Overview</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <widget class="QGroupBox" name="groupBox">
-            <property name="minimumSize">
-             <size>
-              <width>250</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="title">
-             <string>Summary</string>
-            </property>
-            <property name="flat">
-             <bool>false</bool>
-            </property>
-            <layout class="QGridLayout" name="gridLayout">
-             <item row="0" column="0">
-              <layout class="QVBoxLayout" name="verticalLayout">
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout">
-                 <item>
-                  <widget class="QLabel" name="label">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="text">
-                    <string>Shielded</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="balSheilded">
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_2">
-                 <item>
-                  <widget class="QLabel" name="label_2">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="text">
-                    <string>Transparent</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="balTransparent">
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <widget class="Line" name="line">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_3">
-                 <item>
-                  <widget class="QLabel" name="label_3">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Total</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="balTotal">
-                   <property name="font">
-                    <font>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <spacer name="verticalSpacer">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QLabel" name="lblSyncWarning">
-                 <property name="styleSheet">
-                  <string notr="true">color:red;</string>
-                 </property>
-                 <property name="text">
-                  <string>Your node is still syncing, balances may not be updated</string>
-                 </property>
-                 <property name="wordWrap">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="unconfirmedWarning">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">color: red;</string>
-                 </property>
-                 <property name="text">
-                  <string>Some transactions are not yet confirmed</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="groupBox_2">
+           <widget class="QGroupBox" name="BalanceTable">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -204,7 +40,7 @@
              </sizepolicy>
             </property>
             <property name="title">
-             <string>Address Balances</string>
+             <string/>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <property name="spacing">
@@ -224,6 +60,15 @@
              </property>
              <item>
               <widget class="QTableView" name="balancesTable">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>666</width>
+                 <height>16777215</height>
+                </size>
+               </property>
                <property name="selectionMode">
                 <enum>QAbstractItemView::SingleSelection</enum>
                </property>
@@ -248,6 +93,209 @@
            </widget>
           </item>
          </layout>
+        </item>
+        <item row="0" column="1">
+         <widget class="QGroupBox" name="groupBox">
+          <property name="minimumSize">
+           <size>
+            <width>250</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="title">
+           <string/>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="1" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <widget class="QLabel" name="label_3">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Total</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="balTotal">
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="Line" name="line">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <widget class="QLabel" name="label_2">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Transparent</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="balTransparent">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <widget class="QLabel" name="label">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Shielded</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="balSheilded">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_99">
+               <item>
+                <widget class="QLabel" name="label_99">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="balUSDTotal">
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="verticalSpacer">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="lblSyncWarning">
+               <property name="styleSheet">
+                <string notr="true">color:red;</string>
+               </property>
+               <property name="text">
+                <string>Your node is still syncing, balances may not be updated</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="unconfirmedWarning">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color: red;</string>
+               </property>
+               <property name="text">
+                <string>Some transactions are not yet confirmed</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -312,9 +360,12 @@
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>40</width>
+                 <width>400</width>
                  <height>20</height>
                 </size>
                </property>
@@ -691,13 +742,6 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_9">
                <item>
-                <widget class="QRadioButton" name="rdioZSAddr">
-                 <property name="text">
-                  <string>z-Addr</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
                 <widget class="QRadioButton" name="rdioTAddr">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -707,6 +751,13 @@
                  </property>
                  <property name="text">
                   <string>t-Addr</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="rdioZSAddr">
+                 <property name="text">
+                  <string>Shielded Address (Private, Anonymous)</string>
                  </property>
                 </widget>
                </item>
@@ -1315,6 +1366,11 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>FilledIconLabel</class>
+   <extends>QLabel</extends>
+   <header>fillediconlabel.h</header>
+  </customwidget>
+  <customwidget>
    <class>AddressCombo</class>
    <extends>QComboBox</extends>
    <header>addresscombo.h</header>
@@ -1323,11 +1379,6 @@
    <class>QRCodeLabel</class>
    <extends>QLabel</extends>
    <header>qrcodelabel.h</header>
-  </customwidget>
-  <customwidget>
-   <class>FilledIconLabel</class>
-   <extends>QLabel</extends>
-   <header>fillediconlabel.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -1342,7 +1393,6 @@
   <tabstop>sendTransactionButton</tabstop>
   <tabstop>cancelSendButton</tabstop>
   <tabstop>rdioZSAddr</tabstop>
-  <tabstop>rdioTAddr</tabstop>
   <tabstop>listReceiveAddresses</tabstop>
   <tabstop>btnReceiveNewAddr</tabstop>
   <tabstop>txtReceive</tabstop>
