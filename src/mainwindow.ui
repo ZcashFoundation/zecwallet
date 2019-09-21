@@ -26,7 +26,7 @@
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
-        <string>Balance</string>
+        <string>Overview</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
@@ -94,7 +94,7 @@
            </size>
           </property>
           <property name="title">
-           <string>Summary</string>
+           <string>Balance Overview</string>
           </property>
           <property name="flat">
            <bool>false</bool>
@@ -102,67 +102,6 @@
           <layout class="QGridLayout" name="gridLayout">
            <item row="0" column="0">
             <layout class="QVBoxLayout" name="verticalLayout">
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <item>
-                <widget class="QLabel" name="label">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>Shielded</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="balSheilded">
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_2">
-               <item>
-                <widget class="QLabel" name="label_2">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>Transparent</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="balTransparent">
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <widget class="Line" name="line">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_3">
                <item>
@@ -192,6 +131,67 @@
                    <bold>true</bold>
                   </font>
                  </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="Line" name="line">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <widget class="QLabel" name="label_2">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Transparent</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="balTransparent">
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <widget class="QLabel" name="label">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Shielded</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="balSheilded">
                  <property name="text">
                   <string/>
                  </property>
@@ -293,7 +293,7 @@
           <item>
            <widget class="QGroupBox" name="horizontalGroupBox_3">
             <property name="title">
-             <string>Transactions</string>
+             <string>Recent Transactions</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -403,67 +403,45 @@
               </widget>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_2">
-               <item>
-                <widget class="QLabel" name="label_2">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>Transparent</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="balTransparent">
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <widget class="QLabel" name="sendAddressBalanceUSD">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <item>
-                <widget class="QLabel" name="label">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>Shielded</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="balSheilded">
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <widget class="QLineEdit" name="sendAddressBalance">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>360</width>
+                 <height>20</height>
+                </size>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
              </item>
              <item>
               <spacer name="horizontalSpacer_6">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>40</width>
+                 <width>360</width>
                  <height>20</height>
                 </size>
                </property>
@@ -841,13 +819,6 @@
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_9">
                <item>
-                <widget class="QRadioButton" name="rdioZSAddr">
-                 <property name="text">
-                  <string>Shielded Address (Private, Anonymous)</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
                 <widget class="QRadioButton" name="rdioTAddr">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -857,6 +828,13 @@
                  </property>
                  <property name="text">
                   <string>t-Addr</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="rdioZSAddr">
+                 <property name="text">
+                  <string>Shielded Address (Private, Anonymous)</string>
                  </property>
                 </widget>
                </item>
@@ -1338,8 +1316,8 @@
      <string>&amp;Edit</string>
     </property>
     <addaction name="action_Address_Book"/>
-    <addaction name="actionSettings"/>
     <addaction name="action_Recurring_Payments"/>
+    <addaction name="actionSettings"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menu_Edit"/>
@@ -1381,6 +1359,9 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+A, Ctrl+T</string>
+   </property>
+   <property name="iconText">
+    <string>SafeNodes</string>
    </property>
   </action>
   <action name="actionImport_Private_Key">
@@ -1475,7 +1456,6 @@
   <tabstop>sendTransactionButton</tabstop>
   <tabstop>cancelSendButton</tabstop>
   <tabstop>rdioZSAddr</tabstop>
-  <tabstop>rdioTAddr</tabstop>
   <tabstop>listReceiveAddresses</tabstop>
   <tabstop>btnReceiveNewAddr</tabstop>
   <tabstop>txtReceive</tabstop>
@@ -1483,7 +1463,6 @@
   <tabstop>rcvUpdateLabel</tabstop>
   <tabstop>balancesTable</tabstop>
   <tabstop>minerFeeAmt</tabstop>
-  <tabstop>sendAddressBalance</tabstop>
   <tabstop>sendToScrollArea</tabstop>
  </tabstops>
  <resources>
