@@ -135,12 +135,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->setCurrentIndex(0);
 
     // The safecoind tab is hidden by default, and only later added in if the embedded safecoind is started
-    zcashdtab = ui->tabWidget->widget(5);
-    ui->tabWidget->removeTab(5);
+    zcashdtab = ui->tabWidget->widget(4);
+    ui->tabWidget->removeTab(4);
 
     // The safenodes tab is hidden by default, and only later added in if the embedded safecoind is started
-    safenodestab = ui->tabWidget->widget(4);
-    ui->tabWidget->removeTab(4);
+    safenodestab = ui->tabWidget->widget(3);
+    ui->tabWidget->removeTab(3);
 
     setupSendTab();
     setupTransactionsTab();
