@@ -424,27 +424,36 @@ QDialog .QTabWidget::pane {
 border: 1px solid #d7d7d7;
 }
 
-QDialog .QTabWidget QTabBar::tab {
-background-color:#f2f0f0;
-color:#333;
-padding-left:10px;
-padding-right:10px;
+.QTabWidget QTabBar::tab {
+background-color:#0A87B5;
+color:#FFFFFF;
+padding-left:20px;
+padding-right:20px;
 padding-top:5px;
 padding-bottom:5px;
 border-top: 1px solid #d7d7d7;
+border: 1px solid white;
+min-height: 20px;
 }
 
-QDialog .QTabWidget QTabBar::tab:first {
-border-left: 1px solid #d7d7d7;
+.QTabWidget QTabBar::tab:first {
+border-left: 1px solid #01698D;
 }
 
-QDialog .QTabWidget QTabBar::tab:last {
-border-right: 1px solid #d7d7d7;
+.QTabWidget QTabBar::tab:last {
+border-right: 1px solid #343A40;
 }
 
-QDialog .QTabWidget QTabBar::tab:selected, QDialog .QTabWidget QTabBar::tab:hover {
-background-color:#ffffff;
-color:#333;
+.QTabWidget QTabBar::tab:selected {
+background-color:#FFFFFF;
+color:#000;
+border: 1px ridge #0E779F;
+}
+
+.QTabWidget QTabBar::tab:hover {
+background-color:#37B8EF;
+color:#FFFFFF;
+border: 1px ridge #FFFFFF;
 }
 
 QDialog .QTabWidget .QWidget {
