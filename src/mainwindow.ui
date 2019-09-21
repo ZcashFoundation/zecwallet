@@ -860,13 +860,6 @@
                  </property>
                 </widget>
                </item>
-               <item>
-                <widget class="QRadioButton" name="rdioZSAddr">
-                 <property name="text">
-                  <string>Shielded Address (Private, Anonymous)</string>
-                 </property>
-                </widget>
-               </item>
               </layout>
              </item>
              <item>
