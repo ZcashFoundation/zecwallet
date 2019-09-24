@@ -417,6 +417,13 @@
               </widget>
              </item>
              <item>
+              <widget class="QLabel" name="sendAddressBalanceUSD">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QLineEdit" name="sendAddressBalance">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -835,6 +842,13 @@
                  </property>
                  <property name="text">
                   <string>t-Addr</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="rdioZSAddr">
+                 <property name="text">
+                  <string>Shielded Address (Private, Anonymous)</string>
                  </property>
                 </widget>
                </item>
@@ -1373,6 +1387,9 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+A, Ctrl+T</string>
+   </property>
+   <property name="iconText">
+    <string>SafeNodes</string>
    </property>
    <property name="iconText">
     <string>SafeNodes</string>
