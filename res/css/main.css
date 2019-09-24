@@ -425,7 +425,7 @@ border: 1px solid #d7d7d7;
 }
 
 .QTabWidget QTabBar::tab {
-background-color:#0A87B5;
+background-color:#01698D;
 color:#FFFFFF;
 padding-left:20px;
 padding-right:20px;
@@ -433,7 +433,7 @@ padding-top:5px;
 padding-bottom:5px;
 border-top: 1px solid #d7d7d7;
 border: 1px solid white;
-min-height: 20px;
+min-height: 9px;
 }
 
 .QTabWidget QTabBar::tab:first {
@@ -447,11 +447,12 @@ border-right: 1px solid #343A40;
 .QTabWidget QTabBar::tab:selected {
 background-color:#FFFFFF;
 color:#000;
-border: 1px ridge #0E779F;
+border: 1px ridge #01698D;
+
 }
 
 .QTabWidget QTabBar::tab:hover {
-background-color:#37B8EF;
+background-color:rgb(186, 190, 194);
 color:#FFFFFF;
 border: 1px ridge #FFFFFF;
 }
@@ -1681,10 +1682,8 @@ border:1px solid #d7d7d7;
 
 /* QT */
 QLineEdit#sendAddressBalance{
-	min-width:125px;
-}
-
-QComboBox#inputsCombo{
+    min-width: 175px;
+    max-width: 225px;
 	font: bold;
 }
 
@@ -1697,7 +1696,7 @@ padding-left:1px;
 
 QComboBox#listReceiveAddresses
 {
-	font: bold;
+	font: normal;
 }
 
 QComboBox#listReceiveAddresses QListView {
