@@ -1,5 +1,6 @@
 safecoinwallet desktop wallet for Safecoin ($SAFE) that runs on Linux, Windows and macOS.
 
+
 ![Screenshots](safecoinwallet.png?raw=true)
 # Installation
 
