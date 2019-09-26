@@ -1,0 +1,6 @@
+
+QWidget, QMainWindow, QMenuBar, QMenu, QDialog, QTabWidget, QTableView, QTableView::item, QScrollArea, QGroupBox, QPlainTextEdit, QLineEdit, QLabel 
+{
+    background-color: #303335;
+    color: #ffffff;
+}

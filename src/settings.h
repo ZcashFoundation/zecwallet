@@ -68,7 +68,10 @@ public:
 
     bool    getCheckForUpdates();
     void    setCheckForUpdates(bool allow);
-            
+
+    QString get_theme_name();
+    void set_theme_name(QString theme_name);
+
     bool    isSaplingActive();
 
     void    setUsingZcashConf(QString confLocation);
