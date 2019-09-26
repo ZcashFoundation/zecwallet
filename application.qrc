@@ -24,7 +24,7 @@
         <file>res/safe_qt_wallet_tr.qm</file>
     </qresource>
     <qresource prefix="/css">
-        <file>res/css/main.css</file>
+        <file>res/css/blue.css</file>
         <file>res/css/dark.css</file>
         <file>res/css/default.css</file>
         <file>res/css/light.css</file>
