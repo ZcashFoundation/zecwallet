@@ -1,5 +1,5 @@
 
-QWidget, QMainWindow, QMenuBar, QMenu, QDialog, QTabWidget, QTabWidget QTabBar::tab, QTableView, QTableView::item, QScrollArea, QGroupBox, QPlainTextEdit, QLineEdit, QLabel
+QWidget, QMainWindow, QMenuBar, QMenu, QDialog, QTabWidget, QTableView, QTableView::item, QScrollArea, QGroupBox, QPlainTextEdit, QLineEdit, QLabel
 {
     background-color: #303335;
     color: #ffffff;
@@ -53,12 +53,12 @@ QHeaderView::section:last {
 border-right: 0px solid #d7d7d7;
 }
 
-.QScrollArea {
+QScrollArea {
 background:transparent;
 border:0px;
 }
 
-.QTableView { /* Table - has to be selected as a class otherwise it throws off QCalendarWidget */
+QTableView { /* Table - has to be selected as a class otherwise it throws off QCalendarWidget */
 background:#303335;
 }
 
@@ -71,6 +71,11 @@ font-size:12px;
 QTableView::item:selected { /* Table Item Selected */
 background-color:#fff;
 color:#000;
+}
+
+QMenuBar {
+background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.25, stop: 0 #525355, stop: 1 #303335);
+color: #fff;
 }
 
 QMenuBar::item {
