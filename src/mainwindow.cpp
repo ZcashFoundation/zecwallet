@@ -29,6 +29,26 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+	    
+	// Include css
+    QString theme_name;
+    try
+    {
+       theme_name = Settings::getInstance()->get_theme_name();
+    }
+    catch (...)
+    {
+        theme_name = "default";
+    }
+
+    QFile qFile(":/css/res/css/" + theme_name +".css");
+    if (qFile.open(QFile::ReadOnly))
+    {
+      QString styleSheet = QLatin1String(qFile.readAll());
+      this->setStyleSheet(styleSheet);
+    }
+
+	    
     ui->setupUi(this);
     logger = new Logger(this, QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).filePath("safe-qt-wallet.log"));
 
@@ -125,12 +145,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->setCurrentIndex(0);
 
     // The safecoind tab is hidden by default, and only later added in if the embedded safecoind is started
-    zcashdtab = ui->tabWidget->widget(5);
-    ui->tabWidget->removeTab(5);
+    zcashdtab = ui->tabWidget->widget(4);
+    ui->tabWidget->removeTab(4);
 
     // The safenodes tab is hidden by default, and only later added in if the embedded safecoind is started
-    safenodestab = ui->tabWidget->widget(4);
-    ui->tabWidget->removeTab(4);
+    safenodestab = ui->tabWidget->widget(3);
+    ui->tabWidget->removeTab(3);
 
     setupSendTab();
     setupTransactionsTab();
@@ -498,6 +518,12 @@ void MainWindow::setupSettingsModal() {
                     rpc->refresh(true);
             }
         });
+
+        // Setup theme combo
+        int theme_index = settings.comboBoxTheme->findText(Settings::getInstance()->get_theme_name(), Qt::MatchExactly);
+        settings.comboBoxTheme->setCurrentIndex(theme_index);
+
+        QObject::connect(settings.comboBoxTheme, SIGNAL(currentIndexChanged(QString)), this, SLOT(slot_change_theme(QString)));
 
         // Save sent transactions
         settings.chkSaveTxs->setChecked(Settings::getInstance()->getSaveZtxs());
@@ -1789,6 +1815,35 @@ void MainWindow::updateLabels() {
 
     // Update the autocomplete
     updateLabelsAutoComplete();
+}
+
+void MainWindow::slot_change_theme(const QString& theme_name)
+{
+    /*
+    QMessageBox msgBox;
+    msgBox.setText(theme_name);
+    msgBox.exec();
+    */
+    Settings::getInstance()->set_theme_name(theme_name);
+
+    // Include css
+    QString saved_theme_name;
+    try
+    {
+       saved_theme_name = Settings::getInstance()->get_theme_name();
+    }
+    catch (...)
+    {
+        saved_theme_name = "default";
+    }
+
+    QFile qFile(":/css/res/css/" + saved_theme_name +".css");
+    if (qFile.open(QFile::ReadOnly))
+    {
+      QString styleSheet = QLatin1String(qFile.readAll());
+      this->setStyleSheet(styleSheet);
+    }
+
 }
 
 MainWindow::~MainWindow()

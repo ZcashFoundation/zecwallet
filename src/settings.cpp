@@ -149,6 +149,15 @@ void Settings::setAllowCustomFees(bool allow) {
     QSettings().setValue("options/customfees", allow);
 }
 
+QString Settings::get_theme_name() {
+    // Load from the QT Settings.
+    return QSettings().value("options/theme_name", false).toString();
+}
+
+void Settings::set_theme_name(QString theme_name) {
+    QSettings().setValue("options/theme_name", theme_name);
+}
+
 bool Settings::getSaveZtxs() {
     // Load from the QT Settings. 
     return QSettings().value("options/savesenttx", true).toBool();
