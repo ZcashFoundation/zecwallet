@@ -322,6 +322,15 @@
          </item>
          <item>
           <property name="text">
+           <string>blue</string>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>:/images/blue/res/images/blue/checked.png</normaloff>:/images/blue/res//images/blue/checked.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>light</string>
           </property>
          </item>
