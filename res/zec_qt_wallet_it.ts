@@ -531,13 +531,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-<<<<<<< HEAD:res/zec_qt_wallet_it.ts
         <location filename="../src/mainwindow.cpp" line="878"/>
         <source>Paste Zcash URI</source>
-=======
-        <location filename="../src/mainwindow.cpp" line="837"/>
-        <source>Paste Safecoin URI</source>
->>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_it.ts
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1141,17 +1136,10 @@ Would you like to visit the releases page?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-<<<<<<< HEAD:res/zec_qt_wallet_it.ts
         <location filename="../src/rpc.cpp" line="1216"/>
         <source>Please wait for ZecWallet to exit</source>
         <translatorcomment>controllare, senza contesto potrebbe voler dire  &quot;attendere zec qt wallet per uscire&quot; o altro, non ho contesto</translatorcomment>
         <translation>Si prega di attendere che ZecWallet finisca la procedura di uscita</translation>
-=======
-        <location filename="../src/rpc.cpp" line="1182"/>
-        <source>Please wait for SafecoinWallet to exit</source>
-        <translatorcomment>controllare, senza contesto potrebbe voler dire  &quot;attendere safe qt wallet per uscire&quot; o altro, non ho contesto</translatorcomment>
-        <translation>Si prega di attendere che SafecoinWallet finisca la procedura di uscita</translation>
->>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_it.ts
     </message>
     <message>
         <location filename="../src/rpc.cpp" line="1217"/>
@@ -1247,12 +1235,12 @@ Impostare host/porta e utente/password nel menu Modifica-&gt; Impostazioni.</tra
         <translation>Errore nel formato dell&apos;indirizzo</translation>
     </message>
     <message>
-        <source> doesn&apos;t seem to be a valid Safecoin address.</source>
-        <translation type="vanished"> Non sembra un indirizzo Safecoin Valido.</translation>
+        <source> doesn&apos;t seem to be a valid Zcash address.</source>
+        <translation type="vanished"> Non sembra un indirizzo Zcash Valido.</translation>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="135"/>
-        <source>%1 doesn&apos;t seem to be a valid Safecoin address.</source>
+        <source>%1 doesn&apos;t seem to be a valid Zcash address.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
