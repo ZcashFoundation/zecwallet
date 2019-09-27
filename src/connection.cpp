@@ -697,7 +697,6 @@ void Connection::doRPC(const json& payload, const std::function<void(json)>& cb,
         return;
     }
 
-
     QNetworkReply *reply = restclient->post(*request, QByteArray::fromStdString(payload.dump()));
 
     QObject::connect(reply, &QNetworkReply::finished, [=] {
