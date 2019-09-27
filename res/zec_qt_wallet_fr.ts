@@ -559,15 +559,9 @@
         <translation>Le format URI doit être comme suit: &apos;zcash:&lt;addr&gt;?amt=x&amp;memo=y</translation>
     </message>
     <message>
-<<<<<<< HEAD:res/zec_qt_wallet_fr.ts
         <location filename="../src/mainwindow.cpp" line="878"/>
         <source>Paste Zcash URI</source>
         <translation>Coller le URI Zcash</translation>
-=======
-        <location filename="../src/mainwindow.cpp" line="837"/>
-        <source>Paste Safecoin URI</source>
-        <translation>Coller le URI Safecoin</translation>
->>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_fr.ts
     </message>
     <message>
         <source>Could not understand address</source>
@@ -1253,12 +1247,12 @@ Veuillez configurer l&apos;hôte/port et utilisateur/mot de passe dans le menu E
         <translation>Erreur de format d&apos;adresse</translation>
     </message>
     <message>
-        <source> doesn&apos;t seem to be a valid Safecoin address.</source>
-        <translation type="vanished"> ne semble pas être une adresse Safecoin valide.</translation>
+        <source> doesn&apos;t seem to be a valid Zcash address.</source>
+        <translation type="vanished"> ne semble pas être une adresse Zcash valide.</translation>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="135"/>
-        <source>%1 doesn&apos;t seem to be a valid Safecoin address.</source>
+        <source>%1 doesn&apos;t seem to be a valid Zcash address.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
