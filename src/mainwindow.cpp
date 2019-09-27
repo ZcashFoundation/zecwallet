@@ -30,7 +30,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
 	    
-	// Include css
+
+	// Include css    
     QString theme_name;
     try
     {
@@ -41,12 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
         theme_name = "default";
     }
 
-    QFile qFile(":/css/res/css/" + theme_name +".css");
-    if (qFile.open(QFile::ReadOnly))
-    {
-      QString styleSheet = QLatin1String(qFile.readAll());
-      this->setStyleSheet(styleSheet);
-    }
+    this->slot_change_theme(theme_name);
 
 	    
     ui->setupUi(this);
