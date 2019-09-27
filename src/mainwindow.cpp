@@ -505,7 +505,11 @@ void MainWindow::setupSettingsModal() {
         int theme_index = settings.comboBoxTheme->findText(Settings::getInstance()->get_theme_name(), Qt::MatchExactly);
         settings.comboBoxTheme->setCurrentIndex(theme_index);
 
-        QObject::connect(settings.comboBoxTheme, SIGNAL(currentIndexChanged(QString)), this, SLOT(slot_change_theme(QString)));
+        QObject::connect(settings.comboBoxTheme, &QComboBox::currentTextChanged, [=] (QString theme_name) {
+            this->slot_change_theme(theme_name);
+            // Tell the user to restart
+            QMessageBox::information(this, tr("Restart"), tr("Please restart ZecWallet to have the theme apply"), QMessageBox::Ok);
+        });
 
         // Save sent transactions
         settings.chkSaveTxs->setChecked(Settings::getInstance()->getSaveZtxs());
@@ -1627,11 +1631,6 @@ void MainWindow::updateLabels() {
 
 void MainWindow::slot_change_theme(const QString& theme_name)
 {
-    /*
-    QMessageBox msgBox;
-    msgBox.setText(theme_name);
-    msgBox.exec();
-    */
     Settings::getInstance()->set_theme_name(theme_name);
 
     // Include css
