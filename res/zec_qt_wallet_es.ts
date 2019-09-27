@@ -524,13 +524,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-<<<<<<< HEAD:res/zec_qt_wallet_es.ts
         <location filename="../src/mainwindow.cpp" line="878"/>
         <source>Paste Zcash URI</source>
-=======
-        <location filename="../src/mainwindow.cpp" line="837"/>
-        <source>Paste Safecoin URI</source>
->>>>>>> f1b260f... Merge pull request #6 from Fair-Exchange/css:res/safe_qt_wallet_es.ts
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1279,12 +1274,12 @@ El saldo es insuficiente para una migración automática.
         <translation>Error en el formato de la dirección.</translation>
     </message>
     <message>
-        <source> doesn&apos;t seem to be a valid Safecoin address.</source>
-        <translation type="vanished">no parece ser una dirección Safecoin válida</translation>
+        <source> doesn&apos;t seem to be a valid Zcash address.</source>
+        <translation type="vanished">no parece ser una dirección Zcash válida</translation>
     </message>
     <message>
         <location filename="../src/addressbook.cpp" line="135"/>
-        <source>%1 doesn&apos;t seem to be a valid Safecoin address.</source>
+        <source>%1 doesn&apos;t seem to be a valid Zcash address.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2151,7 +2146,7 @@ El saldo es insuficiente para una migración automática.
     <message>
         <location filename="../src/zboard.ui" line="85"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ZBoard: Fully anonymous and untraceable chat messages based on the ZCash blockchain. &lt;a href=&quot;http://www.z-board.net/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://www.z-board.net/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ZBoard: Mensajes de chat totalmente anónimos e imposibles de rastrear basados en la cadena de bloques Safecoin. &lt;a href=&quot;http://www.z-board.net/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://www.z-board.net/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ZBoard: Mensajes de chat totalmente anónimos e imposibles de rastrear basados en la cadena de bloques Zcash. &lt;a href=&quot;http://www.z-board.net/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://www.z-board.net/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/zboard.ui" line="107"/>
