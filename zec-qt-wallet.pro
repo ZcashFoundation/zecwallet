@@ -25,6 +25,7 @@ DEFINES += \
     QT_DEPRECATED_WARNINGS
 
 INCLUDEPATH  += src/3rdparty/
+INCLUDEPATH  += src/
 
 RESOURCES     = application.qrc
 
