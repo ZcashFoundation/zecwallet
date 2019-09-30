@@ -1,0 +1,90 @@
+QWidget, QMainWindow, QMenuBar, QMenu, QDialog, QTabWidget, QTableView, QTableView::item, QScrollArea, QGroupBox, QWidget, QPlainTextEdit, QLineEdit, QLabel, MainWindow 
+{
+    background-color: #dadada;
+    color: #000000;
+    
+}
+
+QTabWidget QTabBar::tab {
+padding-left:20px;
+padding-right:20px;
+padding-top:5px;
+padding-bottom:5px;
+border: 1px solid #525355;
+background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.25, stop: 0 #DADADA, stop: 1 #747577);
+color:#fff;
+}
+
+QTabWidget QTabBar::tab:selected {
+min-height: 10px;
+background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.25, stop: 0 #747577, stop: 1 #DADADA);
+color:#000;
+border: 1px ridge #000;
+}
+
+QTabWidget QTabBar::tab:hover {
+background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.25, stop: 0 #747577, stop: 1 #DADADA);
+color:#000;
+border: 1px ridge #fff;
+min-height: 20px
+}
+
+QHeaderView { /* Table Header */
+background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.25, stop: 0 #DADADA, stop: 1 #747577);
+}
+
+QHeaderView::section { /* Table Header Sections */
+qproperty-alignment:center;
+background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.25, stop: 0 #DADADA, stop: 1 #747577);
+color:#fff;
+min-height:25px;
+font-weight:bold;
+font-size:11px;
+outline:0;
+border:1px solid #747577;
+border-right:1px solid #fff;
+border-left:1px solid #fff;
+padding-left:5px;
+padding-right:5px;
+padding-top:2px;
+padding-bottom:2px;
+}
+
+QHeaderView::section:last {
+border-right: 0px solid #d7d7d7;
+}
+
+QScrollArea {
+background:transparent;
+border:0px;
+}
+
+QTableView { /* Table - has to be selected as a class otherwise it throws off QCalendarWidget */
+background:#DADADA;
+}
+
+QTableView::item { /* Table Item */
+background-color:#DADADA;
+border:1px solid #fff;
+font-size:12px;
+}
+
+QTableView::item:selected { /* Table Item Selected */
+background-color:#747577;
+color:#fff;
+}
+
+QMenuBar {
+background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.25, stop: 0 #DADADA, stop: 1 #747577);
+color: #fff;
+}
+
+QMenuBar::item {
+background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.25, stop: 0 #DADADA, stop: 1 #747577);
+color: #fff;
+}
+
+QMenuBar::item:selected {
+background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 0.25, stop: 0 #747577, stop: 1 #DADADA);
+color:#000;
+}

@@ -17,7 +17,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string notr="true">ZecWallet</string>
+      <string notr="true">ZecWallet FullNode</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
