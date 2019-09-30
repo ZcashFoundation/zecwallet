@@ -228,7 +228,7 @@ public:
         }
 
         w = new MainWindow();
-        w->setWindowTitle("ZecWallet v" + QString(APP_VERSION));
+        w->setWindowTitle("ZecWallet FullNode v" + QString(APP_VERSION));
 
         // If there was a payment URI on the command line, pay it
         if (parser.positionalArguments().length() > 0) {
