@@ -45,7 +45,7 @@ RUN cd /opt && \
 # Add rust
 RUN apt install -y gcc-aarch64-linux-gnu
 
-RUN curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain 1.32.0  -y 
+RUN curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain 1.38.0  -y 
 RUN echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
 RUN ~/.cargo/bin/rustup target add x86_64-pc-windows-gnu
 RUN ~/.cargo/bin/rustup target add aarch64-unknown-linux-gnu
