@@ -1648,6 +1648,7 @@ void MainWindow::slot_change_theme(const QString& theme_name)
     if (qFile.open(QFile::ReadOnly))
     {
       QString styleSheet = QLatin1String(qFile.readAll());
+      this->setStyleSheet(""); // reset styles    
       this->setStyleSheet(styleSheet);
     }
 
