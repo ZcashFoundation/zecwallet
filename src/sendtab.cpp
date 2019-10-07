@@ -175,7 +175,7 @@ void MainWindow::setDefaultPayFrom() {
         for (int i=0; i < ui->inputsCombo->count(); i++) {
             auto addr = ui->inputsCombo->itemText(i);
             if (addr.startsWith(startsWith)) {
-                auto amt = rpc->getAllBalances()->value(addr);
+                auto amt = rpc->getModel()->getAllBalances().value(addr);
                 if (max_amt < amt) {
                     max_amt = amt;
                     idx = i;
@@ -198,16 +198,16 @@ void MainWindow::setDefaultPayFrom() {
 };
 
 void MainWindow::updateFromCombo() {
-    if (!rpc || !rpc->getAllBalances())
+    if (!rpc)
         return;
 
     auto lastFromAddr = ui->inputsCombo->currentText();
 
     ui->inputsCombo->clear();
-    auto i = rpc->getAllBalances()->constBegin();
+    auto i = rpc->getModel()->getAllBalances().constBegin();
 
     // Add all the addresses into the inputs combo box
-    while (i != rpc->getAllBalances()->constEnd()) {
+    while (i != rpc->getModel()->getAllBalances().constEnd()) {
         ui->inputsCombo->addItem(i.key(), i.value());
         if (i.key() == lastFromAddr) ui->inputsCombo->setCurrentText(i.key());
 
@@ -224,7 +224,7 @@ void MainWindow::updateFromCombo() {
 
 void MainWindow::inputComboTextChanged(int index) {
     auto addr   = ui->inputsCombo->itemText(index);
-    auto bal    = rpc->getAllBalances()->value(addr);
+    auto bal    = rpc->getModel()->getAllBalances().value(addr);
     auto balFmt = Settings::getZECDisplayFormat(bal);
 
     ui->sendAddressBalance->setText(balFmt);
@@ -459,7 +459,7 @@ void MainWindow::clearSendForm() {
 void MainWindow::maxAmountChecked(int checked) {
     if (checked == Qt::Checked) {
         ui->Amount1->setReadOnly(true);
-        if (rpc->getAllBalances() == nullptr) return;
+        if (rpc == nullptr) return;
            
         // Calculate maximum amount
         double sumAllAmounts = 0.0;
@@ -481,7 +481,7 @@ void MainWindow::maxAmountChecked(int checked) {
 
         auto addr = ui->inputsCombo->currentText();
 
-        auto maxamount  = rpc->getAllBalances()->value(addr) - sumAllAmounts;
+        auto maxamount  = rpc->getModel()->getAllBalances().value(addr) - sumAllAmounts;
         maxamount       = (maxamount < 0) ? 0 : maxamount;
             
         ui->Amount1->setText(Settings::getDecimalString(maxamount));
@@ -531,7 +531,7 @@ Tx MainWindow::createTxFromSendPage() {
     }
 
     if (Settings::getInstance()->getAutoShield() && sendChangeToSapling) {
-        auto saplingAddr = std::find_if(rpc->getAllZAddresses()->begin(), rpc->getAllZAddresses()->end(), [=](auto i) -> bool { 
+        auto saplingAddr = std::find_if(rpc->getModel()->getAllZAddresses().begin(), rpc->getModel()->getAllZAddresses().end(), [=](auto i) -> bool { 
             // We're finding a sapling address that is not one of the To addresses, because zcash doesn't allow duplicated addresses
             bool isSapling = Settings::getInstance()->isSaplingAddress(i); 
             if (!isSapling) return false;
@@ -545,8 +545,8 @@ Tx MainWindow::createTxFromSendPage() {
             return true;
         });
 
-        if (saplingAddr != rpc->getAllZAddresses()->end()) {
-            double change = rpc->getAllBalances()->value(tx.fromAddr) - totalAmt - tx.fee;
+        if (saplingAddr != rpc->getModel()->getAllZAddresses().end()) {
+            double change = rpc->getModel()->getAllBalances().value(tx.fromAddr) - totalAmt - tx.fee;
 
             if (Settings::getDecimalString(change) != "0") {
                 QString changeMemo = tr("Change from ") + tx.fromAddr;
@@ -724,9 +724,9 @@ bool MainWindow::confirmTx(Tx tx, RecurringPaymentInfo* rpi) {
     confirm.sendFrom->setText(fnSplitAddressForWrap(tx.fromAddr));
     confirm.sendFrom->setFont(fixedFont);    
     QString tooltip = tr("Current balance      : ") +
-        Settings::getZECUSDDisplayFormat(rpc->getAllBalances()->value(tx.fromAddr));
+        Settings::getZECUSDDisplayFormat(rpc->getModel()->getAllBalances().value(tx.fromAddr));
     tooltip += "\n" + tr("Balance after this Tx: ") +
-        Settings::getZECUSDDisplayFormat(rpc->getAllBalances()->value(tx.fromAddr) - totalSpending);
+        Settings::getZECUSDDisplayFormat(rpc->getModel()->getAllBalances().value(tx.fromAddr) - totalSpending);
     confirm.sendFrom->setToolTip(tooltip);
 
     // Show the dialog and submit it if the user confirms

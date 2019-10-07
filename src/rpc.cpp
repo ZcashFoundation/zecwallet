@@ -51,7 +51,8 @@ RPC::RPC(MainWindow* main) {
     // Start at every 10s. When an operation is pending, this will change to every second
     txTimer->start(Settings::updateSpeed);  
 
-    usedAddresses = new QMap<QString, bool>();
+    // Create the data model
+    model = new DataModel();
 
     // Initialize the migration status to unavailable.
     this->migrationStatus.available = false;
@@ -65,11 +66,7 @@ RPC::~RPC() {
     delete balancesTableModel;
     delete turnstile;
 
-    delete utxos;
-    delete allBalances;
-    delete usedAddresses;
-    delete zaddresses;
-    delete taddresses;
+    delete model;
 
     delete conn;
 }
@@ -403,7 +400,7 @@ void RPC::noConnection() {
     // Clear balances table.
     QMap<QString, double> emptyBalances;
     QList<UnspentOutput>  emptyOutputs;
-    balancesTableModel->setNewData(&emptyBalances, &emptyOutputs);
+    balancesTableModel->setNewData(emptyBalances, emptyOutputs);
 
     // Clear Transactions table.
     QList<TransactionItem> emptyTxs;
@@ -462,7 +459,7 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
                 auto zaddr = it.key();
                 for (auto& i : it.value().get<json::array_t>()) {   
                     // Mark the address as used
-                    usedAddresses->insert(zaddr, true);
+                    model->markAddressUsed(zaddr);
 
                     // Filter out change txs
                     if (! i["change"].get<json::boolean_t>()) {
@@ -721,12 +718,11 @@ void RPC::refreshAddresses() {
             newzaddresses->push_back(addr);
         }
 
-        delete zaddresses;
-        zaddresses = newzaddresses;
+        model->replaceZaddresses(newzaddresses);
 
         // Refresh the sent and received txs from all these z-addresses
         refreshSentZTrans();
-        refreshReceivedZTrans(*zaddresses);
+        refreshReceivedZTrans(model->getAllZAddresses());
     });
 
     
@@ -738,8 +734,7 @@ void RPC::refreshAddresses() {
                 newtaddresses->push_back(addr);
         }
 
-        delete taddresses;
-        taddresses = newtaddresses;
+        model->replaceTaddresses(newtaddresses);
     });
 }
 
@@ -748,7 +743,7 @@ void RPC::updateUI(bool anyUnconfirmed) {
     ui->unconfirmedWarning->setVisible(anyUnconfirmed);
 
     // Update balances model data, which will update the table too
-    balancesTableModel->setNewData(allBalances, utxos);
+    balancesTableModel->setNewData(model->getAllBalances(), model->getUTXOs());
 
     // Update from address
     main->updateFromCombo();
@@ -853,11 +848,8 @@ void RPC::refreshBalances() {
             auto anyZUnconfirmed = processUnspent(reply, newBalances, newUtxos);
 
             // Swap out the balances and UTXOs
-            delete allBalances;
-            delete utxos;
-
-            allBalances = newBalances;
-            utxos       = newUtxos;
+            model->replaceBalances(newBalances);
+            model->replaceUTXOs(newUtxos);
 
             updateUI(anyTUnconfirmed || anyZUnconfirmed);
 
@@ -892,7 +884,7 @@ void RPC::refreshTransactions() {
 
             txdata.push_back(tx);
             if (!address.isEmpty())
-                usedAddresses->insert(address, true);
+                model->markAddressUsed(address);
         }
 
         // Update model data, which updates the table view
@@ -1304,7 +1296,7 @@ void RPC::getZboardTopics(std::function<void(QMap<QString, QString>)> cb) {
  * Get a Sapling address from the user's wallet
  */ 
 QString RPC::getDefaultSaplingAddress() {
-    for (QString addr: *zaddresses) {
+    for (QString addr: model->getAllZAddresses()) {
         if (Settings::getInstance()->isSaplingAddress(addr))
             return addr;
     }
@@ -1313,8 +1305,8 @@ QString RPC::getDefaultSaplingAddress() {
 }
 
 QString RPC::getDefaultTAddress() {
-    if (getAllTAddresses()->length() > 0)
-        return getAllTAddresses()->at(0);
+    if (model->getAllTAddresses().length() > 0)
+        return model->getAllTAddresses().at(0);
     else 
         return QString();
 }

@@ -3,6 +3,7 @@
 
 #include "precompiled.h"
 
+#include "datamodel.h"
 #include "balancestablemodel.h"
 #include "txtablemodel.h"
 #include "ui_mainwindow.h"
@@ -46,6 +47,8 @@ public:
     RPC(MainWindow* main);
     ~RPC();
 
+    DataModel* getModel() { return model; }
+
     void setConnection(Connection* c);
     void setEZcashd(QProcess* p);
     const QProcess* getEZcashD() { return ezcashd; }
@@ -53,6 +56,8 @@ public:
     void refresh(bool force = false);
 
     void refreshAddresses();    
+
+
     
     void checkForUpdate(bool silent = true);
     void refreshZECPrice();
@@ -73,11 +78,6 @@ public:
     void addNewTxToWatch(const QString& newOpid, WatchedTx wtx); 
 
     const TxTableModel*               getTransactionsModel() { return transactionsTableModel; }
-    const QList<QString>*             getAllZAddresses()     { return zaddresses; }
-    const QList<QString>*             getAllTAddresses()     { return taddresses; }
-    const QList<UnspentOutput>*       getUTXOs()             { return utxos; }
-    const QMap<QString, double>*      getAllBalances()       { return allBalances; }
-    const QMap<QString, bool>*        getUsedAddresses()     { return usedAddresses; }
 
     void newZaddr(bool sapling, const std::function<void(json)>& cb);
     void newTaddr(const std::function<void(json)>& cb);
@@ -127,16 +127,12 @@ private:
     Connection*                 conn                        = nullptr;
     QProcess*                   ezcashd                     = nullptr;
 
-    QList<UnspentOutput>*       utxos                       = nullptr;
-    QMap<QString, double>*      allBalances                 = nullptr;
-    QMap<QString, bool>*        usedAddresses               = nullptr;
-    QList<QString>*             zaddresses                  = nullptr;
-    QList<QString>*             taddresses                  = nullptr;
-    
     QMap<QString, WatchedTx>    watchingOps;
 
     TxTableModel*               transactionsTableModel      = nullptr;
     BalancesTableModel*         balancesTableModel          = nullptr;
+
+    DataModel*                  model;
 
     QTimer*                     timer;
     QTimer*                     txTimer;

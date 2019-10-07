@@ -2,14 +2,7 @@
 #define BALANCESTABLEMODEL_H
 
 #include "precompiled.h"
-
-struct UnspentOutput {
-    QString address;
-    QString txid;
-    QString amount;    
-    int     confirmations;
-    bool    spendable;
-};
+#include "datamodel.h"
 
 class BalancesTableModel : public QAbstractTableModel
 {
@@ -17,7 +10,7 @@ public:
     BalancesTableModel(QObject* parent);
     ~BalancesTableModel();
 
-    void setNewData(const QMap<QString, double>* balances, const QList<UnspentOutput>* outputs);
+    void setNewData(const QMap<QString, double> balances, const QList<UnspentOutput> outputs);
 
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;

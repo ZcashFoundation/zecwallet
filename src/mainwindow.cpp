@@ -302,12 +302,6 @@ void MainWindow::turnstileProgress() {
 }
 
 void MainWindow::turnstileDoMigration(QString fromAddr) {
-    // Return if there is no connection
-    if (rpc->getAllZAddresses() == nullptr || rpc->getAllBalances() == nullptr) {
-        QMessageBox::information(this, tr("Not yet ready"), tr("zcashd is not yet ready. Please wait for the UI to load"), QMessageBox::Ok);
-        return;
-    }
-
     // If a migration is already in progress, show the progress dialog instead
     if (rpc->getTurnstile()->isMigrationPresent()) {
         turnstileProgress();
@@ -324,9 +318,9 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
 
     auto fnGetAllSproutBalance = [=] () {
         double bal = 0;
-        for (auto addr : *rpc->getAllZAddresses()) {
-            if (Settings::getInstance()->isSproutAddress(addr) && rpc->getAllBalances()) {
-                bal += rpc->getAllBalances()->value(addr);
+        for (auto addr : rpc->getModel()->getAllZAddresses()) {
+            if (Settings::getInstance()->isSproutAddress(addr)) {
+                bal += rpc->getModel()->getAllBalances().value(addr);
             }
         }
 
@@ -334,8 +328,8 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
     };
 
     turnstile.fromBalance->setText(Settings::getZECUSDDisplayFormat(fnGetAllSproutBalance()));
-    for (auto addr : *rpc->getAllZAddresses()) {
-        auto bal = rpc->getAllBalances()->value(addr);
+    for (auto addr : rpc->getModel()->getAllZAddresses()) {
+        auto bal = rpc->getModel()->getAllBalances().value(addr);
         if (Settings::getInstance()->isSaplingAddress(addr)) {
             turnstile.migrateTo->addItem(addr, bal);
         } else {
@@ -354,7 +348,7 @@ void MainWindow::turnstileDoMigration(QString fromAddr) {
         if (addr.startsWith("All")) {
             bal = fnGetAllSproutBalance();
         } else {
-            bal = rpc->getAllBalances()->value(addr);
+            bal = rpc->getModel()->getAllBalances().value(addr);
         }
         
         auto balTxt = Settings::getZECUSDDisplayFormat(bal);
@@ -734,8 +728,8 @@ void MainWindow::postToZBoard() {
         return;
 
     // Fill the from field with sapling addresses.
-    for (auto i = rpc->getAllBalances()->keyBegin(); i != rpc->getAllBalances()->keyEnd(); i++) {
-        if (Settings::getInstance()->isSaplingAddress(*i) && rpc->getAllBalances()->value(*i) > 0) {
+    for (auto i = rpc->getModel()->getAllBalances().keyBegin(); i != rpc->getModel()->getAllBalances().keyEnd(); i++) {
+        if (Settings::getInstance()->isSaplingAddress(*i) && rpc->getModel()->getAllBalances().value(*i) > 0) {
             zb.fromAddr->addItem(*i);
         }
     }
@@ -1331,20 +1325,18 @@ void MainWindow::addNewZaddr(bool sapling) {
 // lambda, which can be connected to the appropriate signal
 std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
     return [=] (bool checked) { 
-        if (checked && this->rpc->getAllZAddresses() != nullptr) { 
-            auto addrs = this->rpc->getAllZAddresses();
+        if (checked) { 
+            auto addrs = this->rpc->getModel()->getAllZAddresses();
 
             // Save the current address, so we can update it later
             auto zaddr = ui->listReceiveAddresses->currentText();
             ui->listReceiveAddresses->clear();
 
-            std::for_each(addrs->begin(), addrs->end(), [=] (auto addr) {
+            std::for_each(addrs.begin(), addrs.end(), [=] (auto addr) {
                 if ( (sapling &&  Settings::getInstance()->isSaplingAddress(addr)) ||
-                    (!sapling && !Settings::getInstance()->isSaplingAddress(addr))) {
-                        if (rpc->getAllBalances()) {
-                            auto bal = rpc->getAllBalances()->value(addr);
-                            ui->listReceiveAddresses->addItem(addr, bal);
-                        }
+                    (!sapling && !Settings::getInstance()->isSaplingAddress(addr))) {                        
+                        auto bal = rpc->getModel()->getAllBalances().value(addr);
+                        ui->listReceiveAddresses->addItem(addr, bal);
                 }
             }); 
             
@@ -1353,7 +1345,7 @@ std::function<void(bool)> MainWindow::addZAddrsToComboList(bool sapling) {
             }
 
             // If z-addrs are empty, then create a new one.
-            if (addrs->isEmpty()) {
+            if (addrs.isEmpty()) {
                 addNewZaddr(sapling);
             }
         } 
@@ -1381,7 +1373,7 @@ void MainWindow::setupReceiveTab() {
     QObject::connect(ui->rdioTAddr, &QRadioButton::toggled, [=] (bool checked) { 
         // Whenever the t-address is selected, we generate a new address, because we don't
         // want to reuse t-addrs
-        if (checked && this->rpc->getUTXOs() != nullptr) { 
+        if (checked) { 
             updateTAddrCombo(checked);
         } 
 
@@ -1402,7 +1394,7 @@ void MainWindow::setupReceiveTab() {
         Settings::saveRestoreTableHeader(viewaddrs.tblAddresses, &d, "viewalladdressestable");
         viewaddrs.tblAddresses->horizontalHeader()->setStretchLastSection(true);
 
-        ViewAllAddressesModel model(viewaddrs.tblAddresses, *getRPC()->getAllTAddresses(), getRPC());
+        ViewAllAddressesModel model(viewaddrs.tblAddresses, getRPC()->getModel()->getAllTAddresses(), getRPC());
         viewaddrs.tblAddresses->setModel(&model);
 
         QObject::connect(viewaddrs.btnExportAll, &QPushButton::clicked,  this, &MainWindow::exportAllKeys);
@@ -1484,10 +1476,10 @@ void MainWindow::setupReceiveTab() {
         }
         
         ui->rcvLabel->setText(label);
-        ui->rcvBal->setText(Settings::getZECUSDDisplayFormat(rpc->getAllBalances()->value(addr)));
+        ui->rcvBal->setText(Settings::getZECUSDDisplayFormat(rpc->getModel()->getAllBalances().value(addr)));
         ui->txtReceive->setPlainText(addr);       
         ui->qrcodeDisplay->setQrcodeString(addr);
-        if (rpc->getUsedAddresses()->value(addr, false)) {
+        if (rpc->getModel()->getUsedAddresses().value(addr, false)) {
             ui->rcvBal->setToolTip(tr("Address has been previously used"));
         } else {
             ui->rcvBal->setToolTip(tr("Address is unused"));
@@ -1543,7 +1535,7 @@ void MainWindow::setupReceiveTab() {
 
 void MainWindow::updateTAddrCombo(bool checked) {
     if (checked) {
-        auto utxos = this->rpc->getUTXOs();
+        auto utxos = this->rpc->getModel()->getUTXOs();
 
         // Save the current address so we can restore it later
         auto currentTaddr = ui->listReceiveAddresses->currentText();
@@ -1555,10 +1547,10 @@ void MainWindow::updateTAddrCombo(bool checked) {
         QSet<QString> addrs;
 
         // 1. Add all t addresses that have a balance
-        std::for_each(utxos->begin(), utxos->end(), [=, &addrs](auto& utxo) {
+        std::for_each(utxos.begin(), utxos.end(), [=, &addrs](auto& utxo) {
             auto addr = utxo.address;
             if (Settings::isTAddress(addr) && !addrs.contains(addr)) {
-                auto bal = rpc->getAllBalances()->value(addr);
+                auto bal = rpc->getModel()->getAllBalances().value(addr);
                 ui->listReceiveAddresses->addItem(addr, bal);
 
                 addrs.insert(addr);
@@ -1566,12 +1558,12 @@ void MainWindow::updateTAddrCombo(bool checked) {
         });
         
         // 2. Add all t addresses that have a label
-        auto allTaddrs = this->rpc->getAllTAddresses();
+        auto allTaddrs = this->rpc->getModel()->getAllTAddresses();
         QSet<QString> labels;
         for (auto p : AddressBook::getInstance()->getAllAddressLabels()) {
             labels.insert(p.second);
         }
-        std::for_each(allTaddrs->begin(), allTaddrs->end(), [=, &addrs] (auto& taddr) {
+        std::for_each(allTaddrs.begin(), allTaddrs.end(), [=, &addrs] (auto& taddr) {
             // If the address is in the address book, add it. 
             if (labels.contains(taddr) && !addrs.contains(taddr)) {
                 addrs.insert(taddr);
@@ -1581,8 +1573,8 @@ void MainWindow::updateTAddrCombo(bool checked) {
 
         // 3. Add all t-addresses. We won't add more than 20 total t-addresses,
         // since it will overwhelm the dropdown
-        for (int i=0; addrs.size() < 20 && i < allTaddrs->size(); i++) {
-            auto addr = allTaddrs->at(i);
+        for (int i=0; addrs.size() < 20 && i < allTaddrs.size(); i++) {
+            auto addr = allTaddrs.at(i);
             if (!addrs.contains(addr))  {
                 addrs.insert(addr);
                 // Balance is zero since it has not been previously added
@@ -1594,15 +1586,15 @@ void MainWindow::updateTAddrCombo(bool checked) {
         if (!currentTaddr.isEmpty() && Settings::isTAddress(currentTaddr)) {
             // Make sure the current taddr is in the list
             if (!addrs.contains(currentTaddr)) {
-                auto bal = rpc->getAllBalances()->value(currentTaddr);
+                auto bal = rpc->getModel()->getAllBalances().value(currentTaddr);
                 ui->listReceiveAddresses->addItem(currentTaddr, bal);
             }
             ui->listReceiveAddresses->setCurrentText(currentTaddr);
         }
 
         // 5. Add a last, disabled item if there are remaining items
-        if (allTaddrs->size() > addrs.size()) {
-            auto num = QString::number(allTaddrs->size() - addrs.size());
+        if (allTaddrs.size() > addrs.size()) {
+            auto num = QString::number(allTaddrs.size() - addrs.size());
             ui->listReceiveAddresses->addItem("-- " + num + " more --", 0);
 
             QStandardItemModel* model = qobject_cast<QStandardItemModel*>(ui->listReceiveAddresses->model());

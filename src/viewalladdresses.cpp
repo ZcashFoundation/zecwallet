@@ -22,7 +22,7 @@ QVariant ViewAllAddressesModel::data(const QModelIndex &index, int role) const {
     if (role == Qt::DisplayRole) {
         switch(index.column()) {
             case 0: return address;
-            case 1: return rpc->getAllBalances()->value(address, 0.0);
+            case 1: return rpc->getModel()->getAllBalances().value(address, 0.0);
         }
     }
     return QVariant();

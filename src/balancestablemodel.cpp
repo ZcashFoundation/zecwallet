@@ -7,8 +7,8 @@ BalancesTableModel::BalancesTableModel(QObject *parent)
     : QAbstractTableModel(parent) {    
 }
 
-void BalancesTableModel::setNewData(const QMap<QString, double>* balances, 
-    const QList<UnspentOutput>* outputs)
+void BalancesTableModel::setNewData(const QMap<QString, double> balances, 
+    const QList<UnspentOutput> outputs)
 {    
     loading = false;
 
@@ -16,15 +16,16 @@ void BalancesTableModel::setNewData(const QMap<QString, double>* balances,
     // Copy over the utxos for our use
     delete utxos;
     utxos = new QList<UnspentOutput>();
+
     // This is a QList deep copy.
-    *utxos = *outputs;
+    *utxos = outputs;
 
     // Process the address balances into a list
     delete modeldata;
     modeldata = new QList<std::tuple<QString, double>>();
-    std::for_each(balances->keyBegin(), balances->keyEnd(), [=] (auto keyIt) {
-        if (balances->value(keyIt) > 0)
-            modeldata->push_back(std::make_tuple(keyIt, balances->value(keyIt)));
+    std::for_each(balances.keyBegin(), balances.keyEnd(), [=] (auto keyIt) {
+        if (balances.value(keyIt) > 0)
+            modeldata->push_back(std::make_tuple(keyIt, balances.value(keyIt)));
     });
 
     // And then update the data

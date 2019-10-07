@@ -28,11 +28,11 @@ void RequestDialog::setupDialog(MainWindow* main, QDialog* d, Ui_RequestDialog* 
     req->txtMemo->setLenDisplayLabel(req->lblMemoLen);
     req->lblAmount->setText(req->lblAmount->text() + Settings::getTokenName());
 
-    if (!main || !main->getRPC() || !main->getRPC()->getAllZAddresses() || !main->getRPC()->getAllBalances())
+    if (!main || !main->getRPC())
         return;
 
-    for (auto addr : *main->getRPC()->getAllZAddresses()) {
-        auto bal = main->getRPC()->getAllBalances()->value(addr);
+    for (auto addr : main->getRPC()->getModel()->getAllZAddresses()) {
+        auto bal = main->getRPC()->getModel()->getAllBalances().value(addr);
         if (Settings::getInstance()->isSaplingAddress(addr)) {
             req->cmbMyAddress->addItem(addr, bal);
         }

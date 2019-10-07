@@ -84,7 +84,7 @@ QList<TurnstileMigrationItem> Turnstile::readMigrationPlan() {
 
 void Turnstile::planMigration(QString zaddr, QString destAddr, int numsplits, int numBlocks) {
     // First, get the balance and split up the amounts
-    auto bal = rpc->getAllBalances()->value(zaddr);
+    auto bal = rpc->getModel()->getAllBalances().value(zaddr);
     auto splits = splitAmount(bal, numsplits);
 
     // Then, generate an intermediate t-address for each part using getBatchRPC
@@ -266,10 +266,10 @@ void Turnstile::executeMigrationStep() {
 
     // Fn to find if there are any unconfirmed funds for this address.
     auto fnHasUnconfirmed = [=] (QString addr) {
-        auto utxoset = rpc->getUTXOs();
-        return std::find_if(utxoset->begin(), utxoset->end(), [=] (auto utxo) {
+        auto utxoset = rpc->getModel()->getUTXOs();
+        return std::find_if(utxoset.begin(), utxoset.end(), [=] (auto utxo) {
                     return utxo.address == addr && utxo.confirmations == 0 && utxo.spendable;
-                }) != utxoset->end();
+                }) != utxoset.end();
     };
 
     // Find the next step
@@ -292,7 +292,7 @@ void Turnstile::executeMigrationStep() {
             return;
         }
 
-        auto balance = rpc->getAllBalances()->value(nextStep->fromAddr);
+        auto balance = rpc->getModel()->getAllBalances().value(nextStep->fromAddr);
         if (nextStep->amount > balance) {
             qDebug() << "Not enough balance!";
             nextStep->status = TurnstileMigrationItemStatus::NotEnoughBalance;
@@ -329,13 +329,13 @@ void Turnstile::executeMigrationStep() {
 
         // Sometimes, we check too quickly, and the unspent UTXO is not updated yet, so we'll
         // double check to see if there is enough balance. 
-        if (!rpc->getAllBalances()->keys().contains(nextStep->intTAddr)) {
+        if (!rpc->getModel()->getAllBalances().keys().contains(nextStep->intTAddr)) {
             //qDebug() << QString("The intermediate t-address doesn't have balance, even though it seems to be confirmed");
             return;
         }
 
         // Send it to the final destination address.
-        auto bal = rpc->getAllBalances()->value(nextStep->intTAddr);
+        auto bal = rpc->getModel()->getAllBalances().value(nextStep->intTAddr);
         auto sendAmt = bal - Settings::getMinerFee();
 
         if (sendAmt < 0) {

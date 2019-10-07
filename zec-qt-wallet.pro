@@ -60,7 +60,9 @@ SOURCES += \
     src/recurring.cpp \
     src/requestdialog.cpp \
     src/memoedit.cpp \
-    src/viewalladdresses.cpp
+    src/viewalladdresses.cpp \
+    src/datamodel.cpp \
+    src/controller.cpp 
 
 HEADERS += \
     src/mainwindow.h \
@@ -87,7 +89,9 @@ HEADERS += \
     src/recurring.h \
     src/requestdialog.h \
     src/memoedit.h \
-    src/viewalladdresses.h 
+    src/viewalladdresses.h \
+    src/datamodel.h \
+    src/controller.h 
 
 FORMS += \
     src/mainwindow.ui \

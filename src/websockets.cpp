@@ -659,17 +659,17 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, st
 
     // Find a from address that has at least the sending amout
     double amt = sendTx["amount"].toString().toDouble();
-    auto allBalances = mainwindow->getRPC()->getAllBalances();
+    auto allBalances = mainwindow->getRPC()->getModel()->getAllBalances();
     QList<QPair<QString, double>> bals;
-    for (auto i : allBalances->keys()) {
+    for (auto i : allBalances.keys()) {
         // Filter out sprout addresses
         if (Settings::getInstance()->isSproutAddress(i))
             continue;
         // Filter out balances that don't have the requisite amount
-        if (allBalances->value(i) < amt)
+        if (allBalances.value(i) < amt)
             continue;
 
-        bals.append(QPair<QString, double>(i, allBalances->value(i)));
+        bals.append(QPair<QString, double>(i, allBalances.value(i)));
     }
 
     if (bals.isEmpty()) {
@@ -732,24 +732,22 @@ void AppDataServer::processSendTx(QJsonObject sendTx, MainWindow* mainwindow, st
 void AppDataServer::processGetInfo(QJsonObject jobj, MainWindow* mainWindow, std::shared_ptr<ClientWebSocket> pClient) {
     auto connectedName = jobj["name"].toString();
     
-    if (mainWindow == nullptr || mainWindow->getRPC() == nullptr ||
-            mainWindow->getRPC()->getAllBalances() == nullptr) {
+    if (mainWindow == nullptr || mainWindow->getRPC() == nullptr) {
         pClient->close(QWebSocketProtocol::CloseCodeNormal, "Not yet ready");
         return;
     }
 
-
     // Max spendable safely from a z address and from any address
     double maxZSpendable = 0;
     double maxSpendable = 0;
-    for (auto a : mainWindow->getRPC()->getAllBalances()->keys()) {
+    for (auto a : mainWindow->getRPC()->getModel()->getAllBalances().keys()) {
         if (Settings::getInstance()->isSaplingAddress(a)) {
-            if (mainWindow->getRPC()->getAllBalances()->value(a) > maxZSpendable) {
-                maxZSpendable = mainWindow->getRPC()->getAllBalances()->value(a);
+            if (mainWindow->getRPC()->getModel()->getAllBalances().value(a) > maxZSpendable) {
+                maxZSpendable = mainWindow->getRPC()->getModel()->getAllBalances().value(a);
             }
         }
-        if (mainWindow->getRPC()->getAllBalances()->value(a) > maxSpendable) {
-            maxSpendable = mainWindow->getRPC()->getAllBalances()->value(a);
+        if (mainWindow->getRPC()->getModel()->getAllBalances().value(a) > maxSpendable) {
+            maxSpendable = mainWindow->getRPC()->getModel()->getAllBalances().value(a);
         }
     }
 
