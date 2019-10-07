@@ -2,7 +2,7 @@
 
 #include "precompiled.h"
 #include "mainwindow.h"
-#include "rpc.h"
+#include "controller.h"
 #include "settings.h"
 #include "turnstile.h"
 

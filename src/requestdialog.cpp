@@ -3,7 +3,7 @@
 #include "settings.h"
 #include "addressbook.h"
 #include "mainwindow.h"
-#include "rpc.h"
+#include "controller.h"
 #include "settings.h"
 
 #include "precompiled.h"

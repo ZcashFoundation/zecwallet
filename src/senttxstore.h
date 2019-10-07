@@ -3,7 +3,7 @@
 
 #include "precompiled.h"
 #include "mainwindow.h"
-#include "rpc.h"
+#include "controller.h"
 
 class SentTxStore {
 public:

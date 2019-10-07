@@ -5,7 +5,7 @@
 #include "ui_memodialog.h"
 #include "ui_newrecurring.h"
 #include "settings.h"
-#include "rpc.h"
+#include "controller.h"
 #include "recurring.h"
 
 using json = nlohmann::json;

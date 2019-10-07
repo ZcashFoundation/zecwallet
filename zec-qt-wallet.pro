@@ -38,7 +38,6 @@ CONFIG += c++14
 SOURCES += \
     src/main.cpp \
     src/mainwindow.cpp \
-    src/rpc.cpp \
     src/balancestablemodel.cpp \
     src/3rdparty/qrcode/BitBuffer.cpp \
     src/3rdparty/qrcode/QrCode.cpp \
@@ -68,7 +67,6 @@ SOURCES += \
 HEADERS += \
     src/mainwindow.h \
     src/precompiled.h \
-    src/rpc.h \
     src/balancestablemodel.h \
     src/3rdparty/qrcode/BitBuffer.hpp \
     src/3rdparty/qrcode/QrCode.hpp \

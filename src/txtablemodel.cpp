@@ -1,6 +1,6 @@
 #include "txtablemodel.h"
 #include "settings.h"
-#include "rpc.h"
+#include "controller.h"
 
 TxTableModel::TxTableModel(QObject *parent)
      : QAbstractTableModel(parent) {

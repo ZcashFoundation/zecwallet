@@ -3,7 +3,7 @@
 #include "ui_mainwindow.h"
 #include "settings.h"
 #include "mainwindow.h"
-#include "rpc.h"
+#include "controller.h"
 
 
 AddressBookModel::AddressBookModel(QTableView *parent)

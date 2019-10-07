@@ -13,7 +13,7 @@
 #include "ui_turnstileprogress.h"
 #include "ui_viewalladdresses.h"
 #include "ui_validateaddress.h"
-#include "rpc.h"
+#include "controller.h"
 #include "balancestablemodel.h"
 #include "settings.h"
 #include "version.h"
@@ -144,7 +144,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setupTurnstileDialog();
     setupZcashdTab();
 
-    rpc = new RPC(this);
+    rpc = new Controller(this);
 
     restoreSavedStates();
 

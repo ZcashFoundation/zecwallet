@@ -7,7 +7,7 @@
 
 using json = nlohmann::json;
 
-class RPC;
+class Controller;
 
 enum ConnectionType {
     DetectedConfExternalZcashD = 1,
@@ -34,7 +34,7 @@ class Connection;
 class ConnectionLoader {
 
 public:
-    ConnectionLoader(MainWindow* main, RPC* rpc);
+    ConnectionLoader(MainWindow* main, Controller* rpc);
     ~ConnectionLoader();
 
     void loadConnection();
@@ -71,7 +71,7 @@ private:
     Ui_ConnectionDialog*    connD;
 
     MainWindow*             main;
-    RPC*                    rpc;
+    Controller*             rpc;
 
     QNetworkReply* currentDownload = nullptr;
     QFile*         currentOutput   = nullptr;

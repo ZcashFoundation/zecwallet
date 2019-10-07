@@ -1,4 +1,4 @@
-#include "rpc.h"
+#include "controller.h"
 
 #include "addressbook.h"
 #include "settings.h"
@@ -9,7 +9,7 @@
 
 using json = nlohmann::json;
 
-RPC::RPC(MainWindow* main) {
+Controller::Controller(MainWindow* main) {
     auto cl = new ConnectionLoader(main, this);
 
     // Execute the load connection async, so we can set up the rest of RPC properly. 
@@ -59,7 +59,7 @@ RPC::RPC(MainWindow* main) {
     this->migrationStatus.available = false;
 }
 
-RPC::~RPC() {
+Controller::~Controller() {
     delete timer;
     delete txTimer;
 
@@ -70,7 +70,7 @@ RPC::~RPC() {
     delete zrpc;
 }
 
-void RPC::setEZcashd(QProcess* p) {
+void Controller::setEZcashd(QProcess* p) {
     ezcashd = p;
 
     if (ezcashd && ui->tabWidget->widget(4) == nullptr) {
@@ -79,7 +79,7 @@ void RPC::setEZcashd(QProcess* p) {
 }
 
 // Called when a connection to zcashd is available. 
-void RPC::setConnection(Connection* c) {
+void Controller::setConnection(Connection* c) {
     if (c == nullptr) return;
 
     this->zrpc->setConnection(c);
@@ -106,7 +106,7 @@ void RPC::setConnection(Connection* c) {
 
 
 // Build the RPC JSON Parameters for this tx
-void RPC::fillTxJsonParams(json& params, Tx tx) {   
+void Controller::fillTxJsonParams(json& params, Tx tx) {   
     Q_ASSERT(params.is_array());
     // Get all the addresses and amounts
     json allRecepients = json::array();
@@ -139,7 +139,7 @@ void RPC::fillTxJsonParams(json& params, Tx tx) {
 }
 
 
-void RPC::noConnection() {    
+void Controller::noConnection() {    
     QIcon i = QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical);
     main->statusIcon->setPixmap(i.pixmap(16, 16));
     main->statusIcon->setToolTip("");
@@ -172,7 +172,7 @@ void RPC::noConnection() {
 }
 
 // Refresh received z txs by calling z_listreceivedbyaddress/gettransaction
-void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
+void Controller::refreshReceivedZTrans(QList<QString> zaddrs) {
     if (!zrpc->haveConnection()) 
         return noConnection();
 
@@ -194,7 +194,7 @@ void RPC::refreshReceivedZTrans(QList<QString> zaddrs) {
 } 
 
 /// This will refresh all the balance data from zcashd
-void RPC::refresh(bool force) {
+void Controller::refresh(bool force) {
     if (!zrpc->haveConnection()) 
         return noConnection();
 
@@ -202,7 +202,7 @@ void RPC::refresh(bool force) {
 }
 
 
-void RPC::getInfoThenRefresh(bool force) {
+void Controller::getInfoThenRefresh(bool force) {
     if (!zrpc->haveConnection()) 
         return noConnection();
 
@@ -344,7 +344,7 @@ void RPC::getInfoThenRefresh(bool force) {
     });
 }
 
-void RPC::refreshAddresses() {
+void Controller::refreshAddresses() {
     if (!zrpc->haveConnection()) 
         return noConnection();
     
@@ -377,7 +377,7 @@ void RPC::refreshAddresses() {
 }
 
 // Function to create the data model and update the views, used below.
-void RPC::updateUI(bool anyUnconfirmed) {    
+void Controller::updateUI(bool anyUnconfirmed) {    
     ui->unconfirmedWarning->setVisible(anyUnconfirmed);
 
     // Update balances model data, which will update the table too
@@ -388,7 +388,7 @@ void RPC::updateUI(bool anyUnconfirmed) {
 };
 
 // Function to process reply of the listunspent and z_listunspent API calls, used below.
-bool RPC::processUnspent(const json& reply, QMap<QString, double>* balancesMap, QList<UnspentOutput>* newUtxos) {
+bool Controller::processUnspent(const json& reply, QMap<QString, double>* balancesMap, QList<UnspentOutput>* newUtxos) {
     bool anyUnconfirmed = false;
     for (auto& it : reply.get<json::array_t>()) {
         QString qsAddr = QString::fromStdString(it["address"]);
@@ -410,7 +410,7 @@ bool RPC::processUnspent(const json& reply, QMap<QString, double>* balancesMap, 
 /**
  * Refresh the turnstile migration status
  */
-void RPC::refreshMigration() {
+void Controller::refreshMigration() {
     // Turnstile migration is only supported in zcashd v2.0.5 and above
     if (Settings::getInstance()->getZcashdVersion() < 2000552)
         return;
@@ -430,7 +430,7 @@ void RPC::refreshMigration() {
     });
 }
 
-void RPC::refreshBalances() {    
+void Controller::refreshBalances() {    
     if (!zrpc->haveConnection()) 
         return noConnection();
 
@@ -475,7 +475,7 @@ void RPC::refreshBalances() {
     });
 }
 
-void RPC::refreshTransactions() {    
+void Controller::refreshTransactions() {    
     if (!zrpc->haveConnection()) 
         return noConnection();
 
@@ -510,7 +510,7 @@ void RPC::refreshTransactions() {
 }
 
 // Read sent Z transactions from the file.
-void RPC::refreshSentZTrans() {
+void Controller::refreshSentZTrans() {
     if (!zrpc->haveConnection()) 
         return noConnection();
 
@@ -535,7 +535,7 @@ void RPC::refreshSentZTrans() {
     });
 }
 
-void RPC::addNewTxToWatch(const QString& newOpid, WatchedTx wtx) {    
+void Controller::addNewTxToWatch(const QString& newOpid, WatchedTx wtx) {    
     watchingOps.insert(newOpid, wtx);
 
     watchTxStatus();
@@ -545,7 +545,7 @@ void RPC::addNewTxToWatch(const QString& newOpid, WatchedTx wtx) {
  * Execute a transaction with the standard UI. i.e., standard status bar message and standard error
  * handling
  */
-void RPC::executeStandardUITransaction(Tx tx) {
+void Controller::executeStandardUITransaction(Tx tx) {
     executeTransaction(tx, 
         [=] (QString opid) {
             ui->statusBar->showMessage(QObject::tr("Computing Tx: ") % opid);
@@ -566,7 +566,7 @@ void RPC::executeStandardUITransaction(Tx tx) {
 
 
 // Execute a transaction!
-void RPC::executeTransaction(Tx tx, 
+void Controller::executeTransaction(Tx tx, 
         const std::function<void(QString opid)> submitted,
         const std::function<void(QString opid, QString txid)> computed,
         const std::function<void(QString opid, QString errStr)> error) {
@@ -588,7 +588,7 @@ void RPC::executeTransaction(Tx tx,
 }
 
 
-void RPC::watchTxStatus() {
+void Controller::watchTxStatus() {
     if (!zrpc->haveConnection()) 
         return noConnection();
 
@@ -640,7 +640,7 @@ void RPC::watchTxStatus() {
     });
 }
 
-void RPC::checkForUpdate(bool silent) {
+void Controller::checkForUpdate(bool silent) {
     if (!zrpc->haveConnection()) 
         return noConnection();
 
@@ -712,7 +712,7 @@ void RPC::checkForUpdate(bool silent) {
 }
 
 // Get the ZEC->USD price from coinmarketcap using their API
-void RPC::refreshZECPrice() {
+void Controller::refreshZECPrice() {
     if (!zrpc->haveConnection()) 
         return noConnection();
 
@@ -765,7 +765,7 @@ void RPC::refreshZECPrice() {
     });
 }
 
-void RPC::shutdownZcashd() {
+void Controller::shutdownZcashd() {
     // Shutdown embedded zcashd if it was started
     if (ezcashd == nullptr || ezcashd->processId() == 0 || ~zrpc->haveConnection()) {
         // No zcashd running internally, just return
@@ -822,7 +822,7 @@ void RPC::shutdownZcashd() {
 
 
 // // Fetch the Z-board topics list
-// void RPC::getZboardTopics(std::function<void(QMap<QString, QString>)> cb) {
+// void Controller::getZboardTopics(std::function<void(QMap<QString, QString>)> cb) {
 //     if (!zrpc->haveConnection())
 //         return noConnection();
 
@@ -878,7 +878,7 @@ void RPC::shutdownZcashd() {
 /** 
  * Get a Sapling address from the user's wallet
  */ 
-QString RPC::getDefaultSaplingAddress() {
+QString Controller::getDefaultSaplingAddress() {
     for (QString addr: model->getAllZAddresses()) {
         if (Settings::getInstance()->isSaplingAddress(addr))
             return addr;
@@ -887,7 +887,7 @@ QString RPC::getDefaultSaplingAddress() {
     return QString();
 }
 
-QString RPC::getDefaultTAddress() {
+QString Controller::getDefaultTAddress() {
     if (model->getAllTAddresses().length() > 0)
         return model->getAllTAddresses().at(0);
     else 

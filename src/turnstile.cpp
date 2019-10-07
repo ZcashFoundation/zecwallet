@@ -1,7 +1,7 @@
 #include "turnstile.h"
 #include "mainwindow.h"
 #include "balancestablemodel.h"
-#include "rpc.h"
+#include "controller.h"
 #include "settings.h"
 #include "ui_migration.h"
 

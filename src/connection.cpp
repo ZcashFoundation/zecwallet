@@ -3,13 +3,13 @@
 #include "settings.h"
 #include "ui_connection.h"
 #include "ui_createzcashconfdialog.h"
-#include "rpc.h"
+#include "controller.h"
 
 #include "precompiled.h"
 
 using json = nlohmann::json;
 
-ConnectionLoader::ConnectionLoader(MainWindow* main, RPC* rpc) {
+ConnectionLoader::ConnectionLoader(MainWindow* main, Controller* rpc) {
     this->main = main;
     this->rpc  = rpc;
 

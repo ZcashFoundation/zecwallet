@@ -1,6 +1,6 @@
 #include "websockets.h"
 
-#include "rpc.h"
+#include "controller.h"
 #include "settings.h"
 #include "ui_mobileappconnector.h"
 #include "version.h"

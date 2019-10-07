@@ -1,7 +1,7 @@
 #include "recurring.h"
 
 #include "mainwindow.h"
-#include "rpc.h"
+#include "controller.h"
 #include "settings.h"
 #include "ui_newrecurring.h"
 #include "ui_recurringdialog.h"
@@ -142,7 +142,7 @@ RecurringPaymentInfo* Recurring::getNewRecurringFromTx(QWidget* parent, MainWind
     }
 
     // Wire up ZEC/USD toggle
-    QObject::connect(ui.cmbCurrency, QOverload<const QString&>::of(&QComboBox::currentIndexChanged), [&](QString c) {
+    QObject::connect(ui.cmbCurrency, &QComboBox::currentTextChanged, [&](QString c) {
         if (tx.toAddrs.length() < 1)
             return;
 

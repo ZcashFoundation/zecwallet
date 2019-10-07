@@ -7,7 +7,7 @@
 #include "recurring.h"
 
 // Forward declare to break circular dependency.
-class RPC;
+class Controller;
 class Settings;
 class WSServer;
 class WormholeClient;
@@ -42,7 +42,7 @@ public:
     ~MainWindow();
 
     void updateLabelsAutoComplete();
-    RPC* getRPC() { return rpc; }
+    Controller* getRPC() { return rpc; }
 
     QCompleter*         getLabelCompleter() { return labelCompleter; }
     QRegExpValidator*   getAmountValidator() { return amtValidator; }
@@ -139,7 +139,7 @@ private:
     WSServer*       wsserver = nullptr;
     WormholeClient* wormhole = nullptr;
 
-    RPC*                rpc             = nullptr;
+    Controller*         rpc             = nullptr;
     QCompleter*         labelCompleter  = nullptr;
     QRegExpValidator*   amtValidator    = nullptr;
     QRegExpValidator*   feesValidator   = nullptr;
