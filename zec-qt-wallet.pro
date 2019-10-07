@@ -62,7 +62,8 @@ SOURCES += \
     src/memoedit.cpp \
     src/viewalladdresses.cpp \
     src/datamodel.cpp \
-    src/controller.cpp 
+    src/controller.cpp \
+    src/zcashdrpc.cpp 
 
 HEADERS += \
     src/mainwindow.h \
@@ -91,7 +92,8 @@ HEADERS += \
     src/memoedit.h \
     src/viewalladdresses.h \
     src/datamodel.h \
-    src/controller.h 
+    src/controller.h \
+    src/zcashdrpc.h 
 
 FORMS += \
     src/mainwindow.ui \

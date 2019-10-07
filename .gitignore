@@ -38,3 +38,4 @@ zcashd
 IDEWorkspaceChecks.plist
 *.sln
 node_modules
+zec-qt-wallet.pro.user.4.10-pre1

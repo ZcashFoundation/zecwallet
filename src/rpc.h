@@ -8,22 +8,10 @@
 #include "txtablemodel.h"
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
+#include "zcashdrpc.h"
 #include "connection.h"
 
 using json = nlohmann::json;
-
-class Turnstile;
-
-struct TransactionItem {
-    QString         type;
-    qint64          datetime;
-    QString         address;
-    QString         txid;
-    double          amount;
-    long            confirmations;
-    QString         fromAddr;
-    QString         memo;
-};
 
 struct WatchedTx {
     QString opid;
@@ -49,19 +37,18 @@ public:
 
     DataModel* getModel() { return model; }
 
+    Connection* getConnection() { return zrpc->getConnection(); }
     void setConnection(Connection* c);
+
     void setEZcashd(QProcess* p);
     const QProcess* getEZcashD() { return ezcashd; }
 
     void refresh(bool force = false);
-
     void refreshAddresses();    
-
-
     
     void checkForUpdate(bool silent = true);
     void refreshZECPrice();
-    void getZboardTopics(std::function<void(QMap<QString, QString>)> cb);
+    //void getZboardTopics(std::function<void(QMap<QString, QString>)> cb);
 
     void executeStandardUITransaction(Tx tx); 
 
@@ -71,7 +58,7 @@ public:
         const std::function<void(QString opid, QString errStr)> error);
 
     void fillTxJsonParams(json& params, Tx tx);
-    void sendZTransaction(json params, const std::function<void(json)>& cb, const std::function<void(QString)>& err);
+    
     void watchTxStatus();
 
     const QMap<QString, WatchedTx> getWatchingTxns() { return watchingOps; }
@@ -79,30 +66,28 @@ public:
 
     const TxTableModel*               getTransactionsModel() { return transactionsTableModel; }
 
-    void newZaddr(bool sapling, const std::function<void(json)>& cb);
-    void newTaddr(const std::function<void(json)>& cb);
-
-    void getZPrivKey(QString addr, const std::function<void(json)>& cb);
-    void getTPrivKey(QString addr, const std::function<void(json)>& cb);
-    void importZPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb);
-    void importTPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb);
-    void validateAddress(QString address, const std::function<void(json)>& cb);
-
     void shutdownZcashd();
     void noConnection();
     bool isEmbedded() { return ezcashd != nullptr; }
 
+    void createNewZaddr(bool sapling, const std::function<void(json)>& cb) { zrpc->createNewZaddr(sapling, cb); }
+    void createNewTaddr(const std::function<void(json)>& cb) { zrpc->createNewTaddr(cb); }
+
+    void validateAddress(QString address, const std::function<void(json)>& cb) { zrpc->validateAddress(address, cb); }
+
+    void fetchZPrivKey(QString addr, const std::function<void(json)>& cb) { zrpc->fetchZPrivKey(addr, cb); }
+    void fetchTPrivKey(QString addr, const std::function<void(json)>& cb) { zrpc->fetchTPrivKey(addr, cb); }
+    void fetchAllPrivKeys(const std::function<void(QList<QPair<QString, QString>>)> cb) { zrpc->fetchAllPrivKeys(cb); }
+
+    void importZPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb) { zrpc->importZPrivKey(addr, rescan, cb); }
+    void importTPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb) { zrpc->importTPrivKey(addr, rescan, cb); }
+
     QString getDefaultSaplingAddress();
-    QString getDefaultTAddress();
-
-    void getAllPrivKeys(const std::function<void(QList<QPair<QString, QString>>)>);
-
-    Turnstile*  getTurnstile()  { return turnstile; }
-    Connection* getConnection() { return conn; }
-
+    QString getDefaultTAddress();   
+    
     const MigrationStatus*      getMigrationStatus() { return &migrationStatus; }
-    void                        setMigrationStatus(bool enabled);
-
+    void  setMigrationStatus(bool status) { zrpc->setMigrationStatus(status); }
+    
 private:
     void refreshBalances();
 
@@ -115,16 +100,7 @@ private:
     void updateUI           (bool anyUnconfirmed);
 
     void getInfoThenRefresh(bool force);
-
-    void getBalance(const std::function<void(json)>& cb);
-
-    void getTransparentUnspent  (const std::function<void(json)>& cb);
-    void getZUnspent            (const std::function<void(json)>& cb);
-    void getTransactions        (const std::function<void(json)>& cb);
-    void getZAddresses          (const std::function<void(json)>& cb);
-    void getTAddresses          (const std::function<void(json)>& cb);
-
-    Connection*                 conn                        = nullptr;
+    
     QProcess*                   ezcashd                     = nullptr;
 
     QMap<QString, WatchedTx>    watchingOps;
@@ -133,6 +109,7 @@ private:
     BalancesTableModel*         balancesTableModel          = nullptr;
 
     DataModel*                  model;
+    ZcashdRPC*                  zrpc;
 
     QTimer*                     timer;
     QTimer*                     txTimer;
@@ -140,7 +117,6 @@ private:
 
     Ui::MainWindow*             ui;
     MainWindow*                 main;
-    Turnstile*                  turnstile;
 
     // Sapling turnstile migration status (for the zcashd v2.0.5 tool)
     MigrationStatus             migrationStatus;

@@ -102,9 +102,6 @@ private:
     Tx   createTxFromSendPage();
     bool confirmTx(Tx tx, RecurringPaymentInfo* rpi);
 
-    void turnstileDoMigration(QString fromAddr = "");
-    void turnstileProgress();
-
     void cancelButton();
     void sendButton();
     void inputComboTextChanged(int index);
@@ -124,7 +121,7 @@ private:
     
     void donate();
     void addressBook();
-    void postToZBoard();
+    //void postToZBoard();
     void importPrivKey();
     void exportAllKeys();
     void exportKeys(QString addr = "");
