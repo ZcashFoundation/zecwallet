@@ -21,6 +21,9 @@ bool ZcashdRPC::haveConnection() {
 }
 
 void ZcashdRPC::fetchTAddresses(const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -32,6 +35,9 @@ void ZcashdRPC::fetchTAddresses(const std::function<void(json)>& cb) {
 }
 
 void ZcashdRPC::fetchZAddresses(const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -42,6 +48,9 @@ void ZcashdRPC::fetchZAddresses(const std::function<void(json)>& cb) {
 }
 
 void ZcashdRPC::fetchTransparentUnspent(const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -53,6 +62,9 @@ void ZcashdRPC::fetchTransparentUnspent(const std::function<void(json)>& cb) {
 }
 
 void ZcashdRPC::fetchZUnspent(const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -64,6 +76,9 @@ void ZcashdRPC::fetchZUnspent(const std::function<void(json)>& cb) {
 }
 
 void ZcashdRPC::createNewZaddr(bool sapling, const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -75,6 +90,9 @@ void ZcashdRPC::createNewZaddr(bool sapling, const std::function<void(json)>& cb
 }
 
 void ZcashdRPC::createNewTaddr(const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -85,6 +103,9 @@ void ZcashdRPC::createNewTaddr(const std::function<void(json)>& cb) {
 }
 
 void ZcashdRPC::fetchZPrivKey(QString addr, const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -96,6 +117,9 @@ void ZcashdRPC::fetchZPrivKey(QString addr, const std::function<void(json)>& cb)
 }
 
 void ZcashdRPC::fetchTPrivKey(QString addr, const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -107,6 +131,9 @@ void ZcashdRPC::fetchTPrivKey(QString addr, const std::function<void(json)>& cb)
 }
 
 void ZcashdRPC::importZPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -119,6 +146,9 @@ void ZcashdRPC::importZPrivKey(QString addr, bool rescan, const std::function<vo
 
 
 void ZcashdRPC::importTPrivKey(QString addr, bool rescan, const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -130,6 +160,9 @@ void ZcashdRPC::importTPrivKey(QString addr, bool rescan, const std::function<vo
 }
 
 void ZcashdRPC::validateAddress(QString address, const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
     QString method = Settings::isZAddress(address) ? "z_validateaddress" : "validateaddress";
 
     json payload = {
@@ -143,6 +176,9 @@ void ZcashdRPC::validateAddress(QString address, const std::function<void(json)>
 }
 
 void ZcashdRPC::fetchBalance(const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -154,6 +190,9 @@ void ZcashdRPC::fetchBalance(const std::function<void(json)>& cb) {
 }
 
 void ZcashdRPC::fetchTransactions(const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -165,6 +204,9 @@ void ZcashdRPC::fetchTransactions(const std::function<void(json)>& cb) {
 
 void ZcashdRPC::sendZTransaction(json params, const std::function<void(json)>& cb, 
     const std::function<void(QString)>& err) {
+    if (conn == nullptr)
+        return;
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -183,7 +225,10 @@ void ZcashdRPC::sendZTransaction(json params, const std::function<void(json)>& c
 
 void ZcashdRPC::fetchInfo(const std::function<void(json)>& cb, 
     const std::function<void(QNetworkReply*, const json&)>&  err) {
-     json payload = {
+    if (conn == nullptr)
+        return;
+
+    json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
         {"method", "getinfo"}
@@ -193,6 +238,9 @@ void ZcashdRPC::fetchInfo(const std::function<void(json)>& cb,
 }
 
 void ZcashdRPC::fetchBlockchainInfo(const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -203,6 +251,9 @@ void ZcashdRPC::fetchBlockchainInfo(const std::function<void(json)>& cb) {
 }
 
 void ZcashdRPC::fetchNetSolOps(const std::function<void(qint64)> cb) {
+    if (conn == nullptr)
+        return;
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -216,6 +267,9 @@ void ZcashdRPC::fetchNetSolOps(const std::function<void(qint64)> cb) {
 }
 
 void ZcashdRPC::fetchMigrationStatus(const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -227,6 +281,9 @@ void ZcashdRPC::fetchMigrationStatus(const std::function<void(json)>& cb) {
 
 
 void ZcashdRPC::setMigrationStatus(bool enabled) {
+    if (conn == nullptr)
+        return;
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},
@@ -328,6 +385,9 @@ void ZcashdRPC::fetchAllPrivKeys(const std::function<void(QList<QPair<QString, Q
 }
 
 void ZcashdRPC::fetchOpStatus(const std::function<void(json)>& cb) {
+    if (conn == nullptr)
+        return;
+
     // Make an RPC to load pending operation statues
     json payload = {
         {"jsonrpc", "1.0"},
@@ -340,7 +400,10 @@ void ZcashdRPC::fetchOpStatus(const std::function<void(json)>& cb) {
 
 void ZcashdRPC::fetchReceivedTTrans(QList<QString> txids, QList<TransactionItem> sentZTxs,
                 const std::function<void(QList<TransactionItem>)> txdataFn) {
-    // Look up all the txids to get the confirmation count for them. 
+    if (conn == nullptr)
+        return;
+
+    // Look up all the txids to get the confirmation count for them.
     conn->doBatchRPC<QString>(txids,
         [=] (QString txid) {
             json payload = {
@@ -377,7 +440,10 @@ void ZcashdRPC::fetchReceivedTTrans(QList<QString> txids, QList<TransactionItem>
 // Refresh received z txs by calling z_listreceivedbyaddress/gettransaction
 void ZcashdRPC::fetchReceivedZTrans(QList<QString> zaddrs, const std::function<void(QString)> usedAddrFn,
         const std::function<void(QList<TransactionItem>)> txdataFn) {
-   
+    if (conn == nullptr)
+        return;
+
+
     // This method is complicated because z_listreceivedbyaddress only returns the txid, and 
     // we have to make a follow up call to gettransaction to get details of that transaction. 
     // Additionally, it has to be done in batches, because there are multiple z-Addresses, 
