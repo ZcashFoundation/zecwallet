@@ -767,7 +767,7 @@ void Controller::refreshZECPrice() {
 
 void Controller::shutdownZcashd() {
     // Shutdown embedded zcashd if it was started
-    if (ezcashd == nullptr || ezcashd->processId() == 0 || ~zrpc->haveConnection()) {
+    if (ezcashd == nullptr || ezcashd->processId() == 0 || !zrpc->haveConnection()) {
         // No zcashd running internally, just return
         return;
     }
