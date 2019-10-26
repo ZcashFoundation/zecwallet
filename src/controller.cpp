@@ -71,8 +71,12 @@ Controller::~Controller() {
 }
 
 void Controller::setEZcashd(QProcess* p) {
-    ezcashd = p;
+    if (p == nullptr) {
+        return;
+    }
 
+    ezcashd = p;
+    
     if (ezcashd && ui->tabWidget->widget(4) == nullptr) {
         ui->tabWidget->addTab(main->zcashdtab, "zcashd");
     }
@@ -412,7 +416,8 @@ bool Controller::processUnspent(const json& reply, QMap<QString, double>* balanc
  */
 void Controller::refreshMigration() {
     // Turnstile migration is only supported in zcashd v2.0.5 and above
-    if (Settings::getInstance()->getZcashdVersion() < 2000552)
+    if (Settings::getInstance()->getZcashdVersion() < 2000552 ||
+        !Settings::getInstance()->isSaplingActive())    // Only if sapling is active
         return;
 
     zrpc->fetchMigrationStatus([=](json reply) {
