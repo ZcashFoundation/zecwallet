@@ -270,6 +270,10 @@ void ZcashdRPC::fetchMigrationStatus(const std::function<void(json)>& cb) {
     if (conn == nullptr)
         return;
 
+    if (!Settings::getInstance()->isSaplingActive()) {
+        return;
+    }
+
     json payload = {
         {"jsonrpc", "1.0"},
         {"id", "someid"},

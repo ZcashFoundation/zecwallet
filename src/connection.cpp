@@ -358,24 +358,17 @@ bool ConnectionLoader::startEmbeddedZcashd() {
     }
 
     ezcashd = new QProcess(main);    
-    QObject::connect(ezcashd, &QProcess::started, [=] () {
-        //qDebug() << "zcashd started";
+
+    QObject::connect(ezcashd, &QProcess::errorOccurred, [&] (auto error) {
+        qDebug() << "Couldn't start zcashd: " << error;
     });
 
-    QObject::connect(ezcashd, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-                        [=](int, QProcess::ExitStatus) {
-        //qDebug() << "zcashd finished with code " << exitCode << "," << exitStatus;    
-    });
-
-    QObject::connect(ezcashd, &QProcess::errorOccurred, [&] (auto) {
-        //qDebug() << "Couldn't start zcashd: " << error;
-    });
-
-    QObject::connect(ezcashd, &QProcess::readyReadStandardError, [=]() {
+    QObject::connect(ezcashd, &QProcess::readyReadStandardError, [&]() {
         auto output = ezcashd->readAllStandardError();
-       main->logger->write("zcashd stderr:" + output);
-        processStdErrOutput.append(output);
+        main->logger->write("zcashd stderr:" + output);
+        processStdErrOutput += output;
     });
+
 
 #ifdef Q_OS_LINUX
     ezcashd->start(zcashdProgram);
@@ -419,6 +412,9 @@ void ConnectionLoader::doManualConnect() {
 }
 
 void ConnectionLoader::doRPCSetConnection(Connection* conn) {
+    // Before passing on the ezcashd to the rpc controller, disconnect all connections first. 
+    ezcashd->disconnect();
+
     rpc->setEZcashd(ezcashd);
     rpc->setConnection(conn);
     
