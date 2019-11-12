@@ -94,7 +94,7 @@ cp $ZCASH_DIR/src/zcashd zecwallet.app/Contents/MacOS/
 cp $ZCASH_DIR/src/zcash-cli zecwallet.app/Contents/MacOS/
 $QT_PATH/bin/macdeployqt zecwallet.app 
 mv zecwallet.app ZecWallet.app
-codesign --deep --force --verify --verbose -s "$CERTIFICATE" --options runtime --timestamp Zecwallet.app
+codesign --deep --force --verify --verbose -s "$CERTIFICATE" --options runtime --timestamp ZecWallet.app
 echo "[OK]"
 
 # Code Signing Note:
