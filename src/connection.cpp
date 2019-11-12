@@ -219,10 +219,11 @@ void ConnectionLoader::downloadParams(std::function<void(void)> cb) {
     client = new QNetworkAccessManager(main);   
     
     downloadQueue->enqueue(QUrl("https://z.cash/downloads/sapling-output.params"));
-    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sapling-spend.params"));    
-    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-proving.key"));
-    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-verifying.key"));
+    downloadQueue->enqueue(QUrl("https://z.cash/downloads/sapling-spend.params"));  
     downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-groth16.params"));
+    // Comment out downloading the Sprout keys because they were deprecated with https://github.com/zcash/zcash/pull/4060
+    // downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-proving.key"));
+    // downloadQueue->enqueue(QUrl("https://z.cash/downloads/sprout-verifying.key"));
 
     doNextDownload(cb);    
 }
@@ -567,9 +568,10 @@ bool ConnectionLoader::verifyParams() {
 
     if (!QFile(paramsDir.filePath("sapling-output.params")).exists()) return false;
     if (!QFile(paramsDir.filePath("sapling-spend.params")).exists()) return false;
-    if (!QFile(paramsDir.filePath("sprout-proving.key")).exists()) return false;
-    if (!QFile(paramsDir.filePath("sprout-verifying.key")).exists()) return false;
     if (!QFile(paramsDir.filePath("sprout-groth16.params")).exists()) return false;
+    // Comment out downloading the Sprout keys because they were deprecated with https://github.com/zcash/zcash/pull/4060
+    // if (!QFile(paramsDir.filePath("sprout-proving.key")).exists()) return false;
+    // if (!QFile(paramsDir.filePath("sprout-verifying.key")).exists()) return false;
 
     return true;
 }

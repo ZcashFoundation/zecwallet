@@ -31,7 +31,7 @@ ZecWallet needs a Zcash node running zcashd. If you already have a zcashd node r
 
 If you don't have one, ZecWallet will start its embedded zcashd node. 
 
-Additionally, if this is the first time you're running ZecWallet or a zcashd daemon, ZecWallet will download the zcash params (~1.7 GB) and configure `zcash.conf` for you. 
+Additionally, if this is the first time you're running ZecWallet or a zcashd daemon, ZecWallet will download the Zcash params (~777 MB) and configure `zcash.conf` for you. 
 
 Pass `--no-embedded` to disable the embedded zcashd and force ZecWallet to connect to an external node.
 
