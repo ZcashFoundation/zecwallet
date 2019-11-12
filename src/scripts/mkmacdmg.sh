@@ -17,6 +17,11 @@ case $key in
     shift # past argument
     shift # past value
     ;;
+    -c|--certificate)
+    CERTIFICATE="$2"
+    shift # past argument
+    shift # past value
+    ;;
     -v|--version)
     APP_VERSION="$2"
     shift # past argument
@@ -38,6 +43,11 @@ fi
 if [ -z $ZCASH_DIR ]; then
     echo "ZCASH_DIR is not set. Please set it to the base directory of a compiled zcashd";
     exit 1;
+fi
+
+if [ -z "$CERTIFICATE" ]; then 
+    echo "CERTIFICATE is not set. Please set it the name of the MacOS developer certificate to sign the binary with"; 
+    exit 1; 
 fi
 
 if [ -z $APP_VERSION ]; then
@@ -83,11 +93,19 @@ rm -f artifacts/rw* >/dev/null 2>&1
 cp $ZCASH_DIR/src/zcashd zecwallet.app/Contents/MacOS/
 cp $ZCASH_DIR/src/zcash-cli zecwallet.app/Contents/MacOS/
 $QT_PATH/bin/macdeployqt zecwallet.app 
+mv zecwallet.app ZecWallet.app
+codesign --deep --force --verify --verbose -s "$CERTIFICATE" --options runtime --timestamp Zecwallet.app
 echo "[OK]"
 
+# Code Signing Note:
+# On MacOS, you still need to run these 3 commands:
+# xcrun altool --notarize-app -t osx -f macOS-zecwallet-v0.8.0.dmg --primary-bundle-id="com.yourcompany.zecwallet" -u "apple developer id@email.com" -p "one time password" 
+# xcrun altool --notarization-info <output from pervious command> -u "apple developer id@email.com" -p "one time password" 
+#...wait for the notarization to finish...
+# xcrun stapler staple macOS-zecwallet-v0.8.0.dmg
 
 echo -n "Building dmg..........."
-mv zecwallet.app ZecWallet.app
+
 create-dmg --volname "ZecWallet-v$APP_VERSION" --volicon "res/logo.icns" --window-pos 200 120 --icon "ZecWallet.app" 200 190  --app-drop-link 600 185 --hide-extension "ZecWallet.app"  --window-size 800 400 --hdiutil-quiet --background res/dmgbg.png  artifacts/macOS-zecwallet-v$APP_VERSION.dmg ZecWallet.app >/dev/null 2>&1
 
 #mkdir bin/dmgbuild >/dev/null 2>&1

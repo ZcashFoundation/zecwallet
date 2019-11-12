@@ -2,6 +2,7 @@
 param (
     [Parameter(Mandatory=$true)][string]$version,
     [Parameter(Mandatory=$true)][string]$prev,
+    [Parameter(Mandatory=$true)][string]$certificate,
     [Parameter(Mandatory=$true)][string]$server,
     [Parameter(Mandatory=$true)][string]$winserver
 )
@@ -27,7 +28,7 @@ Write-Host ""
 
 
 Write-Host "[Building on Mac]"
-bash src/scripts/mkmacdmg.sh --qt_path ~/Qt/5.11.1/clang_64/ --version $version --zcash_path ~/prod/zcash 
+bash src/scripts/mkmacdmg.sh --qt_path ~/Qt/5.11.1/clang_64/ --version $version --zcash_path ~/prod/zcash --certificate "$certificate"
 if (! $?) {
     Write-Output "[Error]"
     exit 1;
