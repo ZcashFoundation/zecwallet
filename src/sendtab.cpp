@@ -161,7 +161,7 @@ void MainWindow::updateLabelsAutoComplete() {
     labelCompleter->setCaseSensitivity(Qt::CaseInsensitive);
 
     // Then, find all the address fields and update the completer.
-    QRegExp re("Address[0-9]+", Qt::CaseInsensitive);
+    QRegularExpression re("Address[0-9]+", QRegularExpression::CaseInsensitiveOption);
     for (auto target: ui->sendToWidgets->findChildren<QLineEdit *>(re)) {
         target->setCompleter(labelCompleter);
     }
