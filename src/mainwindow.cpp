@@ -22,6 +22,7 @@
 #include "connection.h"
 #include "requestdialog.h"
 #include "websockets.h"
+#include <QRegularExpression>
 
 using json = nlohmann::json;
 
@@ -456,7 +457,7 @@ void MainWindow::setupSettingsModal() {
 
 void MainWindow::addressBook() {
     // Check to see if there is a target.
-    QRegExp re("Address[0-9]+", Qt::CaseInsensitive);
+    QRegularExpression re("Address[0-9]+", QRegularExpression::CaseInsensitiveOption);
     for (auto target: ui->sendToWidgets->findChildren<QLineEdit *>(re)) {
         if (target->hasFocus()) {
             AddressBook::open(this, target);
