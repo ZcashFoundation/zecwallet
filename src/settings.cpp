@@ -381,27 +381,24 @@ PaymentURI Settings::parseURI(QString uri) {
         ans.error = "Could not understand address";
         return ans;
     }
-    uri = uri.right(uri.length() - ans.addr.length());
 
-    if (!uri.isEmpty()) {
-        uri = uri.right(uri.length() - 1); // Eat the "?"
-
-        QStringList args = uri.split("&");
-        for (QString arg: args) {
-            QStringList kv = arg.split("=");
-            if (kv.length() != 2) {
-                ans.error = "No value argument was seen";
-                return ans;
-            }
-
-            if (kv[0].toLower() == "amt" || kv[0].toLower() == "amount") {
-                ans.amt = kv[1];
-            } else if (kv[0].toLower() == "memo" || kv[0].toLower() == "message" || kv[0].toLower() == "msg") {
-                ans.memo = QUrl::fromPercentEncoding(kv[1].toUtf8());
-            } else {
-                // Ignore unknown fields, since some developers use it to pass extra data.
-            }
-        }
+    uri = uri.right(uri.length() - ans.addr.length()-1);  // swallow '?'
+    QUrlQuery query(uri);
+    
+    // parse out amt / amount
+    if (query.hasQueryItem("amt")) {
+        ans.amt  = query.queryItemValue("amt");
+    } else if (query.hasQueryItem("amount")) {
+        ans.amt  = query.queryItemValue("amount");
+    }
+    
+    // parse out memo / msg / message
+    if (query.hasQueryItem("memo")) {
+        ans.memo  = query.queryItemValue("memo");
+    } else if (query.hasQueryItem("msg")) {
+        ans.memo  = query.queryItemValue("msg");
+    } else if  (query.hasQueryItem("message")) {
+        ans.memo  = query.queryItemValue("message");
     }
 
     return ans;
