@@ -918,7 +918,7 @@ void MainWindow::setupTransactionsTab() {
         if (!memo.isEmpty()) {
             QMessageBox mb(QMessageBox::Information, tr("Memo"), memo, QMessageBox::Ok, this);
             // Don't render html in the memo to avoid phishing-type attacks
-            // revist this in the future once the design  of how to best handle memo based applications exists.
+            // revist this in the future once the design of how to best handle memo based applications exists.
             mb.setTextFormat(Qt::PlainText);
             mb.setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
             mb.exec();
@@ -969,7 +969,7 @@ void MainWindow::setupTransactionsTab() {
             menu.addAction(tr("View Memo"), [=] () {               
                 QMessageBox mb(QMessageBox::Information, tr("Memo"), memo, QMessageBox::Ok, this);
                 // Don't render html in the memo to avoid phishing-type attacks
-                // revist this in the future once the design  of how to best handle memo based applications exists.
+                // revist this in the future once the design of how to best handle memo based applications exists.
                 mb.setTextFormat(Qt::PlainText);
                 mb.setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
                 mb.exec();
