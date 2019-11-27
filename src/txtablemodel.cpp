@@ -145,8 +145,9 @@ void TxTableModel::updateAllData() {
                     if (dat.memo.startsWith("zcash:")) {
                         return Settings::paymentURIPretty(Settings::parseURI(dat.memo));
                     } else {
+                        // Don't render memo html in tooltip
                         return modeldata->at(index.row()).type + 
-                        (dat.memo.isEmpty() ? "" : " tx memo: \"" + dat.memo + "\"");
+                        (dat.memo.isEmpty() ? "" : " tx memo: \"" + dat.memo.toHtmlEscaped() + "\"");
                     }
                 }
         case Column::Address: {
