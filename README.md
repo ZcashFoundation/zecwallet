@@ -10,14 +10,14 @@ Head over to the releases page and grab the latest installers or binary. https:/
 
 If you are on Debian/Ubuntu, please download the `.deb` package and install it.
 ```
-sudo dpkg -i linux-deb-zecwallet-v0.8.0.deb
+sudo dpkg -i linux-deb-zecwallet-v0.8.1.deb
 sudo apt install -f
 ```
 
 Or you can download and run the binaries directly.
 ```
-tar -xvf zecwallet-v0.8.0.tar.gz
-./zecwallet-v0.8.0/zecwallet
+tar -xvf zecwallet-v0.8.1.tar.gz
+./zecwallet-v0.8.1/zecwallet
 ```
 
 ### Windows
