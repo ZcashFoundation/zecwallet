@@ -22,6 +22,16 @@ case $key in
     shift # past argument
     shift # past value
     ;;
+    -u|--username)
+    APPLE_USERNAME="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -p|--password)
+    APPLE_PASSWORD="$2"
+    shift # past argument
+    shift # past value
+    ;;
     -v|--version)
     APP_VERSION="$2"
     shift # past argument
@@ -47,6 +57,16 @@ fi
 
 if [ -z "$CERTIFICATE" ]; then 
     echo "CERTIFICATE is not set. Please set it the name of the MacOS developer certificate to sign the binary with"; 
+    exit 1; 
+fi
+
+if [ -z "$APPLE_USERNAME" ]; then 
+    echo "APPLE_USERNAME is not set. Please set it the name of the MacOS developer login email to submit the binary for Apple for notarization"; 
+    exit 1; 
+fi
+
+if [ -z "$APPLE_PASSWORD" ]; then 
+    echo "APPLE_PASSWORD is not set. Please set it the name of the MacOS developer Application password to submit the binary for Apple for notarization"; 
     exit 1; 
 fi
 
@@ -120,4 +140,9 @@ if [ ! -f artifacts/macOS-zecwallet-v$APP_VERSION.dmg ]; then
     echo "[ERROR]"
     exit 1
 fi
+echo  "[OK]"
+
+# Submit to Apple for notarization
+echo -n "Apple notarization....."
+xcrun altool --notarize-app -t osx -f artifacts/macOS-zecwallet-v$APP_VERSION.dmg --primary-bundle-id="com.yourcompany.zecwallet" -u "$APPLE_USERNAME" -p "$APPLE_PASSWORD" 
 echo  "[OK]"

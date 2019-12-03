@@ -26,6 +26,9 @@ if [ -z $APP_VERSION ]; then echo "APP_VERSION is not set"; exit 1; fi
 rm -rf release/signatures
 mkdir -p release/signatures 
 
+# Staple the notarization
+xcrun stapler staple artifacts/macOS-zecwallet-v$APP_VERSION.dmg
+
 cd artifacts
 
 # Remove previous signatures/hashes

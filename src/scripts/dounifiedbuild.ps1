@@ -3,9 +3,12 @@ param (
     [Parameter(Mandatory=$true)][string]$version,
     [Parameter(Mandatory=$true)][string]$prev,
     [Parameter(Mandatory=$true)][string]$certificate,
+    [Parameter(Mandatory=$true)][string]$username,
+    [Parameter(Mandatory=$true)][string]$password,
     [Parameter(Mandatory=$true)][string]$server,
     [Parameter(Mandatory=$true)][string]$winserver
 )
+
 
 Write-Host "[Initializing]"
 Remove-Item -Force -ErrorAction Ignore ./artifacts/linux-binaries-zecwallet-v$version.tar.gz
@@ -28,7 +31,7 @@ Write-Host ""
 
 
 Write-Host "[Building on Mac]"
-bash src/scripts/mkmacdmg.sh --qt_path ~/Qt/5.11.1/clang_64/ --version $version --zcash_path ~/prod/zcash --certificate "$certificate"
+bash src/scripts/mkmacdmg.sh --qt_path ~/Qt/5.11.1/clang_64/ --version $version --zcash_path ~/prod/zcash --certificate "$certificate" --username "$username" --password "$password"
 if (! $?) {
     Write-Output "[Error]"
     exit 1;
