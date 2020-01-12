@@ -27,6 +27,9 @@ DEFINES += \
 INCLUDEPATH  += src/3rdparty/
 INCLUDEPATH  += src/
 
+LIBS+= -Wl,-dead_strip
+LIBS+= -Wl,-dead_strip_dylibs
+
 RESOURCES     = application.qrc
 
 MOC_DIR = bin
