@@ -1,0 +1,210 @@
+.sidebarcontainer {
+  width: 220px;
+  float: left;
+}
+
+.contentcontainer {
+  width: calc(100% - 220px);
+  float: right;
+}
+
+.well {
+  background-color: #000;
+  padding: 16px;
+}
+
+.verticalflex {
+  flex-direction: column;
+}
+
+.flex {
+  display: flex;
+}
+
+.flexspacebetween {
+  display: flex;
+  justify-content: space-between;
+}
+
+.highlight {
+  color: #c3921f;
+}
+
+.xlarge {
+  font-size: 32px;
+}
+
+.large {
+  font-size: 18px;
+}
+
+.normal {
+  font-size: 14px;
+}
+
+.small {
+  font-size: 12px;
+}
+
+.fixedfont {
+  font-family: monospace;
+}
+
+.sublight {
+  color: #6a6a6a;
+}
+
+.center {
+  text-align: center;
+}
+
+.left {
+  text-align: left;
+}
+
+.right {
+  text-align: right;
+}
+
+.red {
+  color: red;
+}
+
+.green {
+  color: green;
+}
+
+.yellow {
+  color: yellow;
+}
+
+.breakword {
+  word-break: break-all;
+}
+
+.primarybutton {
+  background-color: #c3921f;
+  color: #000;
+  font-weight: bold;
+  font-size: 14px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 16px;
+  padding-right: 16px;
+  border-radius: 4px;
+  border-color: #c3921f;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.primarybutton:disabled,
+.primarybutton[disabled] {
+  border: 1px solid #999;
+  background-color: #ccc;
+  color: #666;
+}
+
+.primarybutton:hover {
+  cursor: pointer;
+}
+
+.padtopsmall {
+  padding-top: 4px;
+}
+
+.padbottomsmall {
+  padding-bottom: 4px;
+}
+
+.marginbottomsmall {
+  margin-bottom: 4px;
+}
+
+.margintopsmall {
+  margin-top: 4px;
+}
+
+.margintoplarge {
+  margin-top: 24px;
+}
+
+.marginleft {
+  margin-left: 16px;
+}
+
+.marginbottomlarge {
+  margin-bottom: 24px;
+}
+
+.padall {
+  padding: 16px;
+}
+
+.padsmallall {
+  padding: 4px;
+}
+
+.zecsmallpart {
+  padding-left: 2px;
+}
+
+.blackbg {
+  background-color: #000;
+}
+
+.maxwidth {
+  width: 100%;
+}
+
+.inputbox {
+  width: calc(100% - 16px);
+  font-family: Roboto, Arial, Helvetica, Helvetica Neue, serif;
+  min-height: 38px;
+  padding-left: 8px;
+  padding-right: 8px;
+  font-size: 16px;
+  border: none;
+  border-bottom: grey 1px solid;
+  background-color: #000;
+  color: white;
+}
+
+.buttoncontainer {
+  text-align: center;
+  padding-top: 24px;
+}
+
+.modal {
+  top: 25%;
+  left: 25%;
+  right: auto;
+  bottom: auto;
+  opacity: 1;
+  transform: translate(-12.5%, -12.5%);
+  background: #212124;
+  position: absolute;
+  padding: 16px;
+  min-width: 700px;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(100, 100, 100, 0.5);
+}
+
+.accordionHeader:hover {
+  cursor: pointer;
+}
+
+.accordionHeader:focus {
+  outline: none;
+}
+
+.tableheader {
+  margin: 8px;
+  border-bottom: solid 1px grey;
+}

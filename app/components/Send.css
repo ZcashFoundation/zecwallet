@@ -1,0 +1,43 @@
+.sendcontainer {
+  margin: 16px;
+}
+
+.toaddrcontainer {
+  overflow-y: auto;
+}
+
+.toaddrbutton {
+  height: 24px;
+  margin-top: 13px;
+}
+
+.toaddrbutton:hover {
+  cursor: pointer;
+}
+
+.confirmModal {
+  top: 25%;
+  left: 25%;
+  right: auto;
+  bottom: auto;
+  opacity: 1;
+  transform: translate(-12.5%, -12.5%);
+  background: #212124;
+  position: absolute;
+  padding: 16px;
+  min-width: 700px;
+}
+
+.confirmModalAddress {
+  width: 60%;
+  padding-bottom: 8px;
+}
+
+.confirmOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(100, 100, 100, 0.5);
+}

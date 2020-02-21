@@ -1,0 +1,25 @@
+.sidebar {
+  background-color: #000;
+  height: calc(100vh - 135px);
+}
+
+.sidebarmenuitem {
+  height: 40px;
+  padding: 10px;
+  margin-left: 16px;
+  font-size: 20px;
+}
+
+.sidebarmenuitemactive {
+  color: #c3921f;
+}
+
+.sidebarlogobg {
+  background: linear-gradient(90deg, rgba(255, 184, 0, 1) 0%, rgb(206, 209, 113) 100%);
+  margin-bottom: 8px;
+}
+
+.exportedPrivKeys {
+  width: 100%;
+  max-height: calc(100vh - 400px);
+}

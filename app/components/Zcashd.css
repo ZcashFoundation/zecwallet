@@ -1,0 +1,33 @@
+.container {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.imgcontainer {
+  width: 100%;
+  text-align: center;
+  margin-top: 10%;
+}
+
+.imgcontainer img {
+  max-width: 500px;
+}
+
+.detailcontainer {
+  width: 50%;
+  flex-direction: column;
+  margin-left: 25%;
+  margin-top: 5%;
+}
+
+.detaillines {
+  border: 1px solid grey;
+  padding: 16px;
+}
+
+.detailline {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}

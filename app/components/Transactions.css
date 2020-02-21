@@ -1,0 +1,58 @@
+.txbox {
+  margin-left: 16px;
+  margin-right: 16px;
+  margin-top: 4px;
+  margin-bottom: 16px;
+  display: flex;
+  cursor: pointer;
+}
+
+.txdate {
+  margin-left: 16px;
+}
+
+.txtype {
+  width: 15%;
+  float: left;
+}
+
+.txaddressamount {
+  width: 85%;
+  float: left;
+}
+
+.txaddress {
+  width: 75%;
+  float: left;
+}
+
+.txamount {
+  width: 20%;
+  float: right;
+}
+
+.txmemo {
+  word-break: break-all;
+}
+
+.txmodal {
+  top: 12.5%;
+  left: 25%;
+  right: auto;
+  bottom: auto;
+  opacity: 1;
+  transform: translate(-0%, -12.5%);
+  background: #212124;
+  position: absolute;
+  padding: 16px;
+  min-width: 700px;
+}
+
+.txmodalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(100, 100, 100, 0.5);
+}
