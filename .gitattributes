@@ -4,3 +4,6 @@
 *.jpeg binary
 *.ico binary
 *.icns binary
+zcashd binary
+zcashd.exe binary
+
