@@ -1,9 +1,0 @@
-Package: zec-qt-wallet
-Version: RELEASE_VERSION
-Section: base
-Priority: optional
-Architecture: amd64
-Maintainer: Aditya Kulkarni <zcash@adityapk.com>
-Description: ZecWallet is a full node and UI wallet for Zcash.
- ZecWallet is a full node and UI wallet for Zcash. It comes with 
- full support for shielded addresses and many apps for Zcash.

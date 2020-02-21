@@ -1,0 +1,38 @@
+.addressbookcontainer {
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.addressbooklist {
+  margin-top: 24px;
+}
+
+.addressbookentry {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.addressbookentry:hover {
+  background-color: #000;
+  color: #c3921f;
+  cursor: pointer;
+  border: solid 1px grey;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.addressbookentrybuttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.addressbookentry .addressbookentrybuttons {
+  display: none;
+}
+
+.addressbookentry:hover .addressbookentrybuttons {
+  display: flex;
+}

@@ -1,27 +1,74 @@
 matrix:
   include:
-    # works on Precise and Trusty
+    - os: osx
+      language: node_js
+      node_js:
+        - node
+      env:
+        - ELECTRON_CACHE=$HOME/.cache/electron
+        - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
     - os: linux
-      compiler: clang
+      language: node_js
+      node_js:
+        - node
+      services:
+        - xvfb
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
-          packages: ['clang-3.7', 'g++-8']
+          sources:
+            - sourceline: 'ppa:ubuntu-toolchain-r/test'
+          packages:
+            - gcc-multilib
+            - g++-8
+            - g++-multilib
+            - icnsutils
+            - graphicsmagick
+            - xz-utils
+            - xorriso
+            - rpm
+
+before_cache:
+  - rm -rf $HOME/.cache/electron-builder/wine
+
+cache:
+  yarn: true
+  directories:
+    - node_modules
+    - $(npm config get prefix)/lib/node_modules
+    - flow-typed
+    - $HOME/.cache/electron
+    - $HOME/.cache/electron-builder
 
 before_install:
- - sudo add-apt-repository ppa:beineri/opt-qt591-xenial -y
- - sudo apt-get update -qq
- - sudo apt-get install qt59base qt59websockets libgl1-mesa-dev
- - source /opt/qt59/bin/qt59-env.sh
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CXX="g++-8"; fi
+
+install:
+  - yarn --ignore-engines
+  # On Linux, initialize "virtual display". See before_script
+  - |
+    if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+      /sbin/start-stop-daemon \
+      --start \
+      --quiet \
+      --pidfile /tmp/custom_xvfb_99.pid \
+      --make-pidfile \
+      --background \
+      --exec /usr/bin/Xvfb \
+      -- :99 -ac -screen 0 1280x1024x16
+    else
+      :
+    fi
+
+before_script:
+  # On Linux, create a "virtual display". This allows browsers to work properly
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export DISPLAY=:99.0; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sleep 3; fi
 
 script:
- - qmake -v
- - clang++ -v
- - g++-8 -v
- - qmake zec-qt-wallet.pro CONFIG+=release -spec linux-clang
- - make CC=clang CXX=clang++ -j2
- - make distclean
- - qmake zec-qt-wallet.pro CONFIG+=release -spec linux-g++
- - res/libsodium/buildlibsodium.sh
- - make CC=gcc-8 CXX=g++-8 -j2
- 
+  - yarn package-ci
+  - yarn lint
+  - yarn flow
+  # HACK: Temporarily ignore `yarn test` on linux
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then yarn test; fi
+  - yarn build-e2e
+  - yarn test-e2e
