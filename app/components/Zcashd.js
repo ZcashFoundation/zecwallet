@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Info } from './AppState';
 import cstyles from './Common.css';
 import styles from './Zcashd.css';
+import ScrollPane from './ScrollPane';
 import Heart from '../assets/img/zcashdlogo.gif';
 
 const DetailLine = ({ label, value }) => {
@@ -45,25 +46,29 @@ export default class Zcashd extends Component<Props> {
       return (
         <div>
           <div className={styles.container}>
-            <div className={styles.imgcontainer}>
-              <img src={Heart} alt="heart" />
-            </div>
-
-            <div className={styles.detailcontainer}>
-              <div className={styles.detaillines}>
-                <DetailLine label="version" value={info.version} />
-                <DetailLine label="Network" value={info.testnet ? 'Testnet' : 'Mainnet'} />
-                <DetailLine label="Block Height" value={height} />
-                <DetailLine label="Connections" value={info.connections} />
-                <DetailLine label="Network Solution Rate" value={`${info.solps} Sol/s`} />
+            <ScrollPane offsetHeight={0}>
+              <div className={styles.imgcontainer}>
+                <img src={Heart} alt="heart" />
               </div>
-            </div>
 
-            <div className={cstyles.buttoncontainer}>
-              <button className={cstyles.primarybutton} type="button" onClick={refresh}>
-                Refresh All Data
-              </button>
-            </div>
+              <div className={styles.detailcontainer}>
+                <div className={styles.detaillines}>
+                  <DetailLine label="version" value={info.version} />
+                  <DetailLine label="Network" value={info.testnet ? 'Testnet' : 'Mainnet'} />
+                  <DetailLine label="Block Height" value={height} />
+                  <DetailLine label="Connections" value={info.connections} />
+                  <DetailLine label="Network Solution Rate" value={`${info.solps} Sol/s`} />
+                </div>
+              </div>
+
+              <div className={cstyles.buttoncontainer}>
+                <button className={cstyles.primarybutton} type="button" onClick={refresh}>
+                  Refresh All Data
+                </button>
+              </div>
+
+              <div className={cstyles.margintoplarge} />
+            </ScrollPane>
           </div>
         </div>
       );

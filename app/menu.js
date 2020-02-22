@@ -120,17 +120,17 @@ export default class MenuBuilder {
       label: 'View',
       submenu: [
         {
+          label: 'zcashd info',
+          click: () => {
+            this.mainWindow.webContents.send('zcashd');
+          }
+        },
+        { type: 'separator' },
+        {
           label: 'Reload',
           accelerator: 'Command+R',
           click: () => {
             this.mainWindow.webContents.reload();
-          }
-        },
-        {
-          label: 'Toggle Full Screen',
-          accelerator: 'Ctrl+Command+F',
-          click: () => {
-            this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
           }
         },
         {
