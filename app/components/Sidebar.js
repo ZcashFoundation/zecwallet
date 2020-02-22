@@ -298,8 +298,8 @@ class Sidebar extends PureComponent<Props, State> {
   };
 
   openURIModal = (defaultValue: string | null) => {
-    const privKeyInputValue = defaultValue || '';
-    this.setState({ privKeyModalIsOpen: true, privKeyInputValue });
+    const uriModalInputValue = defaultValue || '';
+    this.setState({ uriModalIsOpen: true, uriModalInputValue });
   };
 
   doImportPrivKeys = () => {
