@@ -171,13 +171,13 @@ export default class MenuBuilder {
         {
           label: 'Check github.com for updates',
           click() {
-            shell.openExternal('https://github.com/adityapk00/zecwallet-electron/releases');
+            shell.openExternal('https://github.com/zcashfoundation/zecwallet/releases');
           }
         },
         {
           label: 'File a bug...',
           click() {
-            shell.openExternal('https://github.com/adityapk00/zecwallet-electron/issues');
+            shell.openExternal('https://github.com/zcashfoundation/zecwallet/issues');
           }
         }
       ]
@@ -269,13 +269,13 @@ export default class MenuBuilder {
           {
             label: 'Check github.com for updates',
             click() {
-              shell.openExternal('https://github.com/adityapk00/zecwallet-electron/releases');
+              shell.openExternal('https://github.com/zcashfoundation/zecwallet/releases');
             }
           },
           {
             label: 'File a bug...',
             click() {
-              shell.openExternal('https://github.com/adityapk00/zecwallet-electron/issues');
+              shell.openExternal('https://github.com/zcashfoundation/zecwallet/issues');
             }
           }
         ]
