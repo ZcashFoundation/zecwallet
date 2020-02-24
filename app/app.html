@@ -3,7 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <title>Zecwallet Fullnode</title>
-    <script>
+
+    <!-- Allow unsafe only for inline script tags, no external content-->
+    <script nonce="1u1na">
+      if (process.env.NODE_ENV === 'Production') {
+        document.write(
+          `<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'; style-src 'self'; " >`
+        );
+      }
+
       (() => {
         if (!process.env.START_HOT) {
           const link = document.createElement('link');
@@ -17,7 +25,7 @@
   </head>
   <body>
     <div id="root"></div>
-    <script>
+    <script nonce="8SHwb">
       {
         const scripts = [];
 

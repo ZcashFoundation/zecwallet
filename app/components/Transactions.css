@@ -37,8 +37,8 @@
 
 .txmodal {
   top: 12.5%;
-  left: 25%;
-  right: auto;
+  left: 12.5%;
+  right: 12.5%;
   bottom: auto;
   opacity: 1;
   transform: translate(-0%, -12.5%);

@@ -122,7 +122,7 @@ const TxModal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice }) => {
           );
         })}
 
-        <div className={cstyles.center}>
+        <div className={[cstyles.center, cstyles.margintoplarge].join(' ')}>
           <button type="button" className={cstyles.primarybutton} onClick={closeModal}>
             Close
           </button>

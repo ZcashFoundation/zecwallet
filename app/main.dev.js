@@ -10,7 +10,7 @@
  *
  * @flow
  */
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, shell, BrowserWindow, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -57,11 +57,24 @@ const createWindow = async () => {
     minHeight: 500,
     minWidth: 1100,
     webPreferences: {
+      // Allow node integration because we're only loading local content here.
       nodeIntegration: true
     }
   });
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
+
+  app.on('web-contents-created', (event, contents) => {
+    contents.on('new-window', async (eventInner, navigationUrl) => {
+      // In this example, we'll ask the operating system
+      // to open this event's url in the default browser.
+      console.log('attempting to open window', navigationUrl);
+
+      eventInner.preventDefault();
+
+      await shell.openExternal(navigationUrl);
+    });
+  });
 
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
