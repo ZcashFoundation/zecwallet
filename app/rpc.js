@@ -247,8 +247,8 @@ export default class RPC {
 
   // Fetch all addresses and their associated balances
   async fetchTandZAddressesWithBalances() {
-    const zresponse = RPC.doRPC('z_listunspent', [], this.rpcConfig);
-    const tresponse = RPC.doRPC('listunspent', [], this.rpcConfig);
+    const zresponse = RPC.doRPC('z_listunspent', [0], this.rpcConfig);
+    const tresponse = RPC.doRPC('listunspent', [0], this.rpcConfig);
 
     // Do the Z addresses
     // response.result has all the unspent notes.
