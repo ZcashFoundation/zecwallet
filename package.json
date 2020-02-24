@@ -87,14 +87,17 @@
         {
           "from": "bin/win",
           "to": "resources/bin/win",
-          "filter": ["**/**"]
+          "filter": [
+            "**/**"
+          ]
         }
       ],
       "target": [
-        "zip", "msi"
+        "zip",
+        "msi"
       ]
     },
-    "mac" : {
+    "mac": {
       "category": "public.app-category.productivity",
       "type": "distribution",
       "hardenedRuntime": true,
@@ -130,7 +133,9 @@
         {
           "from": "bin/linux",
           "to": "resources/bin/linux",
-          "filter": ["**/**"]
+          "filter": [
+            "**/**"
+          ]
         }
       ],
       "target": [
@@ -333,6 +338,7 @@
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
     "source-map-support": "^0.5.16",
+    "typeface-roboto": "^0.0.75",
     "underscore": "^1.9.2"
   },
   "devEngines": {

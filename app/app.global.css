@@ -3,11 +3,7 @@
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
 @import '~@fortawesome/fontawesome-free/css/all.css';
-
-@font-face {
-  font-family: Roboto;
-  src: url('../resources/Roboto-Regular.ttf') format('truetype');
-}
+@import '~typeface-roboto/index.css';
 
 html {
   overflow: hidden;
