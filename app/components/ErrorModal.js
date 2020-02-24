@@ -28,7 +28,10 @@ export const ErrorModal = ({ title, body, modalIsOpen, closeModal }) => {
           {title}
         </div>
 
-        <div className={cstyles.well} style={{ textAlign: 'center', wordBreak: 'break-all' }}>
+        <div
+          className={cstyles.well}
+          style={{ textAlign: 'center', wordBreak: 'break-all', maxHeight: '400px', overflowY: 'auto' }}
+        >
           {body}
         </div>
       </div>
