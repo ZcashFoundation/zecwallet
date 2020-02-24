@@ -1,7 +1,7 @@
 {
   "name": "zecwallet",
   "productName": "Zecwallet FullNode",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Zecwallet FullNode (Electron version)",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -59,6 +59,7 @@
   "build": {
     "productName": "Zecwallet FullNode",
     "appId": "co.zecwallet.fullnode",
+    "afterAllArtifactBuild": "./afterSignHook.js",
     "files": [
       "dist/",
       "node_modules/",
@@ -252,6 +253,7 @@
     "electron": "7.1.4",
     "electron-builder": "^22.2.0",
     "electron-devtools-installer": "^2.2.4",
+    "electron-notarize": "^0.2.1",
     "electron-rebuild": "^1.8.8",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.7.0",
