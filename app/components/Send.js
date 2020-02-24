@@ -236,6 +236,7 @@ const ConfirmModal = ({
         openErrorModal('Error Sending Transaction', err);
       }
 
+      // If the Tx was sent, then clear the addresses
       if (success) {
         clearToAddrs();
       }

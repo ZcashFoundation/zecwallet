@@ -298,7 +298,7 @@ export default class RPC {
 
     const alltxnsPromise = zaddresses.result.map(async zaddr => {
       // For each zaddr, get the list of incoming transactions
-      const incomingTxns = await RPC.doRPC('z_listreceivedbyaddress', [zaddr], this.rpcConfig);
+      const incomingTxns = await RPC.doRPC('z_listreceivedbyaddress', [zaddr, 0], this.rpcConfig);
       const txns = incomingTxns.result
         .filter(itx => !itx.change)
         .map(incomingTx => {
@@ -413,6 +413,9 @@ export default class RPC {
               'Successfully Broadcast Transaction',
               `Transaction was successfully broadcast. TXID: ${txid}`
             );
+
+            // And force a refresh to update the balances etc...
+            this.refresh(null);
           } else if (result.status === 'failed') {
             this.opids.delete(id);
 
