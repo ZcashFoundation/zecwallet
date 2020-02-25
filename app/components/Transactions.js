@@ -4,6 +4,7 @@
 import React, { Component } from 'react';
 import Modal from 'react-modal';
 import dateformat from 'dateformat';
+import { shell } from 'electron';
 import { BalanceBlockHighlight } from './Dashboard';
 import styles from './Transactions.css';
 import cstyles from './Common.css';
@@ -41,6 +42,14 @@ const TxModal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice }) => {
     detailedTxns = tx.detailedTxns;
     amount = Math.abs(tx.amount);
   }
+
+  const openTxid = () => {
+    if (currencyName === 'TAZ') {
+      shell.openExternal(`https://chain.so/tx/ZECTEST/${txid}`);
+    } else {
+      shell.openExternal(`https://zcha.in/transactions/${txid}`);
+    }
+  };
 
   return (
     <Modal
@@ -80,8 +89,17 @@ const TxModal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice }) => {
 
         <div className={cstyles.margintoplarge} />
 
-        <div className={[cstyles.sublight].join(' ')}>TXID</div>
-        <div>{txid}</div>
+        <div className={[cstyles.flexspacebetween].join(' ')}>
+          <div>
+            <div className={[cstyles.sublight].join(' ')}>TXID</div>
+            <div>{txid}</div>
+          </div>
+
+          <div className={cstyles.primarybutton} onClick={openTxid}>
+            View TXID &nbsp;
+            <i className={['fas', 'fa-external-link-square-alt'].join(' ')} />
+          </div>
+        </div>
 
         <div className={cstyles.margintoplarge} />
 

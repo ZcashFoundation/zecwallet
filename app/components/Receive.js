@@ -9,7 +9,7 @@ import {
   AccordionItemPanel
 } from 'react-accessible-accordion';
 import QRCode from 'qrcode.react';
-import { clipboard } from 'electron';
+import { shell, clipboard } from 'electron';
 import styles from './Receive.css';
 import cstyles from './Common.css';
 import Utils from '../utils/utils';
@@ -22,6 +22,14 @@ const AddressBlock = ({ addressBalance, label, currencyName, zecPrice, privateKe
   const [copied, setCopied] = useState(false);
   const balance = addressBalance.balance || 0;
 
+  const openAddress = () => {
+    if (currencyName === 'TAZ') {
+      shell.openExternal(`https://chain.so/address/ZECTEST/${address}`);
+    } else {
+      shell.openExternal(`https://zcha.in/accounts/${address}`);
+    }
+  };
+
   return (
     <AccordionItem key={copied} className={[cstyles.well, styles.receiveblock].join(' ')} uuid={address}>
       <AccordionItemHeading>
@@ -30,13 +38,6 @@ const AddressBlock = ({ addressBalance, label, currencyName, zecPrice, privateKe
       <AccordionItemPanel className={[styles.receiveDetail].join(' ')}>
         <div className={[cstyles.flexspacebetween].join(' ')}>
           <div className={[cstyles.verticalflex, cstyles.marginleft].join(' ')}>
-            {/*
-            <div className={[cstyles.sublight].join(' ')}>Address</div>
-            <div className={[cstyles.padtopsmall, cstyles.fixedfont].join(' ')}>
-              {Utils.splitStringIntoChunks(address, 6).join(' ')}
-            </div>
-            */}
-
             {label && (
               <div className={cstyles.margintoplarge}>
                 <div className={[cstyles.sublight].join(' ')}>Label</div>
@@ -83,6 +84,11 @@ const AddressBlock = ({ addressBalance, label, currencyName, zecPrice, privateKe
                   onClick={() => fetchAndSetSinglePrivKey(address)}
                 >
                   Export Private Key
+                </button>
+              )}
+              {Utils.isTransparent(address) && (
+                <button className={[cstyles.primarybutton].join(' ')} type="button" onClick={() => openAddress()}>
+                  View on explorer <i className={['fas', 'fa-external-link-square-alt'].join(' ')} />
                 </button>
               )}
             </div>
