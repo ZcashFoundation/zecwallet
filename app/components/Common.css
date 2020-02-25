@@ -177,11 +177,11 @@
 
 .modal {
   top: 25%;
-  left: 25%;
-  right: auto;
+  left: 12.5%;
+  right: 12.5%;
   bottom: auto;
   opacity: 1;
-  transform: translate(-12.5%, -12.5%);
+  transform: translate(-0%, -12.5%);
   background: #212124;
   position: absolute;
   padding: 16px;
