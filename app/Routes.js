@@ -263,7 +263,7 @@ export default class RouteApp extends React.Component<Props, AppState> {
   };
 
   // Get a single private key for this address, and return it as a string.
-  getPrivKeyAsString = (address: string): string => {
+  getPrivKeyAsString = async (address: string): string => {
     return this.rpc.getPrivKeyAsString(address);
   };
 

@@ -178,7 +178,8 @@ type Props = {
   getPrivKeyAsString: (address: string) => string,
   importPrivKeys: (keys: string[]) => void,
   history: PropTypes.object.isRequired,
-  openErrorModal: (title: string, body: string) => void
+  openErrorModal: (title: string, body: string) => void,
+  closeErrorModal: () => void
 };
 
 type State = {
@@ -205,7 +206,7 @@ class Sidebar extends PureComponent<Props, State> {
 
   // Handle menu items
   setupMenuHandlers = async () => {
-    const { info, setSendTo, history, openErrorModal } = this.props;
+    const { info, setSendTo, history, openErrorModal, closeErrorModal } = this.props;
     const { testnet } = info;
 
     // About
@@ -263,14 +264,41 @@ class Sidebar extends PureComponent<Props, State> {
 
     // Export all private keys
     ipcRenderer.on('exportall', async () => {
+      // There might be lots of keys, so we get them serially.
+
+      // First, show a "wait..." dialog
+      openErrorModal(
+        'Exporting Private Keys',
+        <span>
+          Exporting Private Keys
+          <br />
+          Please wait...
+        </span>
+      );
+
       // Get all the addresses and run export key on each of them.
       const { addresses, getPrivKeyAsString } = this.props;
-      const privKeysPromise = addresses.map(async a => {
-        const privKey = await getPrivKeyAsString(a);
-        return `${privKey} #${a}`;
-      });
-      const exportedPrivKeys = await Promise.all(privKeysPromise);
 
+      // We'll do an array iteration rather than a async array.map, because there might
+      // be several keys, and we don't want to hammer zcashd with 100s of RPC calls.
+      const exportedPrivKeys = [];
+      // eslint-disable-next-line no-restricted-syntax
+      for (const address of addresses) {
+        // eslint-disable-next-line no-await-in-loop
+        const privKey = await getPrivKeyAsString(address);
+        exportedPrivKeys.push(`${privKey} #${address}`);
+
+        openErrorModal(
+          'Exporting Private Keys',
+          <span>
+            Exporting Private Keys
+            <br />
+            Please wait...
+          </span>
+        );
+      }
+
+      closeErrorModal();
       this.setState({ exportPrivKeysModalIsOpen: true, exportedPrivKeys });
     });
 
