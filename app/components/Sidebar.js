@@ -266,16 +266,6 @@ class Sidebar extends PureComponent<Props, State> {
     ipcRenderer.on('exportall', async () => {
       // There might be lots of keys, so we get them serially.
 
-      // First, show a "wait..." dialog
-      openErrorModal(
-        'Exporting Private Keys',
-        <span>
-          Exporting Private Keys
-          <br />
-          Please wait...
-        </span>
-      );
-
       // Get all the addresses and run export key on each of them.
       const { addresses, getPrivKeyAsString } = this.props;
 
@@ -283,17 +273,20 @@ class Sidebar extends PureComponent<Props, State> {
       // be several keys, and we don't want to hammer zcashd with 100s of RPC calls.
       const exportedPrivKeys = [];
       // eslint-disable-next-line no-restricted-syntax
-      for (const address of addresses) {
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < addresses.length; i++) {
+        const address = addresses[i];
         // eslint-disable-next-line no-await-in-loop
         const privKey = await getPrivKeyAsString(address);
         exportedPrivKeys.push(`${privKey} #${address}`);
 
+        // Show a progress dialog
         openErrorModal(
           'Exporting Private Keys',
           <span>
             Exporting Private Keys
             <br />
-            Please wait...
+            Please wait...({i} / {addresses.length})
           </span>
         );
       }
