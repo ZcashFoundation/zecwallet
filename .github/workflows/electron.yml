@@ -1,0 +1,80 @@
+name: Electron CD
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-16.04, macOS-latest, windows-latest]
+
+    steps:
+      - name: Context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: yarn install
+        run: |
+          yarn install
+      - name: Build and Package@Linux
+        if: contains(matrix.os, 'ubuntu')
+        run: |
+          yarn package-linux
+      - name: Build and Package@Mac
+        if: contains(matrix.os, 'macos')
+        run: |
+          yarn package-mac
+      - name: Build and Package@Win
+        if: contains(matrix.os, 'windows')
+        run: |
+          yarn package-win
+      - name: Version@Linux@Mac
+        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
+        run: |
+          ./bin/printversion.sh
+      - name: Version@Win
+        if: contains(matrix.os, 'windows')
+        run: |
+          ./bin/printversion.ps1
+      - name: Upload artifacts-deb
+        uses: actions/upload-artifact@v1
+        if: contains(matrix.os, 'ubuntu')
+        with:
+          name: ${{ matrix.os }}
+          path: release/Zecwallet_Fullnode_${{ env.VERSION }}_amd64.deb
+      - name: Upload artifacts-AppImage
+        uses: actions/upload-artifact@v1
+        if: contains(matrix.os, 'ubuntu')
+        with:
+          name: ${{ matrix.os }}
+          path: release/Zecwallet Fullnode-${{ env.VERSION }}.AppImage
+      - name: Upload artifacts-dmg
+        uses: actions/upload-artifact@v1
+        if: contains(matrix.os, 'macos')
+        with:
+          name: ${{ matrix.os }}
+          path: release/Zecwallet Fullnode-${{ env.VERSION }}.dmg
+      - name: Upload artifacts-zip
+        uses: actions/upload-artifact@v1
+        if: contains(matrix.os, 'windows')
+        with:
+          name: ${{ matrix.os }}
+          path: release/Zecwallet Fullnode-${{ env.VERSION }}-win.zip
+      - name: Upload artifacts-msi
+        uses: actions/upload-artifact@v1
+        if: contains(matrix.os, 'windows')
+        with:
+          name: ${{ matrix.os }}
+          path: release/Zecwallet Fullnode ${{ env.VERSION }}.msi
