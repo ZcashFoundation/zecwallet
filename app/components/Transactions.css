@@ -19,6 +19,8 @@
 .txaddressamount {
   width: 85%;
   float: left;
+  display: flex;
+  flex-direction: column;
 }
 
 .txaddress {
@@ -46,6 +48,8 @@
   position: absolute;
   padding: 16px;
   min-width: 700px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
 }
 
 .txmodalOverlay {

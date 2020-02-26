@@ -102,6 +102,7 @@ const TxModal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice }) => {
         </div>
 
         <div className={cstyles.margintoplarge} />
+        <hr />
 
         {detailedTxns.map(txdetail => {
           const { bigPart, smallPart } = Utils.splitZecAmountIntoBigSmall(Math.abs(txdetail.amount));
@@ -136,6 +137,8 @@ const TxModal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice }) => {
                   <div>{memo}</div>
                 </div>
               )}
+
+              <hr />
             </div>
           );
         })}
@@ -168,41 +171,43 @@ const TxItemBlock = ({ transaction, currencyName, zecPrice, txClicked, addressBo
           <div>{transaction.type}</div>
           <div className={[cstyles.padtopsmall, cstyles.sublight].join(' ')}>{timePart}</div>
         </div>
-        {transaction.detailedTxns.map(txdetail => {
-          const { bigPart, smallPart } = Utils.splitZecAmountIntoBigSmall(Math.abs(txdetail.amount));
+        <div className={styles.txaddressamount}>
+          {transaction.detailedTxns.map(txdetail => {
+            const { bigPart, smallPart } = Utils.splitZecAmountIntoBigSmall(Math.abs(txdetail.amount));
 
-          let { address } = txdetail;
-          const { memo } = txdetail;
+            let { address } = txdetail;
+            const { memo } = txdetail;
 
-          if (!address) {
-            address = '(Shielded)';
-          }
+            if (!address) {
+              address = '(Shielded)';
+            }
 
-          const label = addressBookMap[address] || '';
+            const label = addressBookMap[address] || '';
 
-          return (
-            <div key={address} className={styles.txaddressamount}>
-              <div className={styles.txaddress}>
-                <div className={cstyles.highlight}>{label}</div>
-                <div>{Utils.splitStringIntoChunks(address, 6).join(' ')}</div>
-                <div className={[cstyles.small, cstyles.sublight, cstyles.padtopsmall, styles.txmemo].join(' ')}>
-                  {memo}
+            return (
+              <div key={address} className={cstyles.padtopsmall}>
+                <div className={styles.txaddress}>
+                  <div className={cstyles.highlight}>{label}</div>
+                  <div>{Utils.splitStringIntoChunks(address, 6).join(' ')}</div>
+                  <div className={[cstyles.small, cstyles.sublight, cstyles.padtopsmall, styles.txmemo].join(' ')}>
+                    {memo}
+                  </div>
+                </div>
+                <div className={[styles.txamount, cstyles.right].join(' ')}>
+                  <div>
+                    <span>
+                      {currencyName} {bigPart}
+                    </span>
+                    <span className={[cstyles.small, cstyles.zecsmallpart].join(' ')}>{smallPart}</span>
+                  </div>
+                  <div className={[cstyles.sublight, cstyles.small, cstyles.padtopsmall].join(' ')}>
+                    {Utils.getZecToUsdString(zecPrice, Math.abs(txdetail.amount))}
+                  </div>
                 </div>
               </div>
-              <div className={[styles.txamount, cstyles.right].join(' ')}>
-                <div>
-                  <span>
-                    {currencyName} {bigPart}
-                  </span>
-                  <span className={[cstyles.small, cstyles.zecsmallpart].join(' ')}>{smallPart}</span>
-                </div>
-                <div className={[cstyles.sublight, cstyles.small, cstyles.padtopsmall].join(' ')}>
-                  {Utils.getZecToUsdString(zecPrice, Math.abs(txdetail.amount))}
-                </div>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
