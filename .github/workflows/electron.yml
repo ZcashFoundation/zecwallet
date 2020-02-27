@@ -35,7 +35,7 @@ jobs:
       - name: Mac Certificate-Gen
         if: contains(matrix.os, 'macos')
         env:
-          p12base64: ${{ env.p12cert }}
+          p12base64: ${{ secrets.p12cert }}
         run: |
           echo "$p12base64" | openssl base64 -d -out cert.p12
 
