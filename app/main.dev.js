@@ -109,7 +109,7 @@ const createWindow = async () => {
     event.preventDefault();
 
     ipcMain.on('appquitdone', () => {
-      console.log('received appquitdone, so doign quit');
+      console.log('received appquitdone, so doing quit');
       waitingForClose = false;
       proceedToClose = true;
       app.quit();
