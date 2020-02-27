@@ -32,8 +32,23 @@ jobs:
         if: contains(matrix.os, 'ubuntu')
         run: |
           yarn package-linux
+      - name: Mac Certificate-Gen
+        if: contains(matrix.os, 'macos')
+        env:
+          p12base64: ${{ secrets.p12cert }}
+        run: |
+          echo "$p12base64" | openssl base64 -d -out cert.p12
+      - name: Mac Certificate-Install
+        if: contains(matrix.os, 'macos')
+        uses: apple-actions/import-codesign-certs@v1
+        with:
+          p12-filepath: 'cert.p12'
+          p12-password: ${{ secrets.p12certpassword }}
       - name: Build and Package@Mac
         if: contains(matrix.os, 'macos')
+        env:
+          appleId: ${{ secrets.appleId }}
+          appleIdPassword: ${{ secrets.appleIdPassword }}
         run: |
           yarn package-mac
       - name: Build and Package@Win
