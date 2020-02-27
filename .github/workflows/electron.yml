@@ -34,6 +34,9 @@ jobs:
           yarn package-linux
       - name: Build and Package@Mac
         if: contains(matrix.os, 'macos')
+        env:
+          appleId: ${{ secrets.appleId }}
+          appleIdPassword: ${{ secrets.appleIdPassword }}
         run: |
           yarn package-mac
       - name: Build and Package@Win
