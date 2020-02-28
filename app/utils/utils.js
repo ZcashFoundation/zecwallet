@@ -32,7 +32,7 @@ export default class Utils {
   }
 
   // Convert to max 8 decimal places, and remove trailing zeros
-  static maxPrecision(v: number): number {
+  static maxPrecision(v: number): string {
     if (!v) return v;
 
     if (typeof v === 'string' || v instanceof String) {
@@ -40,7 +40,7 @@ export default class Utils {
       v = parseFloat(v);
     }
 
-    return parseFloat(v.toFixed(8));
+    return v.toFixed(8);
   }
 
   static splitZecAmountIntoBigSmall(zecValue: number) {
@@ -48,7 +48,7 @@ export default class Utils {
       return { bigPart: zecValue, smallPart: '' };
     }
 
-    let bigPart = Utils.maxPrecision(zecValue).toString();
+    let bigPart = Utils.maxPrecision(zecValue);
     let smallPart = '';
 
     if (bigPart.indexOf('.') >= 0) {
@@ -62,6 +62,10 @@ export default class Utils {
           smallPart += '0';
         }
       }
+    }
+
+    if (smallPart === '0000') {
+      smallPart = '';
     }
 
     return { bigPart, smallPart };
