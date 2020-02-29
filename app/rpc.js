@@ -330,7 +330,8 @@ export default class RPC {
         transaction.detailedTxns = [new TxDetail()];
         transaction.detailedTxns[0].address = tx.address;
         transaction.detailedTxns[0].amount = tx.amount;
-        transaction.detailedTxns[0].memo = tx.memo;
+        // eslint-disable-next-line no-control-regex
+        transaction.detailedTxns[0].memo = tx.memo ? tx.memo.replace(/\u0000/g, '') : tx.memo;
 
         return transaction;
       })

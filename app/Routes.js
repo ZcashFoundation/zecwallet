@@ -31,11 +31,14 @@ import AddressBook from './components/Addressbook';
 import AddressbookImpl from './utils/AddressbookImpl';
 import Sidebar from './components/Sidebar';
 import Transactions from './components/Transactions';
+import CompanionAppListener from './companion';
 
 type Props = {};
 
 export default class RouteApp extends React.Component<Props, AppState> {
   rpc: RPC;
+
+  companionAppListener: CompanionAppListener;
 
   constructor(props) {
     super(props);
@@ -83,9 +86,17 @@ export default class RouteApp extends React.Component<Props, AppState> {
         this.setState({ addressBook });
       }
     })();
+
+    // Setup the websocket for the companion app
+    this.companionAppListener = new CompanionAppListener(this.getFullState);
+    this.companionAppListener.setUp();
   }
 
   componentWillUnmount() {}
+
+  getFullState = (): AppState => {
+    return this.state;
+  };
 
   openErrorModal = (title: string, body: string) => {
     const errorModalData = new ErrorModalData();
