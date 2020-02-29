@@ -88,7 +88,7 @@ export default class RouteApp extends React.Component<Props, AppState> {
     })();
 
     // Setup the websocket for the companion app
-    this.companionAppListener = new CompanionAppListener(this.getFullState);
+    this.companionAppListener = new CompanionAppListener(this.getFullState, this.sendTransaction);
     this.companionAppListener.setUp();
   }
 
@@ -269,8 +269,12 @@ export default class RouteApp extends React.Component<Props, AppState> {
   };
 
   sendTransaction = async (sendJson: [], fnOpenSendErrorModal: (string, string) => void) => {
-    const success = await this.rpc.sendTransaction(sendJson, fnOpenSendErrorModal);
-    return success;
+    try {
+      const success = await this.rpc.sendTransaction(sendJson, fnOpenSendErrorModal);
+      return success;
+    } catch (err) {
+      console.log('route sendtx error', err);
+    }
   };
 
   // Get a single private key for this address, and return it as a string.

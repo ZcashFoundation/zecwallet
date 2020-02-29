@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import axios from 'axios';
 import _ from 'underscore';
 import hex from 'hex-string';
@@ -19,6 +20,12 @@ const parseMemo = (memoHex: string): string | null => {
   return memo;
 };
 
+class OpidMonitor {
+  opid: string;
+
+  fnOpenSendErrorModal: (string, string) => void;
+}
+
 export default class RPC {
   rpcConfig: RPCConfig;
 
@@ -32,14 +39,11 @@ export default class RPC {
 
   fnSetAllAddresses: (string[]) => void;
 
-  // This function is not set via a constructor, but via the sendTransaction method
-  fnOpenSendErrorModal: (string, string) => void;
-
   fnSetZecPrice: number => void;
 
   fnSetDisconnected: string => void;
 
-  opids: Set<string>;
+  opids: Set<OpidMonitor>;
 
   refreshTimerID: TimerID;
 
@@ -368,12 +372,14 @@ export default class RPC {
 
   // Send a transaction using the already constructed sendJson structure
   async sendTransaction(sendJson: [], fnOpenSendErrorModal: (string, string) => void): boolean {
-    this.fnOpenSendErrorModal = fnOpenSendErrorModal;
-
     try {
       const opid = (await RPC.doRPC('z_sendmany', sendJson, this.rpcConfig)).result;
 
-      this.addOpidToMonitor(opid);
+      const monitor = new OpidMonitor();
+      monitor.opid = opid;
+      monitor.fnOpenSendErrorModal = fnOpenSendErrorModal;
+
+      this.addOpidToMonitor(monitor);
 
       return true;
     } catch (err) {
@@ -384,8 +390,8 @@ export default class RPC {
   }
 
   // Start monitoring the given opid
-  async addOpidToMonitor(opid: string) {
-    this.opids.add(opid);
+  async addOpidToMonitor(monitor: OpidMonitor) {
+    this.opids.add(monitor);
     this.refreshOpStatus();
   }
 
@@ -400,31 +406,35 @@ export default class RPC {
   async refreshOpStatus() {
     if (this.opids.size > 0) {
       // Get all the operation statuses.
-      [...this.opids].map(async id => {
+      [...this.opids].map(async monitor => {
         try {
-          const resultJson = await RPC.doRPC('z_getoperationstatus', [[id]], this.rpcConfig);
+          const resultJson = await RPC.doRPC('z_getoperationstatus', [[monitor.opid]], this.rpcConfig);
 
           const result = resultJson.result[0];
 
           if (result.status === 'success') {
-            this.opids.delete(id);
             const { txid } = result.result;
 
-            this.fnOpenSendErrorModal(
+            monitor.fnOpenSendErrorModal(
               'Successfully Broadcast Transaction',
               `Transaction was successfully broadcast. TXID: ${txid}`
             );
 
+            this.opids.delete(monitor);
+
             // And force a refresh to update the balances etc...
             this.refresh(null);
           } else if (result.status === 'failed') {
-            this.opids.delete(id);
+            monitor.fnOpenSendErrorModal(
+              'Error Sending Transaction',
+              `Opid ${monitor.opid} Failed. ${result.error.message}`
+            );
 
-            this.fnOpenSendErrorModal('Error Sending Transaction', `Opid ${id} Failed. ${result.error.message}`);
+            this.opids.delete(monitor);
           }
         } catch (err) {
           // If we can't get a response for this OPID, then just forget it and move on
-          this.opids.delete(id);
+          this.opids.delete(monitor);
         }
       });
     }

@@ -1,3 +1,4 @@
+import hex from 'hex-string';
 import AppState from './components/AppState';
 import Utils from './utils/utils';
 
@@ -9,8 +10,11 @@ export default class CompanionAppListener {
 
   fnGetState: () => AppState = null;
 
-  constructor(fnGetSate: () => AppState) {
+  fnSendTransaction: ([], (string, string) => void) => void = null;
+
+  constructor(fnGetSate: () => AppState, fnSendTransaction: ([], (string, string) => void) => void) {
     this.fnGetState = fnGetSate;
+    this.fnSendTransaction = fnSendTransaction;
   }
 
   setUp() {
@@ -27,12 +31,15 @@ export default class CompanionAppListener {
         } else if (cmd.command === 'getTransactions') {
           const response = this.doGetTransactions();
           ws.send(response);
+        } else if (cmd.command === 'sendTx') {
+          const response = this.doSendTransaction(cmd, ws);
+          ws.send(response);
         }
       });
     });
   }
 
-  doGetInfo(): any {
+  doGetInfo(): string {
     const appState = this.fnGetState();
 
     const saplingAddress = appState.addresses.find(a => Utils.isSapling(a));
@@ -59,7 +66,7 @@ export default class CompanionAppListener {
     return JSON.stringify(resp);
   }
 
-  doGetTransactions(): any {
+  doGetTransactions(): string {
     const appState = this.fnGetState();
 
     let txlist = [];
@@ -93,6 +100,77 @@ export default class CompanionAppListener {
       transactions: txlist
     };
 
+    return JSON.stringify(resp);
+  }
+
+  doSendTransaction(cmd: any, ws: WebSocket): string {
+    // "command":"sendTx","tx":{"amount":"0.00019927","to":"zs1pzr7ee53jwa3h3yvzdjf7meruujq84w5rsr5kuvye9qg552kdyz5cs5ywy5hxkxcfvy9wln94p6","memo":""}}
+    const inpTx = cmd.tx;
+    const appState = this.fnGetState();
+
+    const sendingAmount = parseFloat(inpTx.amount);
+
+    const buildError = (reason: string): string => {
+      const resp = {
+        errorCode: -1,
+        errorMessage: `Couldn't send Tx:${reason}`
+      };
+
+      console.log('sendtx error', resp);
+      return JSON.stringify(resp);
+    };
+
+    // First, find an address that can send the correct amount.
+    const fromAddress = appState.addressesWithBalance.find(ab => ab.balance > sendingAmount);
+    if (!fromAddress) {
+      return buildError(`No address with sufficient balance to send ${sendingAmount}`);
+    }
+
+    let memo = !inpTx.memo || inpTx.memo.trim() === '' ? null : inpTx.memo;
+    const textEncoder = new TextEncoder();
+    memo = memo ? hex.encode(textEncoder.encode(memo)) : '';
+
+    // Build a sendJSON object
+    const sendJSON = [];
+    sendJSON.push(fromAddress.address);
+    if (memo) {
+      sendJSON.push([{ address: inpTx.to, amount: sendingAmount, memo }]);
+    } else {
+      sendJSON.push([{ address: inpTx.to, amount: sendingAmount }]);
+    }
+    console.log('sendjson is', sendJSON);
+
+    this.fnSendTransaction(sendJSON, (title, msg) => {
+      let resp;
+      if (title.startsWith('Success')) {
+        const arr = msg.split(' ');
+        const txid = arr && arr.length > 0 && arr[arr.length - 1];
+
+        resp = {
+          version: 1.0,
+          command: 'sendTxSubmitted',
+          txid
+        };
+      } else {
+        resp = {
+          version: 1.0,
+          command: 'sendTxFailed',
+          err: msg
+        };
+      }
+
+      console.log('Callback sending', resp);
+      ws.send(JSON.stringify(resp));
+    });
+
+    // After the transaction is submitted, we return an intermediate success.
+    const resp = {
+      version: 1.0,
+      command: 'sendTx',
+      result: 'success'
+    };
+
+    console.log('sendtx sending', resp);
     return JSON.stringify(resp);
   }
 }
