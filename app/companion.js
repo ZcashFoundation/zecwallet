@@ -1,3 +1,4 @@
+/* eslint-disable flowtype/no-weak-types */
 /* eslint-disable max-classes-per-file */
 import hex from 'hex-string';
 import _sodium from 'libsodium-wrappers';
@@ -9,6 +10,7 @@ import Utils from './utils/utils';
 /* eslint-disable class-methods-use-this */
 const WebSocket = window.require('ws');
 
+// Wormhole code is sha256(sha256(secret_key))
 function getWormholeCode(keyHex: string, sodium: any): string {
   const key = sodium.from_hex(keyHex);
 
@@ -30,6 +32,8 @@ class WormholeClient {
 
   listner: CompanionAppListener = null;
 
+  keepAliveTimerID: TimerID = null;
+
   constructor(keyHex: string, sodium: any, listner: CompanionAppListener) {
     this.keyHex = keyHex;
     this.sodium = sodium;
@@ -42,14 +46,21 @@ class WormholeClient {
 
   connect() {
     this.wss = new WebSocket('wss://wormhole.zecqtwallet.com:443');
+
     this.wss.on('open', () => {
       // On open, register ourself
       const reg = { register: getWormholeCode(this.keyHex, this.sodium) };
 
-      console.log('connected, registering');
-
-      // No encryption for the register
+      // No encryption for the register call
       this.wss.send(JSON.stringify(reg));
+
+      // Now, do a ping every 4 minutes to keep the connection alive.
+      this.keepAliveTimerID = setInterval(() => {
+        const ping = { ping: 'ping' };
+        this.wss.send(JSON.stringify(ping));
+
+        console.log('sending ping');
+      }, 4 * 60 * 1000);
     });
 
     this.wss.on('message', data => {
@@ -57,8 +68,21 @@ class WormholeClient {
       this.listner.processIncoming(data, this.keyHex, this.wss);
     });
   }
+
+  close() {
+    if (this.keepAliveTimerID) {
+      clearInterval(this.keepAliveTimerID);
+    }
+
+    // Close the websocket.
+    if (this.wss) {
+      this.wss.close();
+    }
+  }
 }
 
+// The singleton Companion App listener, that can spawn a wormhole server
+// or (multiple) wormhole clients
 export default class CompanionAppListener {
   sodium = null;
 
@@ -89,7 +113,28 @@ export default class CompanionAppListener {
     // this.wss = new WebSocket.Server({ port: 7070 });
   }
 
-  processIncoming(data: any, keyHex: string, ws: Websocket) {
+  processIncoming(data: string, keyHex: string, ws: Websocket) {
+    const dataJson = JSON.parse(data);
+
+    // If the wormhole sends some messages, we ignore them
+    if ('error' in dataJson) {
+      console.log('Incoming data contains an error message', data);
+      return;
+    }
+
+    // If the message is a ping, just ignore it
+    if ('ping' in dataJson) {
+      return;
+    }
+
+    // Then, check if the message is encrpted
+    if (!('nonce' in dataJson)) {
+      const err = { error: 'Encryption error', to: getWormholeCode(keyHex, this.sodium) };
+      ws.send(JSON.stringify(err));
+
+      return;
+    }
+
     const cmd = JSON.parse(this.decryptIncoming(data, keyHex));
 
     if (cmd.command === 'getInfo') {
