@@ -1,5 +1,6 @@
 import hex from 'hex-string';
 import _sodium from 'libsodium-wrappers';
+import Store from 'electron-store';
 import AppState from './components/AppState';
 import Utils from './utils/utils';
 
@@ -18,6 +19,9 @@ export default class CompanionAppListener {
   constructor(fnGetSate: () => AppState, fnSendTransaction: ([], (string, string) => void) => void) {
     this.fnGetState = fnGetSate;
     this.fnSendTransaction = fnSendTransaction;
+
+    // Temp
+    this.setEncKey('53ed6161c3e3b21bfdb3e6733334fb158850a0ddc8517164c671437d12b20a54');
   }
 
   async setUp() {
@@ -51,10 +55,48 @@ export default class CompanionAppListener {
     });
   }
 
+  getEncKey(): string {
+    // Get the nonce. Increment and store the nonce for next use
+    const store = new Store();
+    const keyHex = store.get('companion/key');
+
+    return keyHex;
+  }
+
+  setEncKey(keyHex: string) {
+    // Get the nonce. Increment and store the nonce for next use
+    const store = new Store();
+    store.set('companion/key', keyHex);
+  }
+
+  getLocalNonce(): string {
+    // Get the nonce. Increment and store the nonce for next use
+    const store = new Store();
+    const nonceHex = store.get('companion/localnonce', '00'.repeat(this.sodium.crypto_secretbox_NONCEBYTES));
+
+    // Increment nonce
+    const newNonce = this.sodium.from_hex(nonceHex);
+
+    this.sodium.increment(newNonce);
+    this.sodium.increment(newNonce);
+    store.set('companion/localnonce', this.sodium.to_hex(newNonce));
+
+    return nonceHex;
+  }
+
   // ws://192.168.11.105,53ed6161c3e3b21bfdb3e6733334fb158850a0ddc8517164c671437d12b20a54,0
   encryptOutgoing(str: string): string {
-    const nonce = this.sodium.randombytes_buf(this.sodium.crypto_secretbox_NONCEBYTES);
-    const key = this.sodium.from_hex('53ed6161c3e3b21bfdb3e6733334fb158850a0ddc8517164c671437d12b20a54');
+    const keyHex = this.getEncKey();
+
+    if (!keyHex) {
+      console.log('No secret key');
+      throw Error('No Secret Key');
+    }
+
+    const nonceHex = this.getLocalNonce();
+
+    const nonce = this.sodium.from_hex(nonceHex);
+    const key = this.sodium.from_hex(keyHex);
 
     const encrypted = this.sodium.crypto_secretbox_easy(str, nonce, key);
     const encryptedHex = this.sodium.to_hex(encrypted);
@@ -68,10 +110,18 @@ export default class CompanionAppListener {
   }
 
   decryptIncoming(msg: string): string {
-    console.log('Attempting to decrypt', msg);
     const msgJson = JSON.parse(msg);
 
-    const key = this.sodium.from_hex('53ed6161c3e3b21bfdb3e6733334fb158850a0ddc8517164c671437d12b20a54');
+    const keyHex = this.getEncKey();
+
+    if (!keyHex) {
+      console.log('No secret key');
+      throw Error('No Secret Key');
+    }
+
+    const key = this.sodium.from_hex(keyHex);
+
+    // TODO: Check to see nonce has not been reused
     const nonce = this.sodium.from_hex(msgJson.nonce);
     const cipherText = this.sodium.from_hex(msgJson.payload);
 
