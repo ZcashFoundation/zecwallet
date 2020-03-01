@@ -1,6 +1,7 @@
 import hex from 'hex-string';
 import _sodium from 'libsodium-wrappers';
 import Store from 'electron-store';
+import { sha256 } from 'js-sha256';
 import AppState from './components/AppState';
 import Utils from './utils/utils';
 
@@ -28,31 +29,61 @@ export default class CompanionAppListener {
     await _sodium.ready;
     this.sodium = _sodium;
 
-    const msg = 'Hello world';
-    const cipher = this.encryptOutgoing(msg);
-    const decipher = this.decryptIncoming(cipher);
+    this.wss = new WebSocket('wss://wormhole.zecqtwallet.com:443');
+    this.wss.on('open', () => {
+      // On open, register ourself
+      const reg = { register: this.getWormholeCode(this.getEncKey()) };
 
-    console.log('decrypted to', decipher);
+      console.log('connected, registering');
 
-    this.wss = new WebSocket.Server({ port: 7070 });
-
-    this.wss.on('connection', ws => {
-      ws.on('message', message => {
-        console.log(`Received message => ${message}`);
-        const cmd = JSON.parse(this.decryptIncoming(message));
-
-        if (cmd.command === 'getInfo') {
-          const response = this.doGetInfo();
-          ws.send(this.encryptOutgoing(response));
-        } else if (cmd.command === 'getTransactions') {
-          const response = this.doGetTransactions();
-          ws.send(this.encryptOutgoing(response));
-        } else if (cmd.command === 'sendTx') {
-          const response = this.doSendTransaction(cmd, ws);
-          ws.send(this.encryptOutgoing(response));
-        }
-      });
+      // No encryption for the register
+      this.wss.send(JSON.stringify(reg));
     });
+
+    this.wss.on('message', data => {
+      console.log('Receiving data', data);
+      const cmd = JSON.parse(this.decryptIncoming(data));
+
+      if (cmd.command === 'getInfo') {
+        const response = this.doGetInfo(cmd);
+        this.wss.send(this.encryptOutgoing(response));
+      } else if (cmd.command === 'getTransactions') {
+        const response = this.doGetTransactions();
+        this.wss.send(this.encryptOutgoing(response));
+      } else if (cmd.command === 'sendTx') {
+        const response = this.doSendTransaction(cmd, this.wss);
+        this.wss.send(this.encryptOutgoing(response));
+      }
+    });
+
+    // this.wss = new WebSocket.Server({ port: 7070 });
+
+    // this.wss.on('connection', ws => {
+    //   ws.on('message', message => {
+    //     console.log(`Received message => ${message}`);
+    //     const cmd = JSON.parse(this.decryptIncoming(message));
+
+    //     if (cmd.command === 'getInfo') {
+    //       const response = this.doGetInfo(cmd);
+    //       ws.send(this.encryptOutgoing(response));
+    //     } else if (cmd.command === 'getTransactions') {
+    //       const response = this.doGetTransactions();
+    //       ws.send(this.encryptOutgoing(response));
+    //     } else if (cmd.command === 'sendTx') {
+    //       const response = this.doSendTransaction(cmd, ws);
+    //       ws.send(this.encryptOutgoing(response));
+    //     }
+    //   });
+    // });
+  }
+
+  getWormholeCode(keyHex: string): string {
+    const key = this.sodium.from_hex(keyHex);
+
+    const pass1 = sha256.array(key);
+    const pass2 = sha256.hex(pass1);
+
+    return pass2;
   }
 
   getEncKey(): string {
@@ -67,6 +98,12 @@ export default class CompanionAppListener {
     // Get the nonce. Increment and store the nonce for next use
     const store = new Store();
     store.set('companion/key', keyHex);
+  }
+
+  saveLastClientName(name: string) {
+    // Save the last client name
+    const store = new Store();
+    store.set('companion/name', name);
   }
 
   getLocalNonce(): string {
@@ -84,7 +121,7 @@ export default class CompanionAppListener {
     return nonceHex;
   }
 
-  // ws://192.168.11.105,53ed6161c3e3b21bfdb3e6733334fb158850a0ddc8517164c671437d12b20a54,0
+  // ws://192.168.11.105,53ed6161c3e3b21bfdb3e6733334fb158850a0ddc8517164c671437d12b20a54,1
   encryptOutgoing(str: string): string {
     const keyHex = this.getEncKey();
 
@@ -103,7 +140,8 @@ export default class CompanionAppListener {
 
     const resp = {
       nonce: this.sodium.to_hex(nonce),
-      payload: encryptedHex
+      payload: encryptedHex,
+      to: this.getWormholeCode(keyHex)
     };
 
     return JSON.stringify(resp);
@@ -130,8 +168,12 @@ export default class CompanionAppListener {
     return decrypted;
   }
 
-  doGetInfo(): string {
+  doGetInfo(cmd: any): string {
     const appState = this.fnGetState();
+
+    if (cmd && cmd.name) {
+      this.saveLastClientName(cmd.name);
+    }
 
     const saplingAddress = appState.addresses.find(a => Utils.isSapling(a));
     const tAddress = appState.addresses.find(a => Utils.isTransparent(a));
