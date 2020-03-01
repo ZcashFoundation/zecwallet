@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import hex from 'hex-string';
 import _sodium from 'libsodium-wrappers';
 import Store from 'electron-store';
@@ -8,14 +9,64 @@ import Utils from './utils/utils';
 /* eslint-disable class-methods-use-this */
 const WebSocket = window.require('ws');
 
-export default class CompanionAppListener {
-  wss = null;
+function getWormholeCode(keyHex: string, sodium: any): string {
+  const key = sodium.from_hex(keyHex);
 
+  const pass1 = sha256.array(key);
+  const pass2 = sha256.hex(pass1);
+
+  return pass2;
+}
+
+// A class that connects to wormhole given a secret key
+class WormholeClient {
+  keyHex: string;
+
+  wormholeCode: string;
+
+  sodium: any;
+
+  wss: WebSocket = null;
+
+  listner: CompanionAppListener = null;
+
+  constructor(keyHex: string, sodium: any, listner: CompanionAppListener) {
+    this.keyHex = keyHex;
+    this.sodium = sodium;
+    this.listner = listner;
+
+    this.wormholeCode = getWormholeCode(keyHex, this.sodium);
+
+    this.connect();
+  }
+
+  connect() {
+    this.wss = new WebSocket('wss://wormhole.zecqtwallet.com:443');
+    this.wss.on('open', () => {
+      // On open, register ourself
+      const reg = { register: getWormholeCode(this.keyHex, this.sodium) };
+
+      console.log('connected, registering');
+
+      // No encryption for the register
+      this.wss.send(JSON.stringify(reg));
+    });
+
+    this.wss.on('message', data => {
+      console.log('Receiving data via wormhole', data);
+      this.listner.processIncoming(data, this.keyHex, this.wss);
+    });
+  }
+}
+
+export default class CompanionAppListener {
   sodium = null;
 
   fnGetState: () => AppState = null;
 
   fnSendTransaction: ([], (string, string) => void) => void = null;
+
+  permWormholeClient: WormholeClient = null;
 
   constructor(fnGetSate: () => AppState, fnSendTransaction: ([], (string, string) => void) => void) {
     this.fnGetState = fnGetSate;
@@ -29,61 +80,28 @@ export default class CompanionAppListener {
     await _sodium.ready;
     this.sodium = _sodium;
 
-    this.wss = new WebSocket('wss://wormhole.zecqtwallet.com:443');
-    this.wss.on('open', () => {
-      // On open, register ourself
-      const reg = { register: this.getWormholeCode(this.getEncKey()) };
-
-      console.log('connected, registering');
-
-      // No encryption for the register
-      this.wss.send(JSON.stringify(reg));
-    });
-
-    this.wss.on('message', data => {
-      console.log('Receiving data', data);
-      const cmd = JSON.parse(this.decryptIncoming(data));
-
-      if (cmd.command === 'getInfo') {
-        const response = this.doGetInfo(cmd);
-        this.wss.send(this.encryptOutgoing(response));
-      } else if (cmd.command === 'getTransactions') {
-        const response = this.doGetTransactions();
-        this.wss.send(this.encryptOutgoing(response));
-      } else if (cmd.command === 'sendTx') {
-        const response = this.doSendTransaction(cmd, this.wss);
-        this.wss.send(this.encryptOutgoing(response));
-      }
-    });
+    // Create a new wormhole listner
+    const permKeyHex = this.getEncKey();
+    if (permKeyHex) {
+      this.permWormholeClient = new WormholeClient(permKeyHex, this.sodium, this);
+    }
 
     // this.wss = new WebSocket.Server({ port: 7070 });
-
-    // this.wss.on('connection', ws => {
-    //   ws.on('message', message => {
-    //     console.log(`Received message => ${message}`);
-    //     const cmd = JSON.parse(this.decryptIncoming(message));
-
-    //     if (cmd.command === 'getInfo') {
-    //       const response = this.doGetInfo(cmd);
-    //       ws.send(this.encryptOutgoing(response));
-    //     } else if (cmd.command === 'getTransactions') {
-    //       const response = this.doGetTransactions();
-    //       ws.send(this.encryptOutgoing(response));
-    //     } else if (cmd.command === 'sendTx') {
-    //       const response = this.doSendTransaction(cmd, ws);
-    //       ws.send(this.encryptOutgoing(response));
-    //     }
-    //   });
-    // });
   }
 
-  getWormholeCode(keyHex: string): string {
-    const key = this.sodium.from_hex(keyHex);
+  processIncoming(data: any, keyHex: string, ws: Websocket) {
+    const cmd = JSON.parse(this.decryptIncoming(data, keyHex));
 
-    const pass1 = sha256.array(key);
-    const pass2 = sha256.hex(pass1);
-
-    return pass2;
+    if (cmd.command === 'getInfo') {
+      const response = this.doGetInfo(cmd);
+      ws.send(this.encryptOutgoing(response, keyHex));
+    } else if (cmd.command === 'getTransactions') {
+      const response = this.doGetTransactions();
+      ws.send(this.encryptOutgoing(response, keyHex));
+    } else if (cmd.command === 'sendTx') {
+      const response = this.doSendTransaction(cmd, ws);
+      ws.send(this.encryptOutgoing(response, keyHex));
+    }
   }
 
   getEncKey(): string {
@@ -122,9 +140,7 @@ export default class CompanionAppListener {
   }
 
   // ws://192.168.11.105,53ed6161c3e3b21bfdb3e6733334fb158850a0ddc8517164c671437d12b20a54,1
-  encryptOutgoing(str: string): string {
-    const keyHex = this.getEncKey();
-
+  encryptOutgoing(str: string, keyHex: string): string {
     if (!keyHex) {
       console.log('No secret key');
       throw Error('No Secret Key');
@@ -141,16 +157,14 @@ export default class CompanionAppListener {
     const resp = {
       nonce: this.sodium.to_hex(nonce),
       payload: encryptedHex,
-      to: this.getWormholeCode(keyHex)
+      to: getWormholeCode(keyHex, this.sodium)
     };
 
     return JSON.stringify(resp);
   }
 
-  decryptIncoming(msg: string): string {
+  decryptIncoming(msg: string, keyHex: string): string {
     const msgJson = JSON.parse(msg);
-
-    const keyHex = this.getEncKey();
 
     if (!keyHex) {
       console.log('No secret key');
