@@ -1,4 +1,5 @@
 import hex from 'hex-string';
+import _sodium from 'libsodium-wrappers';
 import AppState from './components/AppState';
 import Utils from './utils/utils';
 
@@ -7,6 +8,8 @@ const WebSocket = window.require('ws');
 
 export default class CompanionAppListener {
   wss = null;
+
+  sodium = null;
 
   fnGetState: () => AppState = null;
 
@@ -17,26 +20,64 @@ export default class CompanionAppListener {
     this.fnSendTransaction = fnSendTransaction;
   }
 
-  setUp() {
+  async setUp() {
+    await _sodium.ready;
+    this.sodium = _sodium;
+
+    const msg = 'Hello world';
+    const cipher = this.encryptOutgoing(msg);
+    const decipher = this.decryptIncoming(cipher);
+
+    console.log('decrypted to', decipher);
+
     this.wss = new WebSocket.Server({ port: 7070 });
 
     this.wss.on('connection', ws => {
       ws.on('message', message => {
         console.log(`Received message => ${message}`);
-        const cmd = JSON.parse(message);
+        const cmd = JSON.parse(this.decryptIncoming(message));
 
         if (cmd.command === 'getInfo') {
           const response = this.doGetInfo();
-          ws.send(response);
+          ws.send(this.encryptOutgoing(response));
         } else if (cmd.command === 'getTransactions') {
           const response = this.doGetTransactions();
-          ws.send(response);
+          ws.send(this.encryptOutgoing(response));
         } else if (cmd.command === 'sendTx') {
           const response = this.doSendTransaction(cmd, ws);
-          ws.send(response);
+          ws.send(this.encryptOutgoing(response));
         }
       });
     });
+  }
+
+  // ws://192.168.11.105,53ed6161c3e3b21bfdb3e6733334fb158850a0ddc8517164c671437d12b20a54,0
+  encryptOutgoing(str: string): string {
+    const nonce = this.sodium.randombytes_buf(this.sodium.crypto_secretbox_NONCEBYTES);
+    const key = this.sodium.from_hex('53ed6161c3e3b21bfdb3e6733334fb158850a0ddc8517164c671437d12b20a54');
+
+    const encrypted = this.sodium.crypto_secretbox_easy(str, nonce, key);
+    const encryptedHex = this.sodium.to_hex(encrypted);
+
+    const resp = {
+      nonce: this.sodium.to_hex(nonce),
+      payload: encryptedHex
+    };
+
+    return JSON.stringify(resp);
+  }
+
+  decryptIncoming(msg: string): string {
+    console.log('Attempting to decrypt', msg);
+    const msgJson = JSON.parse(msg);
+
+    const key = this.sodium.from_hex('53ed6161c3e3b21bfdb3e6733334fb158850a0ddc8517164c671437d12b20a54');
+    const nonce = this.sodium.from_hex(msgJson.nonce);
+    const cipherText = this.sodium.from_hex(msgJson.payload);
+
+    const decrypted = this.sodium.to_string(this.sodium.crypto_secretbox_open_easy(cipherText, nonce, key));
+
+    return decrypted;
   }
 
   doGetInfo(): string {
@@ -116,7 +157,7 @@ export default class CompanionAppListener {
         errorMessage: `Couldn't send Tx:${reason}`
       };
 
-      console.log('sendtx error', resp);
+      // console.log('sendtx error', resp);
       return JSON.stringify(resp);
     };
 
@@ -138,7 +179,7 @@ export default class CompanionAppListener {
     } else {
       sendJSON.push([{ address: inpTx.to, amount: sendingAmount }]);
     }
-    console.log('sendjson is', sendJSON);
+    // console.log('sendjson is', sendJSON);
 
     this.fnSendTransaction(sendJSON, (title, msg) => {
       let resp;
@@ -159,8 +200,8 @@ export default class CompanionAppListener {
         };
       }
 
-      console.log('Callback sending', resp);
-      ws.send(JSON.stringify(resp));
+      // console.log('Callback sending', resp);
+      ws.send(this.encryptOutgoing(JSON.stringify(resp)));
     });
 
     // After the transaction is submitted, we return an intermediate success.
@@ -170,7 +211,7 @@ export default class CompanionAppListener {
       result: 'success'
     };
 
-    console.log('sendtx sending', resp);
+    // console.log('sendtx sending', resp);
     return JSON.stringify(resp);
   }
 }
