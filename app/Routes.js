@@ -32,6 +32,7 @@ import AddressbookImpl from './utils/AddressbookImpl';
 import Sidebar from './components/Sidebar';
 import Transactions from './components/Transactions';
 import CompanionAppListener from './companion';
+import WormholeConnection from './components/WormholeConnection';
 
 type Props = {};
 
@@ -430,7 +431,14 @@ export default class RouteApp extends React.Component<Props, AppState> {
                 path={routes.TRANSACTIONS}
                 render={() => <Transactions transactions={transactions} info={info} addressBook={addressBook} />}
               />
+
               <Route path={routes.ZCASHD} render={() => <Zcashd info={info} refresh={this.doRefresh} />} />
+
+              <Route
+                path={routes.CONNECTMOBILE}
+                render={() => <WormholeConnection companionAppListener={this.companionAppListener} />}
+              />
+
               <Route
                 path={routes.LOADING}
                 render={() => <LoadingScreen setRPCConfig={this.setRPCConfig} setInfo={this.setInfo} />}

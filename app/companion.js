@@ -69,6 +69,10 @@ class WormholeClient {
     });
   }
 
+  getKeyHex(): string {
+    return this.keyHex;
+  }
+
   close() {
     if (this.keepAliveTimerID) {
       clearInterval(this.keepAliveTimerID);
@@ -92,12 +96,11 @@ export default class CompanionAppListener {
 
   permWormholeClient: WormholeClient = null;
 
+  tmpWormholeClient: WormholeClient = null;
+
   constructor(fnGetSate: () => AppState, fnSendTransaction: ([], (string, string) => void) => void) {
     this.fnGetState = fnGetSate;
     this.fnSendTransaction = fnSendTransaction;
-
-    // Temp
-    this.setEncKey('53ed6161c3e3b21bfdb3e6733334fb158850a0ddc8517164c671437d12b20a54');
   }
 
   async setUp() {
@@ -111,6 +114,32 @@ export default class CompanionAppListener {
     }
 
     // this.wss = new WebSocket.Server({ port: 7070 });
+  }
+
+  createTmpClient(keyHex: string) {
+    if (this.tmpWormholeClient) {
+      this.tmpWormholeClient.close();
+    }
+
+    this.tmpWormholeClient = new WormholeClient(keyHex, this.sodium, this);
+  }
+
+  closeTmpClient() {
+    if (this.tmpWormholeClient) {
+      this.tmpWormholeClient.close();
+
+      this.tmpWormholeClient = null;
+    }
+  }
+
+  replacePermClientWithTmp() {
+    if (this.permWormholeClient) {
+      this.permWormholeClient.close();
+    }
+
+    this.permWormholeClient = this.tmpWormholeClient;
+    this.tmpWormholeClient = null;
+    this.setEncKey(this.permWormholeClient.getKeyHex());
   }
 
   processIncoming(data: string, keyHex: string, ws: Websocket) {
@@ -137,6 +166,12 @@ export default class CompanionAppListener {
 
     const cmd = JSON.parse(this.decryptIncoming(data, keyHex));
 
+    // If decryption passes and this is a tmp wormhole client, then set it as the permanant client
+    if (this.tmpWormholeClient && keyHex === this.tmpWormholeClient.getKeyHex()) {
+      // Replace the permanant client
+      this.replacePermClientWithTmp();
+    }
+
     if (cmd.command === 'getInfo') {
       const response = this.doGetInfo(cmd);
       ws.send(this.encryptOutgoing(response, keyHex));
@@ -147,6 +182,13 @@ export default class CompanionAppListener {
       const response = this.doSendTransaction(cmd, ws);
       ws.send(this.encryptOutgoing(response, keyHex));
     }
+  }
+
+  // Generate a new secret key
+  genNewKeyHex(): string {
+    const keyHex = this.sodium.to_hex(this.sodium.crypto_secretbox_keygen());
+
+    return keyHex;
   }
 
   getEncKey(): string {
@@ -167,6 +209,11 @@ export default class CompanionAppListener {
     // Save the last client name
     const store = new Store();
     store.set('companion/name', name);
+  }
+
+  getLastClientName(): string {
+    const store = new Store();
+    return store.get('companion/name');
   }
 
   getLocalNonce(): string {

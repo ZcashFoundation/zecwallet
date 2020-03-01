@@ -1,0 +1,20 @@
+.wormholeqr {
+  width: 400px;
+}
+
+.qrcodecontainer {
+  margin: 20px;
+  text-align: center;
+}
+
+.appinfocontainer {
+  width: 50%;
+  margin-left: 25%;
+  margin-top: 20px;
+}
+
+.appinfo {
+  margin-top: 20px;
+  border: 1px solid grey;
+  padding: 16px;
+}

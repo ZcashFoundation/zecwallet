@@ -120,6 +120,12 @@ export default class MenuBuilder {
       label: 'View',
       submenu: [
         {
+          label: 'Connect Mobile App',
+          click: () => {
+            this.mainWindow.webContents.send('connectmobile');
+          }
+        },
+        {
           label: 'zcashd info',
           click: () => {
             this.mainWindow.webContents.send('zcashd');
@@ -138,6 +144,12 @@ export default class MenuBuilder {
     const subMenuViewProd = {
       label: 'View',
       submenu: [
+        {
+          label: 'Connect Mobile App',
+          click: () => {
+            this.mainWindow.webContents.send('connectmobile');
+          }
+        },
         {
           label: 'zcashd info',
           click: () => {
@@ -225,31 +237,27 @@ export default class MenuBuilder {
       },
       {
         label: '&View',
-        submenu:
-          process.env.NODE_ENV === 'development'
-            ? [
-                {
-                  label: 'Toggle &Developer Tools',
-                  accelerator: 'Alt+Ctrl+I',
-                  click: () => {
-                    this.mainWindow.toggleDevTools();
-                  }
-                },
-                {
-                  label: 'zcashd info',
-                  click: () => {
-                    this.mainWindow.webContents.send('zcashd');
-                  }
-                }
-              ]
-            : [
-                {
-                  label: 'zcashd info',
-                  click: () => {
-                    this.mainWindow.webContents.send('zcashd');
-                  }
-                }
-              ]
+        submenu: [
+          {
+            label: 'Toggle &Developer Tools',
+            accelerator: 'Alt+Ctrl+I',
+            click: () => {
+              this.mainWindow.toggleDevTools();
+            }
+          },
+          {
+            label: 'Connect Mobile App',
+            click: () => {
+              this.mainWindow.webContents.send('connectmobile');
+            }
+          },
+          {
+            label: 'zcashd info',
+            click: () => {
+              this.mainWindow.webContents.send('zcashd');
+            }
+          }
+        ]
       },
       {
         label: 'Help',
