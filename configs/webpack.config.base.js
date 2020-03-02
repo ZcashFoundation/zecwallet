@@ -35,7 +35,10 @@ export default {
    */
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
-    modules: [path.join(__dirname, '..', 'app'), 'node_modules']
+    modules: [path.join(__dirname, '..', 'app'), 'node_modules'],
+    alias: {
+      ws: path.resolve(path.join(__dirname, '..', 'node_modules/ws/index.js'))
+    }
   },
 
   plugins: [

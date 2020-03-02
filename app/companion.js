@@ -1,14 +1,14 @@
 /* eslint-disable flowtype/no-weak-types */
 /* eslint-disable max-classes-per-file */
+/* eslint-disable class-methods-use-this */
+
 import hex from 'hex-string';
 import _sodium from 'libsodium-wrappers';
 import Store from 'electron-store';
 import { sha256 } from 'js-sha256';
+import WebSocket from 'ws';
 import AppState, { ConnectedCompanionApp } from './components/AppState';
 import Utils from './utils/utils';
-
-/* eslint-disable class-methods-use-this */
-const WebSocket = window.require('ws');
 
 // Wormhole code is sha256(sha256(secret_key))
 function getWormholeCode(keyHex: string, sodium: any): string {
@@ -63,6 +63,14 @@ class WormholeClient {
 
     this.wss.on('message', data => {
       this.listner.processIncoming(data, this.keyHex, this.wss);
+    });
+
+    this.wss.on('close', (code, reason) => {
+      console.log('Socket closed for ', this.keyHex, code, reason);
+    });
+
+    this.wss.on('error', (ws, err) => {
+      console.log('ws error', err);
     });
   }
 

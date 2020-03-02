@@ -88,7 +88,7 @@ export default class RPC {
   }
 
   setupNextFetch(lastBlockHeight: number) {
-    this.refreshTimerID = setTimeout(() => this.refresh(lastBlockHeight), 20000);
+    this.refreshTimerID = setTimeout(() => this.refresh(lastBlockHeight), 60 * 1000);
   }
 
   static async doRPC(method: string, params: [], rpcConfig: RPCConfig) {
