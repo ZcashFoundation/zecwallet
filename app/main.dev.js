@@ -11,15 +11,12 @@
  * @flow
  */
 import { app, shell, BrowserWindow, ipcMain } from 'electron';
-import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 
 export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
-    autoUpdater.logger = log;
-    // autoUpdater.checkForUpdatesAndNotify();
   }
 }
 
@@ -99,17 +96,15 @@ const createWindow = async () => {
 
     // If we're already waiting for close, then don't allow another close event to actually close the window
     if (waitingForClose) {
-      console.log('waiting for close, so not closing');
+      console.log('Waiting for close... Timeout in 10s');
       event.preventDefault();
       return;
     }
 
-    console.log('setting waiting for close to true');
     waitingForClose = true;
     event.preventDefault();
 
     ipcMain.on('appquitdone', () => {
-      console.log('received appquitdone, so doing quit');
       waitingForClose = false;
       proceedToClose = true;
       app.quit();
@@ -117,13 +112,12 @@ const createWindow = async () => {
 
     // $FlowFixMe
     mainWindow.webContents.send('appquitting');
-    console.log('send app quit to renderer');
 
     // Failsafe, timeout after 10 seconds
     setTimeout(() => {
       waitingForClose = false;
       proceedToClose = true;
-      console.log('timeout, quitting');
+      console.log('Timeout, quitting');
 
       app.quit();
     }, 10 * 1000);
