@@ -238,13 +238,13 @@ export default class MenuBuilder {
       {
         label: '&View',
         submenu: [
-          {
-            label: 'Toggle &Developer Tools',
-            accelerator: 'Alt+Ctrl+I',
-            click: () => {
-              this.mainWindow.toggleDevTools();
-            }
-          },
+          // {
+          //   label: 'Toggle &Developer Tools',
+          //   accelerator: 'Alt+Ctrl+I',
+          //   click: () => {
+          //     this.mainWindow.toggleDevTools();
+          //   }
+          // },
           {
             label: 'Connect Mobile App',
             click: () => {
