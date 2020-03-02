@@ -53,7 +53,6 @@ class WormholeClient {
 
       // No encryption for the register call
       this.wss.send(JSON.stringify(reg));
-      console.log('registering', reg);
 
       // Now, do a ping every 4 minutes to keep the connection alive.
       this.keepAliveTimerID = setInterval(() => {
@@ -121,7 +120,19 @@ export default class CompanionAppListener {
       this.permWormholeClient = new WormholeClient(permKeyHex, this.sodium, this);
     }
 
-    // this.wss = new WebSocket.Server({ port: 7070 });
+    // At startup, set the last client name/time by loading it
+    const store = new Store();
+    const name = store.get('companion/name');
+    const lastSeen = store.get('companion/lastseen');
+    console.log('last seen', name, lastSeen);
+
+    if (name && lastSeen) {
+      const o = new ConnectedCompanionApp();
+      o.name = name;
+      o.lastSeen = lastSeen;
+
+      this.fnUpdateConnectedClient(o);
+    }
   }
 
   createTmpClient(keyHex: string) {
@@ -219,18 +230,17 @@ export default class CompanionAppListener {
     store.set('companion/name', name);
 
     if (name) {
+      const now = Date.now();
+      store.set('companion/lastseen', now);
+
       const o = new ConnectedCompanionApp();
       o.name = name;
+      o.lastSeen = now;
 
       this.fnUpdateConnectedClient(o);
     } else {
       this.fnUpdateConnectedClient(null);
     }
-  }
-
-  getLastClientName(): string {
-    const store = new Store();
-    return store.get('companion/name');
   }
 
   disconnectLastClient() {

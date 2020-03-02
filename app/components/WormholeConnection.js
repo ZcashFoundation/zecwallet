@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import QRCode from 'qrcode.react';
+import dateformat from 'dateformat';
 import cstyles from './Common.css';
 import styles from './WormholeConnection.css';
 import CompanionAppListener from '../companion';
@@ -46,6 +47,18 @@ export default class WormholeConnection extends PureComponent<Props, State> {
     const { tempKeyHex } = this.state;
     const { connectedCompanionApp } = this.props;
 
+    const clientName = (connectedCompanionApp && connectedCompanionApp.name) || null;
+    const lastSeen = (connectedCompanionApp && connectedCompanionApp.lastSeen) || null;
+
+    let datePart = null;
+    let timePart = null;
+
+    if (lastSeen) {
+      const txDate = new Date(lastSeen);
+      datePart = dateformat(txDate, 'mmm dd, yyyy');
+      timePart = dateformat(txDate, 'hh:MM tt');
+    }
+
     const connStr = `ws://127.0.0.1:7070,${tempKeyHex},1`;
 
     return (
@@ -63,10 +76,22 @@ export default class WormholeConnection extends PureComponent<Props, State> {
 
         <div className={styles.appinfocontainer}>
           <div className={styles.appinfo}>
-            {connectedCompanionApp && connectedCompanionApp.name && (
+            {clientName && (
               <div>
-                <div>
-                  <span className={cstyles.sublight}>Current App Connected:</span> {connectedCompanionApp.name}
+                <div className={cstyles.flexspacebetween}>
+                  <div style={{ flex: 1 }} className={cstyles.sublight}>
+                    Current App Connected:
+                  </div>
+                  <div style={{ flex: 1 }}>{clientName}</div>
+                </div>
+
+                <div style={{ display: 'flex' }}>
+                  <div style={{ flex: 1 }} className={cstyles.sublight}>
+                    Last Seen:
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    {datePart} {timePart}
+                  </div>
                 </div>
                 <div className={cstyles.margintoplarge}>
                   <button type="button" className={cstyles.primarybutton} onClick={this.disconnectCurrentMobile}>
@@ -76,7 +101,7 @@ export default class WormholeConnection extends PureComponent<Props, State> {
               </div>
             )}
 
-            {(!connectedCompanionApp || !connectedCompanionApp.name) && <div>No Companion App Connected</div>}
+            {!clientName && <div>No Companion App Connected</div>}
           </div>
         </div>
       </div>
