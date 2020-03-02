@@ -4,7 +4,7 @@ import hex from 'hex-string';
 import _sodium from 'libsodium-wrappers';
 import Store from 'electron-store';
 import { sha256 } from 'js-sha256';
-import AppState from './components/AppState';
+import AppState, { ConnectedCompanionApp } from './components/AppState';
 import Utils from './utils/utils';
 
 /* eslint-disable class-methods-use-this */
@@ -53,6 +53,7 @@ class WormholeClient {
 
       // No encryption for the register call
       this.wss.send(JSON.stringify(reg));
+      console.log('registering', reg);
 
       // Now, do a ping every 4 minutes to keep the connection alive.
       this.keepAliveTimerID = setInterval(() => {
@@ -94,13 +95,20 @@ export default class CompanionAppListener {
 
   fnSendTransaction: ([], (string, string) => void) => void = null;
 
+  fnUpdateConnectedClient: (string, number) => void = null;
+
   permWormholeClient: WormholeClient = null;
 
   tmpWormholeClient: WormholeClient = null;
 
-  constructor(fnGetSate: () => AppState, fnSendTransaction: ([], (string, string) => void) => void) {
+  constructor(
+    fnGetSate: () => AppState,
+    fnSendTransaction: ([], (string, string) => void) => void,
+    fnUpdateConnectedClient: (string, number) => void
+  ) {
     this.fnGetState = fnGetSate;
     this.fnSendTransaction = fnSendTransaction;
+    this.fnUpdateConnectedClient = fnUpdateConnectedClient;
   }
 
   async setUp() {
@@ -209,11 +217,30 @@ export default class CompanionAppListener {
     // Save the last client name
     const store = new Store();
     store.set('companion/name', name);
+
+    if (name) {
+      const o = new ConnectedCompanionApp();
+      o.name = name;
+
+      this.fnUpdateConnectedClient(o);
+    } else {
+      this.fnUpdateConnectedClient(null);
+    }
   }
 
   getLastClientName(): string {
     const store = new Store();
     return store.get('companion/name');
+  }
+
+  disconnectLastClient() {
+    // Remove the permanant connection
+    if (this.permWormholeClient) {
+      this.permWormholeClient.close();
+    }
+
+    this.saveLastClientName(null);
+    this.setEncKey(null);
   }
 
   getLocalNonce(): string {
@@ -231,7 +258,6 @@ export default class CompanionAppListener {
     return nonceHex;
   }
 
-  // ws://192.168.11.105,53ed6161c3e3b21bfdb3e6733334fb158850a0ddc8517164c671437d12b20a54,1
   encryptOutgoing(str: string, keyHex: string): string {
     if (!keyHex) {
       console.log('No secret key');

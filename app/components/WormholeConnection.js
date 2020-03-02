@@ -3,9 +3,11 @@ import QRCode from 'qrcode.react';
 import cstyles from './Common.css';
 import styles from './WormholeConnection.css';
 import CompanionAppListener from '../companion';
+import { ConnectedCompanionApp } from './AppState';
 
 type Props = {
-  companionAppListener: CompanionAppListener
+  companionAppListener: CompanionAppListener,
+  connectedCompanionApp: ConnectedCompanionApp | null
 };
 
 type State = {
@@ -35,12 +37,16 @@ export default class WormholeConnection extends PureComponent<Props, State> {
     companionAppListener.closeTmpClient();
   }
 
-  render() {
+  disconnectCurrentMobile = () => {
     const { companionAppListener } = this.props;
+    companionAppListener.disconnectLastClient();
+  };
+
+  render() {
     const { tempKeyHex } = this.state;
+    const { connectedCompanionApp } = this.props;
 
     const connStr = `ws://127.0.0.1:7070,${tempKeyHex},1`;
-    const clientName = companionAppListener.getLastClientName();
 
     return (
       <div>
@@ -52,12 +58,25 @@ export default class WormholeConnection extends PureComponent<Props, State> {
           <div className={[cstyles.center, cstyles.margintoplarge].join(' ')}>
             <QRCode value={connStr} size={256} className={styles.wormholeqr} />
           </div>
-          <div className={[cstyles.sublight, cstyles.margintoplarge].join(' ')}>{connStr}</div>
+          <div className={[cstyles.sublight, cstyles.margintoplarge, cstyles.small].join(' ')}>{connStr}</div>
         </div>
 
         <div className={styles.appinfocontainer}>
           <div className={styles.appinfo}>
-            <span className={cstyles.sublight}>Current App Connected:</span> {clientName}
+            {connectedCompanionApp && connectedCompanionApp.name && (
+              <div>
+                <div>
+                  <span className={cstyles.sublight}>Current App Connected:</span> {connectedCompanionApp.name}
+                </div>
+                <div className={cstyles.margintoplarge}>
+                  <button type="button" className={cstyles.primarybutton} onClick={this.disconnectCurrentMobile}>
+                    Disconnect
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {(!connectedCompanionApp || !connectedCompanionApp.name) && <div>No Companion App Connected</div>}
           </div>
         </div>
       </div>

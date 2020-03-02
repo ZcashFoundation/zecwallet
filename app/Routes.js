@@ -56,7 +56,8 @@ export default class RouteApp extends React.Component<Props, AppState> {
       rpcConfig: new RPCConfig(),
       info: new Info(),
       location: null,
-      errorModalData: new ErrorModalData()
+      errorModalData: new ErrorModalData(),
+      connectedCompanionApp: null
     };
 
     // Create the initial ToAddr box
@@ -89,7 +90,11 @@ export default class RouteApp extends React.Component<Props, AppState> {
     })();
 
     // Setup the websocket for the companion app
-    this.companionAppListener = new CompanionAppListener(this.getFullState, this.sendTransaction);
+    this.companionAppListener = new CompanionAppListener(
+      this.getFullState,
+      this.sendTransaction,
+      this.updateConnectedCompanionApp
+    );
     this.companionAppListener.setUp();
   }
 
@@ -331,6 +336,10 @@ export default class RouteApp extends React.Component<Props, AppState> {
     this.setState({ receivePageState: newReceivePageState });
   };
 
+  updateConnectedCompanionApp = (connectedCompanionApp: ConnectedCompanionApp | null) => {
+    this.setState({ connectedCompanionApp });
+  };
+
   doRefresh = () => {
     this.rpc.refresh();
   };
@@ -346,7 +355,8 @@ export default class RouteApp extends React.Component<Props, AppState> {
       sendPageState,
       receivePageState,
       info,
-      errorModalData
+      errorModalData,
+      connectedCompanionApp
     } = this.state;
 
     const standardProps = {
@@ -436,7 +446,12 @@ export default class RouteApp extends React.Component<Props, AppState> {
 
               <Route
                 path={routes.CONNECTMOBILE}
-                render={() => <WormholeConnection companionAppListener={this.companionAppListener} />}
+                render={() => (
+                  <WormholeConnection
+                    companionAppListener={this.companionAppListener}
+                    connectedCompanionApp={connectedCompanionApp}
+                  />
+                )}
               />
 
               <Route
