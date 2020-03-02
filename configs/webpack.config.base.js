@@ -7,7 +7,7 @@ import webpack from 'webpack';
 import { dependencies as externals } from '../app/package.json';
 
 export default {
-  externals: [...Object.keys(externals || {})],
+  externals: [...Object.keys(externals || {}), 'bufferutil', 'utf-8-validate'],
 
   module: {
     rules: [
