@@ -439,7 +439,14 @@ export default class RouteApp extends React.Component<Props, AppState> {
               />
               <Route
                 path={routes.TRANSACTIONS}
-                render={() => <Transactions transactions={transactions} info={info} addressBook={addressBook} />}
+                render={() => (
+                  <Transactions
+                    transactions={transactions}
+                    info={info}
+                    addressBook={addressBook}
+                    setSendTo={this.setSendTo}
+                  />
+                )}
               />
 
               <Route path={routes.ZCASHD} render={() => <Zcashd info={info} refresh={this.doRefresh} />} />

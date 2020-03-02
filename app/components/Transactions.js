@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import Modal from 'react-modal';
 import dateformat from 'dateformat';
 import { shell } from 'electron';
+import { withRouter } from 'react-router';
 import { BalanceBlockHighlight } from './Dashboard';
 import styles from './Transactions.css';
 import cstyles from './Common.css';
@@ -12,8 +13,9 @@ import { Transaction, Info } from './AppState';
 import ScrollPane from './ScrollPane';
 import Utils from '../utils/utils';
 import AddressBook from './Addressbook';
+import routes from '../constants/routes.json';
 
-const TxModal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice }) => {
+const TxModalInternal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice, setSendTo, history }) => {
   let txid = '';
   let type = '';
   let typeIcon = '';
@@ -49,6 +51,13 @@ const TxModal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice }) => {
     } else {
       shell.openExternal(`https://zcha.in/transactions/${txid}`);
     }
+  };
+
+  const doReply = (address: string) => {
+    setSendTo(address, 0.0001, null);
+    closeModal();
+
+    history.push(routes.SEND);
   };
 
   return (
@@ -114,6 +123,17 @@ const TxModal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice }) => {
             address = '(Shielded)';
           }
 
+          let replyTo = null;
+          if (tx.type === 'receive' && memo) {
+            const split = memo.split(/[ :\n\r\t]+/);
+            console.log(split);
+            if (split && split.length > 0 && Utils.isSapling(split[split.length - 1])) {
+              replyTo = split[split.length - 1];
+            }
+          }
+
+          console.log('replyto is', replyTo);
+
           return (
             <div key={address} className={cstyles.verticalflex}>
               <div className={[cstyles.sublight].join(' ')}>Address</div>
@@ -134,7 +154,14 @@ const TxModal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice }) => {
               {memo && (
                 <div>
                   <div className={[cstyles.sublight].join(' ')}>Memo</div>
-                  <div>{memo}</div>
+                  <div className={[cstyles.flexspacebetween].join(' ')}>
+                    <div>{memo}</div>
+                    {replyTo && (
+                      <div className={cstyles.primarybutton} onClick={() => doReply(replyTo)}>
+                        Reply
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -152,6 +179,8 @@ const TxModal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice }) => {
     </Modal>
   );
 };
+
+const TxModal = withRouter(TxModalInternal);
 
 const TxItemBlock = ({ transaction, currencyName, zecPrice, txClicked, addressBookMap }) => {
   const txDate = new Date(transaction.time * 1000);
@@ -216,7 +245,8 @@ const TxItemBlock = ({ transaction, currencyName, zecPrice, txClicked, addressBo
 type Props = {
   transactions: Transaction[],
   addressBook: AddressBook[],
-  info: Info
+  info: Info,
+  setSendTo: (string, number | null, string | null) => void
 };
 
 type State = {
@@ -242,7 +272,7 @@ export default class Transactions extends Component<Props, State> {
   };
 
   render() {
-    const { transactions, info, addressBook } = this.props;
+    const { transactions, info, addressBook, setSendTo } = this.props;
     const { clickedTx, modalIsOpen } = this.state;
 
     const addressBookMap = addressBook.reduce((map, obj) => {
@@ -285,6 +315,7 @@ export default class Transactions extends Component<Props, State> {
           closeModal={this.closeModal}
           currencyName={info.currencyName}
           zecPrice={info.zecPrice}
+          setSendTo={setSendTo}
         />
       </div>
     );
