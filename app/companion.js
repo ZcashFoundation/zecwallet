@@ -3,9 +3,8 @@
 /* eslint-disable class-methods-use-this */
 
 import hex from 'hex-string';
-import _sodium from 'libsodium-wrappers';
+import _sodium from 'libsodium-wrappers-sumo';
 import Store from 'electron-store';
-import { sha256 } from 'js-sha256';
 import WebSocket from 'ws';
 import AppState, { ConnectedCompanionApp } from './components/AppState';
 import Utils from './utils/utils';
@@ -14,8 +13,8 @@ import Utils from './utils/utils';
 function getWormholeCode(keyHex: string, sodium: any): string {
   const key = sodium.from_hex(keyHex);
 
-  const pass1 = sha256.array(key);
-  const pass2 = sha256.hex(pass1);
+  const pass1 = sodium.crypto_hash_sha256(key);
+  const pass2 = sodium.to_hex(sodium.crypto_hash_sha256(pass1));
 
   return pass2;
 }
