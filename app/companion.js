@@ -187,12 +187,31 @@ export default class CompanionAppListener {
       return;
     }
 
-    const cmd = JSON.parse(this.decryptIncoming(data, keyHex));
+    let cmd;
 
     // If decryption passes and this is a tmp wormhole client, then set it as the permanant client
     if (this.tmpWormholeClient && keyHex === this.tmpWormholeClient.getKeyHex()) {
+      const { decrypted, nonce } = this.decryptIncoming(data, keyHex, false);
+      if (!decrypted) {
+        console.log('Decryption failed');
+        return;
+      }
+      cmd = JSON.parse(decrypted);
+
       // Replace the permanant client
       this.replacePermClientWithTmp();
+
+      this.updateRemoteNonce(nonce);
+    } else {
+      const { decrypted, nonce } = this.decryptIncoming(data, keyHex, true);
+      if (!decrypted) {
+        console.log('Decryption failed');
+        return;
+      }
+
+      cmd = JSON.parse(decrypted);
+
+      this.updateRemoteNonce(nonce);
     }
 
     if (cmd.command === 'getInfo') {
@@ -257,6 +276,20 @@ export default class CompanionAppListener {
     this.setEncKey(null);
   }
 
+  getRemoteNonce(): string {
+    const store = new Store();
+    const nonceHex = store.get('companion/remotenonce');
+
+    return nonceHex;
+  }
+
+  updateRemoteNonce(nonce: string) {
+    if (nonce) {
+      const store = new Store();
+      store.set('companion/remotenonce', nonce);
+    }
+  }
+
   getLocalNonce(): string {
     // Get the nonce. Increment and store the nonce for next use
     const store = new Store();
@@ -295,7 +328,7 @@ export default class CompanionAppListener {
     return JSON.stringify(resp);
   }
 
-  decryptIncoming(msg: string, keyHex: string): string {
+  decryptIncoming(msg: string, keyHex: string, checkNonce: boolean): any {
     const msgJson = JSON.parse(msg);
 
     if (!keyHex) {
@@ -304,14 +337,20 @@ export default class CompanionAppListener {
     }
 
     const key = this.sodium.from_hex(keyHex);
-
-    // TODO: Check to see nonce has not been reused
     const nonce = this.sodium.from_hex(msgJson.nonce);
+
+    if (checkNonce) {
+      const prevNonce = this.sodium.from_hex(this.getRemoteNonce());
+      if (prevNonce && this.sodium.compare(prevNonce, nonce) > 0) {
+        return { decrypted: null };
+      }
+    }
+
     const cipherText = this.sodium.from_hex(msgJson.payload);
 
     const decrypted = this.sodium.to_string(this.sodium.crypto_secretbox_open_easy(cipherText, nonce, key));
 
-    return decrypted;
+    return { decrypted, nonce: msgJson.nonce };
   }
 
   doGetInfo(cmd: any): string {
