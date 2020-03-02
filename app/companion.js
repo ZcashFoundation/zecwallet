@@ -58,13 +58,10 @@ class WormholeClient {
       this.keepAliveTimerID = setInterval(() => {
         const ping = { ping: 'ping' };
         this.wss.send(JSON.stringify(ping));
-
-        console.log('sending ping');
       }, 4 * 60 * 1000);
     });
 
     this.wss.on('message', data => {
-      console.log('Receiving data via wormhole', data);
       this.listner.processIncoming(data, this.keyHex, this.wss);
     });
   }
@@ -124,7 +121,6 @@ export default class CompanionAppListener {
     const store = new Store();
     const name = store.get('companion/name');
     const lastSeen = store.get('companion/lastseen');
-    console.log('last seen', name, lastSeen);
 
     if (name && lastSeen) {
       const o = new ConnectedCompanionApp();
