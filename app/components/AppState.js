@@ -141,6 +141,12 @@ export class Info {
   disconnected: boolean;
 }
 
+export class ConnectedCompanionApp {
+  name: string;
+
+  lastSeen: number;
+}
+
 // eslint-disable-next-line max-classes-per-file
 export default class AppState {
   // The total confirmed and unconfirmed balance in this wallet
@@ -175,4 +181,7 @@ export default class AppState {
 
   // getinfo and getblockchaininfo result
   info: Info;
+
+  // The last seen connected companion app
+  connectedCompanionApp: ConnectedCompanionApp;
 }

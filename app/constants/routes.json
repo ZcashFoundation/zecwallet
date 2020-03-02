@@ -6,5 +6,6 @@
   "ADDRESSBOOK": "/addressbook",
   "TRANSACTIONS": "/transactions",
   "SETTINGS": "/settings",
-  "ZCASHD": "/zcashd"
+  "ZCASHD": "/zcashd",
+  "CONNECTMOBILE": "/connectmobile"
 }

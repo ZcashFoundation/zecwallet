@@ -31,11 +31,15 @@ import AddressBook from './components/Addressbook';
 import AddressbookImpl from './utils/AddressbookImpl';
 import Sidebar from './components/Sidebar';
 import Transactions from './components/Transactions';
+import CompanionAppListener from './companion';
+import WormholeConnection from './components/WormholeConnection';
 
 type Props = {};
 
 export default class RouteApp extends React.Component<Props, AppState> {
   rpc: RPC;
+
+  companionAppListener: CompanionAppListener;
 
   constructor(props) {
     super(props);
@@ -52,7 +56,8 @@ export default class RouteApp extends React.Component<Props, AppState> {
       rpcConfig: new RPCConfig(),
       info: new Info(),
       location: null,
-      errorModalData: new ErrorModalData()
+      errorModalData: new ErrorModalData(),
+      connectedCompanionApp: null
     };
 
     // Create the initial ToAddr box
@@ -83,9 +88,21 @@ export default class RouteApp extends React.Component<Props, AppState> {
         this.setState({ addressBook });
       }
     })();
+
+    // Setup the websocket for the companion app
+    this.companionAppListener = new CompanionAppListener(
+      this.getFullState,
+      this.sendTransaction,
+      this.updateConnectedCompanionApp
+    );
+    this.companionAppListener.setUp();
   }
 
   componentWillUnmount() {}
+
+  getFullState = (): AppState => {
+    return this.state;
+  };
 
   openErrorModal = (title: string, body: string) => {
     const errorModalData = new ErrorModalData();
@@ -258,8 +275,12 @@ export default class RouteApp extends React.Component<Props, AppState> {
   };
 
   sendTransaction = async (sendJson: [], fnOpenSendErrorModal: (string, string) => void) => {
-    const success = await this.rpc.sendTransaction(sendJson, fnOpenSendErrorModal);
-    return success;
+    try {
+      const success = await this.rpc.sendTransaction(sendJson, fnOpenSendErrorModal);
+      return success;
+    } catch (err) {
+      console.log('route sendtx error', err);
+    }
   };
 
   // Get a single private key for this address, and return it as a string.
@@ -315,6 +336,10 @@ export default class RouteApp extends React.Component<Props, AppState> {
     this.setState({ receivePageState: newReceivePageState });
   };
 
+  updateConnectedCompanionApp = (connectedCompanionApp: ConnectedCompanionApp | null) => {
+    this.setState({ connectedCompanionApp });
+  };
+
   doRefresh = () => {
     this.rpc.refresh();
   };
@@ -330,7 +355,8 @@ export default class RouteApp extends React.Component<Props, AppState> {
       sendPageState,
       receivePageState,
       info,
-      errorModalData
+      errorModalData,
+      connectedCompanionApp
     } = this.state;
 
     const standardProps = {
@@ -415,7 +441,19 @@ export default class RouteApp extends React.Component<Props, AppState> {
                 path={routes.TRANSACTIONS}
                 render={() => <Transactions transactions={transactions} info={info} addressBook={addressBook} />}
               />
+
               <Route path={routes.ZCASHD} render={() => <Zcashd info={info} refresh={this.doRefresh} />} />
+
+              <Route
+                path={routes.CONNECTMOBILE}
+                render={() => (
+                  <WormholeConnection
+                    companionAppListener={this.companionAppListener}
+                    connectedCompanionApp={connectedCompanionApp}
+                  />
+                )}
+              />
+
               <Route
                 path={routes.LOADING}
                 render={() => <LoadingScreen setRPCConfig={this.setRPCConfig} setInfo={this.setInfo} />}
