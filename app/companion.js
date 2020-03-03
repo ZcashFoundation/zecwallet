@@ -159,9 +159,14 @@ export default class CompanionAppListener {
       this.permWormholeClient.close();
     }
 
+    // Replace the stored code with the new one
     this.permWormholeClient = this.tmpWormholeClient;
     this.tmpWormholeClient = null;
     this.setEncKey(this.permWormholeClient.getKeyHex());
+
+    // Reset local nonce
+    const store = new Store();
+    store.delete('companion/localnonce');
   }
 
   processIncoming(data: string, keyHex: string, ws: Websocket) {
@@ -298,7 +303,7 @@ export default class CompanionAppListener {
   getLocalNonce(): string {
     // Get the nonce. Increment and store the nonce for next use
     const store = new Store();
-    const nonceHex = store.get('companion/localnonce', '00'.repeat(this.sodium.crypto_secretbox_NONCEBYTES));
+    const nonceHex = store.get('companion/localnonce', `01${'00'.repeat(this.sodium.crypto_secretbox_NONCEBYTES - 1)}`);
 
     // Increment nonce
     const newNonce = this.sodium.from_hex(nonceHex);
@@ -335,6 +340,7 @@ export default class CompanionAppListener {
 
   decryptIncoming(msg: string, keyHex: string, checkNonce: boolean): any {
     const msgJson = JSON.parse(msg);
+    console.log('trying to decrypt', msgJson);
 
     if (!keyHex) {
       console.log('No secret key');
@@ -383,7 +389,7 @@ export default class CompanionAppListener {
       maxzspendable,
       tokenName,
       zecprice,
-      serverversion: '0.9.4'
+      serverversion: '0.9.5'
     };
 
     return JSON.stringify(resp);
