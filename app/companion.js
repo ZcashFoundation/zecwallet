@@ -193,6 +193,9 @@ export default class CompanionAppListener {
       const { decrypted, nonce } = this.decryptIncoming(data, keyHex, false);
       if (!decrypted) {
         console.log('Decryption failed');
+
+        const err = { error: 'Encryption error', to: getWormholeCode(keyHex, this.sodium) };
+        ws.send(JSON.stringify(err));
         return;
       }
       cmd = JSON.parse(decrypted);
@@ -204,6 +207,9 @@ export default class CompanionAppListener {
     } else {
       const { decrypted, nonce } = this.decryptIncoming(data, keyHex, true);
       if (!decrypted) {
+        const err = { error: 'Encryption error', to: getWormholeCode(keyHex, this.sodium) };
+        ws.send(JSON.stringify(err));
+
         console.log('Decryption failed');
         return;
       }
@@ -340,7 +346,7 @@ export default class CompanionAppListener {
 
     if (checkNonce) {
       const prevNonce = this.sodium.from_hex(this.getRemoteNonce());
-      if (prevNonce && this.sodium.compare(prevNonce, nonce) > 0) {
+      if (prevNonce && this.sodium.compare(prevNonce, nonce) >= 0) {
         return { decrypted: null };
       }
     }
