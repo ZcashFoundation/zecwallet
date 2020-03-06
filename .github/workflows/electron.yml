@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-16.04, macOS-latest, windows-latest]
+        os: [ubuntu-16.04, macos-latest, windows-latest]
 
     steps:
       - name: Context
@@ -93,3 +93,54 @@ jobs:
         with:
           name: ${{ matrix.os }}
           path: release/Zecwallet Fullnode ${{ env.VERSION }}.msi
+
+  job_signbinaries:
+    name: Consolidate and sign binaries
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - name: Version
+        run: |
+          ./bin/printversion.sh
+      - name: Download ubuntu
+        uses: actions/download-artifact@v1
+        with:
+          name: ubuntu-16.04
+      - name: Download windows
+        uses: actions/download-artifact@v1
+        with:
+          name: windows-latest
+      - name: Download MacOS
+        uses: actions/download-artifact@v1
+        with:
+          name: macos-latest
+      - name: Get gpg key
+        env:
+          gpgbase64: ${{ secrets.gpgkey }}
+        run: |
+          echo "$gpgbase64" | openssl base64 -d -out gpg.key
+      - name: Import gpg key
+        run: |
+          gpg --allow-secret-key-import --import gpg.key
+          mkdir release
+          cp windows-latest/* release/
+          cp ubuntu-16.04/* release/
+          cp macos-latest/* release/
+      - name: Sign binaries
+        env:
+          APP_VERSION: ${{ env.VERSION }}
+        run: |
+          bin/signbinaries.sh
+          tar -cf artifacts.tar.gz release/signatures*.zip release/Zecwallet*
+      - name: Upload final artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: artifacts
+          path: artifacts.tar.gz
