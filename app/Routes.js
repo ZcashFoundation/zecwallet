@@ -6,7 +6,7 @@ import React from 'react';
 import ReactModal from 'react-modal';
 import { Switch, Route } from 'react-router';
 import { ErrorModal, ErrorModalData } from './components/ErrorModal';
-import cstyles from './components/Common.css';
+import cstyles from './components/Common.module.css';
 import routes from './constants/routes.json';
 import App from './containers/App';
 import Dashboard from './components/Dashboard';

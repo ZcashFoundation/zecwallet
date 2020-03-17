@@ -10,8 +10,8 @@ import {
 } from 'react-accessible-accordion';
 import QRCode from 'qrcode.react';
 import { shell, clipboard } from 'electron';
-import styles from './Receive.css';
-import cstyles from './Common.css';
+import styles from './Receive.module.css';
+import cstyles from './Common.module.css';
 import Utils from '../utils/utils';
 import { AddressBalance, Info, ReceivePageState, AddressBookEntry } from './AppState';
 import ScrollPane from './ScrollPane';
