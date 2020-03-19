@@ -116,6 +116,7 @@ const ToAddrBox = ({
         <div className={[cstyles.flexspacebetween].join(' ')}>
           <input
             type="number"
+            step="any"
             className={cstyles.inputbox}
             value={toaddr.amount}
             onChange={e => updateToField(toaddr.id, null, e, null)}
