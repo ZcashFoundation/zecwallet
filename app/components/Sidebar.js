@@ -1,6 +1,8 @@
+// @flow
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/prop-types */
 import React, { PureComponent } from 'react';
+import type { Element } from 'react';
 import url from 'url';
 import querystring from 'querystring';
 import Modal from 'react-modal';
@@ -8,8 +10,9 @@ import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { ipcRenderer } from 'electron';
 import TextareaAutosize from 'react-textarea-autosize';
-import styles from './Sidebar.css';
-import cstyles from './Common.css';
+import PropTypes from 'prop-types';
+import styles from './Sidebar.module.css';
+import cstyles from './Common.module.css';
 import routes from '../constants/routes.json';
 import Logo from '../assets/img/logobig.png';
 import { Info } from './AppState';
@@ -130,7 +133,9 @@ const PayURIModal = ({
             type="button"
             className={cstyles.primarybutton}
             onClick={() => {
-              actionCallback(modalInput);
+              if (modalInput) {
+                actionCallback(modalInput);
+              }
               closeModal();
             }}
           >
@@ -172,13 +177,14 @@ const SidebarMenuItem = ({ name, routeName, currentRoute, iconname }) => {
 };
 
 type Props = {
+  location: PropTypes.object.isRequired,
   info: Info,
   addresses: string[],
   setSendTo: (address: string, amount: number | null, memo: string | null) => void,
   getPrivKeyAsString: (address: string) => string,
   importPrivKeys: (keys: string[]) => void,
   history: PropTypes.object.isRequired,
-  openErrorModal: (title: string, body: string) => void,
+  openErrorModal: (title: string, body: string | Element<'div'> | Element<'span'>) => void,
   closeErrorModal: () => void
 };
 
@@ -198,7 +204,9 @@ class Sidebar extends PureComponent<Props, State> {
       uriModalIsOpen: false,
       uriModalInputValue: null,
       privKeyModalIsOpen: false,
-      exportPrivKeysModalIsOpen: false
+      exportPrivKeysModalIsOpen: false,
+      exportedPrivKeys: null,
+      privKeyInputValue: null
     };
 
     this.setupMenuHandlers();
@@ -259,7 +267,7 @@ class Sidebar extends PureComponent<Props, State> {
 
     // Import Private Keys
     ipcRenderer.on('import', () => {
-      this.openImportPrivKeyModal();
+      this.openImportPrivKeyModal(null);
     });
 
     // Export all private keys
@@ -329,27 +337,30 @@ class Sidebar extends PureComponent<Props, State> {
   };
 
   doImportPrivKeys = () => {
-    const { importPrivKeys } = this.props;
+    const { importPrivKeys, openErrorModal } = this.props;
     const { privKeyInputValue } = this.state;
 
     // eslint-disable-next-line no-control-regex
-    let keys = privKeyInputValue.split(new RegExp('[\n\r]+'));
-    if (!keys || keys.length === 0) {
-      this.openErrorModal('No Keys Imported', 'No keys were specified, so none were imported');
-      return;
+    if (privKeyInputValue) {
+      // eslint-disable-next-line no-control-regex
+      let keys = privKeyInputValue.split(new RegExp('[\n\r]+'));
+      if (!keys || keys.length === 0) {
+        openErrorModal('No Keys Imported', 'No keys were specified, so none were imported');
+        return;
+      }
+
+      // Filter out empty lines and clean up the private keys
+      keys = keys.filter(k => !(k.trim().startsWith('#') || k.trim().length === 0));
+
+      // Special case.
+      // Sometimes, when importing from a paperwallet or such, the key is split by newlines, and might have
+      // been pasted like that. So check to see if the whole thing is one big private key
+      if (Utils.isValidSaplingPrivateKey(keys.join(''))) {
+        keys = [keys.join('')];
+      }
+
+      importPrivKeys(keys);
     }
-
-    // Filter out empty lines and clean up the private keys
-    keys = keys.filter(k => !(k.trim().startsWith('#') || k.trim().length === 0));
-
-    // Special case.
-    // Sometimes, when importing from a paperwallet or such, the key is split by newlines, and might have
-    // been pasted like that. So check to see if the whole thing is one big private key
-    if (Utils.isValidSaplingPrivateKey(keys.join(''))) {
-      keys = [keys.join('')];
-    }
-
-    importPrivKeys(keys);
   };
 
   setURIInputValue = (uriModalInputValue: string) => {
@@ -519,4 +530,5 @@ class Sidebar extends PureComponent<Props, State> {
   }
 }
 
+// $FlowFixMe
 export default withRouter(Sidebar);

@@ -11,8 +11,8 @@ import {
   AccordionItemPanel,
   Accordion
 } from 'react-accessible-accordion';
-import styles from './Dashboard.css';
-import cstyles from './Common.css';
+import styles from './Dashboard.module.css';
+import cstyles from './Common.module.css';
 import { TotalBalance, Info, AddressBalance } from './AppState';
 import Utils from '../utils/utils';
 import ScrollPane from './ScrollPane';

@@ -455,7 +455,7 @@ export default class RPC {
 
     try {
       const response = await new Promise((resolve, reject) => {
-        axios('https://api.coinmarketcap.com/v1/ticker/', {
+        axios('https://api.coincap.io/v2/rates/zcash', {
           method: 'GET'
         })
           .then(r => resolve(r.data))
@@ -464,9 +464,9 @@ export default class RPC {
           });
       });
 
-      const zecData = response.find(i => i.symbol.toUpperCase() === 'ZEC');
+      const zecData = response.data;
       if (zecData) {
-        this.fnSetZecPrice(zecData.price_usd);
+        this.fnSetZecPrice(zecData.rateUsd);
         this.setupNextZecPriceRefresh(0, 1000 * 60 * 60); // Every hour
       } else {
         this.fnSetZecPrice(null);

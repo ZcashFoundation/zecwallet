@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import { Info } from './AppState';
-import cstyles from './Common.css';
-import styles from './Zcashd.css';
+import cstyles from './Common.module.css';
+import styles from './Zcashd.module.css';
 import ScrollPane from './ScrollPane';
 import Heart from '../assets/img/zcashdlogo.gif';
 

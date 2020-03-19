@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import QRCode from 'qrcode.react';
 import dateformat from 'dateformat';
-import cstyles from './Common.css';
-import styles from './WormholeConnection.css';
+import cstyles from './Common.module.css';
+import styles from './WormholeConnection.module.css';
 import CompanionAppListener from '../companion';
 import { ConnectedCompanionApp } from './AppState';
 

@@ -39,10 +39,6 @@ export default class ScrollPane extends Component<Props, PaneState> {
     const { children } = this.props;
     const { height } = this.state;
 
-    return (
-      <div style={{ overflowY: 'auto', overflowX: 'hidden', height }}>
-        {children}
-      </div>
-    );
+    return <div style={{ overflowY: 'auto', overflowX: 'hidden', height }}>{children}</div>;
   }
 }
