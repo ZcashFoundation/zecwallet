@@ -7,8 +7,8 @@ import dateformat from 'dateformat';
 import { shell } from 'electron';
 import { withRouter } from 'react-router';
 import { BalanceBlockHighlight } from './Dashboard';
-import styles from './Transactions.css';
-import cstyles from './Common.css';
+import styles from './Transactions.module.css';
+import cstyles from './Common.module.css';
 import { Transaction, Info } from './AppState';
 import ScrollPane from './ScrollPane';
 import Utils from '../utils/utils';
@@ -126,7 +126,6 @@ const TxModalInternal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice, 
           let replyTo = null;
           if (tx.type === 'receive' && memo) {
             const split = memo.split(/[ :\n\r\t]+/);
-            console.log(split);
             if (split && split.length > 0 && Utils.isSapling(split[split.length - 1])) {
               replyTo = split[split.length - 1];
             }

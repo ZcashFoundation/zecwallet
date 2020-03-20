@@ -11,13 +11,15 @@ import Modal from 'react-modal';
 import Select from 'react-select';
 import TextareaAutosize from 'react-textarea-autosize';
 import hex from 'hex-string';
-import styles from './Send.css';
-import cstyles from './Common.css';
+import { withRouter } from 'react-router-dom';
+import styles from './Send.module.css';
+import cstyles from './Common.module.css';
 import { ToAddr, AddressBalance, SendPageState, Info, AddressBookEntry } from './AppState';
 import Utils from '../utils/utils';
 import ScrollPane from './ScrollPane';
 import ArrowUpLight from '../assets/img/arrow_up_dark.png';
 import { ErrorModal } from './ErrorModal';
+import routes from '../constants/routes.json';
 
 type OptionType = {
   value: string,
@@ -83,7 +85,9 @@ const ToAddrBox = ({
       return;
     }
 
-    updateToField(toaddr.id, null, null, `${toaddr.memo}\nReply-To:\n${fromAddress}`);
+    if (fromAddress) {
+      updateToField(toaddr.id, null, null, `${toaddr.memo}\nReply-To:\n${fromAddress}`);
+    }
   };
 
   return (
@@ -116,6 +120,7 @@ const ToAddrBox = ({
         <div className={[cstyles.flexspacebetween].join(' ')}>
           <input
             type="number"
+            step="any"
             className={cstyles.inputbox}
             value={toaddr.amount}
             onChange={e => updateToField(toaddr.id, null, e, null)}
@@ -205,14 +210,16 @@ const ConfirmModalToAddr = ({ toaddr, info }) => {
   );
 };
 
-const ConfirmModal = ({
+// Internal because we're using withRouter just below
+const ConfirmModalInternal = ({
   sendPageState,
   info,
   sendTransaction,
   clearToAddrs,
   closeModal,
   modalIsOpen,
-  openErrorModal
+  openErrorModal,
+  history
 }) => {
   const sendingTotal = sendPageState.toaddrs.reduce((s, t) => parseFloat(s) + parseFloat(t.amount), 0.0) + 0.0001;
   const { bigPart, smallPart } = Utils.splitZecAmountIntoBigSmall(sendingTotal);
@@ -220,6 +227,7 @@ const ConfirmModal = ({
   const sendButton = () => {
     // First, close the confirm modal.
     closeModal();
+
     // This will be replaced by either a success TXID or error message that the user
     // has to close manually.
     openErrorModal('Computing Transaction', 'Please wait...This could take a while');
@@ -239,6 +247,9 @@ const ConfirmModal = ({
       // If the Tx was sent, then clear the addresses
       if (success) {
         clearToAddrs();
+
+        // Redirect to dashboard after
+        history.push(routes.DASHBOARD);
       }
     })();
   };
@@ -309,21 +320,16 @@ const ConfirmModal = ({
   );
 };
 
+const ConfirmModal = withRouter(ConfirmModalInternal);
+
 type Props = {
   addressesWithBalance: AddressBalance[],
-
   addressBook: AddressBookEntry[],
-
   sendPageState: SendPageState,
-
   sendTransaction: (sendJson: [], (string, string) => void) => void,
-
   setSendPageState: (sendPageState: SendPageState) => void,
-
   openErrorModal: (title: string, body: string) => void,
-
   closeErrorModal: () => void,
-
   info: Info
 };
 
