@@ -9,32 +9,49 @@ export default class MenuBuilder {
   }
 
   buildMenu() {
-    if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
-      this.setupDevelopmentEnvironment();
-    }
+    // if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+    //   // this.setupDevelopmentEnvironment();
+    // }
 
     const template = process.platform === 'darwin' ? this.buildDarwinTemplate() : this.buildDefaultTemplate();
 
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
 
-    return menu;
-  }
+    const selectionMenu = Menu.buildFromTemplate([{ role: 'copy' }, { type: 'separator' }, { role: 'selectall' }]);
 
-  setupDevelopmentEnvironment() {
-    this.mainWindow.openDevTools();
+    const inputMenu = Menu.buildFromTemplate([
+      { role: 'undo' },
+      { role: 'redo' },
+      { type: 'separator' },
+      { role: 'cut' },
+      { role: 'copy' },
+      { role: 'paste' },
+      { type: 'separator' },
+      { role: 'selectall' }
+    ]);
+
     this.mainWindow.webContents.on('context-menu', (e, props) => {
-      const { x, y } = props;
+      const { selectionText, isEditable } = props;
+      if (isEditable) {
+        inputMenu.popup(this.mainWindow);
+      } else if (selectionText && selectionText.trim() !== '') {
+        selectionMenu.popup(this.mainWindow);
+      } else if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+        const { x, y } = props;
 
-      Menu.buildFromTemplate([
-        {
-          label: 'Inspect element',
-          click: () => {
-            this.mainWindow.inspectElement(x, y);
+        Menu.buildFromTemplate([
+          {
+            label: 'Inspect element',
+            click: () => {
+              this.mainWindow.inspectElement(x, y);
+            }
           }
-        }
-      ]).popup(this.mainWindow);
+        ]).popup(this.mainWindow);
+      }
     });
+
+    return menu;
   }
 
   buildDarwinTemplate() {
