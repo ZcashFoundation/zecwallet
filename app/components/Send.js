@@ -65,6 +65,7 @@ const ToAddrBox = ({
     amountError = 'Amount cannot be empty';
   }
 
+  let buttonstate;
   if (
     !addressIsValid ||
     amountError ||
@@ -73,10 +74,14 @@ const ToAddrBox = ({
     parseFloat(toaddr.amount) === 0 ||
     fromAmount === 0
   ) {
-    setSendButtonEnable(false);
+    buttonstate = false;
   } else {
-    setSendButtonEnable(true);
+    buttonstate = true;
   }
+
+  setTimeout(() => {
+    setSendButtonEnable(buttonstate);
+  }, 10);
 
   const usdValue = Utils.getZecToUsdString(zecPrice, toaddr.amount);
 
@@ -122,7 +127,7 @@ const ToAddrBox = ({
             type="number"
             step="any"
             className={cstyles.inputbox}
-            value={toaddr.amount}
+            value={isNaN(toaddr.amount) ? '' : toaddr.amount}
             onChange={e => updateToField(toaddr.id, null, e, null)}
           />
           <img
