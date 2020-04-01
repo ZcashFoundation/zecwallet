@@ -19,21 +19,21 @@ export default class ScrollPane extends Component<Props, PaneState> {
 
   componentDidMount() {
     this.updateDimensions();
-    window.addEventListener('resize', this.updateDimensions.bind(this));
+    window.addEventListener('resize', this.updateDimensions);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.updateDimensions.bind(this));
+    window.removeEventListener('resize', this.updateDimensions);
   }
 
   /**
    * Calculate & Update state of height, needed for the scrolling
    */
-  updateDimensions() {
+  updateDimensions = () => {
     // eslint-disable-next-line react/destructuring-assignment
     const updateHeight = window.innerHeight - this.props.offsetHeight;
     this.setState({ height: updateHeight });
-  }
+  };
 
   render() {
     const { children } = this.props;
