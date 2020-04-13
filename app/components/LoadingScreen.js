@@ -208,7 +208,7 @@ class LoadingScreen extends Component<Props, LoadingScreenState> {
       }
 
       this.setState({
-        currentStatus: 'Could not create zcash.conf. This is a bug, please file an issue with Zecwallet'
+        currentStatus: `Could not create zcash.conf at ${zcashLocation}. This is a bug, please file an issue with Zecwallet`
       });
       return;
     }
@@ -217,6 +217,22 @@ class LoadingScreen extends Component<Props, LoadingScreenState> {
     const rpcConfig = new RPCConfig();
     rpcConfig.username = confValues.rpcuser;
     rpcConfig.password = confValues.rpcpassword;
+
+    if (!rpcConfig.username || !rpcConfig.password) {
+      this.setState({
+        currentStatus: (
+          <div>
+            <p>Your zcash.conf is missing a &quot;rpcuser&quot; or &quot;rpcpassword&quot;.</p>
+            <p>
+              Please add a &quot;rpcuser=some_username&quot; and &quot;rpcpassword=some_password&quot; to your
+              zcash.conf to enable RPC access
+            </p>
+            <p>Your zcash.conf is located at {zcashLocation}</p>
+          </div>
+        )
+      });
+      return;
+    }
 
     const isTestnet = (confValues.testnet && confValues.testnet === '1') || false;
     const server = confValues.rpcbind || '127.0.0.1';
