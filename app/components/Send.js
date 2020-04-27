@@ -54,6 +54,9 @@ const ToAddrBox = ({
     if (toaddr.amount > fromAmount) {
       amountError = 'Amount Exceeds Balance';
     }
+    if (toaddr.amount < 10 ** -8) {
+      amountError = 'Amount is too small';
+    }
     const s = toaddr.amount.toString().split('.');
     if (s && s.length > 1 && s[1].length > 8) {
       amountError = 'Too Many Decimals';
@@ -449,13 +452,13 @@ export default class Send extends PureComponent<Props, SendState> {
       .reduce((s, a) => parseFloat(s) + parseFloat(a.amount), 0);
 
     // Add Fee
-    totalOtherAmount += 0.0001;
+    totalOtherAmount += Utils.getDefaultFee();
 
     // Find the correct toAddr
     const toAddr = newToAddrs.find(a => a.id === id);
     toAddr.amount = total - totalOtherAmount;
     if (toAddr.amount < 0) toAddr.amount = 0;
-    toAddr.amount = Utils.maxPrecision(toAddr.amount);
+    toAddr.amount = Utils.maxPrecisionTrimmed(toAddr.amount);
 
     // Create the new state object
     const newState = new SendPageState();

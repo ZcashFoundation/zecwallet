@@ -60,6 +60,9 @@ const TxModalInternal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice, 
     history.push(routes.SEND);
   };
 
+  const totalAmounts = tx && tx.detailedTxns ? tx.detailedTxns.reduce((s, t) => Math.abs(t.amount) + s, 0) : 0;
+  const fees = tx ? Math.abs(tx.amount) - totalAmounts : 0;
+
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -89,6 +92,10 @@ const TxModalInternal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice, 
             <div>
               {datePart} {timePart}
             </div>
+          </div>
+          <div>
+            <div className={[cstyles.sublight].join(' ')}>Fees</div>
+            <div>ZEC {Utils.maxPrecisionTrimmed(fees)}</div>
           </div>
           <div>
             <div className={[cstyles.sublight].join(' ')}>Confirmations</div>
