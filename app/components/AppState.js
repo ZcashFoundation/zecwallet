@@ -59,6 +59,8 @@ export class Transaction {
 
   txid: string;
 
+  index: number;
+
   time: number;
 
   detailedTxns: TxDetail[];

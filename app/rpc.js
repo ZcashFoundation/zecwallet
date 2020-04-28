@@ -310,7 +310,8 @@ export default class RPC {
             address: zaddr,
             txid: incomingTx.txid,
             memo: parseMemo(incomingTx.memo),
-            amount: incomingTx.amount
+            amount: incomingTx.amount,
+            index: incomingTx.outindex
           };
         });
 
@@ -331,6 +332,7 @@ export default class RPC {
         transaction.confirmations = txresponse.result.confirmations;
         transaction.txid = tx.txid;
         transaction.time = txresponse.result.time;
+        transaction.index = tx.index || 0;
         transaction.detailedTxns = [new TxDetail()];
         transaction.detailedTxns[0].address = tx.address;
         transaction.detailedTxns[0].amount = tx.amount;

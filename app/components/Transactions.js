@@ -310,7 +310,7 @@ export default class Transactions extends Component<Props, State> {
           )}
           {transactions &&
             transactions.slice(0, numTxnsToShow).map(t => {
-              const key = t.type + t.txid + t.address;
+              const key = t.type + t.txid + t.address + t.index;
               return (
                 <TxItemBlock
                   key={key}
