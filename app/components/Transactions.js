@@ -60,9 +60,6 @@ const TxModalInternal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice, 
     history.push(routes.SEND);
   };
 
-  const totalAmounts = tx && tx.detailedTxns ? tx.detailedTxns.reduce((s, t) => Math.abs(t.amount) + s, 0) : 0;
-  const fees = tx ? Math.abs(tx.amount) - totalAmounts : 0;
-
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -94,10 +91,10 @@ const TxModalInternal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice, 
             </div>
           </div>
 
-          {type === 'sent' && (
+          {type === 'send' && (
             <div>
               <div className={[cstyles.sublight].join(' ')}>Fees</div>
-              <div>ZEC {Utils.maxPrecisionTrimmed(fees)}</div>
+              <div>ZEC {Utils.maxPrecisionTrimmed(tx.fee)}</div>
             </div>
           )}
 
@@ -141,8 +138,6 @@ const TxModalInternal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice, 
               replyTo = split[split.length - 1];
             }
           }
-
-          console.log('replyto is', replyTo);
 
           return (
             <div key={address} className={cstyles.verticalflex}>

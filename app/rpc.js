@@ -287,6 +287,7 @@ export default class RPC {
       transaction.address = tx.address;
       transaction.type = tx.category;
       transaction.amount = tx.amount;
+      transaction.fee = Math.abs(tx.fee || 0);
       transaction.confirmations = tx.confirmations;
       transaction.txid = tx.txid;
       transaction.time = tx.time;
