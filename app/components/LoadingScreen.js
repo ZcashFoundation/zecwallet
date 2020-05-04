@@ -169,9 +169,9 @@ class LoadingScreen extends Component<Props, LoadingScreenState> {
 
     // Check for the params
     const params = [
-      { name: 'sapling-output.params', url: 'https://z.cash/downloads/sapling-output.params' },
-      { name: 'sapling-spend.params', url: 'https://z.cash/downloads/sapling-spend.params' },
-      { name: 'sprout-groth16.params', url: 'https://z.cash/downloads/sprout-groth16.params' }
+      { name: 'sapling-output.params', url: 'https://params.zecwallet.co/params/sapling-output.params' },
+      { name: 'sapling-spend.params', url: 'https://params.zecwallet.co/params/sapling-spend.params' },
+      { name: 'sprout-groth16.params', url: 'https://params.zecwallet.co/params/sprout-groth16.params' }
     ];
 
     // eslint-disable-next-line no-plusplus
