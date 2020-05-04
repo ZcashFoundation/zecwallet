@@ -99,10 +99,6 @@ const TxModalInternal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice, 
           )}
 
           <div>
-            <div className={[cstyles.sublight].join(' ')}>Fees</div>
-            <div>ZEC {Utils.maxPrecisionTrimmed(fees)}</div>
-          </div>
-          <div>
             <div className={[cstyles.sublight].join(' ')}>Confirmations</div>
             <div>{confirmations}</div>
           </div>
