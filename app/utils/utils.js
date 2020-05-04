@@ -43,6 +43,23 @@ export default class Utils {
     return v.toFixed(8);
   }
 
+  static maxPrecisionTrimmed(v: number): string {
+    let s = Utils.maxPrecision(v);
+    if (!s) {
+      return s;
+    }
+
+    while (s.indexOf('.') >= 0 && s.substr(s.length - 1, 1) === '0') {
+      s = s.substr(0, s.length - 1);
+    }
+
+    if (s.substr(s.length - 1) === '.') {
+      s = s.substr(0, s.length - 1);
+    }
+
+    return s;
+  }
+
   static splitZecAmountIntoBigSmall(zecValue: number) {
     if (!zecValue) {
       return { bigPart: zecValue, smallPart: '' };
@@ -91,6 +108,10 @@ export default class Utils {
   static getNextToAddrID(): number {
     // eslint-disable-next-line no-plusplus
     return Utils.nextToAddrID++;
+  }
+
+  static getDefaultFee(): number {
+    return 0.0001;
   }
 
   static getDonationAddress(testnet: boolean): string {

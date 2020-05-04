@@ -1,9 +1,13 @@
-ZecWallet is a z-Addr first, Sapling compatible wallet and full node for zcashd that runs on Linux, Windows and macOS.
+ZecWallet Fullnode is a z-Addr first, Sapling compatible wallet and full node for zcashd that runs on Linux, Windows and macOS.
 
 ![Screenshot](resources/screenshot1.png?raw=true)
 ![Screenshots](resources/screenshot2.png?raw=true)
 
 # Installation
+
+**Note**: Zecwallet Fullnode will download the entire blockchain (about 26GB), and requires some familiarity with the command line. If you don't want to download the blockchain but prefer a Lite wallet, please check out [Zecwallet Lite](https://www.zecwallet.co).
+
+**Note**: Zecwallet Fullnode will download the entire blockchain (about 26GB), and requires some familiarity with the command line. If you don't want to download the blockchain but prefer a Lite wallet, please check out [Zecwallet Lite](https://www.zecwallet.co).
 
 Head over to the releases page and grab the latest installers or binary. https://github.com/ZcashFoundation/zecwallet/releases
 
@@ -12,13 +16,13 @@ Head over to the releases page and grab the latest installers or binary. https:/
 If you are on Debian/Ubuntu, please download the '.AppImage' package and just run it.
 
 ```
-./Zecwallet.Fullnode-0.9.9.AppImage
+./Zecwallet.Fullnode-0.9.10.AppImage
 ```
 
 If you prefer to install a `.deb` package, that is also available.
 
 ```
-sudo dpkg -i zecwallet_0.9.9_amd64.deb
+sudo dpkg -i zecwallet_0.9.10_amd64.deb
 sudo apt install -f
 ```
 

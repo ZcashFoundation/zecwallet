@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/interactive-supports-focus */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable max-classes-per-file */
 import React, { Component } from 'react';
 import { Redirect, withRouter } from 'react-router';
@@ -7,7 +9,7 @@ import request from 'request';
 import progress from 'progress-stream';
 import os from 'os';
 import path from 'path';
-import { remote, ipcRenderer } from 'electron';
+import { remote, ipcRenderer, shell } from 'electron';
 import { spawn } from 'child_process';
 import { promisify } from 'util';
 import routes from '../constants/routes.json';
@@ -273,7 +275,7 @@ class LoadingScreen extends Component<Props, LoadingScreenState> {
     await fs.promises.writeFile(zcashConfPath, confContent);
 
     this.setState({ creatingZcashConf: false });
-    this.loadZcashConf();
+    this.loadZcashConf(false);
   };
 
   zcashd: ChildProcessWithoutNullStreams | null = null;
@@ -361,7 +363,9 @@ class LoadingScreen extends Component<Props, LoadingScreenState> {
         this.setState({
           currentStatus: (
             <span>
-              Failed to start zcashd. Giving up!
+              Failed to start zcashd. Giving up! Please look at the debug.log file.
+              <br />
+              <span className={cstyles.highlight}>{`${locateZcashConfDir()}/debug.log`}</span>
               <br />
               Please file an issue with Zecwallet
             </span>
@@ -402,8 +406,36 @@ class LoadingScreen extends Component<Props, LoadingScreenState> {
           {creatingZcashConf && (
             <div>
               <div className={cstyles.verticalflex}>
-                <div style={{ marginTop: '100px' }}>
+                <div
+                  className={[cstyles.verticalflex, cstyles.center, cstyles.margintoplarge, cstyles.highlight].join(
+                    ' '
+                  )}
+                >
+                  <div className={[cstyles.xlarge].join(' ')}> Welcome To Zecwallet Fullnode!</div>
+                </div>
+
+                <div className={[cstyles.center, cstyles.margintoplarge].join(' ')}>
                   <img src={zcashdlogo} width="400px" alt="zcashdlogo" />
+                </div>
+
+                <div
+                  className={[cstyles.verticalflex, cstyles.center, cstyles.margintoplarge].join(' ')}
+                  style={{ width: '75%', marginLeft: '15%' }}
+                >
+                  <div>
+                    Zecwallet Fullnode will download the{' '}
+                    <span className={cstyles.highlight}>entire Zcash Blockchain (~28GB)</span>, which might take several
+                    days to sync. If you want to get started immediately, please consider{' '}
+                    <a
+                      className={cstyles.highlight}
+                      style={{ textDecoration: 'underline' }}
+                      role="link"
+                      onClick={() => shell.openExternal('https://www.zecwallet.co')}
+                    >
+                      Zecwallet Lite
+                    </a>
+                    , which can get you started in under a minute.
+                  </div>
                 </div>
 
                 <div className={cstyles.left} style={{ width: '75%', marginLeft: '15%' }}>

@@ -90,6 +90,14 @@ const TxModalInternal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice, 
               {datePart} {timePart}
             </div>
           </div>
+
+          {type === 'send' && (
+            <div>
+              <div className={[cstyles.sublight].join(' ')}>Fees</div>
+              <div>ZEC {Utils.maxPrecisionTrimmed(tx.fee)}</div>
+            </div>
+          )}
+
           <div>
             <div className={[cstyles.sublight].join(' ')}>Confirmations</div>
             <div>{confirmations}</div>
@@ -130,8 +138,6 @@ const TxModalInternal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice, 
               replyTo = split[split.length - 1];
             }
           }
-
-          console.log('replyto is', replyTo);
 
           return (
             <div key={address} className={cstyles.verticalflex}>
@@ -303,7 +309,7 @@ export default class Transactions extends Component<Props, State> {
           )}
           {transactions &&
             transactions.slice(0, numTxnsToShow).map(t => {
-              const key = t.type + t.txid + t.address;
+              const key = t.type + t.txid + t.address + t.index;
               return (
                 <TxItemBlock
                   key={key}
