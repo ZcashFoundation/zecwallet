@@ -384,6 +384,7 @@ export default class RouteApp extends React.Component<Props, AppState> {
                 getPrivKeyAsString={this.getPrivKeyAsString}
                 importPrivKeys={this.importPrivKeys}
                 addresses={addresses}
+                transactions={transactions}
                 {...standardProps}
               />
             </div>
