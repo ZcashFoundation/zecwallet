@@ -301,8 +301,9 @@ class Sidebar extends PureComponent<Props, State> {
 
         const header = [`UnixTime, Date, Txid, Type, Amount, Address, Memo`];
 
-        const err = await fs.promises.writeFile(save.filePath, header.concat(rows).join('\n'));
-        if (err) {
+        try {
+          await fs.promises.writeFile(save.filePath, header.concat(rows).join('\n'));
+        } catch (err) {
           openErrorModal('Error Exporting Transactions', `${err}`);
         }
       }
