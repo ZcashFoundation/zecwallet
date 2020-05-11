@@ -1,3 +1,4 @@
+/* eslint-disable no-else-return */
 // @flow
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/prop-types */
@@ -5,17 +6,19 @@ import React, { PureComponent } from 'react';
 import type { Element } from 'react';
 import url from 'url';
 import querystring from 'querystring';
+import fs from 'fs';
+import dateformat from 'dateformat';
 import Modal from 'react-modal';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 import TextareaAutosize from 'react-textarea-autosize';
 import PropTypes from 'prop-types';
 import styles from './Sidebar.module.css';
 import cstyles from './Common.module.css';
 import routes from '../constants/routes.json';
 import Logo from '../assets/img/logobig.png';
-import { Info } from './AppState';
+import { Info, Transaction } from './AppState';
 import Utils from '../utils/utils';
 
 const ExportPrivKeyModal = ({ modalIsOpen, exportedPrivKeys, closeModal }) => {
@@ -180,6 +183,7 @@ type Props = {
   location: PropTypes.object.isRequired,
   info: Info,
   addresses: string[],
+  transactions: Transaction[],
   setSendTo: (address: string, amount: number | null, memo: string | null) => void,
   getPrivKeyAsString: (address: string) => string,
   importPrivKeys: (keys: string[]) => void,
@@ -268,6 +272,39 @@ class Sidebar extends PureComponent<Props, State> {
     // Import Private Keys
     ipcRenderer.on('import', () => {
       this.openImportPrivKeyModal(null);
+    });
+
+    // Export All Transactions
+    ipcRenderer.on('exportalltx', async () => {
+      const save = await remote.dialog.showSaveDialog({
+        title: 'Save Transactions As CSV',
+        defaultPath: 'zecwallet_transactions.csv',
+        filters: [{ name: 'CSV File', extensions: ['csv'] }],
+        properties: ['showOverwriteConfirmation']
+      });
+
+      if (save.filePath) {
+        // Construct a CSV
+        const { transactions } = this.props;
+        const rows = transactions.flatMap(t => {
+          if (t.detailedTxns) {
+            return t.detailedTxns.map(dt => {
+              const normaldate = dateformat(t.time * 1000, 'mmm dd yyyy hh::MM tt');
+              return `${t.time},"${normaldate}","${t.txid}","${t.type}",${dt.amount},"${dt.address}","${dt.memo ||
+                ''}"`;
+            });
+          } else {
+            return [];
+          }
+        });
+
+        const header = [`UnixTime, Date, Txid, Type, Amount, Address, Memo`];
+
+        const err = await fs.promises.writeFile(save.filePath, header.concat(rows).join('\n'));
+        if (err) {
+          openErrorModal('Error Exporting Transactions', `${err}`);
+        }
+      }
     });
 
     // Export all private keys

@@ -113,6 +113,13 @@ export default class MenuBuilder {
           click: () => {
             mainWindow.webContents.send('exportall');
           }
+        },
+        { type: 'separator' },
+        {
+          label: 'Export All &Transactions',
+          click: () => {
+            mainWindow.webContents.send('exportalltx');
+          }
         }
       ]
     };
@@ -241,6 +248,13 @@ export default class MenuBuilder {
             label: '&Export All Private Keys',
             click: () => {
               mainWindow.webContents.send('exportall');
+            }
+          },
+          { type: 'separator' },
+          {
+            label: 'Export All &Transactions',
+            click: () => {
+              mainWindow.webContents.send('exportalltx');
             }
           },
           {
