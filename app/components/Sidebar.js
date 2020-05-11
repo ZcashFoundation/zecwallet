@@ -290,8 +290,9 @@ class Sidebar extends PureComponent<Props, State> {
           if (t.detailedTxns) {
             return t.detailedTxns.map(dt => {
               const normaldate = dateformat(t.time * 1000, 'mmm dd yyyy hh::MM tt');
-              return `${t.time},"${normaldate}","${t.txid}","${t.type}",${dt.amount},"${dt.address}","${dt.memo ||
-                ''}"`;
+              const escapedMemo = dt.memo ? dt.memo.replace(/"/g, '""') : '';
+
+              return `${t.time},"${normaldate}","${t.txid}","${t.type}",${dt.amount},"${dt.address}","${escapedMemo}"`;
             });
           } else {
             return [];
