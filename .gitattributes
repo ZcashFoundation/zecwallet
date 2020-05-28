@@ -5,5 +5,7 @@
 *.ico binary
 *.icns binary
 zcashd binary
+zcash-cli binary
 zcashd.exe binary
+zcash-cli.exe binary
 

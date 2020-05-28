@@ -226,7 +226,7 @@ class Sidebar extends PureComponent<Props, State> {
       openErrorModal(
         'Zecwallet Fullnode',
         <div className={cstyles.verticalflex}>
-          <div className={cstyles.margintoplarge}>Zecwallet Fullnode v0.9.11</div>
+          <div className={cstyles.margintoplarge}>Zecwallet Fullnode v0.9.12</div>
           <div className={cstyles.margintoplarge}>Built with Electron. Copyright (c) 2018-2020, Aditya Kulkarni.</div>
           <div className={cstyles.margintoplarge}>
             The MIT License (MIT) Copyright (c) 2018-present Zecwallet
@@ -301,8 +301,9 @@ class Sidebar extends PureComponent<Props, State> {
 
         const header = [`UnixTime, Date, Txid, Type, Amount, Address, Memo`];
 
-        const err = await fs.promises.writeFile(save.filePath, header.concat(rows).join('\n'));
-        if (err) {
+        try {
+          await fs.promises.writeFile(save.filePath, header.concat(rows).join('\n'));
+        } catch (err) {
           openErrorModal('Error Exporting Transactions', `${err}`);
         }
       }
