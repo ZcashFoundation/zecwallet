@@ -249,6 +249,19 @@ export default class RPC {
     return response.result;
   }
 
+  async getViewKeyAsString(address: string): string {
+    let method = '';
+    if (Utils.isZaddr(address)) {
+      method = 'z_exportviewingkey';
+    } else {
+      return '';
+    }
+
+    const response = await RPC.doRPC(method, [address], this.rpcConfig);
+
+    return response.result;
+  }
+
   // Fetch all addresses and their associated balances
   async fetchTandZAddressesWithBalances() {
     const zresponse = RPC.doRPC('z_listunspent', [0], this.rpcConfig);
