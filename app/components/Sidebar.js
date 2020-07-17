@@ -91,7 +91,7 @@ const ImportPrivKeyModal = ({ modalIsOpen, modalInput, setModalInput, closeModal
           Import
         </button>
         <button type="button" className={cstyles.primarybutton} onClick={closeModal}>
-          Close
+          Cancel
         </button>
       </div>
     </Modal>
@@ -488,7 +488,7 @@ class Sidebar extends PureComponent<Props, State> {
           actionCallback={this.payURI}
         />
 
-        {/* Payment URI Modal */}
+        {/* Import Private Key Modal */}
         <ImportPrivKeyModal
           modalIsOpen={privKeyModalIsOpen}
           setModalInput={this.setImprovPrivKeyInputValue}
