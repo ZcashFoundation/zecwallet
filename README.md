@@ -20,8 +20,7 @@ If you are on Debian/Ubuntu, please download the '.AppImage' package and just ru
 If you prefer to install a `.deb` package, that is also available.
 
 ```
-sudo dpkg -i zecwallet_0.9.13_amd64.deb
-sudo apt install -f
+sudo apt install -f ./zecwallet_0.9.13_amd64.deb
 ```
 
 ### Windows

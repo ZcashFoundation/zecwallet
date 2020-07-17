@@ -192,6 +192,14 @@ export default class RPC {
       } catch (err) {
         return err;
       }
+    } else if (key.startsWith('zxview')) {
+      try {
+        const r = await RPC.doRPC('z_importviewingkey', [key, rescan ? 'yes' : 'no'], this.rpcConfig);
+        console.log(r.result);
+        return '';
+      } catch (err) {
+        return err;
+      }
     } else {
       try {
         const r = await RPC.doRPC('importprivkey', [key, 'imported', rescan], this.rpcConfig);
@@ -242,6 +250,19 @@ export default class RPC {
       method = 'z_exportkey';
     } else if (Utils.isTransparent(address)) {
       method = 'dumpprivkey';
+    }
+
+    const response = await RPC.doRPC(method, [address], this.rpcConfig);
+
+    return response.result;
+  }
+
+  async getViewKeyAsString(address: string): string {
+    let method = '';
+    if (Utils.isZaddr(address)) {
+      method = 'z_exportviewingkey';
+    } else {
+      return '';
     }
 
     const response = await RPC.doRPC(method, [address], this.rpcConfig);
