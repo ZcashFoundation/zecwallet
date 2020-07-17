@@ -66,7 +66,7 @@ const ImportPrivKeyModal = ({ modalIsOpen, modalInput, setModalInput, closeModal
         </div>
 
         <div className={cstyles.marginbottomlarge}>
-          Please paste your private keys here (transparent address or shielded address), one line per key.
+          Please paste your private or viewing keys here (transparent address or shielded address), one line per key.
         </div>
 
         <div className={cstyles.well} style={{ textAlign: 'center' }}>
