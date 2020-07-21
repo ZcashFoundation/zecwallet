@@ -192,6 +192,14 @@ export default class RPC {
       } catch (err) {
         return err;
       }
+    } else if (key.startsWith('zxview')) {
+      try {
+        const r = await RPC.doRPC('z_importviewingkey', [key, rescan ? 'yes' : 'no'], this.rpcConfig);
+        console.log(r.result);
+        return '';
+      } catch (err) {
+        return err;
+      }
     } else {
       try {
         const r = await RPC.doRPC('importprivkey', [key, 'imported', rescan], this.rpcConfig);
