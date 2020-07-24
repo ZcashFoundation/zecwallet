@@ -282,17 +282,29 @@ class LoadingScreen extends Component<Props, LoadingScreenState> {
 
   setupExitHandler = () => {
     // App is quitting, exit zcashd as well
-    ipcRenderer.on('appquitting', () => {
+    ipcRenderer.on('appquitting', async () => {
       if (this.zcashd) {
         const { history } = this.props;
+        const { rpcConfig } = this.state;
 
-        this.setState({ currentStatus: 'Waiting for zcashd to exit' });
+        this.setState({ currentStatus: 'Waiting for zcashd to exit...' });
         history.push(routes.LOADING);
-        this.zcashd.kill();
-      }
 
-      // And reply that we're all done.
-      ipcRenderer.send('appquitdone');
+        this.zcashd.on('close', () => {
+          ipcRenderer.send('appquitdone');
+        });
+        this.zcashd.on('exit', () => {
+          ipcRenderer.send('appquitdone');
+        });
+
+        console.log('Sending stop');
+        setTimeout(() => {
+          RPC.doRPC('stop', [], rpcConfig);
+        });
+      } else {
+        // And reply that we're all done.
+        ipcRenderer.send('appquitdone');
+      }
     });
   };
 
