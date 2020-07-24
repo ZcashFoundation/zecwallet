@@ -133,6 +133,39 @@ export default class RPC {
       return;
     }
 
+    // Temporary fix for zcashd stalls at 903001 issue (https://github.com/zcash/zcash/issues/4620)
+    if (latestBlockHeight === 903001) {
+      console.log('Looks like stalled');
+      // If it is stalled at this height after 5 seconds, we will do invalidate / reconsider
+      setTimeout(async () => {
+        const newHeight = await this.fetchInfo();
+        if (!newHeight === 903001) {
+          return;
+        }
+
+        console.log('Confirmed stalled');
+        // First, clear the banned peers
+        await RPC.doRPC('clearbanned', [], this.rpcConfig);
+        // Then invalidate block
+        await RPC.doRPC(
+          'invalidateblock',
+          ['00000000006e4d348d0addad1b43ae09744f9c76a0724be4a3f5e08bdb1121ac'],
+          this.rpcConfig
+        );
+        console.log('Invalidated block');
+
+        // And then, 2 seconds later, reconsider the block
+        setTimeout(async () => {
+          await RPC.doRPC(
+            'reconsiderblock',
+            ['00000000006e4d348d0addad1b43ae09744f9c76a0724be4a3f5e08bdb1121ac'],
+            this.rpcConfig
+          );
+          console.log('Reconsidered block');
+        }, 2 * 1000);
+      }, 5 * 1000);
+    }
+
     if (!lastBlockHeight || lastBlockHeight < latestBlockHeight) {
       try {
         const balP = this.fetchTotalBalance();
