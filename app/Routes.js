@@ -199,7 +199,7 @@ export default class RouteApp extends React.Component<Props, AppState> {
           <span>
             The import process for the private keys has started.
             <br />
-            This will take a long time, upto 6 hours!
+            This will take a long time, up to 6 hours!
             <br />
             Please be patient!
           </span>
