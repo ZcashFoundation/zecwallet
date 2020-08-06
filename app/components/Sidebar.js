@@ -66,7 +66,7 @@ const ImportPrivKeyModal = ({ modalIsOpen, modalInput, setModalInput, closeModal
         </div>
 
         <div className={cstyles.marginbottomlarge}>
-          Please paste your private keys here (transparent address or shielded address), one line per key.
+          Please paste your private or viewing keys here (transparent address or shielded address), one line per key.
         </div>
 
         <div className={cstyles.well} style={{ textAlign: 'center' }}>
@@ -91,7 +91,7 @@ const ImportPrivKeyModal = ({ modalIsOpen, modalInput, setModalInput, closeModal
           Import
         </button>
         <button type="button" className={cstyles.primarybutton} onClick={closeModal}>
-          Close
+          Cancel
         </button>
       </div>
     </Modal>
@@ -226,7 +226,7 @@ class Sidebar extends PureComponent<Props, State> {
       openErrorModal(
         'Zecwallet Fullnode',
         <div className={cstyles.verticalflex}>
-          <div className={cstyles.margintoplarge}>Zecwallet Fullnode v0.9.13</div>
+          <div className={cstyles.margintoplarge}>Zecwallet Fullnode v0.9.15</div>
           <div className={cstyles.margintoplarge}>Built with Electron. Copyright (c) 2018-2020, Aditya Kulkarni.</div>
           <div className={cstyles.margintoplarge}>
             The MIT License (MIT) Copyright (c) 2018-present Zecwallet
@@ -488,7 +488,7 @@ class Sidebar extends PureComponent<Props, State> {
           actionCallback={this.payURI}
         />
 
-        {/* Payment URI Modal */}
+        {/* Import Private Key Modal */}
         <ImportPrivKeyModal
           modalIsOpen={privKeyModalIsOpen}
           setModalInput={this.setImprovPrivKeyInputValue}

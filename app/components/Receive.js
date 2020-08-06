@@ -16,7 +16,16 @@ import Utils from '../utils/utils';
 import { AddressBalance, Info, ReceivePageState, AddressBookEntry } from './AppState';
 import ScrollPane from './ScrollPane';
 
-const AddressBlock = ({ addressBalance, label, currencyName, zecPrice, privateKey, fetchAndSetSinglePrivKey }) => {
+const AddressBlock = ({
+  addressBalance,
+  label,
+  currencyName,
+  zecPrice,
+  privateKey,
+  fetchAndSetSinglePrivKey,
+  viewKey,
+  fetchAndSetSingleViewKey
+}) => {
   const { address } = addressBalance;
 
   const [copied, setCopied] = useState(false);
@@ -75,6 +84,20 @@ const AddressBlock = ({ addressBalance, label, currencyName, zecPrice, privateKe
               )}
             </div>
 
+            <div className={[cstyles.margintoplarge, cstyles.breakword].join(' ')}>
+              {viewKey && (
+                <div>
+                  <div className={[cstyles.sublight].join(' ')}>Viewing Key</div>
+                  <div
+                    className={[cstyles.breakword, cstyles.padtopsmall, cstyles.fixedfont].join(' ')}
+                    style={{ maxWidth: '600px' }}
+                  >
+                    {viewKey}
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div>
               <button
                 className={[cstyles.primarybutton, cstyles.margintoplarge].join(' ')}
@@ -96,6 +119,17 @@ const AddressBlock = ({ addressBalance, label, currencyName, zecPrice, privateKe
                   Export Private Key
                 </button>
               )}
+
+              {Utils.isZaddr(address) && !viewKey && (
+                <button
+                  className={[cstyles.primarybutton].join(' ')}
+                  type="button"
+                  onClick={() => fetchAndSetSingleViewKey(address)}
+                >
+                  Export Viewing Key
+                </button>
+              )}
+
               {Utils.isTransparent(address) && (
                 <button className={[cstyles.primarybutton].join(' ')} type="button" onClick={() => openAddress()}>
                   View on explorer <i className={['fas', 'fa-external-link-square-alt'].join(' ')} />
@@ -119,6 +153,7 @@ type Props = {
   info: Info,
   receivePageState: ReceivePageState,
   fetchAndSetSinglePrivKey: string => void,
+  fetchAndSetSingleViewKey: string => void,
   createNewAddress: boolean => void,
   rerenderKey: number
 };
@@ -129,10 +164,12 @@ export default class Receive extends Component<Props> {
       addresses,
       addressesWithBalance,
       addressPrivateKeys,
+      addressViewKeys,
       addressBook,
       info,
       receivePageState,
       fetchAndSetSinglePrivKey,
+      fetchAndSetSingleViewKey,
       createNewAddress,
       rerenderKey
     } = this.props;
@@ -203,7 +240,9 @@ export default class Receive extends Component<Props> {
                       label={addressBookMap[a.address]}
                       zecPrice={info.zecPrice}
                       privateKey={addressPrivateKeys[a.address]}
+                      viewKey={addressViewKeys[a.address]}
                       fetchAndSetSinglePrivKey={fetchAndSetSinglePrivKey}
+                      fetchAndSetSingleViewKey={fetchAndSetSingleViewKey}
                       rerender={this.rerender}
                     />
                   ))}
@@ -230,7 +269,9 @@ export default class Receive extends Component<Props> {
                       currencyName={info.currencyName}
                       zecPrice={info.zecPrice}
                       privateKey={addressPrivateKeys[a.address]}
+                      viewKey={addressViewKeys[a.address]}
                       fetchAndSetSinglePrivKey={fetchAndSetSinglePrivKey}
+                      fetchAndSetSingleViewKey={fetchAndSetSingleViewKey}
                       rerender={this.rerender}
                     />
                   ))}

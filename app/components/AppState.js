@@ -160,9 +160,11 @@ export default class AppState {
   // addresses that have a (confirmed or unconfirmed) UTXO or note pending.
   addressesWithBalance: AddressBalance[];
 
-  // A map type that contains address -> privatekey mapping, for display on the receive page
+  // A map type that contains address -> privatekey/viewkey mapping, for display on the receive page
   // This mapping is ephemeral, and will disappear when the user navigates away.
   addressPrivateKeys;
+
+  addressViewKeys;
 
   // List of all addresses in the wallet, including change addresses and addresses
   // that don't have any balance or are unused
