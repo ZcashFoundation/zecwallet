@@ -226,7 +226,7 @@ class Sidebar extends PureComponent<Props, State> {
       openErrorModal(
         'Zecwallet Fullnode',
         <div className={cstyles.verticalflex}>
-          <div className={cstyles.margintoplarge}>Zecwallet Fullnode v0.9.16</div>
+          <div className={cstyles.margintoplarge}>Zecwallet Fullnode v0.9.17</div>
           <div className={cstyles.margintoplarge}>Built with Electron. Copyright (c) 2018-2020, Aditya Kulkarni.</div>
           <div className={cstyles.margintoplarge}>
             The MIT License (MIT) Copyright (c) 2018-present Zecwallet
@@ -290,7 +290,10 @@ class Sidebar extends PureComponent<Props, State> {
           if (t.detailedTxns) {
             return t.detailedTxns.map(dt => {
               const normaldate = dateformat(t.time * 1000, 'mmm dd yyyy hh::MM tt');
-              const escapedMemo = dt.memo ? dt.memo.replace(/"/g, '""') : '';
+
+              // Add a single quote "'" into the memo field to force interpretation as a string, rather than as a
+              // formula from a rogue memo
+              const escapedMemo = dt.memo ? `'${dt.memo.replace(/"/g, '""')}'` : '';
 
               return `${t.time},"${normaldate}","${t.txid}","${t.type}",${dt.amount},"${dt.address}","${escapedMemo}"`;
             });
