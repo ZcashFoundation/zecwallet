@@ -139,7 +139,7 @@ export default class RPC {
       // If it is stalled at this height after 5 seconds, we will do invalidate / reconsider
       setTimeout(async () => {
         const newHeight = await this.fetchInfo();
-        if (!newHeight === 903001) {
+        if (newHeight !== 903001) {
           return;
         }
 
