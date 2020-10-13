@@ -54,7 +54,7 @@ const TxModalInternal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice, 
   };
 
   const doReply = (address: string) => {
-    setSendTo(address, 0.0001, null);
+    setSendTo(new ZcashURITarget(address, 0.0001, null));
     closeModal();
 
     history.push(routes.SEND);
@@ -251,7 +251,7 @@ type Props = {
   transactions: Transaction[],
   addressBook: AddressBook[],
   info: Info,
-  setSendTo: (string, number | null, string | null) => void
+  setSendTo: (targets: ZcashURITarget[] | ZcashURITarget) => void
 };
 
 type State = {

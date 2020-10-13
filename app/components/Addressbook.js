@@ -33,7 +33,7 @@ const AddressBookItemInteral = ({ item, removeAddressBookEntry, setSendTo, histo
             type="button"
             className={cstyles.primarybutton}
             onClick={() => {
-              setSendTo(item.address, null, null);
+              setSendTo(new ZcashURITarget(item.address, null, null));
               history.push(routes.SEND);
             }}
           >
@@ -53,7 +53,7 @@ type Props = {
   addressBook: AddressBookEntry[],
   addAddressBookEntry: (label: string, address: string) => void,
   removeAddressBookEntry: (label: string) => void,
-  setSendTo: (address: string, amount: number | null, memo: string | null) => void
+  setSendTo: (targets: ZcashURITarget[] | ZcashURITarget) => void
 };
 
 type State = {

@@ -4,8 +4,6 @@
 /* eslint-disable react/prop-types */
 import React, { PureComponent } from 'react';
 import type { Element } from 'react';
-import url from 'url';
-import querystring from 'querystring';
 import fs from 'fs';
 import dateformat from 'dateformat';
 import Modal from 'react-modal';
@@ -20,6 +18,7 @@ import routes from '../constants/routes.json';
 import Logo from '../assets/img/logobig.png';
 import { Info, Transaction } from './AppState';
 import Utils from '../utils/utils';
+import { parseZcashURI, ZcashURITarget } from '../utils/uris';
 
 const ExportPrivKeyModal = ({ modalIsOpen, exportedPrivKeys, closeModal }) => {
   return (
@@ -184,7 +183,7 @@ type Props = {
   info: Info,
   addresses: string[],
   transactions: Transaction[],
-  setSendTo: (address: string, amount: number | null, memo: string | null) => void,
+  setSendTo: (targets: ZcashURITarget[] | ZcashURITarget) => void,
   getPrivKeyAsString: (address: string) => string,
   importPrivKeys: (keys: string[]) => void,
   history: PropTypes.object.isRequired,
@@ -256,9 +255,11 @@ class Sidebar extends PureComponent<Props, State> {
     // Donate button
     ipcRenderer.on('donate', () => {
       setSendTo(
-        Utils.getDonationAddress(testnet),
-        Utils.getDefaultDonationAmount(testnet),
-        Utils.getDefaultDonationMemo(testnet)
+        new ZcashURITarget(
+          Utils.getDonationAddress(testnet),
+          Utils.getDefaultDonationAmount(testnet),
+          Utils.getDefaultDonationMemo(testnet)
+        )
       );
 
       history.push(routes.SEND);
@@ -418,41 +419,27 @@ class Sidebar extends PureComponent<Props, State> {
     const { openErrorModal, setSendTo, history } = this.props;
 
     const errTitle = 'URI Error';
-    const errBody = (
-      <span>
-        The URI &quot;{escape(uri)}&quot; was not recognized.
-        <br />
-        Please type in a valid URI of the form &quot; zcash:address?amout=xx&memo=yy &quot;
-      </span>
-    );
+    const getErrorBody = (explain: string): Element<'div'> => {
+      return (
+        <div>
+          <span>{explain}</span>
+          <br />
+        </div>
+      );
+    };
 
     if (!uri || uri === '') {
-      openErrorModal(errTitle, errBody);
+      openErrorModal(errTitle, getErrorBody('URI was not found or invalid'));
       return;
     }
 
-    const parsedUri = url.parse(uri);
-    if (!parsedUri || parsedUri.protocol !== 'zcash:' || !parsedUri.query) {
-      openErrorModal(errTitle, errBody);
+    const parsedUri = parseZcashURI(uri);
+    if (typeof parsedUri === 'string') {
+      openErrorModal(errTitle, getErrorBody(parsedUri));
       return;
     }
 
-    const address = parsedUri.host;
-    if (!address || !(Utils.isTransparent(address) || Utils.isZaddr(address))) {
-      openErrorModal(errTitle, <span>The address ${address} was not recognized as a Zcash address</span>);
-      return;
-    }
-
-    const parsedParams = querystring.parse(parsedUri.query);
-    if (!parsedParams || (!parsedParams.amt && !parsedParams.amount)) {
-      openErrorModal(errTitle, errBody);
-      return;
-    }
-
-    const amount = parsedParams.amt || parsedParams.amount;
-    const memo = parsedParams.memo || '';
-
-    setSendTo(address, amount, memo);
+    setSendTo(parsedUri);
     history.push(routes.SEND);
   };
 
