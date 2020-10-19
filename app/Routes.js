@@ -26,6 +26,7 @@ import AppState, {
 } from './components/AppState';
 import RPC from './rpc';
 import Utils from './utils/utils';
+import { ZcashURITarget } from './utils/uris';
 import Zcashd from './components/Zcashd';
 import AddressBook from './components/Addressbook';
 import AddressbookImpl from './utils/AddressbookImpl';
@@ -225,24 +226,34 @@ export default class RouteApp extends React.Component<Props, AppState> {
     }
   };
 
-  setSendTo = (address: string, amount: number | null, memo: string | null) => {
+  setSendTo = (targets: ZcashURITarget[] | ZcashURITarget) => {
     // Clear the existing send page state and set up the new one
     const { sendPageState } = this.state;
 
     const newSendPageState = new SendPageState();
+    newSendPageState.toaddrs = [];
     newSendPageState.fromaddr = sendPageState.fromaddr;
 
-    const to = new ToAddr(Utils.getNextToAddrID());
-    if (address) {
-      to.to = address;
+    // If a single object is passed, accept that as well.
+    let tgts = targets;
+    if (!Array.isArray(tgts)) {
+      tgts = [targets];
     }
-    if (amount) {
-      to.amount = amount;
-    }
-    if (memo) {
-      to.memo = memo;
-    }
-    newSendPageState.toaddrs = [to];
+
+    tgts.forEach(tgt => {
+      const to = new ToAddr(Utils.getNextToAddrID());
+      if (tgt.address) {
+        to.to = tgt.address;
+      }
+      if (tgt.amount) {
+        to.amount = tgt.amount;
+      }
+      if (tgt.memoString) {
+        to.memo = tgt.memoString;
+      }
+
+      newSendPageState.toaddrs.push(to);
+    });
 
     this.setState({ sendPageState: newSendPageState });
   };
