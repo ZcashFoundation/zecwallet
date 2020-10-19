@@ -37,10 +37,6 @@ export const parseZcashURI = (uri: string): ZcashURITarget[] | string => {
 
   const parsedUri = url.parse(uri);
   if (!parsedUri || parsedUri.protocol !== 'zcash:' || !parsedUri.query) {
-    return 'Bad URI';
-  }
-
-  if (!parsedUri || parsedUri.protocol !== 'zcash:' || !parsedUri.query) {
     return 'Invalid URI or protocol';
   }
 
