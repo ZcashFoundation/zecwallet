@@ -110,8 +110,12 @@ export default class Utils {
     return Utils.nextToAddrID++;
   }
 
-  static getDefaultFee(): number {
-    return 0.0001;
+  static getDefaultFee(height: number): number {
+    if (height > 1046400) {
+      return 0.00001;
+    } else {
+      return 0.0001;
+    }
   }
 
   static getDonationAddress(testnet: boolean): string {

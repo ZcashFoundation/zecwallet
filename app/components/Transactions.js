@@ -15,7 +15,7 @@ import Utils from '../utils/utils';
 import AddressBook from './Addressbook';
 import routes from '../constants/routes.json';
 
-const TxModalInternal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice, setSendTo, history }) => {
+const TxModalInternal = ({ modalIsOpen, tx, info, closeModal, currencyName, zecPrice, setSendTo, history }) => {
   let txid = '';
   let type = '';
   let typeIcon = '';
@@ -54,7 +54,7 @@ const TxModalInternal = ({ modalIsOpen, tx, closeModal, currencyName, zecPrice, 
   };
 
   const doReply = (address: string) => {
-    setSendTo(new ZcashURITarget(address, 0.0001, null));
+    setSendTo(new ZcashURITarget(address, Utils.getDefaultFee(info.latestBlock), null));
     closeModal();
 
     history.push(routes.SEND);
@@ -336,6 +336,7 @@ export default class Transactions extends Component<Props, State> {
         <TxModal
           modalIsOpen={modalIsOpen}
           tx={clickedTx}
+          info={info}
           closeModal={this.closeModal}
           currencyName={info.currencyName}
           zecPrice={info.zecPrice}

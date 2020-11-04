@@ -184,6 +184,8 @@ function getSendManyJSON(sendPageState: SendPageState): [] {
       }
     })
   );
+  json.push(1); // minconf = 1
+  json.push(Utils.getDefaultFee()); // Control the default fee as well.
 
   console.log('Sending:');
   console.log(json);
@@ -229,7 +231,9 @@ const ConfirmModalInternal = ({
   openErrorModal,
   history
 }) => {
-  const sendingTotal = sendPageState.toaddrs.reduce((s, t) => parseFloat(s) + parseFloat(t.amount), 0.0) + 0.0001;
+  const sendingTotal =
+    sendPageState.toaddrs.reduce((s, t) => parseFloat(s) + parseFloat(t.amount), 0.0) +
+    Utils.getDefaultFee(info.latestBlock);
   const { bigPart, smallPart } = Utils.splitZecAmountIntoBigSmall(sendingTotal);
 
   const sendButton = () => {
@@ -301,7 +305,10 @@ const ConfirmModalInternal = ({
           ))}
         </div>
 
-        <ConfirmModalToAddr toaddr={{ to: 'Fee', amount: 0.0001, memo: null }} info={info} />
+        <ConfirmModalToAddr
+          toaddr={{ to: 'Fee', amount: Utils.getDefaultFee(info.latestBlock), memo: null }}
+          info={info}
+        />
 
         {info && info.disconnected && (
           <div className={[cstyles.red, cstyles.margintoplarge].join(' ')}>
@@ -443,7 +450,7 @@ export default class Send extends PureComponent<Props, SendState> {
   };
 
   setMaxAmount = (id: number, total: number) => {
-    const { sendPageState, setSendPageState } = this.props;
+    const { sendPageState, setSendPageState, info } = this.props;
 
     const newToAddrs = sendPageState.toaddrs.slice(0);
 
@@ -452,7 +459,7 @@ export default class Send extends PureComponent<Props, SendState> {
       .reduce((s, a) => parseFloat(s) + parseFloat(a.amount), 0);
 
     // Add Fee
-    totalOtherAmount += Utils.getDefaultFee();
+    totalOtherAmount += Utils.getDefaultFee(info.latestBlock);
 
     // Find the correct toAddr
     const toAddr = newToAddrs.find(a => a.id === id);
