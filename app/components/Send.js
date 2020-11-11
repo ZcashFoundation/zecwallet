@@ -83,7 +83,7 @@ const ToAddrBox = ({
   }
 
   setTimeout(() => {
-    setSendButtonEnable(buttonstate);
+    setSendButtonEnable(toaddr.id, buttonstate);
   }, 10);
 
   const usdValue = Utils.getZecToUsdString(zecPrice, toaddr.amount);
@@ -357,14 +357,11 @@ class SendState {
 
   errorModalBody: string;
 
-  sendButtonEnabled: boolean;
-
   constructor() {
     this.modalIsOpen = false;
     this.errorModalIsOpen = false;
     this.errorModalBody = '';
     this.errorModalTitle = '';
-    this.sendButtonEnabled = false;
   }
 }
 
@@ -413,7 +410,7 @@ export default class Send extends PureComponent<Props, SendState> {
   updateToField = (id: number, address: Event | null, amount: Event | null, memo: Event | string | null) => {
     const { sendPageState, setSendPageState } = this.props;
 
-    const newToAddrs = sendPageState.toaddrs.slice(0);
+    const newToAddrs = sendPageState.toaddrs.slice();
     // Find the correct toAddr
     const toAddr = newToAddrs.find(a => a.id === id);
     if (address) {
@@ -475,8 +472,32 @@ export default class Send extends PureComponent<Props, SendState> {
     setSendPageState(newState);
   };
 
-  setSendButtonEnable = (sendButtonEnabled: boolean) => {
-    this.setState({ sendButtonEnabled });
+  setSendButtonEnable = (id: number, sendButtonEnabled: boolean) => {
+    const { sendPageState, setSendPageState } = this.props;
+
+    const toAddr = sendPageState.toaddrs.find(a => a.id === id);
+    if (!toAddr) return;
+
+    if (toAddr.sendButtonEnabled === sendButtonEnabled) return;
+
+    const newToAddrs = sendPageState.toaddrs.map(a => {
+      if (a.id !== id) {
+        return a;
+      } else {
+        const toa = { ...a, sendButtonEnabled };
+        return toa;
+      }
+    });
+
+    console.log(`Set enabled for ${id} to ${sendButtonEnabled}`);
+    console.log(newToAddrs);
+
+    // Create the new state object
+    const newState = new SendPageState();
+    newState.fromaddr = sendPageState.fromaddr;
+    newState.toaddrs = newToAddrs;
+
+    setSendPageState(newState);
   };
 
   openModal = () => {
@@ -510,8 +531,12 @@ export default class Send extends PureComponent<Props, SendState> {
   };
 
   render() {
-    const { modalIsOpen, errorModalIsOpen, errorModalTitle, errorModalBody, sendButtonEnabled } = this.state;
+    const { modalIsOpen, errorModalIsOpen, errorModalTitle, errorModalBody } = this.state;
     const { sendPageState, info, openErrorModal, closeErrorModal } = this.props;
+
+    // Send button is enabled if all the individual toaddr sends are enabled.
+    const sendButtonEnabled = sendPageState.toaddrs.reduce((p, c) => p && c.sendButtonEnabled, true);
+    console.log(`Rendering to ${JSON.stringify(sendButtonEnabled)}`);
 
     const customStyles = {
       option: (provided, state) => ({

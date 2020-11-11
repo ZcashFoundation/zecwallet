@@ -77,12 +77,15 @@ export class ToAddr {
 
   memo: string;
 
+  sendButtonEnabled: boolean;
+
   constructor(id: number) {
     this.id = id;
 
     this.to = '';
     this.amount = 0;
     this.memo = '';
+    this.sendButtonEnabled = true;
   }
 }
 
