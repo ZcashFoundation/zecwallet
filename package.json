@@ -1,7 +1,7 @@
 {
   "name": "zecwallet",
   "productName": "Zecwallet Fullnode",
-  "version": "0.9.21",
+  "version": "0.9.22",
   "description": "Zecwallet Fullnode (Electron version)",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
