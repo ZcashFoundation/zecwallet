@@ -111,7 +111,7 @@ export default class Utils {
   }
 
   static getDefaultFee(height: number): number {
-    if (height > 1046400) {
+    if (height >= 1080000) {
       return 0.00001;
     } else {
       return 0.0001;

@@ -170,7 +170,7 @@ const ToAddrBox = ({
   );
 };
 
-function getSendManyJSON(sendPageState: SendPageState): [] {
+function getSendManyJSON(sendPageState: SendPageState, info: Info): [] {
   const json = [];
   json.push(sendPageState.fromaddr);
   json.push(
@@ -185,7 +185,7 @@ function getSendManyJSON(sendPageState: SendPageState): [] {
     })
   );
   json.push(1); // minconf = 1
-  json.push(Utils.getDefaultFee()); // Control the default fee as well.
+  json.push(Utils.getDefaultFee(info.latestBlock)); // Control the default fee as well.
 
   console.log('Sending:');
   console.log(json);
@@ -246,7 +246,7 @@ const ConfirmModalInternal = ({
 
     // Then send the Tx async
     (async () => {
-      const sendJson = getSendManyJSON(sendPageState);
+      const sendJson = getSendManyJSON(sendPageState, info);
       let success = false;
 
       try {
