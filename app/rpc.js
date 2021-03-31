@@ -235,7 +235,7 @@ export default class RPC {
       }
     } else {
       try {
-        const r = await RPC.doRPC('importprivkey', [key, 'imported', rescan], this.rpcConfig);
+        const r = await RPC.doRPC('importprivkey', [key, '', rescan], this.rpcConfig);
         console.log(r.result);
         return '';
       } catch (err) {
@@ -419,11 +419,18 @@ export default class RPC {
   // Get all Addresses, including T and Z addresses
   async fetchAllAddresses() {
     const zaddrsPromise = RPC.doRPC('z_listaddresses', [], this.rpcConfig);
-    const taddrsPromise = RPC.doRPC('getaddressesbyaccount', [''], this.rpcConfig);
-
+    const taddrs1Promise = RPC.doRPC('getaddressesbyaccount', [''], this.rpcConfig);
+    const taddrs2Promise = RPC.doRPC('listaddressgroupings', [], this.rpcConfig);
     const allZ = (await zaddrsPromise).result;
-    const allT = (await taddrsPromise).result;
-
+    const allT = (await taddrs1Promise).result;
+    const allT2 = (await taddrs2Promise).result;
+    for (let i = 0; i < allT2.length; i += 1) {
+      const arrayT = allT2[i];
+      for (let e = 0; e < arrayT.length; e += 1) {
+        const taddr = arrayT[e][0];
+        if (allT.indexOf(taddr) === -1) allT.push(taddr);
+      }
+    }
     this.fnSetAllAddresses(allZ.concat(allT));
   }
 
