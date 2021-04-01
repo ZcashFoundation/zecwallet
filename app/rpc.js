@@ -421,16 +421,13 @@ export default class RPC {
     const zaddrsPromise = RPC.doRPC('z_listaddresses', [], this.rpcConfig);
     const taddrs1Promise = RPC.doRPC('getaddressesbyaccount', [''], this.rpcConfig);
     const taddrs2Promise = RPC.doRPC('listaddressgroupings', [], this.rpcConfig);
+
     const allZ = (await zaddrsPromise).result;
-    const allT = (await taddrs1Promise).result;
-    const allT2 = (await taddrs2Promise).result;
-    for (let i = 0; i < allT2.length; i += 1) {
-      const arrayT = allT2[i];
-      for (let e = 0; e < arrayT.length; e += 1) {
-        const taddr = arrayT[e][0];
-        if (allT.indexOf(taddr) === -1) allT.push(taddr);
-      }
-    }
+
+    const t1 = (await taddrs1Promise).result;
+    const t2 = (await taddrs2Promise).result.map(a => a[0]).map(a => a[0]);
+    const allT = [...new Set(t1.concat(t2))];
+
     this.fnSetAllAddresses(allZ.concat(allT));
   }
 
