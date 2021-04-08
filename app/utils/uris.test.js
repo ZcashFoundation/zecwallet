@@ -38,6 +38,17 @@ test('ZIP321 case 2', () => {
   expect(targets[1].memoString).toBe('This is a unicode memo ✨🦄🏆🎉');
 });
 
+test('coinbase URI', () => {
+  const targets = parseZcashURI('zcash:tmEZhbWHTpdKMw5it8YDspUXSMGQyFwovpU');
+
+  expect(targets.length).toBe(1);
+  expect(targets[0].message).toBeUndefined();
+  expect(targets[0].label).toBeUndefined();
+  expect(targets[0].amount).toBeUndefined();
+  expect(targets[0].memoString).toBeUndefined();
+  expect(targets[0].memoBase64).toBeUndefined();
+});
+
 test('bad uris', () => {
   // bad protocol
   let error = parseZcashURI('badprotocol:tmEZhbWHTpdKMw5it8YDspUXSMGQyFwovpU?amount=123.456');
@@ -49,10 +60,6 @@ test('bad uris', () => {
 
   // no address
   error = parseZcashURI('zcash:?amount=123.456');
-  expect(typeof error).toBe('string');
-
-  // no amount
-  error = parseZcashURI('zcash:tmEZhbWHTpdKMw5it8YDspUXSMGQyFwovpU');
   expect(typeof error).toBe('string');
 
   // bad param name

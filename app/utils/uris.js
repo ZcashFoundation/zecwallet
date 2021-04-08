@@ -1,3 +1,4 @@
+/* eslint-disable no-lonely-if */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-case-declarations */
 /* eslint-disable vars-on-top */
@@ -36,7 +37,7 @@ export const parseZcashURI = (uri: string): ZcashURITarget[] | string => {
   }
 
   const parsedUri = url.parse(uri);
-  if (!parsedUri || parsedUri.protocol !== 'zcash:' || !parsedUri.query) {
+  if (!parsedUri || parsedUri.protocol !== 'zcash:') {
     return 'Invalid URI or protocol';
   }
 
@@ -131,14 +132,25 @@ export const parseZcashURI = (uri: string): ZcashURITarget[] | string => {
     }
   }
 
-  // Make sure everyone has at least an amount and address
-  for (const [key, value] of targets) {
-    if (typeof value.amount === 'undefined') {
-      return `URI ${key} didn't have an amount`;
+  // Make sure everyone has at least an amount and address if there are multiple addresses
+  if (targets.size > 1) {
+    for (const [key, value] of targets) {
+      if (typeof value.amount === 'undefined') {
+        return `URI ${key} didn't have an amount`;
+      }
+
+      if (typeof value.address === 'undefined') {
+        return `URI ${key} didn't have an address`;
+      }
+    }
+  } else {
+    // If there is only 1 entry, make sure it has at least an address
+    if (!targets.get(0)) {
+      return 'URI Should have at least 1 entry';
     }
 
-    if (typeof value.address === 'undefined') {
-      return `URI ${key} didn't have an address`;
+    if (typeof targets.get(0)?.address === 'undefined') {
+      return `URI ${0} didn't have an address`;
     }
   }
 
