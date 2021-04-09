@@ -75,10 +75,11 @@ const AddressBlock = ({
                 <div>
                   <div className={[cstyles.sublight].join(' ')}>Private Key</div>
                   <div
-                    className={[cstyles.breakword, cstyles.padtopsmall, cstyles.fixedfont].join(' ')}
+                    className={[cstyles.breakword, cstyles.padtopsmall, cstyles.fixedfont, cstyles.flex].join(' ')}
                     style={{ maxWidth: '600px' }}
                   >
-                    {privateKey}
+                    <QRCode value={privateKey} className={[styles.receiveQrcode].join(' ')} />
+                    <div>{privateKey}</div>
                   </div>
                 </div>
               )}
@@ -89,10 +90,11 @@ const AddressBlock = ({
                 <div>
                   <div className={[cstyles.sublight].join(' ')}>Viewing Key</div>
                   <div
-                    className={[cstyles.breakword, cstyles.padtopsmall, cstyles.fixedfont].join(' ')}
+                    className={[cstyles.breakword, cstyles.padtopsmall, cstyles.fixedfont, cstyles.flex].join(' ')}
                     style={{ maxWidth: '600px' }}
                   >
-                    {viewKey}
+                    <QRCode value={viewKey} className={[styles.receiveQrcode].join(' ')} />
+                    <div>{viewKey}</div>
                   </div>
                 </div>
               )}
