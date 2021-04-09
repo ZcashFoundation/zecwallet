@@ -36,6 +36,11 @@ export const parseZcashURI = (uri: string): ZcashURITarget[] | string => {
     return 'Bad URI';
   }
 
+  // See if it is a straight address.
+  if (Utils.isTransparent(uri) || Utils.isZaddr(uri)) {
+    return [new ZcashURITarget(uri)];
+  }
+
   const parsedUri = url.parse(uri);
   if (!parsedUri || parsedUri.protocol !== 'zcash:') {
     return 'Invalid URI or protocol';

@@ -49,6 +49,17 @@ test('coinbase URI', () => {
   expect(targets[0].memoBase64).toBeUndefined();
 });
 
+test('Plain URI', () => {
+  const targets = parseZcashURI('tmEZhbWHTpdKMw5it8YDspUXSMGQyFwovpU');
+
+  expect(targets.length).toBe(1);
+  expect(targets[0].message).toBeUndefined();
+  expect(targets[0].label).toBeUndefined();
+  expect(targets[0].amount).toBeUndefined();
+  expect(targets[0].memoString).toBeUndefined();
+  expect(targets[0].memoBase64).toBeUndefined();
+});
+
 test('bad uris', () => {
   // bad protocol
   let error = parseZcashURI('badprotocol:tmEZhbWHTpdKMw5it8YDspUXSMGQyFwovpU?amount=123.456');
