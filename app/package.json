@@ -1,7 +1,7 @@
 {
   "name": "zecwallet",
   "productName": "Zecwallet Fullnode",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "description": "Zecwallet Fullnode",
   "main": "./main.prod.js",
   "author": {

@@ -1,7 +1,7 @@
 {
   "name": "zecwallet",
   "productName": "Zecwallet Fullnode",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "description": "Zecwallet Fullnode (Electron version)",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -179,14 +179,10 @@
   },
   "keywords": [
     "electron",
-    "boilerplate",
     "react",
-    "redux",
     "flow",
     "sass",
-    "webpack",
-    "hot",
-    "reload"
+    "webpack"
   ],
   "homepage": "https://github.com/adityapk00/zecwallet-electron#readme",
   "jest": {
