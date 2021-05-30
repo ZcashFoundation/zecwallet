@@ -13,6 +13,7 @@ import cstyles from './Common.module.css';
 import { AddressBookEntry } from './AppState';
 import ScrollPane from './ScrollPane';
 import Utils from '../utils/utils';
+import { ZcashURITarget } from '../utils/uris';
 import routes from '../constants/routes.json';
 
 // Internal because we're using withRouter just below
