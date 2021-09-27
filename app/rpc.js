@@ -419,14 +419,13 @@ export default class RPC {
   // Get all Addresses, including T and Z addresses
   async fetchAllAddresses() {
     const zaddrsPromise = RPC.doRPC('z_listaddresses', [], this.rpcConfig);
-    const taddrs1Promise = RPC.doRPC('getaddressesbyaccount', [''], this.rpcConfig);
     const taddrs2Promise = RPC.doRPC('listaddressgroupings', [], this.rpcConfig);
 
     const allZ = (await zaddrsPromise).result;
 
-    const t1 = (await taddrs1Promise).result;
-    const t2 = (await taddrs2Promise).result.map(a => a[0]).map(a => a[0]);
-    const allT = [...new Set(t1.concat(t2))];
+    const t2r = await taddrs2Promise;
+    const t2 = t2r.result.flatMap(a => a.flatMap(aa => aa[0]));
+    const allT = t2.filter(a => Utils.isTransparent(a));
 
     this.fnSetAllAddresses(allZ.concat(allT));
   }
