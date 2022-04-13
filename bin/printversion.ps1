@@ -1,1 +1,1 @@
-echo "VERSION=1.7.6" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+echo "VERSION=1.7.7" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
