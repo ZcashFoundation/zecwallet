@@ -11,12 +11,10 @@
     ".flowconfig": "ignore"
   },
 
-  "javascript.validate.enable": false,
+  "javascript.validate.enable": true,
   "javascript.format.enable": false,
-  "typescript.validate.enable": false,
+  "typescript.validate.enable": true,
   "typescript.format.enable": false,
-
-  "flow.useNPMPackagedFlow": true,
   "search.exclude": {
     ".git": true,
     ".eslintcache": true,
