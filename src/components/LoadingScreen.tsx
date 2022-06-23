@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/interactive-supports-focus */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable max-classes-per-file */
 import React, { Component } from "react";
 import { ChildProcessWithoutNullStreams } from "child_process";
@@ -8,7 +6,6 @@ import { RPCConfig, Info } from "./AppState";
 import RPC from "../rpc";
 import cstyles from "./Common.module.css";
 import styles from "./LoadingScreen.module.css";
-import { NO_CONNECTION } from "../utils/utils";
 import Logo from "../assets/img/logobig.png";
 import zcashdlogo from "../assets/img/zcashdlogo.gif";
 import { Navigate } from "react-router-dom";
@@ -116,6 +113,7 @@ class LoadingScreen extends Component<Props, LoadingScreenState> {
         // this.startZcashd();
         // this.setupNextGetInfo();
         console.log("Cannot start zcashd because it is not supported yet");
+        this.setState({currentStatus: <div>{errString}<br/>Please make sure zcashd is running.</div>});
       }
 
       if (noConnection && zcashdSpawned && getinfoRetryCount < 10) {
@@ -178,6 +176,7 @@ class LoadingScreen extends Component<Props, LoadingScreenState> {
                 <img src={Logo} width="200px;" alt="Logo" />
               </div>
               <div>{currentStatus}</div>
+              <div></div>
             </div>
           )}
 

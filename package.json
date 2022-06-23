@@ -1,7 +1,7 @@
 {
   "name": "zecwallet",
   "productName": "Zecwallet Fullnode",
-  "version": "1.7.8",
+  "version": "1.8.0-beta1",
   "description": "Zecwallet Fullnode (Electron version)",
   "private": true,
   "main": "./public/electron.js",
@@ -74,13 +74,45 @@
     "afterAllArtifactBuild": "./afterSignHook.js",
     "files": [
       "build/**/*",
-      "node_modules/**/*"
+      "node_modules/**/*",
+      "package.json"
     ],
     "directories": {
-      "buildResources": "public"
+      "buildResources": "public",
+      "output": "release"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
     },
     "mac": {
-      "target": "dmg"
+      "category": "public.app-category.productivity",
+      "type": "distribution",
+      "hardenedRuntime": true,
+      "entitlements": "./configs/entitlements.mac.inherit.plist",
+      "target": [
+        "dmg"
+      ],
+      "icon": "./resources/icon.icns",
+      "extraFiles": [
+        {
+          "from": "bin/mac",
+          "to": "resources/bin/mac",
+          "filter": [
+            "**/*"
+          ]
+        }
+      ]
     },
     "win": {
       "target": [
@@ -88,8 +120,44 @@
         "msi"
       ]
     },
+    "deb": {
+      "depends": [
+        "gconf2",
+        "gconf-service",
+        "libnotify4",
+        "libappindicator1",
+        "libxtst6",
+        "libnss3"
+      ],
+      "artifactName": "Zecwallet_Fullnode_${version}_${arch}.deb"
+    },
     "linux": {
-      "target": "deb"
+      "category": "Development",
+      "icon": "./resources/icon.icns",
+      "extraFiles": [
+        {
+          "from": "bin/linux",
+          "to": "resources/bin/linux",
+          "filter": [
+            "**/**"
+          ]
+        }
+      ],
+      "target": [
+        "deb",
+        "AppImage"
+      ],
+      "desktop": {
+        "Name": "ZecWallet",
+        "Comment": "Full node and wallet for Zcash",
+        "GenericName": "Wallet",
+        "Type": "Application",
+        "StartupNotify": true,
+        "StartupWMClass": "zecwallet",
+        "Categories": "Utility;",
+        "MimeType": "x-scheme-handler/zcash;",
+        "Keywords": "zecwallet;"
+      }
     }
   },
   "browserslist": {

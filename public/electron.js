@@ -1,9 +1,11 @@
 // Module to control the application lifecycle and the native browser window.
 const { app, BrowserWindow, protocol, ipcMain, dialog } = require("electron");
+
 const path = require("path");
 const url = require("url");
 const axios = require("axios");
 const fs = require("fs");
+const MenuBuilder = require("./menu");
 
 ipcMain.handle("getAppPath", (_, pathType) => {
   return app.getPath(pathType);
@@ -30,12 +32,14 @@ ipcMain.handle("doRPC_IPC", async (_, config, method, params) => {
     })
       .then((r) => resolve(r.data))
       .catch((err) => {
-        const e = { ...err };
+        const e = { ...err }; 
+
         console.log(
-          `Caught error: ${e.response.toString()} - ${
-            e.response ? e.response.data.toString() : ""
+          `Caught error: ${e.response} - ${
+            e.response ? e.response.data : ""
           }`
         );
+         
         if (e.response && e.response.data) {
           reject(e.response.data.toString());
         } else {
@@ -45,7 +49,7 @@ ipcMain.handle("doRPC_IPC", async (_, config, method, params) => {
   });
 
   return response;
-});
+});  
 
 ipcMain.handle("getZecPrice_IPC", async () => {
   const response = await new Promise((resolve, reject) => {
@@ -101,9 +105,13 @@ function createWindow() {
   mainWindow.loadURL(appURL);
 
   // Automatically open Chrome's DevTools in development mode.
-  if (!app.isPackaged) {
+  // if (!app.isPackaged) {
     mainWindow.webContents.openDevTools();
-  }
+  // }
+
+  const menuBuilder = new MenuBuilder(mainWindow);
+  menuBuilder.buildMenu();
+
 }
 
 // Setup a local proxy to adjust the paths of requested files when loading

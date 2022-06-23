@@ -267,8 +267,17 @@ export default class RPC {
     this.fnSetTotalBalance(balance);
   }
 
-  async createNewAddress(type: AddressType) {
-    if (type === AddressType.unified) {
+  async createNewAddress(type: AddressType): Promise<string> {
+    if (type === AddressType.unified) { 
+      // First make sure that at least one account has been created.
+      const accounts = await RPC.doRPC("z_listaccounts", [], this.rpcConfig);
+      if (accounts.result.length === 0) {
+        // Create a new account
+        const newAcct = await RPC.doRPC("z_getnewaccount", [], this.rpcConfig);
+
+        console.log(`New account : ${newAcct.result}`);
+      }
+
       const newaddress = await RPC.doRPC(
         "z_getaddressforaccount",
         [0],

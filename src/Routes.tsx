@@ -340,24 +340,31 @@ export default class RouteApp extends React.Component<Props, AppState> {
 
   createNewAddress = async (type: AddressType) => {
     if (!this.rpc) {
-      return;
+      return; 
     }
 
     // Create a new address
-    const newaddress = await this.rpc.createNewAddress(type);
-    console.log(`Created new Address ${newaddress}`);
+    try {
+      const newaddress = await this.rpc.createNewAddress(type);
+      console.log(`Created new Address ${newaddress}`);
 
-    // And then fetch the list of addresses again to refresh
-    this.rpc.fetchAllAddresses();
+      // And then fetch the list of addresses again to refresh
+      this.rpc.fetchAllAddresses();
 
-    const { receivePageState } = this.state;
-    const newRerenderKey = receivePageState.rerenderKey + 1;
+      const { receivePageState } = this.state;
+      const newRerenderKey = receivePageState.rerenderKey + 1;
 
-    const newReceivePageState = new ReceivePageState();
-    newReceivePageState.newAddress = newaddress;
-    newReceivePageState.rerenderKey = newRerenderKey;
+      const newReceivePageState = new ReceivePageState();
+      newReceivePageState.newAddress = newaddress;
+      newReceivePageState.rerenderKey = newRerenderKey;
 
-    this.setState({ receivePageState: newReceivePageState });
+      this.setState({ receivePageState: newReceivePageState });
+    } catch (e) {
+      this.openErrorModal("Failed to Create Address", <div>
+        Couldn't create a new address. Please make sure your wallet has been initialized by running<br/>
+        "zcashd-wallet-tool"
+      </div>)
+    }
   };
 
   doRefresh = () => {
@@ -398,7 +405,7 @@ export default class RouteApp extends React.Component<Props, AppState> {
         />
 
         <div style={{ overflow: "hidden" }}>
-          {info && info.version && (
+          {(info && info.version > 0) && (
             <div className={cstyles.sidebarcontainer}>
               <Sidebar
                 getPrivKeyAsString={this.getPrivKeyAsString}
@@ -482,7 +489,7 @@ export default class RouteApp extends React.Component<Props, AppState> {
               />
 
               <Route
-                path={routes.LOADING}
+                path="*"
                 element={
                   <LoadingScreen
                     setRPCConfig={this.setRPCConfig}
