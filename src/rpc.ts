@@ -8,6 +8,7 @@ import {
   TxDetail,
   Info,
   AddressType,
+  AddressDetail,
 } from "./components/AppState";
 import Utils from "./utils/utils";
 import SentTxStore from "./utils/SentTxStore";
@@ -46,7 +47,7 @@ export default class RPC {
   fnSetTotalBalance: (totalBalance: TotalBalance) => void;
   fnSetAddressesWithBalance: (ab: AddressBalance[]) => void;
   fnSetTransactionsList: (txns: Transaction[]) => void;
-  fnSetAllAddresses: (allAddresses: string[]) => void;
+  fnSetAllAddresses: (allAddresses: AddressDetail[]) => void;
   fnSetZecPrice: (price: number) => void;
   fnSetDisconnected: (msg: string) => void;
 
@@ -61,7 +62,7 @@ export default class RPC {
     fnSetTotalBalance: (totalBalance: TotalBalance) => void,
     fnSetAddressesWithBalance: (ab: AddressBalance[]) => void,
     fnSetTransactionsList: (txns: Transaction[]) => void,
-    fnSetAllAddresses: (allAddresses: string[]) => void,
+    fnSetAllAddresses: (allAddresses: AddressDetail[]) => void,
     fnSetZecPrice: (price: number) => void,
     fnSetDisconnected: (msg: string) => void
   ) {
@@ -268,7 +269,7 @@ export default class RPC {
   }
 
   async createNewAddress(type: AddressType): Promise<string> {
-    if (type === AddressType.unified) { 
+    if (type === AddressType.unified) {
       // First make sure that at least one account has been created.
       const accounts = await RPC.doRPC("z_listaccounts", [], this.rpcConfig);
       if (accounts.result.length === 0) {
@@ -330,24 +331,22 @@ export default class RPC {
   async fetchTandZAddressesWithBalances() {
     const zresponse = RPC.doRPC("z_listunspent", [0], this.rpcConfig);
     const tresponse = RPC.doRPC("listunspent", [0], this.rpcConfig);
+    const uresponse = RPC.doRPC("z_getbalanceforaccount", [0], this.rpcConfig);
 
     // Do the Z addresses
     // response.result has all the unspent notes.
     const unspentNotes = (await zresponse).result;
     const zgroups = _.groupBy(unspentNotes, "address");
-    const zaddresses = Object.keys(zgroups).map((address) => {
-      const balance = zgroups[address].reduce(
-        (prev, obj) => prev + obj.amount,
-        0
-      );
+    const zaddresses = Object.keys(zgroups)
+      .filter((address) => Utils.isSapling(address))
+      .map((address) => {
+        const balance = zgroups[address].reduce(
+          (prev, obj) => prev + obj.amount,
+          0
+        );
 
-      // Orchard change notes mysteriously don't have an address
-      if (!address || address === "undefined") {
-        address = "(change)";
-      }
-
-      return new AddressBalance(address, Number(balance.toFixed(8)));
-    });
+        return new AddressBalance(address, Number(balance.toFixed(8)));
+      });
 
     // Do the T addresses
     const unspentTXOs = (await tresponse).result;
@@ -360,7 +359,16 @@ export default class RPC {
       return new AddressBalance(address, Number(balance.toFixed(8)));
     });
 
-    const addresses = zaddresses.concat(taddresses);
+    // Do the U addresses
+    const ubalances = (await uresponse).result;
+    const uaddresses = new AddressBalance(
+      Utils.UAStringfromAccount(0),
+      ubalances.pools.orchard
+        ? Utils.zatToZec(ubalances.pools.orchard.valueZat)
+        : 0
+    );
+
+    const addresses = zaddresses.concat(taddresses).concat(uaddresses);
 
     this.fnSetAddressesWithBalance(addresses);
   }
@@ -389,7 +397,8 @@ export default class RPC {
 
     // Now get Z txns
     const zaddresses = (await zaddressesPromise).filter(
-      (addr) => Utils.isSapling(addr) || Utils.isUnified(addr)
+      (addr) =>
+        addr.type === AddressType.sapling || addr.type === AddressType.unified
     );
 
     const alltxns = new Array<any>();
@@ -399,14 +408,14 @@ export default class RPC {
       // For each zaddr, get the list of incoming transactions
       const incomingTxns: any = await RPC.doRPC(
         "z_listreceivedbyaddress",
-        [zaddr, 0],
+        [zaddr.address, 0],
         this.rpcConfig
       );
       const txns = incomingTxns.result
         .filter((itx: any) => !itx.change)
         .map((incomingTx: any) => {
           return {
-            address: zaddr,
+            address: zaddr.address,
             txid: incomingTx.txid,
             memo: parseMemo(incomingTx.memo),
             amount: incomingTx.amount,
@@ -470,25 +479,35 @@ export default class RPC {
   }
 
   // Get all Addresses, including T and Z addresses
-  async getAllAddresses(): Promise<string[]> {
+  async getAllAddresses(): Promise<AddressDetail[]> {
     const allAddresses = await RPC.doRPC("listaddresses", [], this.rpcConfig);
 
     // This returns multiple objects, each has transparent, sapling and unified addresses
-    let allT: string[] = [];
-    let allZ: string[] = [];
-    let allU: string[] = [];
+    let allT: AddressDetail[] = [];
+    let allZ: AddressDetail[] = [];
+    let allU: AddressDetail[] = [];
 
     allAddresses.result.forEach((addressSet: any) => {
       const transparent: any = addressSet["transparent"];
       if (transparent) {
-        const tAddrs: string[] = transparent["addresses"];
+        const tAddrs = transparent["addresses"];
         if (tAddrs) {
-          allT = allT.concat(tAddrs);
+          allT = allT.concat(
+            tAddrs.map(
+              (taddr: string) =>
+                new AddressDetail(taddr, AddressType.transparent)
+            )
+          );
         }
 
-        const changeTaddrs: string[] = transparent["changeAddresses"];
+        const changeTaddrs = transparent["changeAddresses"];
         if (changeTaddrs) {
-          allT = allT.concat(changeTaddrs);
+          allT = allT.concat(
+            changeTaddrs.map(
+              (taddr: string) =>
+                new AddressDetail(taddr, AddressType.transparent)
+            )
+          );
         }
       }
 
@@ -497,7 +516,11 @@ export default class RPC {
         saplingAddrs.forEach((saplingA) => {
           const zAddrs: string[] = saplingA["addresses"];
           if (zAddrs) {
-            allZ = allZ.concat(zAddrs);
+            allZ = allZ.concat(
+              zAddrs.map(
+                (zaddr: string) => new AddressDetail(zaddr, AddressType.sapling)
+              )
+            );
           }
         });
       }
@@ -505,12 +528,21 @@ export default class RPC {
       const unifiedAddrs: any[] = addressSet["unified"];
       if (unifiedAddrs) {
         unifiedAddrs.forEach((uaSet) => {
+          const account = uaSet["account"];
           const uAddrs: any[] = uaSet["addresses"];
           if (uAddrs) {
             uAddrs.forEach((uaddr) => {
+              const diversifier = uaddr["diversifier_index"];
               const ua = uaddr["address"];
               if (ua) {
-                allU = allU.concat([ua]);
+                allU = allU.concat([
+                  new AddressDetail(
+                    ua,
+                    AddressType.unified,
+                    account,
+                    diversifier
+                  ),
+                ]);
               }
             });
           }

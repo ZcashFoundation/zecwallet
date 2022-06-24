@@ -1,7 +1,7 @@
 {
   "name": "zecwallet",
   "productName": "Zecwallet Fullnode",
-  "version": "1.8.0-beta1",
+  "version": "1.8.0-beta2",
   "description": "Zecwallet Fullnode (Electron version)",
   "private": true,
   "main": "./public/electron.js",
@@ -41,9 +41,9 @@
     "eject": "react-scripts eject",
     "electron:prod": "yarn build && cross-env NODE_ENV=production && electron build/electron.js",
     "electron:start": "concurrently -k \"cross-env BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electronmon .\"",
-    "package-mac": "yarn build && electron-builder -m -c.extraMetadata.main=build/electron.js",
-    "package-win": "yarn build && electron-builder -w -c.extraMetadata.main=build/electron.js",
-    "package-linux": "yarn build && electron-builder -l -c.extraMetadata.main=build/electron.js"
+    "package-mac": "yarn build && electron-builder -m -c.extraMetadata.main=build/electron.js --publish never",
+    "package-win": "yarn build && electron-builder -w -c.extraMetadata.main=build/electron.js --publish never",
+    "package-linux": "yarn build && electron-builder -l -c.extraMetadata.main=build/electron.js --publish never"
   },
   "eslintConfig": {
     "extends": [
@@ -115,6 +115,16 @@
       ]
     },
     "win": {
+      "icon": "./resources/icon.ico",
+      "extraFiles": [
+        {
+          "from": "bin/win",
+          "to": "resources/bin/win",
+          "filter": [
+            "**/**"
+          ]
+        }
+      ],
       "target": [
         "zip",
         "msi"

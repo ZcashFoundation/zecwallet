@@ -4,6 +4,19 @@
 export const NO_CONNECTION: string = "Could not connect to zcashd";
 
 export default class Utils {
+  static UAStringfromAccount(account: number): string {
+    return `UA account ${account}`;
+  }
+
+  static UAAccountfromString(account_str: string): number {
+    const matches = account_str.match(new RegExp("^UA account ([0-9]+)$"));
+    if (matches && matches.length === 2) {
+      return parseInt(matches[1]);
+    } else {
+      return 0;
+    }
+  }
+
   static isUnified(addr: string): boolean {
     if (!addr) return false;
     return addr.startsWith("u");
@@ -37,6 +50,14 @@ export default class Utils {
       new RegExp("^secret-extended-key-test[0-9a-z]{278}$").test(key) ||
       new RegExp("^secret-extended-key-main[0-9a-z]{278}$").test(key)
     );
+  }
+
+  static zatToZec(amount: number): number {
+    if (amount && amount > 0) {
+      return amount / 10 ** 8;
+    } else {
+      return 0;
+    }
   }
 
   // Convert to max 8 decimal places, and remove trailing zeros

@@ -141,7 +141,7 @@ const ToAddrBox = ({
         </div>
         <input
           type="text"
-          placeholder="Z or T address"
+          placeholder="U | Z | T address"
           className={cstyles.inputbox}
           value={toaddr.to}
           onChange={(e) => updateToField(toaddr.id, e, null, null)}
@@ -214,31 +214,6 @@ const ToAddrBox = ({
   );
 };
 
-function getSendManyJSON(sendPageState: SendPageState, info: Info): any[] {
-  const json = [];
-  json.push(sendPageState.fromaddr);
-  json.push(
-    sendPageState.toaddrs.map((to) => {
-      const textEncoder = new TextEncoder();
-      const memo = to.memo
-        ? Utils.bytesToHexString(textEncoder.encode(to.memo))
-        : "";
-      if (memo === "") {
-        return { address: to.to, amount: to.amount };
-      } else {
-        return { address: to.to, amount: to.amount, memo };
-      }
-    })
-  );
-  json.push(1); // minconf = 1
-  json.push(Utils.getDefaultFee(info.latestBlock)); // Control the default fee as well.
-  json.push(sendPageState.privacyLevel);
-
-  console.log("Sending:");
-  console.log(json);
-  return json;
-}
-
 type ConfirmModalToAddrProps = { toaddr: ToAddr; info: Info };
 const ConfirmModalToAddr = ({ toaddr, info }: ConfirmModalToAddrProps) => {
   const { bigPart, smallPart } = Utils.splitZecAmountIntoBigSmall(
@@ -279,6 +254,7 @@ const ConfirmModalToAddr = ({ toaddr, info }: ConfirmModalToAddrProps) => {
 type ConfirmModalProps = {
   sendPageState: SendPageState;
   info: Info;
+  getSendManyJSON: () => any[];
   sendTransaction: (
     sendJson: any[],
     fnOpenSendErrorModal: (title: string, msg: string) => void
@@ -291,6 +267,7 @@ type ConfirmModalProps = {
 const ConfirmModal = ({
   sendPageState,
   info,
+  getSendManyJSON,
   sendTransaction,
   clearToAddrs,
   closeModal,
@@ -317,7 +294,7 @@ const ConfirmModal = ({
 
     // Then send the Tx async
     (async () => {
-      const sendJson = getSendManyJSON(sendPageState, info);
+      const sendJson = getSendManyJSON();
       let success = false;
 
       try {
@@ -441,6 +418,7 @@ type Props = {
   openErrorModal: (title: string, body: string) => void;
   closeErrorModal: () => void;
   info: Info;
+  getSendManyJSON: () => any[];
 };
 
 class SendState {
@@ -628,7 +606,13 @@ export default class Send extends PureComponent<Props, SendState> {
       errorModalBody,
       sendButtonEnabled,
     } = this.state;
-    const { sendPageState, info, openErrorModal, closeErrorModal } = this.props;
+    const {
+      sendPageState,
+      info,
+      openErrorModal,
+      closeErrorModal,
+      getSendManyJSON,
+    } = this.props;
 
     const customStyles = {
       option: (provided: any, state: any) => ({
@@ -779,6 +763,7 @@ export default class Send extends PureComponent<Props, SendState> {
 
           <ConfirmModal
             sendPageState={sendPageState}
+            getSendManyJSON={getSendManyJSON}
             info={info}
             sendTransaction={sendTransaction}
             openErrorModal={openErrorModal}

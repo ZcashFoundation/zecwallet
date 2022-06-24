@@ -32,16 +32,21 @@ ipcMain.handle("doRPC_IPC", async (_, config, method, params) => {
     })
       .then((r) => resolve(r.data))
       .catch((err) => {
-        const e = { ...err }; 
+        const e = { ...err };
 
+        console.log(`Error calling ${method} with ${JSON.stringify(params)}`);
+
+        if (e.response && e.response.data && e.response.data.error) {
+          console.log(JSON.stringify(e.response.data.error));
+        }
         console.log(
           `Caught error: ${e.response} - ${
-            e.response ? e.response.data : ""
+            e.response ? e.response.data.error : ""
           }`
         );
-         
-        if (e.response && e.response.data) {
-          reject(e.response.data.toString());
+
+        if (e.response && e.response.data && e.response.data.error) {
+          reject(JSON.stringify(e.response.data.error));
         } else {
           reject("NO_CONNECTION");
         }
@@ -49,7 +54,7 @@ ipcMain.handle("doRPC_IPC", async (_, config, method, params) => {
   });
 
   return response;
-});  
+});
 
 ipcMain.handle("getZecPrice_IPC", async () => {
   const response = await new Promise((resolve, reject) => {
@@ -82,8 +87,10 @@ ipcMain.handle("readfile_IPC", async (_, filename) => {
 
 // Create the native browser window.
 function createWindow() {
+  const width = app.isPackaged ? 1200 : 2400;
+
   const mainWindow = new BrowserWindow({
-    width: 2400,
+    width: width,
     height: 800,
     // Set the path of an additional "preload" script that can be used to
     // communicate between node-land and browser-land.
@@ -106,12 +113,11 @@ function createWindow() {
 
   // Automatically open Chrome's DevTools in development mode.
   // if (!app.isPackaged) {
-    mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
   // }
 
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
-
 }
 
 // Setup a local proxy to adjust the paths of requested files when loading

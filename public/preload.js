@@ -51,13 +51,6 @@ const loadZcashConf = async () => {
   rpcConfig.username = confValues.rpcuser;
   rpcConfig.password = confValues.rpcpassword;
 
-  if (!rpcConfig.username || !rpcConfig.password) {
-    console.log(
-      "Your zcash.conf is missing a &quot;rpcuser&quot; or &quot;rpcpassword&quot;"
-    );
-    return;
-  }
-
   const isTestnet = (confValues.testnet && confValues.testnet === "1") || false;
   const server = confValues.rpcbind || "127.0.0.1";
   const port = confValues.rpcport || (isTestnet ? "18232" : "8232");

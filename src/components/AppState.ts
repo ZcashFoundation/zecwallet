@@ -179,6 +179,25 @@ export class Info {
   }
 }
 
+export class AddressDetail {
+  address: string;
+  type: AddressType;
+  account?: number;
+  diversifier?: number;
+
+  constructor(
+    address: string,
+    type: AddressType,
+    account?: number,
+    diversifier?: number
+  ) {
+    this.address = address;
+    this.type = type;
+    this.account = account;
+    this.diversifier = diversifier;
+  }
+}
+
 // eslint-disable-next-line max-classes-per-file
 export default class AppState {
   // The total confirmed and unconfirmed balance in this wallet
@@ -191,12 +210,11 @@ export default class AppState {
   // A map type that contains address -> privatekey/viewkey mapping, for display on the receive page
   // This mapping is ephemeral, and will disappear when the user navigates away.
   addressPrivateKeys: Map<string, string>;
-
   addressViewKeys: Map<string, string>;
 
   // List of all addresses in the wallet, including change addresses and addresses
   // that don't have any balance or are unused
-  addresses: string[];
+  addresses: AddressDetail[];
 
   // List of Address / Label pairs
   addressBook: AddressBookEntry[];

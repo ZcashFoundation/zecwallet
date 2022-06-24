@@ -88,7 +88,7 @@ const AddressBalanceItem = ({
     <AccordionItem
       key={item.address}
       className={[cstyles.well, cstyles.margintopsmall].join(" ")}
-      uuid={item.address}
+      uuid={item.address.replaceAll(" ", "_")}
     >
       <AccordionItemHeading>
         <AccordionItemButton className={cstyles.accordionHeader}>

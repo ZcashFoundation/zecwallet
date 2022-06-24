@@ -14,13 +14,13 @@ Head over to the releases page and grab the latest installers or binary. https:/
 If you are on Debian/Ubuntu, please download the '.AppImage' package and just run it.
 
 ```
-./Zecwallet.Fullnode-1.8.0-beta1.AppImage
+./Zecwallet.Fullnode-1.8.0-beta2.AppImage
 ```
 
 If you prefer to install a `.deb` package, that is also available.
 
 ```
-sudo apt install -f ./zecwallet_1.8.0-beta1_amd64.deb
+sudo apt install -f ./zecwallet_1.8.0-beta2_amd64.deb
 ```
 
 ### Windows

@@ -198,6 +198,10 @@
   background-color: rgba(100, 100, 100, 0.5);
 }
 
+.accordionHeader {
+  word-break: break-all;
+}
+
 .accordionHeader:hover {
   cursor: pointer;
 }

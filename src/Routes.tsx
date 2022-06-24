@@ -23,6 +23,7 @@ import AppState, {
   ReceivePageState,
   AddressBookEntry,
   AddressType,
+  AddressDetail,
 } from "./components/AppState";
 import RPC from "./rpc";
 import Utils from "./utils/utils";
@@ -147,7 +148,7 @@ export default class RouteApp extends React.Component<Props, AppState> {
     this.setState({ transactions });
   };
 
-  setAllAddresses = (addresses: string[]) => {
+  setAllAddresses = (addresses: AddressDetail[]) => {
     this.setState({ addresses });
   };
 
@@ -229,6 +230,45 @@ export default class RouteApp extends React.Component<Props, AppState> {
     });
 
     this.setState({ sendPageState: newSendPageState });
+  };
+
+  getSendManyJSON = (): any[] => {
+    const { sendPageState, info, addresses } = this.state;
+
+    const json = [];
+
+    if (sendPageState.fromaddr.startsWith("UA")) {
+      // Find an address with the account number
+      const fromaddr = addresses.find(
+        (ad) =>
+          ad.type === AddressType.unified &&
+          ad.account === Utils.UAAccountfromString(sendPageState.fromaddr)
+      );
+      json.push(fromaddr?.address);
+    } else {
+      json.push(sendPageState.fromaddr);
+    }
+
+    json.push(
+      sendPageState.toaddrs.map((to) => {
+        const textEncoder = new TextEncoder();
+        const memo = to.memo
+          ? Utils.bytesToHexString(textEncoder.encode(to.memo))
+          : "";
+        if (memo === "") {
+          return { address: to.to, amount: to.amount };
+        } else {
+          return { address: to.to, amount: to.amount, memo };
+        }
+      })
+    );
+    json.push(1); // minconf = 1
+    json.push(Utils.getDefaultFee(info.latestBlock)); // Control the default fee as well.
+    json.push(sendPageState.privacyLevel);
+
+    console.log("Sending:");
+    console.log(json);
+    return json;
   };
 
   setRPCConfig = (rpcConfig?: RPCConfig) => {
@@ -340,7 +380,7 @@ export default class RouteApp extends React.Component<Props, AppState> {
 
   createNewAddress = async (type: AddressType) => {
     if (!this.rpc) {
-      return; 
+      return;
     }
 
     // Create a new address
@@ -360,10 +400,15 @@ export default class RouteApp extends React.Component<Props, AppState> {
 
       this.setState({ receivePageState: newReceivePageState });
     } catch (e) {
-      this.openErrorModal("Failed to Create Address", <div>
-        Couldn't create a new address. Please make sure your wallet has been initialized by running<br/>
-        "zcashd-wallet-tool"
-      </div>)
+      this.openErrorModal(
+        "Failed to Create Address",
+        <div>
+          Couldn't create a new address. Please make sure your wallet has been
+          initialized by running
+          <br />
+          "zcashd-wallet-tool"
+        </div>
+      );
     }
   };
 
@@ -405,7 +450,7 @@ export default class RouteApp extends React.Component<Props, AppState> {
         />
 
         <div style={{ overflow: "hidden" }}>
-          {(info && info.version > 0) && (
+          {info && info.version > 0 && (
             <div className={cstyles.sidebarcontainer}>
               <Sidebar
                 getPrivKeyAsString={this.getPrivKeyAsString}
@@ -423,6 +468,7 @@ export default class RouteApp extends React.Component<Props, AppState> {
                 element={
                   <Send
                     addressesWithBalance={addressesWithBalance}
+                    getSendManyJSON={this.getSendManyJSON}
                     sendTransaction={this.sendTransaction}
                     sendPageState={sendPageState}
                     setSendPageState={this.setSendPageState}

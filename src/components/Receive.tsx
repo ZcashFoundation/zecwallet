@@ -17,10 +17,12 @@ import {
   ReceivePageState,
   AddressBookEntry,
   AddressType,
+  AddressDetail,
 } from "./AppState";
 import ScrollPane from "./ScrollPane";
 
 type AddressBlockProps = {
+  addresses: AddressDetail[];
   addressBalance: AddressBalance;
   label?: string;
   currencyName: string;
@@ -32,6 +34,7 @@ type AddressBlockProps = {
 };
 
 const AddressBlock = ({
+  addresses,
   addressBalance,
   label,
   currencyName,
@@ -87,6 +90,26 @@ const AddressBlock = ({
                   {label}
                 </div>
               </div>
+            )}
+
+            {Utils.isUnified(address) && (
+              <>
+                <div
+                  className={[cstyles.sublight, cstyles.margintoplarge].join(
+                    " "
+                  )}
+                >
+                  Details
+                </div>
+                <div className={[cstyles.padtopsmall].join(" ")}>
+                  Account Number:{" "}
+                  {addresses.find((ad) => ad.address === address)?.account}
+                </div>
+                <div className={[cstyles.padtopsmall].join(" ")}>
+                  Diversifier Index:{" "}
+                  {addresses.find((ad) => ad.address === address)?.diversifier}
+                </div>
+              </>
             )}
 
             <div
@@ -216,7 +239,7 @@ const AddressBlock = ({
 };
 
 type Props = {
-  addresses: string[];
+  addresses: AddressDetail[];
   addressesWithBalance: AddressBalance[];
   addressBook: AddressBookEntry[];
   info: Info;
@@ -253,9 +276,11 @@ export default class Receive extends Component<Props> {
     }, new Map<string, number>());
 
     const uaddrs = addresses
-      .filter((a) => Utils.isUnified(a))
+      .filter((a) => a.type === AddressType.unified)
       .slice(0, 100)
-      .map((a) => new AddressBalance(a, addressMap.get(a) || 0));
+      .map(
+        (a) => new AddressBalance(a.address, addressMap.get(a.address) || 0)
+      );
     let defaultUaddr = uaddrs.length ? uaddrs[0].address : "";
     if (receivePageState && Utils.isUnified(receivePageState.newAddress)) {
       defaultUaddr = receivePageState.newAddress;
@@ -271,9 +296,11 @@ export default class Receive extends Component<Props> {
     }
 
     const zaddrs = addresses
-      .filter((a) => Utils.isSapling(a))
+      .filter((a) => a.type === AddressType.sapling)
       .slice(0, 100)
-      .map((a) => new AddressBalance(a, addressMap.get(a) || 0));
+      .map(
+        (a) => new AddressBalance(a.address, addressMap.get(a.address) || 0)
+      );
 
     let defaultZaddr = zaddrs.length ? zaddrs[0].address : "";
     if (receivePageState && Utils.isSapling(receivePageState.newAddress)) {
@@ -290,9 +317,11 @@ export default class Receive extends Component<Props> {
     }
 
     const taddrs = addresses
-      .filter((a) => Utils.isTransparent(a))
+      .filter((a) => a.type === AddressType.transparent)
       .slice(0, 100)
-      .map((a) => new AddressBalance(a, addressMap.get(a) || 0));
+      .map(
+        (a) => new AddressBalance(a.address, addressMap.get(a.address) || 0)
+      );
 
     let defaultTaddr = taddrs.length ? taddrs[0].address : "";
     if (receivePageState && Utils.isTransparent(receivePageState.newAddress)) {
@@ -329,6 +358,7 @@ export default class Receive extends Component<Props> {
                   {uaddrs.map((a) => (
                     <AddressBlock
                       key={a.address}
+                      addresses={addresses}
                       addressBalance={a}
                       currencyName={info.currencyName}
                       label={addressBookMap.get(a.address)}
@@ -360,6 +390,7 @@ export default class Receive extends Component<Props> {
                   {zaddrs.map((a) => (
                     <AddressBlock
                       key={a.address}
+                      addresses={addresses}
                       addressBalance={a}
                       currencyName={info.currencyName}
                       label={addressBookMap.get(a.address)}
@@ -393,6 +424,7 @@ export default class Receive extends Component<Props> {
                   {taddrs.map((a) => (
                     <AddressBlock
                       key={a.address}
+                      addresses={addresses}
                       addressBalance={a}
                       currencyName={info.currencyName}
                       zecPrice={info.zecPrice}
