@@ -119,7 +119,14 @@ export default class RPC {
       latestBlockHeight = await this.fetchInfo();
     } catch (err) {
       // If we caught an error, there's something wrong with the connection.
-      this.fnSetDisconnected(`${err}`);
+      const errString = `${err}`;
+      if (errString.indexOf('"code":-8') > 0) {
+        this.fnSetDisconnected(
+          "No accounts. Please run 'zcashd-wallet-tool' to create your wallet first..."
+        );
+      } else {
+        this.fnSetDisconnected(errString);
+      }
       return;
     }
 
@@ -174,7 +181,14 @@ export default class RPC {
         console.log(`Finished full refresh at ${latestBlockHeight}`);
       } catch (err) {
         // If we caught an error, there's something wrong with the connection.
-        this.fnSetDisconnected(`${err}`);
+        const errString = `${err}`;
+        if (errString.indexOf('"code":-8') > 0) {
+          this.fnSetDisconnected(
+            "No accounts. Please run 'zcashd-wallet-tool' to create your wallet first..."
+          );
+        } else {
+          this.fnSetDisconnected(errString);
+        }
         return;
       }
     } else {

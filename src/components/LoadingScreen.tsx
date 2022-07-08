@@ -104,8 +104,6 @@ class LoadingScreen extends Component<Props, LoadingScreenState> {
     } catch (err) {
       // Not yet finished loading. So update the state, and setup the next refresh
       const errString: string = (err as any).toString();
-      this.setState({ currentStatus: errString });
-
       const noConnection = errString.indexOf("NO_CONNECTION") > 0;
 
       if (noConnection) {
@@ -113,14 +111,29 @@ class LoadingScreen extends Component<Props, LoadingScreenState> {
         // this.startZcashd();
         // this.setupNextGetInfo();
         console.log("Cannot start zcashd because it is not supported yet");
-        this.setState({currentStatus: <div>{errString}<br/>Please make sure zcashd is running.</div>});
+        this.setState({
+          currentStatus: (
+            <div>
+              {errString}
+              <br />
+              Please make sure zcashd is running.
+            </div>
+          ),
+        });
       }
 
-      if (noConnection && zcashdSpawned && getinfoRetryCount < 10) {
+      if (errString.indexOf('"code":-28') > 0) {
         this.setState({ currentStatus: "Waiting for zcashd to start..." });
         const inc = getinfoRetryCount + 1;
         this.setState({ getinfoRetryCount: inc });
-        this.setupNextGetInfo();
+      } else if (errString.indexOf('"code":-8') > 0) {
+        this.setState({
+          currentStatus:
+            "No accounts. Please run 'zcashd-wallet-tool' to create your wallet first...",
+        });
+      } else {
+        // Generic error.
+        this.setState({ currentStatus: errString });
       }
 
       if (noConnection && zcashdSpawned && getinfoRetryCount >= 10) {

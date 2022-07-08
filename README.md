@@ -5,7 +5,7 @@ ZecWallet Fullnode is a z-Addr first, Sapling compatible wallet and full node fo
 
 # Installation
 
-**Note**: Zecwallet Fullnode will download the **entire blockchain (about 26GB)**, and requires some familiarity with the command line. If you don't want to download the blockchain but prefer a Lite wallet, please check out [Zecwallet Lite](https://www.zecwallet.co).
+**Note**: Zecwallet Fullnode will download the **entire blockchain (about 36GB)**, and requires some familiarity with the command line. If you don't want to download the blockchain but prefer a Lite wallet, please check out [Zecwallet Lite](https://www.zecwallet.co).
 
 Head over to the releases page and grab the latest installers or binary. https://www.zecwallet.co
 
@@ -14,13 +14,13 @@ Head over to the releases page and grab the latest installers or binary. https:/
 If you are on Debian/Ubuntu, please download the '.AppImage' package and just run it.
 
 ```
-./Zecwallet.Fullnode-1.8.0-beta2.AppImage
+./Zecwallet.Fullnode-1.8.0.AppImage
 ```
 
 If you prefer to install a `.deb` package, that is also available.
 
 ```
-sudo apt install -f ./zecwallet_1.8.0-beta2_amd64.deb
+sudo apt install -f ./zecwallet_1.8.0_amd64.deb
 ```
 
 ### Windows
@@ -31,23 +31,35 @@ Download and run the `.msi` installer and follow the prompts. Alternately, you c
 
 Double-click on the `.dmg` file to open it, and drag `Zecwallet Fullnode` on to the Applications link to install.
 
-## zcashd
+## Running zcashd
 
 ZecWallet needs a Zcash node running zcashd. If you already have a zcashd node running, ZecWallet will connect to it.
 
-If you don't have one, ZecWallet will start its embedded zcashd node.
+You need to manually start the zcashd node so that Zecwallet can connect to it. The first time you run zcashd, you need to:
 
-Additionally, if this is the first time you're running ZecWallet or a zcashd daemon, ZecWallet will download the Zcash params (~777 MB) and configure `zcash.conf` for you.
+1. Create a zcash.conf file with at least:
+
+```
+server=1
+rpcuser=<someusername>
+rpcpassword=<somepassword>
+```
+
+2. Run `./fetch-params.sh` to get the Zcash params
+
+3. Run `./zcashd-wallet-tool` to configure your seed phrase and set up your Orchard accounts.
+
+All binaries needed are included in the distribution.
 
 ## Compiling from source
 
-ZecWallet is written in Electron/Javascript and can be build from source. Note that if you are compiling from source, you won't get the embedded zcashd by default. You can either run an external zcashd, or compile zcashd as well.
+ZecWallet is written in Electron/Typescript and can be build from source. Note that if you are compiling from source, you won't get the embedded zcashd by default. You can either run an external zcashd, or compile zcashd as well.
 
 #### Pre-Requisits
 
 You need to have the following software installed before you can build Zecwallet Fullnode
 
-- Nodejs v12.16.1 or higher - https://nodejs.org
+- Nodejs v14 or higher - https://nodejs.org
 - Yarn - https://yarnpkg.com
 
 ```
