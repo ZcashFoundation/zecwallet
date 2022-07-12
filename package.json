@@ -1,7 +1,7 @@
 {
   "name": "zecwallet",
   "productName": "Zecwallet Fullnode",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "Zecwallet Fullnode (Electron version)",
   "private": true,
   "main": "./public/electron.js",
