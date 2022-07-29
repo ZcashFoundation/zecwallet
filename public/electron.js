@@ -112,9 +112,9 @@ function createWindow() {
   mainWindow.loadURL(appURL);
 
   // Automatically open Chrome's DevTools in development mode.
-  // if (!app.isPackaged) {
+  if (!app.isPackaged) {
   mainWindow.webContents.openDevTools();
-  // }
+  }
 
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
