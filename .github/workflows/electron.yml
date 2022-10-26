@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-18.04, macos-latest, windows-latest]
+        os: [ubuntu-20.04, macos-latest, windows-latest]
 
     steps:
       - name: Context
@@ -21,10 +21,10 @@ jobs:
       - uses: actions/checkout@v1
         with:
           fetch-depth: 1
-      - name: Use Node.js 14.x
+      - name: Use Node.js 16.x
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 16.x
       - name: yarn install
         run: |
           yarn install
@@ -42,7 +42,7 @@ jobs:
         if: contains(matrix.os, 'macos')
         uses: apple-actions/import-codesign-certs@v1
         with:
-          p12-filepath: 'cert.p12'
+          p12-filepath: "cert.p12"
           p12-password: ${{ secrets.p12certpassword }}
       - name: Build and Package@Mac
         if: contains(matrix.os, 'macos')

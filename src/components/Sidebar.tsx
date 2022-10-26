@@ -16,7 +16,11 @@ type ExportPrivKeyModalProps = {
   exportedPrivKeys: string[] | null;
   closeModal: () => void;
 };
-const ExportPrivKeyModal = ({ modalIsOpen, exportedPrivKeys, closeModal }: ExportPrivKeyModalProps) => {
+const ExportPrivKeyModal = ({
+  modalIsOpen,
+  exportedPrivKeys,
+  closeModal,
+}: ExportPrivKeyModalProps) => {
   return (
     <Modal
       isOpen={modalIsOpen}
@@ -25,21 +29,33 @@ const ExportPrivKeyModal = ({ modalIsOpen, exportedPrivKeys, closeModal }: Expor
       overlayClassName={cstyles.modalOverlay}
     >
       <div className={[cstyles.verticalflex].join(" ")}>
-        <div className={cstyles.marginbottomlarge} style={{ textAlign: "center" }}>
+        <div
+          className={cstyles.marginbottomlarge}
+          style={{ textAlign: "center" }}
+        >
           Your Wallet Private Keys
         </div>
 
         <div className={[cstyles.marginbottomlarge, cstyles.center].join(" ")}>
-          These are all the private keys in your wallet. Please store them carefully!
+          These are all the private keys in your wallet. Please store them
+          carefully!
         </div>
 
         {exportedPrivKeys && (
-          <TextareaAutosize value={exportedPrivKeys.join("\n")} className={styles.exportedPrivKeys} disabled />
+          <TextareaAutosize
+            value={exportedPrivKeys.join("\n")}
+            className={styles.exportedPrivKeys}
+            disabled
+          />
         )}
       </div>
 
       <div className={cstyles.buttoncontainer}>
-        <button type="button" className={cstyles.primarybutton} onClick={closeModal}>
+        <button
+          type="button"
+          className={cstyles.primarybutton}
+          onClick={closeModal}
+        >
           Close
         </button>
       </div>
@@ -69,12 +85,16 @@ const ImportPrivKeyModal = ({
       overlayClassName={cstyles.modalOverlay}
     >
       <div className={[cstyles.verticalflex].join(" ")}>
-        <div className={cstyles.marginbottomlarge} style={{ textAlign: "center" }}>
+        <div
+          className={cstyles.marginbottomlarge}
+          style={{ textAlign: "center" }}
+        >
           Import Private Keys
         </div>
 
         <div className={cstyles.marginbottomlarge}>
-          Please paste your private or viewing keys here (transparent address or shielded address), one line per key.
+          Please paste your private or viewing keys here (transparent address or
+          shielded address), one line per key.
         </div>
 
         <div className={cstyles.well} style={{ textAlign: "center" }}>
@@ -98,7 +118,11 @@ const ImportPrivKeyModal = ({
         >
           Import
         </button>
-        <button type="button" className={cstyles.primarybutton} onClick={closeModal}>
+        <button
+          type="button"
+          className={cstyles.primarybutton}
+          onClick={closeModal}
+        >
           Cancel
         </button>
       </div>
@@ -132,7 +156,10 @@ const PayURIModal = ({
       overlayClassName={cstyles.modalOverlay}
     >
       <div className={[cstyles.verticalflex].join(" ")}>
-        <div className={cstyles.marginbottomlarge} style={{ textAlign: "center" }}>
+        <div
+          className={cstyles.marginbottomlarge}
+          style={{ textAlign: "center" }}
+        >
           {modalTitle}
         </div>
 
@@ -163,7 +190,11 @@ const PayURIModal = ({
           </button>
         )}
 
-        <button type="button" className={cstyles.primarybutton} onClick={closeModal}>
+        <button
+          type="button"
+          className={cstyles.primarybutton}
+          onClick={closeModal}
+        >
           Close
         </button>
       </div>
@@ -176,7 +207,11 @@ type SidebarMenuItemProps = {
   routeName: string;
   iconname: string;
 };
-const SidebarMenuItem = ({ name, routeName, iconname }: SidebarMenuItemProps) => {
+const SidebarMenuItem = ({
+  name,
+  routeName,
+  iconname,
+}: SidebarMenuItemProps) => {
   const activeColorClass = styles.sidebarmenuitemactive;
 
   return (
@@ -240,28 +275,37 @@ class Sidebar extends PureComponent<Props, State> {
       openErrorModal(
         "Zecwallet Fullnode",
         <div className={cstyles.verticalflex}>
-          <div className={cstyles.margintoplarge}>Zecwallet Fullnode v1.8.5</div>
-          <div className={cstyles.margintoplarge}>Built with Electron. Copyright (c) 2018-2021, Aditya Kulkarni.</div>
           <div className={cstyles.margintoplarge}>
-            The MIT License (MIT) Copyright (c) 2018-2021 Zecwallet
+            Zecwallet Fullnode v1.8.5
+          </div>
+          <div className={cstyles.margintoplarge}>
+            Built with Electron. Copyright (c) 2018-2022, Aditya Kulkarni.
+          </div>
+          <div className={cstyles.margintoplarge}>
+            The MIT License (MIT) Copyright (c) 2018-2022 Zecwallet
             <br />
             <br />
-            Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
-            documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including
-            without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-            copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
-            following conditions:
+            Permission is hereby granted, free of charge, to any person
+            obtaining a copy of this software and associated documentation files
+            (the &quot;Software&quot;), to deal in the Software without
+            restriction, including without limitation the rights to use, copy,
+            modify, merge, publish, distribute, sublicense, and/or sell copies
+            of the Software, and to permit persons to whom the Software is
+            furnished to do so, subject to the following conditions:
             <br />
             <br />
-            The above copyright notice and this permission notice shall be included in all copies or substantial
-            portions of the Software.
+            The above copyright notice and this permission notice shall be
+            included in all copies or substantial portions of the Software.
             <br />
             <br />
-            THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
-            NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-            NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-            IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-            USE OR OTHER DEALINGS IN THE SOFTWARE.
+            THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY
+            KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+            WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+            NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+            BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+            ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+            CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+            SOFTWARE.
           </div>
         </div>
       );
@@ -305,11 +349,16 @@ class Sidebar extends PureComponent<Props, State> {
         const rows = transactions.flatMap((t) => {
           if (t.detailedTxns) {
             return t.detailedTxns.map((dt) => {
-              const normaldate = dateformat(t.time * 1000, "mmm dd yyyy hh::MM tt");
+              const normaldate = dateformat(
+                t.time * 1000,
+                "mmm dd yyyy hh::MM tt"
+              );
 
               // Add a single quote "'" into the memo field to force interpretation as a string, rather than as a
               // formula from a rogue memo
-              const escapedMemo = dt.memo ? `'${dt.memo.replace(/"/g, '""')}'` : "";
+              const escapedMemo = dt.memo
+                ? `'${dt.memo.replace(/"/g, '""')}'`
+                : "";
 
               return `${t.time},"${normaldate}","${t.txid}","${t.type}",${dt.amount},"${dt.address}","${escapedMemo}"`;
             });
@@ -321,7 +370,10 @@ class Sidebar extends PureComponent<Props, State> {
         const header = [`UnixTime, Date, Txid, Type, Amount, Address, Memo`];
 
         try {
-          await window.zecwallet.writeFile(save.filePath, header.concat(rows).join("\n"));
+          await window.zecwallet.writeFile(
+            save.filePath,
+            header.concat(rows).join("\n")
+          );
         } catch (err) {
           openErrorModal("Error Exporting Transactions", `${err}`);
         }
@@ -403,12 +455,17 @@ class Sidebar extends PureComponent<Props, State> {
       // eslint-disable-next-line no-control-regex
       let keys = privKeyInputValue.split(new RegExp("[\n\r]+"));
       if (!keys || keys.length === 0) {
-        openErrorModal("No Keys Imported", "No keys were specified, so none were imported");
+        openErrorModal(
+          "No Keys Imported",
+          "No keys were specified, so none were imported"
+        );
         return;
       }
 
       // Filter out empty lines and clean up the private keys
-      keys = keys.filter((k) => !(k.trim().startsWith("#") || k.trim().length === 0));
+      keys = keys.filter(
+        (k) => !(k.trim().startsWith("#") || k.trim().length === 0)
+      );
 
       // Special case.
       // Sometimes, when importing from a paperwallet or such, the key is split by newlines, and might have
@@ -514,22 +571,54 @@ class Sidebar extends PureComponent<Props, State> {
         </div>
 
         <div className={styles.sidebar}>
-          <SidebarMenuItem name="Dashboard" routeName={routes.DASHBOARD} iconname="fa-home" />
-          <SidebarMenuItem name="Send" routeName={routes.SEND} iconname="fa-paper-plane" />
-          <SidebarMenuItem name="Receive" routeName={routes.RECEIVE} iconname="fa-download" />
-          <SidebarMenuItem name="Transactions" routeName={routes.TRANSACTIONS} iconname="fa-list" />
-          <SidebarMenuItem name="Address Book" routeName={routes.ADDRESSBOOK} iconname="fa-address-book" />
+          <SidebarMenuItem
+            name="Dashboard"
+            routeName={routes.DASHBOARD}
+            iconname="fa-home"
+          />
+          <SidebarMenuItem
+            name="Send"
+            routeName={routes.SEND}
+            iconname="fa-paper-plane"
+          />
+          <SidebarMenuItem
+            name="Receive"
+            routeName={routes.RECEIVE}
+            iconname="fa-download"
+          />
+          <SidebarMenuItem
+            name="Transactions"
+            routeName={routes.TRANSACTIONS}
+            iconname="fa-list"
+          />
+          <SidebarMenuItem
+            name="Address Book"
+            routeName={routes.ADDRESSBOOK}
+            iconname="fa-address-book"
+          />
         </div>
 
         <div className={cstyles.center}>
           {state === "CONNECTED" && (
-            <div className={[cstyles.padsmallall, cstyles.margintopsmall, cstyles.blackbg].join(" ")}>
+            <div
+              className={[
+                cstyles.padsmallall,
+                cstyles.margintopsmall,
+                cstyles.blackbg,
+              ].join(" ")}
+            >
               <i className={[cstyles.green, "fas", "fa-check"].join(" ")} />
               &nbsp; Connected
             </div>
           )}
           {state === "SYNCING" && (
-            <div className={[cstyles.padsmallall, cstyles.margintopsmall, cstyles.blackbg].join(" ")}>
+            <div
+              className={[
+                cstyles.padsmallall,
+                cstyles.margintopsmall,
+                cstyles.blackbg,
+              ].join(" ")}
+            >
               <div>
                 <i className={[cstyles.yellow, "fas", "fa-sync"].join(" ")} />
                 &nbsp; Syncing
@@ -538,8 +627,16 @@ class Sidebar extends PureComponent<Props, State> {
             </div>
           )}
           {state === "DISCONNECTED" && (
-            <div className={[cstyles.padsmallall, cstyles.margintopsmall, cstyles.blackbg].join(" ")}>
-              <i className={[cstyles.red, "fas", "fa-times-circle"].join(" ")} />
+            <div
+              className={[
+                cstyles.padsmallall,
+                cstyles.margintopsmall,
+                cstyles.blackbg,
+              ].join(" ")}
+            >
+              <i
+                className={[cstyles.red, "fas", "fa-times-circle"].join(" ")}
+              />
               &nbsp; Connected
             </div>
           )}
