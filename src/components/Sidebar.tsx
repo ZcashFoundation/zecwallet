@@ -242,8 +242,9 @@ class Sidebar extends PureComponent<Props, State> {
         <div className={cstyles.verticalflex}>
           <div className={cstyles.margintoplarge}>Zecwallet Fullnode v1.8.6</div>
           <div className={cstyles.margintoplarge}>Built with Electron. Copyright (c) 2018-2023, Aditya Kulkarni.</div>
+
           <div className={cstyles.margintoplarge}>
-            The MIT License (MIT) Copyright (c) 2018-2021 Zecwallet
+            The MIT License (MIT) Copyright (c) 2018-2023 Zecwallet
             <br />
             <br />
             Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
