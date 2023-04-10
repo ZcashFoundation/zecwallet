@@ -240,7 +240,7 @@ class Sidebar extends PureComponent<Props, State> {
       openErrorModal(
         "Zecwallet Fullnode",
         <div className={cstyles.verticalflex}>
-          <div className={cstyles.margintoplarge}>Zecwallet Fullnode v1.8.6</div>
+          <div className={cstyles.margintoplarge}>Zecwallet Fullnode v1.8.7</div>
           <div className={cstyles.margintoplarge}>Built with Electron. Copyright (c) 2018-2023, Aditya Kulkarni.</div>
 
           <div className={cstyles.margintoplarge}>
